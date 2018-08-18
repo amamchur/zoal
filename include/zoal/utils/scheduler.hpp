@@ -17,7 +17,7 @@ namespace zoal { namespace utils {
         }
 
         schedule_item(const schedule_item &item)
-                : time(item.time), handler(item.handler), Token(item.token) {
+                : time(item.time), handler(item.handler), token(item.token) {
         }
 
         schedule_item(CounterValueType tm, Callback c)
@@ -25,7 +25,7 @@ namespace zoal { namespace utils {
         }
 
         schedule_item(CounterValueType tm, Callback c, Token t)
-                : time(tm), handler(c), Token(t) {
+                : time(tm), handler(c), token(t) {
         }
     };
 
@@ -47,11 +47,11 @@ namespace zoal { namespace utils {
         }
     };
 
-    template<class counter, size_t Capacity, class Callback, class Token>
+    template<class Counter, size_t Capacity, class Callback, class Token>
     class base_scheduler {
     public:
         using token_type = Token;
-        using counter_type = typename counter::value_type;
+        using counter_type = typename Counter::value_type;
         using item_type = schedule_item<counter_type, Callback, token_type>;
 
         base_scheduler() : prevTime(0), size(0) {
@@ -69,7 +69,7 @@ namespace zoal { namespace utils {
 
         template<class Invoker>
         void handle(Invoker &invoker) {
-            auto now = counter::now();
+            auto now = Counter::now();
             auto dt = now - prevTime;
             if (dt == 0) {
                 return;
@@ -111,6 +111,8 @@ namespace zoal { namespace utils {
 
     template<class Token>
     struct timeout_function {
+        using F = void (*)(Token);
+
         template<class T>
         static void invoke(const T &item) {
             item.handler(item.token);
@@ -119,6 +121,8 @@ namespace zoal { namespace utils {
 
     template<>
     struct timeout_function<void> {
+        using F = void (*)();
+
         template<class T>
         static void invoke(const T &item) {
             item.handler();
@@ -143,6 +147,8 @@ namespace zoal { namespace utils {
 
     template<class Class, class Token>
     struct timeout_method {
+        using method_type = void (Class::*)(Token&);
+
         template<class T>
         static void invoke(Class *c, const T &item) {
             (c->*item.handler)(item.token);

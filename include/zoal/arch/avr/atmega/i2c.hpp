@@ -152,7 +152,7 @@ namespace zoal { namespace arch { namespace avr {
             I2CSCL::high();
 
             mem[TWSRx] &= ~(1 << TWPS0x | 1 << TWPS1x);
-            mem[TWBRx] = ((Config::Freq / Config::I2CFreq) - 16) / 2;
+            mem[TWBRx] = ((Config::freq / Config::i2c_freq) - 16) / 2;
             mem[TWCRx] = 1 << TWENx | 1 << TWIEx | 1 << TWEAx;
         }
 

@@ -139,7 +139,7 @@ namespace zoal { namespace io {
                     state = start_trigger_level;
                     return sampling_result::working;
                 case start_trigger_level:
-                    if (time < StartTrigger::Holdoff) {
+                    if (time < StartTrigger::holdoff) {
                         return sampling_result::working;
                     }
 
@@ -161,7 +161,7 @@ namespace zoal { namespace io {
                         return sampling_result::sample;
                     }
 
-                    if (time < StopTrigger::Holdoff) {
+                    if (time < StopTrigger::holdoff) {
                         return sampling_result::working;
                     }
 

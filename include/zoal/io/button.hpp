@@ -51,19 +51,19 @@ namespace zoal { namespace io {
     };
 
     template<class Pin, class Counter, class Cfg = pull_up_button>
-    class button : public button_base<typename Counter::CounterType> {
+    class button : public button_base<typename Counter::value_type> {
     public:
         using pin = Pin;
 
         void begin() {
-            pin::template mode<Cfg::Mode>();
+            pin::template mode<Cfg::mode>();
         }
 
         template<class Callback>
         void handle(Callback callback) {
             using namespace zoal::gpio;
 
-            button_state_machine machine(Cfg::DebounceDelay, Cfg::PressDelay);
+            button_state_machine machine(Cfg::debounce_delay, Cfg::press_delay);
             auto now = Counter::now();
             auto dt = now - this->prev_time;
             auto value = Cfg::mode == pin_mode::input_pull_up ? pin::read() ^ 1u : pin::read();
@@ -92,7 +92,7 @@ namespace zoal { namespace io {
         using pin = Pin;
 
         void begin() {
-            pin::template mode<Config::Mode>();
+            pin::template mode<Config::mode>();
         }
 
         template<class Callback>

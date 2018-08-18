@@ -34,7 +34,7 @@ namespace zoal { namespace ic {
             temp_lsb = 0x12
         };
 
-        static constexpr uint8_t data_size = reg_address::temp_lsb + 1;
+        static constexpr uint8_t data_size = static_cast<uint8_t >(reg_address::temp_lsb) + 1;
 
         volatile bool ready{false};
 
@@ -42,32 +42,34 @@ namespace zoal { namespace ic {
             ready = false;
 
             I2C::wait();
-            I2C::stream().write(Address).value(reg_address::seconds);
+            I2C::stream().write(Address).value(static_cast<uint8_t >(reg_address::seconds));
             I2C::transmit(&i2c_address_assigned, this);
         }
 
         zoal::data::date_time date_time() {
+            auto &me = *this;
             zoal::data::date_time dt;
-            dt.seconds = bcd2bin(data[reg_address::seconds]);
-            dt.minutes = bcd2bin(data[reg_address::minutes]);
-            dt.hours = bcd2bin(data[reg_address::hours]);
+            dt.seconds = bcd2bin(me[reg_address::seconds]);
+            dt.minutes = bcd2bin(me[reg_address::minutes]);
+            dt.hours = bcd2bin(me[reg_address::hours]);
 
-            dt.day = data[reg_address::day];
-            dt.date = bcd2bin(data[reg_address::date]);
-            dt.month = bcd2bin(data[reg_address::month_century]);
-            dt.year = bcd2bin(data[reg_address::year]) + 2000;
+            dt.day = me[reg_address::day];
+            dt.date = bcd2bin(me[reg_address::date]);
+            dt.month = bcd2bin(me[reg_address::month_century]);
+            dt.year = static_cast<uint16_t>(bcd2bin(me[reg_address::year]) + 2000);
 
             return dt;
         }
 
         void date_time(const zoal::data::date_time &dt) {
-            data[reg_address::seconds] = bin2bcd(dt.seconds);
-            data[reg_address::minutes] = bin2bcd(dt.minutes);
-            data[reg_address::hours] = bin2bcd(dt.hours);
-            data[reg_address::day] = dt.day;
-            data[reg_address::date] = bin2bcd(dt.date);
-            data[reg_address::month_century] = bin2bcd(dt.month);
-            data[reg_address::year] = bin2bcd(static_cast<uint8_t>(dt.year - 2000));
+            auto &me = *this;
+            me[reg_address::seconds] = bin2bcd(dt.seconds);
+            me[reg_address::minutes] = bin2bcd(dt.minutes);
+            me[reg_address::hours] = bin2bcd(dt.hours);
+            me[reg_address::day] = dt.day;
+            me[reg_address::date] = bin2bcd(dt.date);
+            me[reg_address::month_century] = bin2bcd(dt.month);
+            me[reg_address::year] = bin2bcd(static_cast<uint8_t>(dt.year - 2000));
         }
 
         float temperature() {
@@ -76,12 +78,12 @@ namespace zoal { namespace ic {
             return (float) msb + ((lsb >> 6u) * 0.25f);
         }
 
-        uint8_t operator[](uint8_t addr) const {
-            return data[addr];
+        uint8_t operator[](reg_address addr) const {
+            return data[static_cast<uintptr_t>(addr)];
         }
 
-        volatile uint8_t &operator[](uint8_t addr) {
-            return data[addr];
+        volatile uint8_t &operator[](reg_address addr) {
+            return data[static_cast<uintptr_t>(addr)];
         }
 
         void update() {
@@ -97,7 +99,7 @@ namespace zoal { namespace ic {
         }
 
     private:
-        volatile uint8_t data[data_size] = {0};
+        volatile uint8_t data[data_size];
         uint32_t update_mask{0};
 
         static uint8_t bcd2bin(uint8_t value) {
