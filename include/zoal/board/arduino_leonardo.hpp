@@ -40,7 +40,7 @@ namespace zoal {
 	};
 
 #if defined(F_CPU)
-	typedef arduino_leonardo<F_CPU> pcb;
+	using pcb = arduino_leonardo<F_CPU>;
 #endif
 }
 

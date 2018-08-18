@@ -10,10 +10,10 @@ namespace zoal { namespace ic {
 		class D4, class D5, class D6, class D7>
 	class hd44780_interface_4bit {
 	public:
-		typedef Tools tools;
-		typedef typename tools::api api;
-		typedef typename tools::delay delay;
-		typedef typename api::chain chain;
+		using tools = Tools;
+		using api = typename tools::api;
+		using delay = typename tools::delay;
+		using chain = typename api::chain;
 
 		static constexpr uint8_t bit_mode = 4;
 
@@ -154,7 +154,7 @@ namespace zoal { namespace ic {
 	template<class Interface, class AddressSelector>
 	class hd44780 {
 	public:
-		typedef typename Interface::tools::delay delay;
+		using delay = typename Interface::tools::delay;
 
 		enum : uint8_t {
 			CmdClearDisplay = 0x01,
@@ -166,7 +166,7 @@ namespace zoal { namespace ic {
 			CmdSetDDRAMAddr = 0x80
 		};
 
-		typedef hd44780<Interface, AddressSelector> Class;
+		using Class = hd44780<Interface, AddressSelector>;
 		
 		hd44780() = delete;
 

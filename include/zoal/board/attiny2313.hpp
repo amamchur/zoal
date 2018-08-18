@@ -12,7 +12,7 @@ namespace zoal {
     };
 
 #if defined(F_CPU)
-    typedef attiny2313<F_CPU> pcb;
+    using pcb = attiny2313<F_CPU>;
 #endif
 }
 

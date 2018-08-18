@@ -47,7 +47,7 @@ namespace zoal { namespace gpio { namespace stm32f3 {
     template<uintptr_t BaseAddr, class RCController, uint32_t RCCMask>
     class spi_controller {
     public:
-        typedef spi_controller<BaseAddr, RCController, RCCMask> Class;
+        using Class = spi_controller<BaseAddr, RCController, RCCMask>;
 
         spi_controller() = delete;
 
@@ -89,7 +89,7 @@ namespace zoal { namespace gpio { namespace stm32f3 {
     template<class Ctrl, uint8_t MSBF = 1, uint8_t Mode = 0>
     class concrete_spi {
     public:
-        typedef Ctrl SPIController;
+        using SPIController = Ctrl;
 
         void inline begin() {
             SPIController::enable();
@@ -124,15 +124,15 @@ namespace zoal { namespace gpio { namespace stm32f3 {
     template<class Ctrl>
     class spi {
     public:
-        typedef concrete_spi<Ctrl, 1, 0> MSBF_MODE_0;
-        typedef concrete_spi<Ctrl, 1, 1> MSBF_MODE_1;
-        typedef concrete_spi<Ctrl, 1, 2> MSBF_MODE_2;
-        typedef concrete_spi<Ctrl, 1, 3> MSBF_MODE_3;
+        using MSBF_MODE_0 = concrete_spi<Ctrl, 1, 0>;
+        using MSBF_MODE_1 = concrete_spi<Ctrl, 1, 1>;
+        using MSBF_MODE_2 = concrete_spi<Ctrl, 1, 2>;
+        using MSBF_MODE_3 = concrete_spi<Ctrl, 1, 3>;
 
-        typedef concrete_spi<Ctrl, 0, 0> LSBF_MODE_0;
-        typedef concrete_spi<Ctrl, 0, 1> LSBF_MODE_1;
-        typedef concrete_spi<Ctrl, 0, 2> LSBF_MODE_2;
-        typedef concrete_spi<Ctrl, 0, 3> LSBF_MODE_3;
+        using LSBF_MODE_0 = concrete_spi<Ctrl, 0, 0>;
+        using LSBF_MODE_1 = concrete_spi<Ctrl, 0, 1>;
+        using LSBF_MODE_2 = concrete_spi<Ctrl, 0, 2>;
+        using LSBF_MODE_3 = concrete_spi<Ctrl, 0, 3>;
     };
 }}}
 

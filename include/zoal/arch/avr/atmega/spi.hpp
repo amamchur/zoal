@@ -16,7 +16,7 @@ namespace zoal { namespace arch { namespace avr {
             SPI2Xx = 0,
         };
 
-        typedef base_spi<MISO, MISO, SCLK, SS> Class;
+        using self_type = base_spi<MISO, MISO, SCLK, SS>;
 
         static constexpr uintptr_t SPCRx = 0;
         static constexpr uintptr_t SPSRx = 1;
@@ -48,7 +48,7 @@ namespace zoal { namespace arch { namespace avr {
     template<class MOSI, class MISO, class SCLK, class SS, uint8_t Mode>
     class msbf_spi : public base_spi<MOSI, MISO, SCLK, SS> {
     public:
-        typedef base_spi<MOSI, MISO, SCLK, SS> Base;
+        using base_type = base_spi<MOSI, MISO, SCLK, SS>;
 
         template<class T>
         static T inline transfer(T data) {
@@ -56,27 +56,27 @@ namespace zoal { namespace arch { namespace avr {
             uint8_t i = sizeof(T) * 8;
             do {
                 i -= 8;
-                result |= Base::transfer_byte((data >> i) & 0xFF) << i;
+                result |= base_type::transfer_byte((data >> i) & 0xFF) << i;
             } while (i != 0);
             return result;
         }
 
         static void setup() {
             zoal::utils::memory_segment<uint8_t, 0x4C> m8;
-            m8[Base::SPCRx] = static_cast<uint8_t>(1 << Base::SPEx | 1 << Base::MSTRx | Mode);
-            m8[Base::SPSRx] = 1 << Base::SPI2Xx;
+            m8[base_type::SPCRx] = static_cast<uint8_t>(1 << base_type::SPEx | 1 << base_type::MSTRx | Mode);
+            m8[base_type::SPSRx] = 1 << base_type::SPI2Xx;
         }
     };
 
     template<class MOSI, class MISO, class SCLK, class SS, uint8_t Mode>
     class lsbf_spi : public base_spi<MOSI, MISO, SCLK, SS> {
     public:
-        typedef base_spi<MOSI, MISO, SCLK, SS> Base;
+        using base_type = base_spi<MOSI, MISO, SCLK, SS>;
 
         static void setup() {
             zoal::utils::memory_segment<uint8_t, 0x4C> m8;
-            m8[Base::SPCRx] = static_cast<uint8_t>(1 << Base::SPEx | 1 << Base::MSTRx | 1 << Base::DORDx | Mode);
-            m8[Base::SPSRx] = 1 << Base::SPI2Xx;
+            m8[base_type::SPCRx] = static_cast<uint8_t>(1 << base_type::SPEx | 1 << base_type::MSTRx | 1 << base_type::DORDx | Mode);
+            m8[base_type::SPSRx] = 1 << base_type::SPI2Xx;
         }
 
         template<class T>
@@ -86,7 +86,7 @@ namespace zoal { namespace arch { namespace avr {
             uint8_t j = sizeof(T) * 8;
             do {
                 i += 8;
-                result = Base::transfer_byte((data >> i) & 0xFF) << i;
+                result = base_type::transfer_byte((data >> i) & 0xFF) << i;
             } while (i != j);
             return result;
         }

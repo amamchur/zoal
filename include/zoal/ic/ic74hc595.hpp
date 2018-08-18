@@ -10,7 +10,7 @@ namespace zoal { namespace ic {
     template<class DS, class STCP, class SHCP>
     class ic74hc595 {
     public:
-        typedef ic74hc595<DS, STCP, SHCP> self_type;
+        using self_type = ic74hc595<DS, STCP, SHCP>;
 
         class transaction {
         public:

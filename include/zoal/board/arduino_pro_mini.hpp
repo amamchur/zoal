@@ -7,12 +7,12 @@ namespace zoal { namespace board {
     template<uint32_t Frequency>
     class arduino_pro_mini : public board::arduino_atmegaxx8<Frequency> {
     public:
-        // 	typedef mcu::c6 	BA06;
-        // 	typedef mcu::c7 	BA07;
+        // 	using BA06 = mcu::c6 ;
+        // 	using BA07 = mcu::c7 ;
     };
 
 #if defined(F_CPU)
-    typedef arduino_pro_mini<F_CPU> pcb;
+    using pcb = arduino_pro_mini<F_CPU>;
 #endif
 }}
 

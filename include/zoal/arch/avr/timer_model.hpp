@@ -115,7 +115,7 @@ namespace zoal { namespace arch { namespace avr {
     template<>
     class timer8_model<mcu_type::atmega> {
     public:
-        typedef uint8_t word;
+        using word = uint8_t;
 
         static constexpr uintptr_t TCCRxA = 0;
         static constexpr uintptr_t TCCRxB = 1;
@@ -138,7 +138,7 @@ namespace zoal { namespace arch { namespace avr {
     template<>
     class timer8_model<mcu_type::attiny13> {
     public:
-        typedef uint8_t word;
+        using word = uint8_t;
 
         static constexpr uintptr_t OCRxB = 0;
         static constexpr uintptr_t TCCRxA = 6;
@@ -161,7 +161,7 @@ namespace zoal { namespace arch { namespace avr {
     template<>
     class timer8_model<mcu_type::attiny2313> {
     public:
-        typedef uint8_t word;
+        using word = uint8_t;
 
         static constexpr uintptr_t TCCRxA = 0;
         static constexpr uintptr_t TCNTx = 2;
@@ -188,7 +188,7 @@ namespace zoal { namespace arch { namespace avr {
     template<>
     class timer16_model<mcu_type::atmega> {
     public:
-        typedef uint16_t Word;
+        using word = uint16_t;
 
         static constexpr uintptr_t TCCRxA = 0;
         static constexpr uintptr_t TCCRxB = 1;
@@ -218,7 +218,7 @@ namespace zoal { namespace arch { namespace avr {
     template<>
     class timer16_model<mcu_type::attiny2313> {
     public:
-        typedef uint16_t Word;
+        using word = uint16_t;
 
         static constexpr uintptr_t ICRx = 0;
         static constexpr uintptr_t OCRxB = 4;

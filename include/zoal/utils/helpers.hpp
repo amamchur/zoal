@@ -16,19 +16,19 @@ namespace zoal { namespace utils {
 
     template<class T, class U>
     struct optional_type {
-        typedef T type;
+        using type = T;
     };
 
     template<class U>
     struct optional_type<void, U> {
-        typedef U type;
+        using type = U;
     };
 
     template<class First, class ... Rest>
     class pin_count {
     public:
-        typedef pin_count<Rest...> Other;
-        static constexpr auto value = First::not_pin ? 0 : 1 + Other::value;
+        using other = pin_count<Rest...>;
+        static constexpr auto value = First::not_pin ? 0 : 1 + other::value;
 
     };
 

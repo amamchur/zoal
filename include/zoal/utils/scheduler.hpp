@@ -111,8 +111,6 @@ namespace zoal { namespace utils {
 
     template<class Token>
     struct timeout_function {
-        typedef void (*F)(Token);
-
         template<class T>
         static void invoke(const T &item) {
             item.handler(item.token);
@@ -121,8 +119,6 @@ namespace zoal { namespace utils {
 
     template<>
     struct timeout_function<void> {
-        typedef void (*F)();
-
         template<class T>
         static void invoke(const T &item) {
             item.handler();
@@ -134,7 +130,7 @@ namespace zoal { namespace utils {
     public:
         using TF = timeout_function<Token>;
         using base_type = base_scheduler<counter, Capacity, typename timeout_function<Token>::F, Token>;
-        typedef typename base_type::item_type item;
+        using item = typename base_type::item_type;
 
         void handle() {
             this->base_type::template handle<function_scheduler>(*this);
@@ -147,8 +143,6 @@ namespace zoal { namespace utils {
 
     template<class Class, class Token>
     struct timeout_method {
-        typedef void (Class::*M)(Token);
-
         template<class T>
         static void invoke(Class *c, const T &item) {
             (c->*item.handler)(item.token);
@@ -157,7 +151,7 @@ namespace zoal { namespace utils {
 
     template<class Class>
     struct timeout_method<Class, void> {
-        typedef void (Class::*M)();
+        using method_type = void (Class::*)();
 
         template<class T>
         static void invoke(Class *c, const T &item) {
@@ -166,10 +160,10 @@ namespace zoal { namespace utils {
     };
 
     template<class T, class Counter, size_t Capacity, class Token>
-    class method_scheduler : public base_scheduler<Counter, Capacity, typename timeout_method<T, Token>::M, Token> {
+    class method_scheduler : public base_scheduler<Counter, Capacity, typename timeout_method<T, Token>::method_type, Token> {
     public:
         using timeout_method_type = timeout_method<T, Token>;
-        using base_type = base_scheduler<Counter, Capacity, typename timeout_method<T, Token>::M, Token>;
+        using base_type = base_scheduler<Counter, Capacity, typename timeout_method<T, Token>::method_type, Token>;
         using item = typename base_type::item_type;
 
         method_scheduler(T *obj) : instance(obj) {

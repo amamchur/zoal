@@ -37,11 +37,11 @@ namespace zoal { namespace ic {
     template<uint32_t Frequency, class Timing>
     class ws2812_code_cycles {
     public:
-        static constexpr float ns_per_cycle = 1000.0f / (Frequency / 1000000);
-        static constexpr int32_t th_0_ns = Timing::th_0_ns / ns_per_cycle;
-        static constexpr int32_t tl_0_ns = Timing::tl_0_ns / ns_per_cycle;
-        static constexpr int32_t tl_1_ns = Timing::tl_1_ns / ns_per_cycle;
-        static constexpr int32_t th_1_ns = Timing::th_1_ns / ns_per_cycle;
+        static constexpr double ns_per_cycle = 1000.0f / (Frequency / 1000000.0f);
+        static constexpr int32_t th_0_nop = Timing::th_0_ns / ns_per_cycle;
+        static constexpr int32_t tl_0_nop = Timing::tl_0_ns / ns_per_cycle;
+        static constexpr int32_t tl_1_nop = Timing::tl_1_ns / ns_per_cycle;
+        static constexpr int32_t th_1_nop = Timing::th_1_ns / ns_per_cycle;
     };
 
     template<class DataPin, uint32_t Frequency, class Timing = timing_ws2812, int8_t OutputOverhead = 2>
@@ -63,20 +63,20 @@ namespace zoal { namespace ic {
             using namespace zoal::utils;
 
             data_pin::high();
-            nop<cycles::th_0_ns - out_overhead>::place();
+            nop<cycles::th_0_nop - out_overhead>::place();
 
             data_pin::low();
-            nop<cycles::tl_0_ns - out_overhead - call_overhead>::place();
+            nop<cycles::tl_0_nop - out_overhead - call_overhead>::place();
         }
 
         static __attribute__((noinline)) void one() {
             using namespace zoal::utils;
 
             data_pin::high();
-            nop<cycles::th_1_ns - out_overhead>::place();
+            nop<cycles::th_1_nop - out_overhead>::place();
 
             data_pin::low();
-            nop<cycles::tl_1_ns - out_overhead - call_overhead>::place();
+            nop<cycles::tl_1_nop - out_overhead - call_overhead>::place();
         }
     };
 

@@ -9,7 +9,7 @@ namespace zoal { namespace utils {
     template<typename T, volatile T *Pointer>
     class ms_counter {
     public:
-        typedef T value_type;
+        using value_type = T;
         static constexpr volatile T *value_ptr = Pointer;
 
         template<uint32_t Frequency, uint16_t prescale, class timer>
@@ -24,7 +24,7 @@ namespace zoal { namespace utils {
             }
 
             static constexpr uint32_t us_per_overflow = clock_cycles_to_us(prescale * timer_overflow_value);
-            static constexpr uint16_t us_inc = us_per_overflow / 1000;
+            static constexpr uint16_t us_inc = static_cast<const uint16_t>(us_per_overflow / 1000);
             static constexpr uint16_t fraction_inc = static_cast<const uint16_t>(us_per_overflow % 1000);
 
             static inline void increment() {
@@ -49,7 +49,7 @@ namespace zoal { namespace utils {
 
     class null_counter {
     public:
-        typedef void value_type;
+        using value_type = void;
     };
 }}
 

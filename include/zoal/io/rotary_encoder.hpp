@@ -11,7 +11,7 @@ namespace zoal { namespace io {
         direction_2
     };
 
-    typedef enum rotary_state : uint8_t {
+    enum rotary_state : uint8_t {
         rotary_state_0 = 0x00,
         rotary_state_1 = 0x01,
         rotary_state_2 = 0x02,
@@ -24,7 +24,7 @@ namespace zoal { namespace io {
         state_direction_1_event = 1 << 4,
         state_direction_2_event = 1 << 5,
         state_directions_event_mask = state_direction_1_event | state_direction_2_event
-    } rotary_state;
+    };
 
     class rotary_2phase_machine {
     public:

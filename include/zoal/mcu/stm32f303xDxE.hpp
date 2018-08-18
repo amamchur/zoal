@@ -232,7 +232,7 @@ namespace zoal { namespace mcu {
             using type = aggregation_link<port_f, link4>;
         };
 
-        typedef typename aggregator_chain_builder::type gpio_chain;
+        using gpio_chain = typename aggregator_chain_builder::type;
         using api = ::zoal::gpio::base_api<gpio_chain>;
     };
 }}

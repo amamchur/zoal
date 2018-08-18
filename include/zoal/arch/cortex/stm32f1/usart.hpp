@@ -18,7 +18,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
     template<uintptr_t BaseAddr, uintptr_t TxSize, uintptr_t RxSize, class Clock, class IrqCtrl, class TX, class RX>
     class usart : public Clock, public IrqCtrl {
     public:
-        typedef usart<BaseAddr, TxSize, RxSize, Clock, IrqCtrl, TX, RX> Class;
+        using Class = usart<BaseAddr, TxSize, RxSize, Clock, IrqCtrl, TX, RX>;
 
         template<uintptr_t Size>
         using Buffer = typename ::zoal::data::ring_buffer<uint8_t, Size, waitUSART>;

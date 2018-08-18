@@ -10,10 +10,10 @@ namespace zoal { namespace gpio { namespace stm32f3 {
     template<uintptr_t Address, class Clock>
     class port : public Clock {
     public:
-        typedef port<Address, Clock> Class;
+        using Class = port<Address, Clock>;
         static constexpr uintptr_t address = Address;
 
-        typedef uint32_t register_type;
+        using register_type = uint32_t;
 
         static constexpr uintptr_t GPIOx_MODER = 0x00;
         static constexpr uintptr_t GPIOx_OTYPER = 0x04;

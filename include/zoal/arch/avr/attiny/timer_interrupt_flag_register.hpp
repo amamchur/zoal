@@ -8,8 +8,6 @@ namespace zoal { namespace arch { namespace avr {
     template<uintptr_t BaseAddress>
     class timer_interrupt_flag_register {
     public:
-        typedef timer_interrupt_flag_register<BaseAddress> Class;
-
         static constexpr uintptr_t TIFRx = 0;
 
         template<uint8_t Timer>

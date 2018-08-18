@@ -19,9 +19,8 @@
 namespace zoal { namespace arch { namespace avr {
     class atmega_universe {
     private:
-        typedef avr::timer_interrupt_flags_vector<0x35, 6> tifrs;
-        typedef avr::timer_interrupt_mask_vector<0x6E, 6> timrs;
-
+        using tifrs = avr::timer_interrupt_flags_vector<0x35, 6>;
+        using timrs = avr::timer_interrupt_mask_vector<0x6E, 6>;
         using pcs = avr::prescaler_clock_source;
         using pecs = avr::prescaler_and_ext_clock_source;
     public:

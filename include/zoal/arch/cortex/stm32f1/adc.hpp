@@ -28,7 +28,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
 		volatile uint32_t JDR4;
 		volatile uint32_t DR;
 
-		typedef adc<BaseAddress, N, Clock> Class;
+		using Class = adc<BaseAddress, N, Clock>;
 
 		static constexpr uintptr_t Base = BaseAddress;
 		static constexpr uint8_t no = N;

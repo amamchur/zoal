@@ -10,7 +10,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
     template<uintptr_t Address, class Clock>
     class port : public Clock {
     public:
-        typedef uint32_t register_type;
+        using register_type = uint32_t;
 
         static constexpr uintptr_t CRL = 0x00;
         static constexpr uintptr_t CRH = 0x04;

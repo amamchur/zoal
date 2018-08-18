@@ -68,7 +68,7 @@ namespace zoal { namespace arch { namespace avr {
     template<uintptr_t BaseAddress, uintptr_t TxSize, uintptr_t RxSize>
     class usart {
     private:
-        typedef enum UCSRxA_Flags : uint8_t {
+        enum UCSRxA_Flags : uint8_t {
             RXCx = 7,
             TXCx = 6,
             UDREx = 5,
@@ -77,9 +77,9 @@ namespace zoal { namespace arch { namespace avr {
             UPEx = 2,
             U2Xx = 1,
             MPCMx = 0
-        } UCSRxA_Flags;
+        };
 
-        typedef enum UCSRxB_Flags : uint8_t {
+        enum UCSRxB_Flags : uint8_t {
             RXCIEx = 7,
             TXCIEx = 6,
             UDRIEx = 5,
@@ -88,14 +88,12 @@ namespace zoal { namespace arch { namespace avr {
             UCSZx2 = 2,
             RXB8x = 1,
             TXB8x = 0
-        } UCSRxB_Flags;
+        };
     public:
-        typedef zoal::utils::yield<> yield;
+        using yield = zoal::utils::yield<>;
 
         template<uintptr_t Size>
         using buffer = typename ::zoal::data::ring_buffer<uint8_t, Size, yield::place>;
-
-        typedef usart<BaseAddress, TxSize, RxSize> self_type;
 
         static constexpr uintptr_t UCSRxA = 0;
         static constexpr uintptr_t UCSRxB = 1;

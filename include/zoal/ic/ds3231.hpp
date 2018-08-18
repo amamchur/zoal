@@ -10,7 +10,7 @@ namespace zoal { namespace ic {
     template<class I2C, uint8_t Address = 0x68>
     class ds3231 {
     public:
-        typedef ds3231<I2C, Address> self_type;
+        using self_type = ds3231<I2C, Address>;
 
         enum class reg_address : uint8_t {
             seconds = 0x00,

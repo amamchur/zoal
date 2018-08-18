@@ -18,7 +18,7 @@ namespace zoal { namespace io {
 
     template<class Duration, trigger_mode Mode, Duration Holdoff>
     struct samling_trigger {
-        typedef Duration duration_type;
+        using duration_type = Duration;
 
         static constexpr trigger_mode mode = Mode;
         static constexpr Duration holdoff = Holdoff;
@@ -54,7 +54,7 @@ namespace zoal { namespace io {
 
     template<class Duration, uint8_t Level, Duration Holdoff>
     struct trigger {
-        typedef Duration duration_type;
+        using duration_type = Duration;
 
         static constexpr uint8_t level = Level;
         static constexpr Duration holdoff = Holdoff;
@@ -62,7 +62,7 @@ namespace zoal { namespace io {
 
     template<class Duration>
     struct sample {
-        typedef Duration duration_type;
+        using duration_type = Duration;
 
         uint8_t signal;
         duration_type duration;

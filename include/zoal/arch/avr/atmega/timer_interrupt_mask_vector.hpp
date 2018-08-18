@@ -14,8 +14,6 @@ namespace zoal { namespace arch { namespace avr {
             OCIEBx = 2
         };
     public:
-        typedef timer_interrupt_mask_vector<BaseAddress, Count> Class;
-
         template<uint8_t Timer>
         static inline void enable_overflow_interrupt() {
             static_assert(Timer < Count, "Timer index is out of range");

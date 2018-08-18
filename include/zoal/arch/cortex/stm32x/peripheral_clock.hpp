@@ -61,7 +61,7 @@ namespace zoal { namespace stm32x {
     template<class First, class ... Rest>
     class peripheral_option_set {
     public:
-        typedef peripheral_option_set<Rest...> Next;
+        using Next = peripheral_option_set<Rest...>;
 
         static inline void enable() {
             First::enable();
@@ -84,7 +84,7 @@ namespace zoal { namespace stm32x {
     template<class RCCtrl, uint32_t AHBENR>
     class peripheral_clock<RCCtrl, AHBENR, 0, 0> {
     public:
-        typedef RCCtrl RCController;
+        using RCController = RCCtrl;
 
         static inline void enable() {
             RCController::instance()->AHBENR |= AHBENR;
@@ -98,7 +98,7 @@ namespace zoal { namespace stm32x {
     template<class RCCtrl, uint32_t APB1ENR>
     class peripheral_clock<RCCtrl, 0, APB1ENR, 0> {
     public:
-        typedef RCCtrl RCController;
+        using RCController = RCCtrl;
 
         static inline void enable() {
             RCController::instance()->APB1ENR |= APB1ENR;
@@ -112,7 +112,7 @@ namespace zoal { namespace stm32x {
     template<class RCCtrl, uint32_t APB2ENR>
     class peripheral_clock<RCCtrl, 0, 0, APB2ENR> {
     public:
-        typedef RCCtrl RCController;
+        using RCController = RCCtrl;
 
         static inline void enable() {
             RCController::instance()->APB2ENR |= APB2ENR;

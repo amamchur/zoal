@@ -8,7 +8,7 @@ namespace zoal { namespace gpio { namespace stm32f0 {
     template<uintptr_t Address, class RCController, uint32_t RCCMask>
     class port {
     public:
-        typedef uint32_t register_type;
+        using register_type = uint32_t;
 
         static constexpr uintptr_t address = Address;
         static constexpr uint32_t clock_mask = RCCMask;

@@ -13,26 +13,21 @@
 
 #include "templates/uno_lcd_shield.hpp"
 
-using namespace zoal;
-using namespace zoal::gpio;
-using namespace zoal::mcu;
-using namespace zoal::io;
-
 volatile uint32_t milliseconds = 0;
 
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using ms_timer = pcb::mcu::timer0;
+using ms_timer = zoal::pcb::mcu::timer0;
 using prescaler = zoal::utils::prescaler_le<ms_timer, 64>::result;
-using irq_handler = counter::handler <pcb::mcu::frequency, prescaler::value, ms_timer>;
+using irq_handler = counter::handler<zoal::pcb::mcu::frequency, prescaler::value, ms_timer>;
 
-using usart_config = zoal::periph::usart_config<pcb::mcu::frequency, 115200>;
-using usart = pcb::mcu::usart0<32, 8>;
+using usart_config = zoal::periph::usart_config<zoal::pcb::mcu::frequency, 115200>;
+using usart = zoal::pcb::mcu::usart0<32, 8>;
 
 using logger = zoal::utils::plain_logger<usart, zoal::utils::log_level::trace>;
-using tools = utils::tool_set<pcb::mcu, counter, logger>;
+using tools = zoal::utils::tool_set<zoal::pcb::mcu, counter, logger>;
 using delay = tools::delay;
 
-using App = uno_lcd_shield<tools, pcb>;
+using App = uno_lcd_shield<tools, zoal::pcb>;
 using Keypad = App::shield::keypad;
 
 App app;

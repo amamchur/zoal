@@ -40,7 +40,7 @@ namespace zoal {
         using pf01 = typename mcu::pf01;
     };
 
-    typedef stm32f030<72000000> pcb;
+    using pcb = stm32f030<72000000>;
 }
 
 #endif

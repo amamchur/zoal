@@ -8,15 +8,15 @@ namespace zoal { namespace arch { namespace stm32f3 {
     template<uintptr_t Address, uint8_t N, class CommRegs, class Clock>
     class adc : public Clock {
     private:
-        typedef enum A2DC_Flags : uint32_t {
+        enum A2DC_Flags : uint32_t {
             Enable = 0x00000001,
             StartRegularConversion = 0x00000004
-        } A2DC_Flags;
+        };
     public:
         static constexpr uintptr_t ADCx_ISR = 0x00;
         static constexpr uintptr_t ADCx_IER = 0x04;
         static constexpr uintptr_t ADCx_CR = 0x08;
-        static constexpr uintptr_t AD0.Cx_CFGR = 0x0C;
+        static constexpr uintptr_t ADCx_CFGR = 0x0C;
         static constexpr uintptr_t ADCx_SMPR1 = 0x14;
         static constexpr uintptr_t ADCx_SMPR2 = 0x18;
         static constexpr uintptr_t ADCx_TR1 = 0x20;

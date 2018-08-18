@@ -76,15 +76,15 @@ namespace zoal { namespace gpio {
     template<class Mosi, class Clock, uint64_t NoOps = 0>
     class tx_software_spi {
     public:
-        typedef msbf_tx_software_spi<Mosi, Clock, 0, NoOps> msbf0;
-        typedef msbf_tx_software_spi<Mosi, Clock, 0, NoOps> msbf1;
-        typedef msbf_tx_software_spi<Mosi, Clock, 1, NoOps> msbf2;
-        typedef msbf_tx_software_spi<Mosi, Clock, 1, NoOps> msbf3;
+        using msbf0 = msbf_tx_software_spi<Mosi, Clock, 0, NoOps>;
+        using msbf1 = msbf_tx_software_spi<Mosi, Clock, 0, NoOps>;
+        using msbf2 = msbf_tx_software_spi<Mosi, Clock, 1, NoOps>;
+        using msbf3 = msbf_tx_software_spi<Mosi, Clock, 1, NoOps>;
 
-        typedef lsbf_tx_software_spi<Mosi, Clock, 0, NoOps> lsbf0;
-        typedef lsbf_tx_software_spi<Mosi, Clock, 0, NoOps> lsbf1;
-        typedef lsbf_tx_software_spi<Mosi, Clock, 1, NoOps> lsbf2;
-        typedef lsbf_tx_software_spi<Mosi, Clock, 1, NoOps> lsbf3;
+        using lsbf0 = lsbf_tx_software_spi<Mosi, Clock, 0, NoOps>;
+        using lsbf1 = lsbf_tx_software_spi<Mosi, Clock, 0, NoOps>;
+        using lsbf2 = lsbf_tx_software_spi<Mosi, Clock, 1, NoOps>;
+        using lsbf3 = lsbf_tx_software_spi<Mosi, Clock, 1, NoOps>;
     };
 }}
 

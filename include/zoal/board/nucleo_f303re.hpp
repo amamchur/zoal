@@ -42,7 +42,7 @@ namespace zoal {
 		using BUILD_IN_BUTTON = typename mcu::pc13;
 	};
 
-	typedef nucleo_f303re<72000000> pcb;
+	using pcb = nucleo_f303re<72000000>;
 }
 
 #endif

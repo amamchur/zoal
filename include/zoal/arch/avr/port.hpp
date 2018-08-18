@@ -11,14 +11,13 @@ namespace zoal { namespace arch { namespace avr {
     class port {
     public:
         using self_type = port<Address>;
+        using register_type = uint8_t;
 
         static constexpr uintptr_t address = Address;
         static constexpr uintptr_t PINx = 0x00;
         static constexpr uintptr_t DDRx = 0x01;
         static constexpr uintptr_t PORTx = 0x02;
-
-        typedef uint8_t register_type;
-
+        
         static inline void enable() {}
 
         static inline void disable() {

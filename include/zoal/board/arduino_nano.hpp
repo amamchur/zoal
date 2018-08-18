@@ -10,7 +10,7 @@ namespace zoal {
     using arduino_nano = board::arduino_atmegaxx8<Frequency>;
 
 #if defined(F_CPU)
-    typedef arduino_nano<F_CPU> pcb;
+    using pcb = arduino_nano<F_CPU>;
 #endif
 }
 

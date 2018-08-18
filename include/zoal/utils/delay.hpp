@@ -8,8 +8,8 @@ namespace zoal { namespace utils {
     template<class Microcontroller, class Counter>
     class delay {
     public:
-        typedef Microcontroller mcu;
-        typedef typename Counter::value_type counter_value_type;
+        using mcu = Microcontroller;
+        using counter_value_type = typename Counter::value_type;
 
         static void ms(counter_value_type milliseconds) {
             auto value = Counter::now() + milliseconds;

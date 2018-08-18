@@ -5,105 +5,107 @@
 
 namespace zoal { namespace utils {
     template<uint32_t TicksPerOverflow, uint32_t TimerTicksPerPeriod, uint32_t Depth>
-    class PeriodPrecisionCalculator {
+    class period_precision_calculator {
     private:
-        typedef PeriodPrecisionCalculator<TicksPerOverflow - 1, TimerTicksPerPeriod, Depth - 1> next;
+        using next = period_precision_calculator<TicksPerOverflow - 1, TimerTicksPerPeriod, Depth - 1>;
 
-        static constexpr uint32_t CurrentOverflowsPerPeriod = TimerTicksPerPeriod / TicksPerOverflow;
-        static constexpr uint32_t CurrentPrecision = TimerTicksPerPeriod - CurrentOverflowsPerPeriod * TicksPerOverflow;
+        static constexpr uint32_t current_overflows_per_period = TimerTicksPerPeriod / TicksPerOverflow;
+        static constexpr uint32_t current_precision =
+                TimerTicksPerPeriod - current_overflows_per_period * TicksPerOverflow;
 
-        static constexpr uint32_t NextOverflowsPerPeriod = next::OverflowsPerPeriod;
-        static constexpr uint32_t NextPrecision = next::OverflowsCorrectionTicks;
+        static constexpr uint32_t next_overflows_per_period = next::overflows_per_period;
+        static constexpr uint32_t next_precision = next::OverflowsCorrectionTicks;
     public:
-        static constexpr uint32_t OverflowsPerPeriod = (CurrentPrecision < next::Precision)
-                                                       ? CurrentOverflowsPerPeriod
-                                                       : next::OverflowsPerPeriod;
-        static constexpr uint32_t Precision = (CurrentPrecision < next::Precision)
-                                              ? CurrentPrecision
-                                              : next::Precision;
-        static constexpr uint32_t Ticks = (CurrentPrecision < next::Precision)
+        static constexpr uint32_t overflows_per_period = (current_precision < next::precision)
+                                                         ? current_overflows_per_period
+                                                         : next::overflows_per_period;
+        static constexpr uint32_t precision = (current_precision < next::precision)
+                                              ? current_precision
+                                              : next::precision;
+        static constexpr uint32_t ticks = (current_precision < next::precision)
                                           ? TicksPerOverflow
-                                          : next::Ticks;
+                                          : next::ticks;
     };
 
     template<uint32_t TicksPerOverflow, uint32_t TimerTicksPerPeriod>
-    class PeriodPrecisionCalculator<TicksPerOverflow, TimerTicksPerPeriod, 0> {
+    class period_precision_calculator<TicksPerOverflow, TimerTicksPerPeriod, 0> {
     public:
-        static constexpr uint32_t OverflowsPerPeriod = 0xFFFFFFFF;
-        static constexpr uint32_t Ticks = 0xFFFFFFFF;
-        static constexpr uint32_t Precision = 0xFFFFFFFF;
+        static constexpr uint32_t overflows_per_period = 0xFFFFFFFF;
+        static constexpr uint32_t ticks = 0xFFFFFFFF;
+        static constexpr uint32_t precision = 0xFFFFFFFF;
     };
 
-    template<class Timer, uint32_t cycles, uint8_t index, bool final>
-    class PrescalerCalculator {
+    template<class Timer, uint32_t Cycles, uint8_t Index, bool Final>
+    class prescaler_calculator {
     private:
-        typedef typename Timer::ClockSource ClockSource;
-        typedef typename ClockSource::template Prescaler<index> CurrentPrescaler;
+        using clock_source = typename Timer::ClockSource;
+        using current_prescaler = typename clock_source::template Prescaler<Index>;
 
-        static constexpr auto NextIndex = index + 1;
-        static constexpr bool NextFinal = (NextIndex + 1 == ClockSource::Prescalers);
-        typedef PrescalerCalculator<Timer, cycles, index + 1, NextFinal> Next;
+        static constexpr auto next_index = Index + 1;
+        static constexpr bool next_final = (next_index + 1 == clock_source::Prescalers);
+        using Next = prescaler_calculator<Timer, Cycles, Index + 1, next_final>;
 
-        static constexpr auto CyclesPerTimerOverflow = (uint32_t) (1 << Timer::Resolution) * CurrentPrescaler::Value;
-        static constexpr auto TimerOverflow = cycles / CyclesPerTimerOverflow;
-        static constexpr bool Applicable = (cycles < CyclesPerTimerOverflow);
+        static constexpr auto cycles_per_timer_overflow =
+                (uint32_t) (1 << Timer::Resolution) * current_prescaler::Value;
+        static constexpr auto timer_overflow = Cycles / cycles_per_timer_overflow;
+        static constexpr bool applicable = (Cycles < cycles_per_timer_overflow);
     public:
-        static constexpr auto PrescalerIndex = Applicable ? index : Next::PrescalerIndex;
-        typedef typename ClockSource::template Prescaler<PrescalerIndex> Prescaler;
+        static constexpr auto prescaler_index = applicable ? Index : Next::prescaler_index;
+        using prescaler = typename clock_source::template Prescaler<prescaler_index>;
     };
 
-    template<class Timer, uint32_t cycles, uint8_t index>
-    class PrescalerCalculator<Timer, cycles, index, true> {
+    template<class Timer, uint32_t Cycles, uint8_t Index>
+    class prescaler_calculator<Timer, Cycles, Index, true> {
     private:
-        typedef typename Timer::ClockSource ClockSource;
+        using clock_source = typename Timer::clock_source;
     public:
-        typedef typename ClockSource::template Prescaler<index> Prescaler;
-        static constexpr auto PrescalerIndex = index;
+        using prescaler = typename clock_source::template Prescaler<Index>;
+        static constexpr auto prescaler_index = Index;
     };
 
-    template<class T, uint32_t freq, uint32_t periodMicroseconds>
-    class PeriodCalculator {
+    template<class T, uint32_t Frequency, uint32_t PeriodMicroseconds>
+    class period_calculator {
     public:
-        typedef T Timer;
-        typedef typename Timer::Word Type;
+        using timer = T;
+        using word = typename timer::word;
 
-        static constexpr uint32_t CyclesPerMicrosecond = freq / 1000000;
-        static constexpr uint32_t CyclesPerPeriod = periodMicroseconds * CyclesPerMicrosecond;
+        static constexpr uint32_t cycles_per_microsecond = Frequency / 1000000;
+        static constexpr uint32_t cycles_per_period = PeriodMicroseconds * cycles_per_microsecond;
 
-        typedef PrescalerCalculator<Timer, CyclesPerPeriod, 0, false> PrescalerCalc;
-        typedef typename PrescalerCalc::Prescaler Prescaler;
+        using prescaler_calc = prescaler_calculator<timer, cycles_per_period, 0, false>;
+        using prescaler = typename prescaler_calc::prescaler;
 
-        static constexpr uint32_t TimerTicksPerSecond = freq / Prescaler::Value;
-        static constexpr uint32_t TicksPerSecond = freq / Prescaler::Value;
-        static constexpr uint32_t TimerTicksPerPeriod = CyclesPerPeriod / Prescaler::Value;
-        static constexpr uint32_t MaxTicksPerOverflow = 1 << Timer::Resolution;
+        static constexpr uint32_t timer_ticks_per_second = Frequency / prescaler::Value;
+        static constexpr uint32_t ticks_per_second = Frequency / prescaler::Value;
+        static constexpr uint32_t timer_ticks_per_period = cycles_per_period / prescaler::Value;
+        static constexpr uint32_t max_ticks_per_overflow = 1 << timer::Resolution;
 
-        typedef PeriodPrecisionCalculator<MaxTicksPerOverflow, TimerTicksPerPeriod, 128> PrecisionCalculator;
+        using precision_calculator = period_precision_calculator<max_ticks_per_overflow, timer_ticks_per_period, 128>;
 
-        static constexpr uint32_t OverflowsPerPeriod = PrecisionCalculator::OverflowsPerPeriod;
-        static constexpr uint32_t TicksPerOverflow = PrecisionCalculator::Ticks;
-        static constexpr uint32_t Precision = PrecisionCalculator::Precision;
-        static constexpr uint32_t TimerCounterValue = MaxTicksPerOverflow - TicksPerOverflow;
-        static constexpr uint32_t RealPeriod = TicksPerOverflow * OverflowsPerPeriod * Prescaler::Value / CyclesPerMicrosecond;
+        static constexpr uint32_t overflows_per_period = precision_calculator::overflows_per_period;
+        static constexpr uint32_t ticks_per_overflow = precision_calculator::ticks;
+        static constexpr uint32_t precision = precision_calculator::precision;
+        static constexpr uint32_t timer_counter_value = max_ticks_per_overflow - ticks_per_overflow;
+        static constexpr uint32_t real_period = ticks_per_overflow * overflows_per_period * prescaler::Value / cycles_per_microsecond;
 
-        static void initTimer() {
-            Timer::template prescaler<PrescalerCalc::PrescalerIndex>();
-            Timer::counter(TimerCounterValue);
+        static void init_timer() {
+            timer::template prescaler<prescaler_calc::prescaler_index>();
+            timer::counter(timer_counter_value);
         }
 
-        static void updateCounter() {
-            Timer::counter(TimerCounterValue);
+        static void update_counter() {
+            timer::counter(timer_counter_value);
         }
 
-        PeriodCalculator() : overflow(OverflowsPerPeriod) {
+        period_calculator() : overflow(overflows_per_period) {
         }
 
         template<class Callback>
         void handle(Callback callback) {
-            Timer::counter(TimerCounterValue);
+            timer::counter(timer_counter_value);
             overflow--;
             if (overflow == 0) {
-                overflow = OverflowsPerPeriod;
+                overflow = overflows_per_period;
                 callback();
             }
         }
@@ -112,21 +114,21 @@ namespace zoal { namespace utils {
         uint16_t overflow;
     };
 
-    template<class T, uint32_t freq, uint32_t periodMicroseconds, uint16_t prescaler, uint32_t ticksPerOverflow>
+    template<class T, uint32_t Frequency, uint32_t PeriodMicroseconds, uint16_t Prescaler, uint32_t TicksPerOverflow>
     class period_counter {
     public:
-        static constexpr uint32_t CyclesPerMicrosecond = freq / 1000000;
-        static constexpr uint32_t CyclesPerPeriod = periodMicroseconds * CyclesPerMicrosecond;
+        static constexpr uint32_t cycles_per_microsecond = Frequency / 1000000;
+        static constexpr uint32_t cycles_per_period = PeriodMicroseconds * cycles_per_microsecond;
 
-        static constexpr uint32_t TimerTicksPerPeriod = CyclesPerPeriod / prescaler;
-        static constexpr uint32_t CyclesPerOverflow = ticksPerOverflow * prescaler;
+        static constexpr uint32_t timer_ticks_per_period = cycles_per_period / Prescaler;
+        static constexpr uint32_t cycles_per_overflow = TicksPerOverflow * Prescaler;
 
-        static constexpr uint32_t OverflowsPerPeriodLo = TimerTicksPerPeriod / ticksPerOverflow;
-        static constexpr uint32_t OverflowsPerPeriodHi = OverflowsPerPeriodLo + 1;
+        static constexpr uint32_t overflows_per_period_lo = timer_ticks_per_period / TicksPerOverflow;
+        static constexpr uint32_t overflows_per_period_hi = overflows_per_period_lo + 1;
 
-        static constexpr uint32_t DesirablePeriod = periodMicroseconds;
-        static constexpr uint32_t RealPeriodLo = CyclesPerOverflow * OverflowsPerPeriodLo / CyclesPerMicrosecond;
-        static constexpr uint32_t RealPeriodHi = CyclesPerOverflow * OverflowsPerPeriodHi / CyclesPerMicrosecond;
+        static constexpr uint32_t desirable_period = PeriodMicroseconds;
+        static constexpr uint32_t real_period_lo = cycles_per_overflow * overflows_per_period_lo / cycles_per_microsecond;
+        static constexpr uint32_t real_period_hi = cycles_per_overflow * overflows_per_period_hi / cycles_per_microsecond;
     private:
         uint16_t overflow;
     };

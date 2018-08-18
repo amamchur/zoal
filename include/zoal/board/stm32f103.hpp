@@ -9,7 +9,7 @@ namespace zoal {
     template<uint32_t Frequency>
     class stm32f103 {
     public:
-        typedef zoal::mcu::stm32f1xx<Frequency> mcu;
+        using mcu = zoal::mcu::stm32f1xx<Frequency>;
 
         using pa00 = typename mcu::pa00;
         using pa01 = typename mcu::pa01;
@@ -97,7 +97,7 @@ namespace zoal {
         using pe15 = typename mcu::pe15;
     };
 
-    typedef stm32f103<72000000> pcb;
+    using pcb = stm32f103<72000000>;
 }
 
 #endif

@@ -9,10 +9,10 @@ namespace zoal { namespace arch { namespace avr {
     template<class TimerModel, uintptr_t Address, class TIFRs, class TIMRs, class ClkSrc, uint8_t N>
     class timer {
     public:
-        typedef timer<TimerModel, Address, TIFRs, TIMRs, ClkSrc, N> Class;
-        typedef TimerModel model;
-        typedef typename model::word word;
-        typedef ClkSrc clock_source;
+        using self_type = timer<TimerModel, Address, TIFRs, TIMRs, ClkSrc, N>;
+        using model = TimerModel;
+        using word = typename model::word;
+        using clock_source = ClkSrc;
 
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
@@ -69,7 +69,7 @@ namespace zoal { namespace arch { namespace avr {
 
         template<zoal::periph::timer_mode TimerMode>
         static inline void mode() {
-            model::template mode<Class, TimerMode>();
+            model::template mode<self_type, TimerMode>();
         }
 
         static void reset() {

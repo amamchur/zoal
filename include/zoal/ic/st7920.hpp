@@ -13,8 +13,8 @@ namespace zoal { namespace ic {
     public:
         static constexpr uint8_t bit_mode = 8;
 
-        typedef Delay delay;
-        typedef typename SPI::MSBF_MODE_0 spi;
+        using delay = Delay;
+        using spi = typename SPI::MSBF_MODE_0;
 
         static void begin() {
             using namespace zoal::gpio;
@@ -69,8 +69,8 @@ namespace zoal { namespace ic {
     template<class Interface, class AddressSelector>
     class st7920 : public hd44780<Interface, AddressSelector> {
     public:
-        typedef hd44780<Interface, AddressSelector> base_type;
-        typedef typename Interface::delay delay;
+        using base_type = hd44780<Interface, AddressSelector>;
+        using delay = typename Interface::delay;
 
         template<uint8_t v = 0>
         class fill_iterator {

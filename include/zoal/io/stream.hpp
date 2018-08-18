@@ -174,7 +174,7 @@ namespace zoal { namespace io {
 		}
 	};
 
-	typedef cursor_position pos;
+	using pos = cursor_position;
 
 	const stream_value<'\n'> endl;
 	const radix_value<16> hex;

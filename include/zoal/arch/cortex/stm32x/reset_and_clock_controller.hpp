@@ -9,7 +9,7 @@ namespace zoal { namespace arch { namespace stm32x {
     template<uintptr_t Address>
     class reset_and_clock_controller {
     public:
-        typedef reset_and_clock_controller<Address> self_type;
+        using self_type = reset_and_clock_controller<Address>;
 
         static constexpr uintptr_t Base = Address;
 

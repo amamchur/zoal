@@ -45,7 +45,7 @@ namespace zoal { namespace arch { namespace avr {
 
     class i2c_stream {
     public:
-        i2c_stream(void *buffer)
+        explicit i2c_stream(void *buffer)
                 : index(0), length(0), slawr(0) {
             data = (uint8_t *) buffer;
         }
@@ -58,7 +58,7 @@ namespace zoal { namespace arch { namespace avr {
         }
 
         i2c_stream &read(uint8_t address, uint16_t count) {
-            slawr = address << 1 | 1;
+            slawr = static_cast<uint8_t>(address << 1 | 1);
             index = 0;
             length = count;
             return *this;
@@ -96,22 +96,9 @@ namespace zoal { namespace arch { namespace avr {
         uint8_t *data;
     };
 
-    template<uintptr_t BaseAddress, uint8_t BufferSize, class I2CSDA, class I2CSCL>
+    template<uintptr_t Address, uint8_t BufferSize, class I2CSDA, class I2CSCL>
     class i2c {
     private:
-        static void waitI2C() {
-            zoal::utils::interrupts enableInterrupts(true);
-            zoal::utils::nop<1>::place();
-        }
-
-    public:
-        typedef zoal::utils::yield<> yield;
-
-        template<uintptr_t Size>
-        using Buffer = typename ::zoal::data::ring_buffer<uint8_t, Size, yield::place>;
-
-        typedef i2c<BaseAddress, BufferSize, I2CSDA, I2CSCL> Class;
-
         static constexpr uintptr_t TWBRx = 0;
         static constexpr uintptr_t TWSRx = 1;
         static constexpr uintptr_t TWARx = 2;
@@ -142,7 +129,13 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uint8_t TWWCx = 3;
         static constexpr uint8_t TWENx = 2;
         static constexpr uint8_t TWIEx = 0;
+    public:
+        using yield = zoal::utils::yield<>;
 
+        template<uintptr_t Size>
+        using ring_buffer = typename ::zoal::data::ring_buffer<uint8_t, Size, yield::place>;
+
+        using self_type = i2c<Address, BufferSize, I2CSDA, I2CSCL>;
 
         static uint8_t buffer[BufferSize];
         static i2c_stream stream_;
@@ -257,7 +250,7 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, BaseAddress> mem;
+        static zoal::utils::memory_segment<uint8_t, Address> mem;
     };
 
     template<uintptr_t Address, uint8_t BufferSize, class I2CSDA, class I2CSCL>

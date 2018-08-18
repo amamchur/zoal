@@ -75,33 +75,33 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uint8_t external_clocks = 2;
 
         template<uint8_t Index, class Dummy = void>
-        struct PrescalerMode {
+        struct prescaler_mode {
             static constexpr uint16_t value = 0;
             static constexpr uint8_t mask = 0x00;
             static_assert(Index < prescaler_modes, "Prescaler mode index is out of range");
         };
         template<class Dummy>
-        struct PrescalerMode<0, Dummy> {
+        struct prescaler_mode<0, Dummy> {
             static constexpr uint16_t value = 0x0001;
             static constexpr uint8_t mask = 0x01;
         };
         template<class Dummy>
-        struct PrescalerMode<1, Dummy> {
+        struct prescaler_mode<1, Dummy> {
             static constexpr uint16_t value = 0x0008;
             static constexpr uint8_t mask = 0x02;
         };
         template<class Dummy>
-        struct PrescalerMode<2, Dummy> {
+        struct prescaler_mode<2, Dummy> {
             static constexpr uint16_t value = 0x0040;
             static constexpr uint8_t mask = 0x03;
         };
         template<class Dummy>
-        struct PrescalerMode<3, Dummy> {
+        struct prescaler_mode<3, Dummy> {
             static constexpr uint16_t value = 0x0100;
             static constexpr uint8_t mask = 0x04;
         };
         template<class Dummy>
-        struct PrescalerMode<4, Dummy> {
+        struct prescaler_mode<4, Dummy> {
             static constexpr uint16_t value = 0x0400;
             static constexpr uint8_t mask = 0x05;
         };

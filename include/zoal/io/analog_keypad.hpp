@@ -11,12 +11,12 @@ namespace zoal { namespace io {
     public:
         static constexpr auto button_count = Count;
 
-        typedef uint16_t button_value_type;
-        typedef Channel channel;
-        typedef typename Tools::counter counter;
-        typedef typename Tools::delay delay;
-        typedef typename Tools::logger logger;
-        typedef typename counter::value_type counter_value_type;
+        using button_value_type = uint16_t;
+        using channel = Channel;
+        using counter = typename Tools::counter;
+        using delay = typename Tools::delay;
+        using logger = typename Tools::logger;
+        using counter_value_type = typename counter::value_type;
 
         analog_keypad() = delete;
 

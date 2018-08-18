@@ -14,37 +14,37 @@ namespace zoal { namespace shields {
     template<class PinA = void, class PinB = void>
     class uno_lcd_shield_config {
     public:
-        typedef PinA calibration_pin_a;
-        typedef PinB calibration_pin_b;
+        using calibration_pin_a = PinA;
+        using calibration_pin_b = PinB;
     };
 
     template<class Tools, class Board, class Cfg = uno_lcd_shield_config<>>
     class uno_lcd_shield {
     public:
-        typedef zoal::ic::hd44780_interface_4bit<Tools,
+        using interface_type = zoal::ic::hd44780_interface_4bit<Tools,
                 typename Board::ard_d08,
                 typename Board::ard_d09,
                 typename Board::ard_d04,
                 typename Board::ard_d05,
                 typename Board::ard_d06,
                 typename Board::ard_d07
-        > interface_type;
+        >;
 
         template<class T, class U>
         using Optional = zoal::utils::optional_type<T, U>;
 
-        typedef typename Optional<typename Cfg::calibration_pin_a, typename Board::ard_d02>::type calibration_pin_a;
-        typedef typename Optional<typename Cfg::calibration_pin_b, typename Board::ard_d03>::type calibration_pin_b;
-        typedef typename Tools::logger logger;
+        using calibration_pin_a = typename Optional<typename Cfg::calibration_pin_a, typename Board::ard_d02>::type;
+        using calibration_pin_b = typename Optional<typename Cfg::calibration_pin_b, typename Board::ard_d03>::type;
+        using logger = typename Tools::logger;
 
-        typedef typename Board::ard_a00_adc analog_channel;
+        using analog_channel = typename Board::ard_a00_adc;
 
-        typedef zoal::ic::hd44780_address_selector<16, 2> address_selector;
-        typedef zoal::ic::hd44780<interface_type, address_selector> lcd;
+        using address_selector = zoal::ic::hd44780_address_selector<16, 2>;
+        using lcd = zoal::ic::hd44780<interface_type, address_selector>;
 
         static constexpr uint8_t button_count = 5;
 
-        typedef zoal::io::analog_keypad<Tools, analog_channel, button_count> keypad;
+        using keypad = zoal::io::analog_keypad<Tools, analog_channel, button_count>;
 
         static void init() {
             keypad::init();

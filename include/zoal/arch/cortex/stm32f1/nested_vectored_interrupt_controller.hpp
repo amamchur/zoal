@@ -10,7 +10,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
     template<uintptr_t Address>
     class nested_vectored_interrupt_controller {
     public:
-        typedef nested_vectored_interrupt_controller<Address> Class;
+        using Class = nested_vectored_interrupt_controller<Address>;
 
         volatile uint32_t ISER[8U];               /*!< Offset: 0x000 (R/W)  Interrupt Set Enable Register */
         volatile uint32_t RESERVED0[24U];

@@ -15,9 +15,9 @@ namespace zoal { namespace arch {
         template<uintptr_t Address>
         using port = typename ::zoal::arch::avr::port<Address>;
 
-        typedef port<0x39> port_a;
-        typedef port<0x36> port_b;
-        typedef port<0x32> port_d;
+        using port_a = port<0x39>;
+        using port_b = port<0x36>;
+        using port_d = port<0x32>;
     };
 }}
 

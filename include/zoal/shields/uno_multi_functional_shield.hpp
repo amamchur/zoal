@@ -10,8 +10,8 @@ namespace zoal { namespace shields {
 	template<class Board, class Tools, void (*ButtonCallback)(uint8_t, ::zoal::io::button_event) = nullptr>
 	class uno_multi_functional_shield_buttons {
 	protected:
-		typedef uno_multi_functional_shield_buttons<Board, Tools, ButtonCallback> self;
-		typedef typename Tools::Counter Counter;
+		using self = uno_multi_functional_shield_buttons<Board, Tools, ButtonCallback>;
+		using Counter = typename Tools::Counter;
 
 		void init_buttons() {
 			button1.begin();
@@ -55,15 +55,15 @@ namespace zoal { namespace shields {
 	template<class Board, class Tools, void (*ButtonCallback)(uint8_t, ::zoal::io::button_event) = nullptr>
 	class uno_multi_functional_shield : public uno_multi_functional_shield_buttons<Board, Tools, ButtonCallback> {
 	public:
-		typedef uno_multi_functional_shield<Board, Tools, ButtonCallback> self;
-		typedef typename Tools::Delay delay;
+		using self = uno_multi_functional_shield<Board, Tools, ButtonCallback>;
+		using delay = typename Tools::Delay;
 
-		typedef ::zoal::gpio::active_low<typename Board::BD13> Led1;
-		typedef ::zoal::gpio::active_low<typename Board::BD12> Led2;
-		typedef ::zoal::gpio::active_low<typename Board::BD11> Led3;
-		typedef ::zoal::gpio::active_low<typename Board::BD10> Led4;
-		typedef ::zoal::gpio::active_drain<typename Board::BD03> Beeper;
-		typedef ::zoal::ic::ic74hc595<typename Board::BD08, typename Board::BD04, typename Board::BD07> Display;
+		using Led1 = ::zoal::gpio::active_low<typename Board::BD13>;
+		using Led2 = ::zoal::gpio::active_low<typename Board::BD12>;
+		using Led3 = ::zoal::gpio::active_low<typename Board::BD11>;
+		using Led4 = ::zoal::gpio::active_low<typename Board::BD10>;
+		using beeper = ::zoal::gpio::active_drain<typename Board::BD03>;
+		using Display = ::zoal::ic::ic74hc595<typename Board::BD08, typename Board::BD04, typename Board::BD07>;
 
 		void begin() {
 			this->init_buttons();
@@ -72,15 +72,15 @@ namespace zoal { namespace shields {
 			Led2::off();
 			Led3::off();
 			Led4::off();
-			Beeper::off();
+			beeper::off();
 
 			segmentDisplay.begin();
 		}
 
 		void beep(uint32_t duration = 50) {
-			Beeper::on();
+			beeper::on();
 			delay::milliseconds(duration);
-			Beeper::off();
+			beeper::off();
 		}
 
 		void hexToSegments(uint16_t value) {

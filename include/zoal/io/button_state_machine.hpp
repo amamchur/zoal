@@ -13,7 +13,7 @@ namespace zoal { namespace io {
 		up
 	};
 
-	typedef enum button_state : uint8_t {
+    enum button_state : uint8_t {
 		button_state_current = 1 << 0,
         button_state_next = 1 << 1,
         button_state_trigger_down = 1 << 2,
@@ -23,7 +23,7 @@ namespace zoal { namespace io {
         button_state_pressing = 1 << 5,
         button_state_debounce = 1 << 6,
         button_state_pressed = 1 << 7
-	} button_state;
+	};
 		
 	class button_state_machine {
 	public:

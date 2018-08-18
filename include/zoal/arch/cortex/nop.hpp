@@ -4,24 +4,24 @@
 #include <stdint.h>
 
 namespace zoal { namespace utils {
-    template<int32_t count>
+    template<int32_t Count>
     struct nop {
         static void place() {
-            if (count < 0) {
+            if (Count < 0) {
                 return;
             }
 
-            nop<count & 0x001>::place();
-            nop<count & 0x002>::place();
-            nop<count & 0x004>::place();
-            nop<count & 0x008>::place();
-            nop<count & 0x010>::place();
-            nop<count & 0x020>::place();
-            nop<count & 0x040>::place();
-            nop<count & 0x080>::place();
-            nop<count & 0x100>::place();
-            nop<count & 0x200>::place();
-            nop<count & 0x400>::place();
+            nop<Count & 0x001>::place();
+            nop<Count & 0x002>::place();
+            nop<Count & 0x004>::place();
+            nop<Count & 0x008>::place();
+            nop<Count & 0x010>::place();
+            nop<Count & 0x020>::place();
+            nop<Count & 0x040>::place();
+            nop<Count & 0x080>::place();
+            nop<Count & 0x100>::place();
+            nop<Count & 0x200>::place();
+            nop<Count & 0x400>::place();
         }
     };
 
