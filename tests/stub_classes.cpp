@@ -6,14 +6,14 @@
 using namespace zoal::gpio;
 using namespace zoal::utils;
 
-TEST(StubClasses, NullPin_Should_Be_Callable) {  /* NOLINT */
+TEST(StubClasses, null_pin_should_be_callable) {  /* NOLINT */
     null_pin::low();
     null_pin::high();
     null_pin::toggle();
     null_pin::write(0);
     null_pin::mode<pin_mode::output>();
     {
-        auto value = same_type<null_pin::port, null_port>::value;
+        auto value = is_same<null_pin::port, null_port>::value;
         EXPECT_TRUE(value);
     }
     {
@@ -34,7 +34,7 @@ TEST(StubClasses, NullPin_Should_Be_Callable) {  /* NOLINT */
     }
 }
 
-TEST(StubClasses, NullPort_Should_Be_Callable) {  /* NOLINT */
+TEST(StubClasses, null_port_should_be_callable) {  /* NOLINT */
     null_port::enable();
     null_port::disable();
 

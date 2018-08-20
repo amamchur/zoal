@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #include "../gpio/pin_mode.hpp"
 
@@ -147,7 +148,7 @@ namespace zoal { namespace ic {
         void print(Formatter formatter, double value, uint8_t precition = 2) {
             double int_part = 0.0;
             double fract_part = modf(value, &int_part);
-            print(formatter, (long) int_part);
+            print_int(formatter, (int32_t) int_part);
 
             if (fract_part < 0) {
                 fract_part = -fract_part;
@@ -207,7 +208,7 @@ namespace zoal { namespace ic {
         }
 
         void push_rows(const uint8_t *rows) {
-            for (int i = Devices - 1; i > 0; i--) {
+            for (ptrdiff_t i = Devices - 1; i > 0; i--) {
                 for (int j = 0; j < 8; j++) {
                     data[i][j] = data[i - 1][j];
                 }
@@ -235,7 +236,7 @@ namespace zoal { namespace ic {
         void push_column_msb(uint8_t column) {
             for (int j = 0; j < 8; j++) {
                 auto carry_flag = static_cast<uint8_t>((column >> j) & 1);
-                for (int i = Devices - 1; i >= 0; i--) {
+                for (ptrdiff_t i = Devices - 1; i >= 0; i--) {
                     auto tmp = static_cast<uint8_t>(data[i][j] & 1);
                     data[i][j] >>= 1;
                     data[i][j] |= carry_flag << 7;
@@ -247,7 +248,7 @@ namespace zoal { namespace ic {
         void push_column_lsb(uint8_t column) {
             for (int j = 0; j < 8; j++) {
                 auto carry_flag = static_cast<uint8_t>((column >> j) & 1);
-                for (int i = 0; i < Devices; i++) {
+                for (auto i = 0; i < Devices; i++) {
                     uint8_t tmp = data[i][j] >> 7;
                     data[i][j] <<= 1;
                     data[i][j] |= carry_flag;
@@ -306,7 +307,7 @@ namespace zoal { namespace ic {
             size_t times;
             uint16_t cmd;
 
-            repeat(uint16_t times, uint16_t cmd) : times(times), cmd(cmd) {}
+            repeat(size_t times, uint16_t cmd) : times(times), cmd(cmd) {}
         };
 
         class transaction {
@@ -349,7 +350,7 @@ namespace zoal { namespace ic {
             for (int row = 0; row < 8; row++) {
                 CS::low();
                 auto cmd = row + 1;
-                for (int device = Devices - 1; device >= 0; device--) {
+                for (ptrdiff_t device = Devices - 1; device >= 0; device--) {
                     spi::transfer(cmd);
                     spi::transfer(matrix.data[device][row]);
                 }

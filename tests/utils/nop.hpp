@@ -1,15 +1,20 @@
-#pragma once
+#ifndef ZOAL_TEST_UTILS_NOP_HPP
+#define ZOAL_TEST_UTILS_NOP_HPP
 
-namespace Tests { namespace Utils {
-    template<uint64_t mcuFreq, uint64_t count>
-    struct NoopCycles {
-        static constexpr int64_t NanoSecPerClock = (1000000 / (mcuFreq / 1000));
-        static int64_t Overhead;
+#include <chrono>
+#include <iostream>
+#include <stdint.h>
+
+namespace tests { namespace utils {
+    template<uint64_t Frequency, uint64_t Count>
+    struct nop {
+        static constexpr int64_t ns_per_clock = (1000000 / (Frequency / 1000));
+        static int64_t overhead;
 
         static inline void place() {
             auto start = std::chrono::high_resolution_clock::now();
             decltype(start) finish;
-            auto pause = NanoSecPerClock * count - Overhead;
+            auto pause = ns_per_clock * Count - overhead;
             long long diff = 0;
             while (diff < pause) {
                 finish = std::chrono::high_resolution_clock::now();
@@ -17,7 +22,7 @@ namespace Tests { namespace Utils {
             }
         }
 
-        static void measureOverhead() {
+        static void measure_overhead() {
             auto start = std::chrono::high_resolution_clock::now();
             auto finish = std::chrono::high_resolution_clock::now();
             std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count();
@@ -30,10 +35,10 @@ namespace Tests { namespace Utils {
                 sum += std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count();
             }
 
-            Overhead = sum / times;
+            overhead = sum / times;
         }
 
-        static void printOverhead() {
+        static void print_overhead() {
             auto start = std::chrono::high_resolution_clock::now();
             auto finish = std::chrono::high_resolution_clock::now();
             auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count();
@@ -42,5 +47,7 @@ namespace Tests { namespace Utils {
     };
 
     template<uint64_t mcuFreq, uint64_t count>
-    int64_t NoopCycles<mcuFreq, count>::Overhead = 0;
+    int64_t nop<mcuFreq, count>::overhead = 0;
 }}
+
+#endif

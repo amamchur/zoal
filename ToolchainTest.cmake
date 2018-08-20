@@ -6,11 +6,18 @@ endfunction(add_mcu_executable)
 
 function(add_zoal_tests)
     add_subdirectory(tests/lib/googletest)
-    file(GLOB_RECURSE TEST_CASES_FILES tests/*.cpp)
-
+    set(TEST_CASES_FILES
+            tests/atmega_48_88_168_328.cpp
+            tests/atmega_16_32_U4.cpp
+            tests/atmega_640_1280_2560.cpp
+            tests/static_assertion.cpp
+            tests/stub_classes.cpp
+            tests/scheduler.cpp
+            )
     add_executable(zoal_tests
-            tests/utils/McuMemory.hpp
-            tests/utils/NoopCycles.hpp
+            tests/utils/mcu_memory.hpp
+            tests/utils/nop.hpp
+            tests/utils/ms_counter.cpp
             ${TEST_CASES_FILES}
             )
     target_link_libraries(zoal_tests PRIVATE gtest gtest_main)

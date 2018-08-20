@@ -1,5 +1,5 @@
-#ifndef TESTS_UTILS_MCU_MEMORY_HPP
-#define TESTS_UTILS_MCU_MEMORY_HPP
+#ifndef ZOAL_TESTS_UTILS_MCU_MEMORY_HPP
+#define ZOAL_TESTS_UTILS_MCU_MEMORY_HPP
 
 #include <cstdint>
 #include <cstring>
@@ -8,86 +8,72 @@
 #include <iostream>
 #include <functional>
 
-namespace Tests { namespace Utils {
+namespace tests { namespace utils {
     typedef struct {
         uint8_t registers[0x20];
         uint8_t registersIO[0x40];
         uint8_t extRegistersIO[0x1A0];
     } ATmegaMemory;
 
-    template<class RegType>
-    class RegisterAccessor {
+    template<class RegisterType>
+    class register_accessor {
     public:
-        RegisterAccessor(uint8_t *memory, uintptr_t base, uintptr_t offset)
+        register_accessor(uint8_t *memory, uintptr_t base, uintptr_t offset)
                 : mem(memory), base(base), offset(offset) {
             address = reinterpret_cast<uintptr_t>(mem) + base + offset;
         }
 
-        operator RegType() const {
-            RegType value = getValue();
-            readCallback(address, value);
+        operator RegisterType() const {
+            RegisterType value = getValue();
+            read_callback(address, value);
             return value;
         }
 
-        RegisterAccessor &operator|=(RegType value) {
+        register_accessor &operator|=(RegisterType value) {
             auto oldValue = getValue();
             auto newValue = oldValue | value;
             setValue(newValue);
-            writeCallback(address, oldValue, newValue);
+            write_callback(address, oldValue, newValue);
             return *this;
         }
 
-        RegisterAccessor &operator&=(RegType value) {
+        register_accessor &operator&=(RegisterType value) {
             auto oldValue = getValue();
             auto newValue = oldValue & value;
             setValue(newValue);
-            writeCallback(address, oldValue, newValue);
+            write_callback(address, oldValue, newValue);
             return *this;
         }
 
-        RegisterAccessor &operator^=(RegType value) {
+        register_accessor &operator^=(RegisterType value) {
             auto oldValue = getValue();
             auto newValue = oldValue ^value;
             setValue(newValue);
-            writeCallback(address, oldValue, newValue);
+            write_callback(address, oldValue, newValue);
             return *this;
         }
 
-        RegisterAccessor &operator=(RegType value) {
+        register_accessor &operator=(RegisterType value) {
             auto oldValue = getValue();
             setValue(value);
-            writeCallback(address, oldValue, value);
+            write_callback(address, oldValue, value);
             return *this;
         }
 
-        static void resetCallbacks() {
-            readCallback = [](uintptr_t, RegType) {};
-            writeCallback = [](uintptr_t, RegType, RegType) {};
+        static void reset_callbacks() {
+            read_callback = [](uintptr_t, RegisterType) {};
+            write_callback = [](uintptr_t, RegisterType, RegisterType) {};
         }
 
-        static std::function<void(uintptr_t, RegType)> readCallback;
-        static std::function<void(uintptr_t, RegType, RegType)> writeCallback;
+        static std::function<void(uintptr_t, RegisterType)> read_callback;
+        static std::function<void(uintptr_t, RegisterType, RegisterType)> write_callback;
     private:
-        RegType getValue() const {
-            return *reinterpret_cast<const volatile RegType *>(address);
+        RegisterType getValue() const {
+            return *reinterpret_cast<const volatile RegisterType *>(address);
         }
 
-        void setValue(RegType value) {
-            *reinterpret_cast<volatile RegType *>(address) = value;
-        }
-
-        void printReadAccess(RegType value) const {
-//            using namespace std;
-//            cout.fill('0');
-//            cout << hex << setw(sizeof(RegType) * 2);
-//            cout << "Read : 0x" << (base + offset) << " Value: 0x" << (unsigned) value << std::endl;
-        }
-
-        void printWriteAccess(RegType oldValue, RegType newValue) const {
-//            using namespace std;
-//            cout.fill('0');
-//            cout << hex << setw(sizeof(RegType) * 2);
-//            cout << "Write: 0x" << (base + offset) << " Value: 0x" << (unsigned) value << std::endl;
+        void setValue(RegisterType value) {
+            *reinterpret_cast<volatile RegisterType *>(address) = value;
         }
 
         volatile uint8_t *mem;
@@ -96,21 +82,21 @@ namespace Tests { namespace Utils {
         uintptr_t address;
     };
 
-    template<class RegType>
-    std::function<void(uintptr_t, RegType)>
-            RegisterAccessor<RegType>::readCallback = [](uintptr_t, RegType) {};
+    template<class RegisterType>
+    std::function<void(uintptr_t, RegisterType)>
+            register_accessor<RegisterType>::read_callback = [](uintptr_t, RegisterType) {};
 
-    template<class RegType>
-    std::function<void(uintptr_t, RegType, RegType)>
-            RegisterAccessor<RegType>::writeCallback = [](uintptr_t, RegType, RegType) {};
+    template<class RegisterType>
+    std::function<void(uintptr_t, RegisterType, RegisterType)>
+            register_accessor<RegisterType>::write_callback = [](uintptr_t, RegisterType, RegisterType) {};
 
-    template<class T, uint8_t wordSize = 1>
-    class McuMemory {
+    template<class T, uint8_t WordSize = 1>
+    class mcu_memory {
     public:
         template<class RegType, uintptr_t base>
-        class MemorySegment {
+        class memory_segment {
         public:
-            typedef RegisterAccessor<RegType> Register;
+            typedef register_accessor<RegType> Register;
 
             Register operator[](uintptr_t offset) {
                 return Register(reinterpret_cast<uint8_t *>(&memory), base, offset);
@@ -153,25 +139,25 @@ namespace Tests { namespace Utils {
             size_t position = 0;
             stringstream ss;
             ss.fill('0');
-            ss << hex << setw(wordSize * 2);
+            ss << hex << setw(WordSize * 2);
 
             while (position < sizeof(T)) {
-                int rc = memcmp(mp + position, dp + position, wordSize);
+                int rc = memcmp(mp + position, dp + position, WordSize);
                 if (rc != 0) {
                     ss << hex << "0x" << position << ": 0x";
-                    for (int i = 0; i < wordSize; i++) {
+                    for (int i = 0; i < WordSize; i++) {
                         ss << (int) mp[position + i];
                     }
 
                     ss << " != 0x";
-                    for (int i = 0; i < wordSize; i++) {
+                    for (int i = 0; i < WordSize; i++) {
                         ss << (int) dp[position + i];
                     }
 
                     ss << endl;
                 }
 
-                position += wordSize;
+                position += WordSize;
             }
 
             error = ss.str();
@@ -184,11 +170,11 @@ namespace Tests { namespace Utils {
         static std::string error;
     };
 
-    template<class T, uint8_t wordSize>
-    T McuMemory<T, wordSize>::memory;
+    template<class T, uint8_t WordSize>
+    T mcu_memory<T, WordSize>::memory;
 
-    template<class T, uint8_t wordSize>
-    std::string McuMemory<T, wordSize>::error;
+    template<class T, uint8_t WordSize>
+    std::string mcu_memory<T, WordSize>::error;
 }}
 
 #endif

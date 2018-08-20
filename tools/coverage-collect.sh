@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd ./cmake-build-debug-test/CMakeFiles/MCURDK_TESTS.dir/tests
+cd ./cmake-build-debug-test/CMakeFiles/zoal_tests.dir/tests
 pwd
 
 lcov --capture --directory . --output-file coverage_full.info
