@@ -79,20 +79,8 @@ namespace zoal { namespace mcu {
         template<uintptr_t TxSize, uintptr_t RxSize>
         using usart0 = typename ::zoal::arch::avr::usart<0xC8, TxSize, RxSize>;
 
-        template<class Controller, class Next>
-        using aggregation_link = typename ::zoal::gpio::aggregation_link<Controller, Next>;
-
-        class aggregator_chain_builder {
-        protected:
-            using link0 = aggregation_link<port_b, ::zoal::gpio::terminator>;
-            using link1 = aggregation_link<port_c, link0>;
-            using link2 = aggregation_link<port_d, link1>;
-            using link3 = aggregation_link<port_e, link2>;
-        public:
-            using type = aggregation_link<port_f, link3>;
-        };
-
-        using gpio_chain = typename aggregator_chain_builder::type;
+        using port_chain = typename ::zoal::gpio::chain_builder<port_b, port_c, port_d, port_e, port_f>::chain;
+        using api = ::zoal::gpio::base_api<port_chain>;
     };
 }}
 

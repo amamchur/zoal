@@ -81,20 +81,8 @@ namespace zoal { namespace mcu {
         template<class P, uint8_t Channel>
         using adc_connection = typename ::zoal::periph::adc_connection<P, adc0, Channel>;
 
-        template<class Controller, class Next>
-        using aggregation_link = typename ::zoal::gpio::aggregation_link<Controller, Next>;
-
-        class aggregator_chain_builder {
-        protected:
-            using link0 = aggregation_link<port_b, ::zoal::gpio::terminator>;
-            using link1 = aggregation_link<port_b, link0>;
-            using link2 = aggregation_link<port_d, link1>;
-        public:
-            using type = link2;
-        };
-
-        using gpio_chain = typename aggregator_chain_builder::type;
-        using api = ::zoal::gpio::base_api<gpio_chain>;
+        using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_d>::chain;
+        using api = ::zoal::gpio::base_api<port_chain>;
     };
 }}
 

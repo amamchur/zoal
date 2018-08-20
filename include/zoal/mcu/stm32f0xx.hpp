@@ -145,8 +145,8 @@ namespace zoal { namespace mcu {
             using type = aggregation_link<port_f, link1>;
         };
 
-        using gpio_chain = typename aggregator_chain_builder::type;
-        using api = ::zoal::gpio::base_api<gpio_chain>;
+        using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f>::chain;
+        using api = ::zoal::gpio::base_api<port_chain>;
     };
 }}
 

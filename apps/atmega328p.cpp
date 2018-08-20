@@ -6,6 +6,7 @@
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/prescalers.hpp>
 #include <zoal/utils/logger.hpp>
+#include <zoal/utils/helpers.hpp>
 #include <zoal/ic/max72xx.hpp>
 #include <zoal/io/input_stream.hpp>
 #include <zoal/io/button.hpp>
@@ -26,21 +27,22 @@
 
 volatile uint32_t milliseconds = 0;
 
+using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using ms_timer = zoal::pcb::mcu::timer0;
+using ms_timer = mcu::timer0;
 using prescaler = zoal::utils::prescaler_le<ms_timer, 64>::result;
-using irq_handler = counter::handler<zoal::pcb::mcu::frequency, prescaler::value, ms_timer>;
-using usart_config = zoal::periph::usart_config<zoal::pcb::mcu::frequency, 115200>;
-using usart = zoal::pcb::mcu::usart0<4, 8>;
+using irq_handler = counter::handler<mcu::frequency, prescaler::value, ms_timer>;
+using usart_config = zoal::periph::usart_config<mcu::frequency, 115200>;
+using usart = mcu::usart0<4, 8>;
 using logger = zoal::utils::plain_logger<usart, zoal::utils::log_level::info>;
-using tools = zoal::utils::tool_set<zoal::pcb::mcu, counter, logger>;
+using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using delay = tools::delay;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
 using app1 = multi_function_shield<tools, zoal::pcb>;
 using app2 = blink<tools, zoal::pcb::ard_d13>;
 using app3 = uno_lcd_shield<tools, zoal::pcb>;
 using app4 = usart_output<usart, usart_config, tools, zoal::pcb::ard_d13>;
-using app5 = max72xx<tools, zoal::pcb::mcu::mosi0, zoal::pcb::mcu::sclk0, zoal::pcb::ard_d10>;
+using app5 = max72xx<tools, mcu::mosi0, mcu::sclk0, zoal::pcb::ard_d10>;
 using app6 = ir_remove<zoal::pcb::ard_d10, tools, 25>;
 using app7 = tm1637<tools, zoal::pcb::ard_d10, zoal::pcb::ard_d11>;
 using check = compile_check<app0, app1, app2, app3, app4, app5, app6, app7>;
@@ -62,6 +64,7 @@ using max7219 = zoal::ic::max72xx<sspi, zoal::pcb::ard_d09>;
 zoal::ic::max72xx_data<1> matrix;
 
 int main() {
+
 //    check::check();
 
     initialize();

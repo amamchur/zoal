@@ -218,22 +218,8 @@ namespace zoal { namespace mcu {
         using spi2 = spi<spi_controller<0x40003800, 1>>;
         using spi3 = spi<spi_controller<0x40003c00, 2>>;
 
-        template<class Controller, class Next>
-        using aggregation_link = typename ::zoal::gpio::aggregation_link<Controller, Next>;
-
-        class aggregator_chain_builder {
-        protected:
-            using link0 = aggregation_link<port_a, ::zoal::gpio::terminator>;
-            using link1 = aggregation_link<port_b, link0>;
-            using link2 = aggregation_link<port_c, link1>;
-            using link3 = aggregation_link<port_d, link2>;
-            using link4 = aggregation_link<port_e, link3>;
-        public:
-            using type = aggregation_link<port_f, link4>;
-        };
-
-        using gpio_chain = typename aggregator_chain_builder::type;
-        using api = ::zoal::gpio::base_api<gpio_chain>;
+        using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f>::chain;
+        using api = ::zoal::gpio::base_api<port_chain>;
     };
 }}
 

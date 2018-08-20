@@ -3,6 +3,8 @@
 #ifndef ZOAL_GPIO_Port_ITERATOR_HPP
 #define ZOAL_GPIO_Port_ITERATOR_HPP
 
+#include "../utils/helpers.hpp"
+
 namespace zoal { namespace gpio {
 
     class terminator {
@@ -91,6 +93,21 @@ namespace zoal { namespace gpio {
 
             return *this;
         }
+    };
+
+    template<class First, class ... Rest>
+    class chain_builder {
+    public:
+        static_assert(!zoal::utils::has_duplicates<First, Rest...>::value, "Some port was used twice");
+
+        using next_builder = chain_builder<Rest...>;
+        using chain = aggregation_link<First, typename next_builder::chain>;
+    };
+
+    template<class First>
+    class chain_builder<First> {
+    public:
+        using chain = aggregation_link<First, ::zoal::gpio::terminator>;
     };
 }}
 

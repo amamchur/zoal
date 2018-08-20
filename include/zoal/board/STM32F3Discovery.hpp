@@ -33,8 +33,8 @@ namespace zoal { namespace board {
         using Type = aggregation_link<mcu::port_f, Link4>;
     };
 
-    using gpio_chain = aggregator_chain_builder::Type;
-    using api = ::zoal::gpio::base_api<gpio_chain>;
+    using port_chain = aggregator_chain_builder::Type;
+    using api = ::zoal::gpio::base_api<port_chain>;
 }}
 
 #endif

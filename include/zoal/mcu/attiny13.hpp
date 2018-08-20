@@ -56,17 +56,8 @@ namespace zoal { namespace mcu {
         using pb0_timer0 = pwm_connection<pb0, 0>;
         using pb1_timer0 = pwm_connection<pb1, 1>;
 
-        template<class Controller, class Next>
-        using aggregation_link = typename ::zoal::gpio::aggregation_link<Controller, Next>;
-
-        class aggregator_chain_builder {
-        protected:
-            using link0 = aggregation_link<port_b, ::zoal::gpio::terminator>;
-        public:
-            using type = link0;
-        };
-
-        using gpio_chain = typename aggregator_chain_builder::type;
+        using port_chain = typename ::zoal::gpio::chain_builder<port_b>::chain;
+        using api = ::zoal::gpio::base_api<port_chain>;
     };
 
 #if defined(F_CPU)

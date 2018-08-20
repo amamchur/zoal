@@ -23,7 +23,7 @@ namespace zoal { namespace utils {
 		template <class T, size_t Capacity, class Token = void>
 		using method_scheduler = typename ::zoal::utils::method_scheduler<T, counter, Capacity, Token>;
 
-		using api = ::zoal::gpio::base_api<typename mcu::gpio_chain>;
+		using api = ::zoal::gpio::base_api<typename mcu::port_chain>;
 
 		template <class A, class B>
 		static B remap(A x, A in_min, A in_max, B out_min, B out_max) {

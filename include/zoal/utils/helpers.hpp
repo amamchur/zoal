@@ -4,14 +4,40 @@
 #include <stddef.h>
 
 namespace zoal { namespace utils {
+    template<class T, T v>
+    struct integral_constant {
+        using value_type = T;
+        using type = integral_constant<T, v>;
+
+        static constexpr T value = v;
+
+        constexpr operator T() { return v; }
+    };
+
+    struct false_type : integral_constant<bool, false> {
+    };
+
+    struct true_type : integral_constant<bool, true> {
+    };
+
     template<class T, class U>
-    struct same_type {
-        static constexpr bool value = false;
+    struct is_same : public false_type {
     };
 
     template<class T>
-    struct same_type<T, T> {
-        static constexpr bool value = true;
+    struct is_same<T, T> : public true_type {
+    };
+
+    template<typename T, typename... Rest>
+    struct has_duplicates : false_type {
+    };
+
+    template<typename T, typename First>
+    struct has_duplicates<T, First> : is_same<T, First> {
+    };
+
+    template<typename T, typename First, typename... Rest>
+    struct has_duplicates<T, First, Rest...> : integral_constant<bool, is_same<T, First>::value || has_duplicates<T, Rest...>::value> {
     };
 
     template<class T, class U>
@@ -25,16 +51,13 @@ namespace zoal { namespace utils {
     };
 
     template<class First, class ... Rest>
-    class pin_count {
-    public:
+    struct pin_count {
         using other = pin_count<Rest...>;
         static constexpr auto value = First::not_pin ? 0 : 1 + other::value;
-
     };
 
     template<class First>
-    class pin_count<First> {
-    public:
+    struct pin_count<First> {
         static constexpr auto value = First::not_pin ? 0 : 1;
     };
 

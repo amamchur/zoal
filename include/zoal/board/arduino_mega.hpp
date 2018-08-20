@@ -104,8 +104,8 @@ namespace zoal {
         using ard_a14_adc = typename mcu::pk4_adc0;
         using ard_a15_adc = typename mcu::pk5_adc0;
 
-        using gpio_chain = typename mcu::gpio_chain;
-        using api = ::zoal::gpio::base_api<gpio_chain>;
+        using port_chain = typename mcu::port_chain;
+        using api = ::zoal::gpio::base_api<port_chain>;
 
     };
 
