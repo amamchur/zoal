@@ -84,6 +84,8 @@ namespace zoal { namespace ic {
             }
         };
 
+        st7920() = delete;
+
         static void extended_mode(bool on = true) {
             auto cfg = static_cast<uint8_t>(Interface::BitMode == 8 ? 0x10 : 0);
             cfg |= on ? 0x04 : 0x00;

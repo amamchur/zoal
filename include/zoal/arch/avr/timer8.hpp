@@ -10,12 +10,11 @@ namespace zoal { namespace arch { namespace avr {
     public:
         using base_type = timer<TimerModel, BaseAddress, TIFRs, TIMRs, ClkSrc, N>;
 
+        timer8() = delete;
+
         static typename base_type::word topValue() {
             return 0xFF;
         }
-
-    private:
-        timer8() = default;
     };
 }}}
 

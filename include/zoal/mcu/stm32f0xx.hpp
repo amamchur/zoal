@@ -139,7 +139,7 @@ namespace zoal { namespace mcu {
 
         class aggregator_chain_builder {
         protected:
-            using link0 = aggregation_link<port_a, ::zoal::gpio::terminator>;
+            using link0 = aggregation_link<port_a, ::zoal::gpio::port_link_terminator>;
             using link1 = aggregation_link<port_b, link0>;
         public:
             using type = aggregation_link<port_f, link1>;

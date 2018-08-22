@@ -25,6 +25,8 @@ namespace zoal { namespace gpio { namespace stm32f0 {
         static constexpr uintptr_t GPIOx_AFRH = 0x24;
         static constexpr uintptr_t GPIOx_BRR = 0x28;
 
+        port() = delete;
+
         static inline void enable() {
             RCController::instance()->AHBENR |= clock_mask;
         }

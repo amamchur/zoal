@@ -3,22 +3,22 @@
 
 #include <stdint.h> /* NOLINT */
 #include "mcu_type.hpp"
-#include "adc_converter_model.hpp"
+#include "adc_model.hpp"
 #include "../../utils/memory_segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
     template<mcu_type Type, uintptr_t Address, uint8_t N>
-    class adc_converter {
+    class adc {
     public:
-        using model = adc_converter_model<Type>;
+        using model = adc_model<Type>;
 
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
         static constexpr uint8_t resolution = 10;
 
-        adc_converter() = delete;
+        adc() = delete;
 
-        adc_converter(const adc_converter &) = delete;
+        adc(const adc &) = delete;
 
         static inline void enable() {
             mem[model::ADCSRAx] = 0x87;
@@ -83,7 +83,7 @@ namespace zoal { namespace arch { namespace avr {
     };
 
     template<mcu_type Type, uintptr_t Address, uint8_t N>
-    zoal::utils::memory_segment<uint8_t, Address> adc_converter<Type, Address, N>::mem;
+    zoal::utils::memory_segment<uint8_t, Address> adc<Type, Address, N>::mem;
 }}}
 
 #endif

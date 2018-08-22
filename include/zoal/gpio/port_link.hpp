@@ -7,7 +7,7 @@
 
 namespace zoal { namespace gpio {
 
-    class terminator {
+    class port_link_terminator {
     public:
         template<class T>
         inline void operator<<(T) {}
@@ -107,7 +107,7 @@ namespace zoal { namespace gpio {
     template<class First>
     class chain_builder<First> {
     public:
-        using chain = aggregation_link<First, ::zoal::gpio::terminator>;
+        using chain = aggregation_link<First, ::zoal::gpio::port_link_terminator>;
     };
 }}
 

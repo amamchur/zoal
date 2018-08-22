@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_ATMEGA_UNIVERSE_HPP
 #define ZOAL_ARCH_ATMEL_AVR_ATMEGA_UNIVERSE_HPP
 
-#include "adc_converter.hpp"
+#include "adc.hpp"
 #include "clock_source.hpp"
 #include "atmega/i2c.hpp"
 #include "atmega/usart.hpp"
@@ -55,7 +55,7 @@ namespace zoal { namespace arch { namespace avr {
         using timer4 = timer16_type<0x00A0, pecs, 4>;
         using timer5 = timer16_type<0x0124, pecs, 5>;
 
-        using adc0 = avr::adc_converter<avr::mcu_type::atmega, 0x78, 0>;
+        using adc0 = avr::adc<avr::mcu_type::atmega, 0x78, 0>;
 
         template<uint32_t Freq, uint32_t BaudRate>
         using usart_config = typename ::zoal::periph::usart_config<Freq, BaudRate>;

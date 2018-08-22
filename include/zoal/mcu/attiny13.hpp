@@ -10,7 +10,7 @@
 #include "../periph/adc_connection.hpp"
 #include "../periph/pwm_connection.hpp"
 #include "../arch/avr/attiny_universe.hpp"
-#include "../arch/avr/adc_converter.hpp"
+#include "zoal/arch/avr/adc.hpp"
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
@@ -22,7 +22,7 @@ namespace zoal { namespace mcu {
         using pin = typename ::zoal::gpio::pin<Controller, Offset>;
 
         using port_b = atu::port_b;
-        using adc0 = ::zoal::arch::avr::adc_converter<zoal::arch::avr::mcu_type::attiny13, 0x23, 0>;
+        using adc0 = ::zoal::arch::avr::adc<zoal::arch::avr::mcu_type::attiny13, 0x23, 0>;
 
         using pecs = zoal::arch::avr::prescaler_and_ext_clock_source;
 

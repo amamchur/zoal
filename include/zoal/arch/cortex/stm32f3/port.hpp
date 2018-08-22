@@ -27,6 +27,8 @@ namespace zoal { namespace gpio { namespace stm32f3 {
         static constexpr uintptr_t GPIOx_AFRH = 0x24;
         static constexpr uintptr_t GPIOx_BRR = 0x28;
 
+        port() = delete;
+
         static inline register_type read() {
             return mem[GPIOx_IDR];
         }

@@ -19,6 +19,8 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uint8_t channels_count = 2;
         static constexpr uint8_t resolution = sizeof(word) * 8;
 
+        timer() = delete;
+
         template<class clk>
         static inline void select_clock_source() {
             zoal::utils::memory_segment<uint8_t, Address> mem;

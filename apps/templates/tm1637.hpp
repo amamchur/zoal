@@ -64,7 +64,6 @@ private:
         timeout.schedule(3000, &self_type::changePulseWidth);
     }
 
-    display_type display;
     scheduler timeout;
     uint16_t value{0};
     uint8_t pulse_width{display_type::pulse_width0};

@@ -55,6 +55,8 @@ namespace zoal { namespace ic {
         static constexpr int8_t out_overhead = OutputOverhead;    // Mostly for address load
         static constexpr int8_t call_overhead = 4;
 
+        transmitter_ws2812() = delete;
+
         //
         // __attribute__((noinline)) - is essential to avoid
         // branching optimization in inline mode
@@ -87,6 +89,8 @@ namespace zoal { namespace ic {
         using transmitter = Transmitter;
         using data_pin = typename transmitter::data_pin;
         using timing = typename transmitter::timing;
+
+        ws2812() = delete;
 
         static void begin() {
             using namespace zoal::gpio;

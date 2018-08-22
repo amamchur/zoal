@@ -10,6 +10,8 @@ namespace zoal { namespace arch { namespace avr {
     public:
         using base_type = timer<TimerModel, Address, TIFRs, TIMRs, ClkSrc, N>;
 
+        timer16() = delete;
+
         static typename TimerModel::Word topValue() {
             zoal::utils::memory_segment<uint8_t, Address> m8;
             auto wgm1 = m8[TimerModel::TCCRxA] & 0x03;
@@ -30,8 +32,6 @@ namespace zoal { namespace arch { namespace avr {
                     return 0xFFFF;
             }
         }
-
-        timer16() = delete;
     };
 }}}
 

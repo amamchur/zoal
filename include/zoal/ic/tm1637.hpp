@@ -80,6 +80,8 @@ namespace zoal { namespace ic {
             pulse_width5 = display_on | 5,
         };
 
+        tm1637() = delete;
+
         static void begin() {
             using namespace zoal::gpio;
             api::template mode<pin_mode::output>(typename api::chain() & DIO() & CLK());

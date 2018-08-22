@@ -22,6 +22,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
         static constexpr uintptr_t address = Address;
 
+        port() = delete;
+
         static inline register_type read() {
             return mem[IDR];
         }

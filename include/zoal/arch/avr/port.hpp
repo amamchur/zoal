@@ -17,7 +17,9 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uintptr_t PINx = 0x00;
         static constexpr uintptr_t DDRx = 0x01;
         static constexpr uintptr_t PORTx = 0x02;
-        
+
+        port() = delete;
+
         static inline void enable() {}
 
         static inline void disable() {

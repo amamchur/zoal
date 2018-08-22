@@ -6,11 +6,11 @@
 
 namespace zoal { namespace arch { namespace avr {
     template<mcu_type type>
-    class adc_converter_model {
+    class adc_model {
     };
 
     template<>
-    class adc_converter_model<mcu_type::atmega> {
+    class adc_model<mcu_type::atmega> {
     public:
         static constexpr uintptr_t ADMUXxDef = 1 << 6;
 
@@ -22,7 +22,7 @@ namespace zoal { namespace arch { namespace avr {
     };
 
     template<>
-    class adc_converter_model<mcu_type::attiny13> {
+    class adc_model<mcu_type::attiny13> {
     public:
         static constexpr uintptr_t ADMUXxDef = 0;
 

@@ -24,7 +24,7 @@ namespace zoal { namespace board {
 
     class aggregator_chain_builder {
     protected:
-        using Link0 = aggregation_link<mcu::port_a, ::zoal::gpio::terminator>;
+        using Link0 = aggregation_link<mcu::port_a, ::zoal::gpio::port_link_terminator>;
         using Link1 = aggregation_link<mcu::port_b, Link0>;
         using Link2 = aggregation_link<mcu::port_c, Link1>;
         using Link3 = aggregation_link<mcu::port_d, Link2>;

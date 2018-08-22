@@ -333,6 +333,8 @@ namespace zoal { namespace ic {
             }
         };
 
+        max72xx() = delete;
+
         static void init(uint8_t devices) {
             using namespace zoal::gpio;
 
