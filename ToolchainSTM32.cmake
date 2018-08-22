@@ -1,3 +1,4 @@
+set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_C_COMPILER arm-none-eabi-gcc)
 set(CMAKE_C_COMPILER_WORKS 1)
 

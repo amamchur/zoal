@@ -1,11 +1,17 @@
 set(CMAKE_CXX_FLAGS "-O0 -g -Wall --coverage")
 
+if (WIN32)
+    set(CMAKE_FIND_LIBRARY_PREFIXES "lib" "")
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll" ".dll.a" ".lib" ".a")
+endif (WIN32)
+
 function(add_mcu_executable NAME MCU)
     add_executable(${NAME}.elf apps/_empty.cpp)
 endfunction(add_mcu_executable)
 
 function(add_zoal_tests)
-    add_subdirectory(tests/lib/googletest)
+    find_package(GTest)
+        
     set(TEST_CASES_FILES
             tests/atmega_48_88_168_328.cpp
             tests/atmega_16_32_U4.cpp
@@ -20,7 +26,9 @@ function(add_zoal_tests)
             tests/utils/ms_counter.cpp
             ${TEST_CASES_FILES}
             )
-    target_link_libraries(zoal_tests PRIVATE gtest gtest_main)
+
+    target_include_directories(zoal_tests PRIVATE ${GTEST_INCLUDE_DIRS})
+    target_link_libraries(zoal_tests PRIVATE GTest::GTest GTest::Main)
 
     foreach (loop_var ${TEST_CASES_FILES})
         get_filename_component(FILE_NAME ${loop_var} NAME)
