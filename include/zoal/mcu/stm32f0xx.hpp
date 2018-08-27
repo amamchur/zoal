@@ -7,30 +7,32 @@
 #include "../gpio/pin.hpp"
 #include "../gpio/base_api.hpp"
 #include "../gpio/port_link.hpp"
-#include "../periph/adc_connection.hpp"
 #include "../arch/cortex/stm32f0/port.hpp"
 #include "../arch/cortex/stm32x/reset_and_clock_controller.hpp"
-#include "../utils/ms_counter.hpp"
-#include "../utils/tool_set.hpp"
+#include "../arch/cortex/stm32x/peripheral_clock.hpp"
+#include "../arch/cortex/stm32x/interrupt_control.hpp"
 
 namespace zoal { namespace mcu {
-    template<uint32_t Freq>
-    class stm32f0xx : public base_mcu<Freq, 4> {
+    template<uint32_t Frequency>
+    class stm32f0xx : public base_mcu<Frequency, 4> {
     public:
         using rcc = typename ::zoal::arch::stm32x::reset_and_clock_controller<0x40021000>;
 
-        template<uintptr_t Address, uint32_t RCCMask>
-        using port = typename ::zoal::gpio::stm32f0::port<Address, rcc, RCCMask>;
+        template<uint32_t Set, uint32_t Clear = ~Set>
+        using options_ahbenr = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::AHBENR, Set, Clear>;
+
+        template<uintptr_t Address, class Clock>
+        using port = typename ::zoal::gpio::stm32f0::port<Address, Clock>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;
 
-        using port_a = port<0x48000000, 0x000020000>;
-        using port_b = port<0x48000400, 0x000040000>;
-        using port_c = port<0x48000800, 0x000080000>;
-        using port_d = port<0x48000C00, 0x000100000>;
-        using port_e = port<0x48001000, 0x000200000>;
-        using port_f = port<0x48001400, 0x000400000>;
+        using port_a = port<0x48000000, options_ahbenr<0x000020000>>;
+        using port_b = port<0x48000400, options_ahbenr<0x000040000>>;
+        using port_c = port<0x48000800, options_ahbenr<0x000080000>>;
+        using port_d = port<0x48000C00, options_ahbenr<0x000100000>>;
+        using port_e = port<0x48001000, options_ahbenr<0x000200000>>;
+        using port_f = port<0x48001400, options_ahbenr<0x000400000>>;
 
         using pa00 = pin<port_a, 0x0>;
         using pa01 = pin<port_a, 0x1>;
@@ -133,17 +135,6 @@ namespace zoal { namespace mcu {
         using pf13 = pin<port_f, 0xD>;
         using pf14 = pin<port_f, 0xE>;
         using pf15 = pin<port_f, 0xF>;
-
-        template<class Controller, class Next>
-        using aggregation_link = typename ::zoal::gpio::port_link<Controller, Next>;
-
-        class aggregator_chain_builder {
-        protected:
-            using link0 = aggregation_link<port_a, ::zoal::gpio::port_link_terminator>;
-            using link1 = aggregation_link<port_b, link0>;
-        public:
-            using type = aggregation_link<port_f, link1>;
-        };
 
         using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;

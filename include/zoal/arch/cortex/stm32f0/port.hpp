@@ -5,13 +5,12 @@
 #include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace gpio { namespace stm32f0 {
-    template<uintptr_t Address, class RCController, uint32_t RCCMask>
-    class port {
+    template<uintptr_t Address, class Clock>
+    class port :public Clock {
     public:
         using register_type = uint32_t;
 
         static constexpr uintptr_t address = Address;
-        static constexpr uint32_t clock_mask = RCCMask;
 
         static constexpr uintptr_t GPIOx_MODER = 0x00;
         static constexpr uintptr_t GPIOx_OTYPER = 0x04;
@@ -26,14 +25,6 @@ namespace zoal { namespace gpio { namespace stm32f0 {
         static constexpr uintptr_t GPIOx_BRR = 0x28;
 
         port() = delete;
-
-        static inline void enable() {
-            RCController::instance()->AHBENR |= clock_mask;
-        }
-
-        static inline void disable() {
-            RCController::instance()->AHBENR &= ~clock_mask;
-        }
 
         static inline register_type read() {
             return mem[GPIOx_IDR];
@@ -87,7 +78,7 @@ namespace zoal { namespace gpio { namespace stm32f0 {
             register_type vPUPDR = mem[GPIOx_PUPDR];
 
             for (register_type i = 0; i < 16; i++) {
-                uint8_t v = static_cast<uint8_t>((mask >> i) & 0x1);
+                auto v = static_cast<uint8_t>((mask >> i) & 0x1);
                 if (!v) {
                     continue;
                 }
@@ -116,36 +107,12 @@ namespace zoal { namespace gpio { namespace stm32f0 {
             mem[GPIOx_MODER] = vMODER;
             mem[GPIOx_PUPDR] = vPUPDR;
         }
-
-        void mode(register_type mask, ::zoal::gpio::pin_mode pm) {
-            using namespace zoal::gpio;
-
-            switch (pm) {
-                case pin_mode::input_floating:
-                    mode<pin_mode::input_floating>(mask);
-                    break;
-                case pin_mode::input_pull_down:
-                    mode<pin_mode::input_pull_down>(mask);
-                    break;
-                case pin_mode::input_pull_up:
-                    mode<pin_mode::input_pull_up>(mask);
-                    break;
-                case pin_mode::output_open_drain:
-                    mode<pin_mode::output_open_drain>(mask);
-                    break;
-                case pin_mode::output_push_pull:
-                default:
-                    mode<pin_mode::output_push_pull>(mask);
-                    break;
-            }
-        }
-
     private:
         static zoal::utils::memory_segment<uint32_t, Address> mem;
     };
 
-    template<uintptr_t Address, class RCController, uint32_t RCCMask>
-    zoal::utils::memory_segment<uint32_t, Address> port<Address, RCController, RCCMask>::mem;
+    template<uintptr_t Address, class Clock>
+    zoal::utils::memory_segment<uint32_t, Address> port<Address, Clock>::mem;
 }}}
 
 #endif

@@ -32,9 +32,6 @@ namespace zoal { namespace mcu {
         using timer8_model = zoal::arch::avr::timer8_model<zoal::arch::avr::mcu_type::attiny13>;
         using timer0 = zoal::arch::avr::timer8<timer8_model, 0x49, tifrs, timrs, pecs, 0>;
 
-        template<uint8_t Channel>
-        using adc_config = typename ::zoal::periph::adc_config<Channel, 0x00>;
-
         using pb0 = pin<port_b, 0>;
         using pb1 = pin<port_b, 1>;
         using pb2 = pin<port_b, 2>;

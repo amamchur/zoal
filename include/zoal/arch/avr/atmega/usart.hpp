@@ -1,6 +1,7 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_ATMEGA_HARDWARE_USART_HPP
 #define ZOAL_ARCH_ATMEL_AVR_ATMEGA_HARDWARE_USART_HPP
 
+#include "../../../io/stream_functor.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../../utils/yield.hpp"
 #include "../../../utils/memory_segment.hpp"
@@ -135,16 +136,16 @@ namespace zoal { namespace arch { namespace avr {
         }
 
         template<class F>
-        static void write(F &fn) {
+        static void write(::zoal::io::output_stream_functor<F> &fn) {
             uint8_t data = 0;
-            while (fn(data)) {
+            while (static_cast<F &>(fn)(data)) {
                 write(data);
             }
         }
 
         template<class F>
-        static void read(F &fn) {
-            while (fn(rx.dequeue(true)));
+        static void read(::zoal::io::input_stream_functor<F> &fn) {
+            while (static_cast<F &>(fn)(rx.dequeue(true)));
         }
 
         static void handle_tx_irq() {

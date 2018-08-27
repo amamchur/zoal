@@ -62,7 +62,7 @@ namespace zoal { namespace arch { namespace avr {
             }
         }
 
-        static inline void analogMode(register_type) {
+        static inline void analog_mode(register_type) {
         }
 
     private:

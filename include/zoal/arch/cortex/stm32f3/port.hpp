@@ -1,16 +1,15 @@
 #pragma once
 
-#ifndef ZOAL_GPIO_STM32F3_PORT_HPP
-#define ZOAL_GPIO_STM32F3_PORT_HPP
+#ifndef ZOAL_ARCH_STM32F3_PORT_HPP
+#define ZOAL_ARCH_STM32F3_PORT_HPP
 
 #include "../../../gpio/pin_mode.hpp"
 #include "../../../utils/memory_segment.hpp"
 
-namespace zoal { namespace gpio { namespace stm32f3 {
+namespace zoal { namespace arch { namespace stm32f3 {
     template<uintptr_t Address, class Clock>
     class port : public Clock {
     public:
-        using Class = port<Address, Clock>;
         static constexpr uintptr_t address = Address;
 
         using register_type = uint32_t;
@@ -33,21 +32,21 @@ namespace zoal { namespace gpio { namespace stm32f3 {
             return mem[GPIOx_IDR];
         }
 
-        static inline void low(register_type mask = ~(register_type) 0) {
+        static inline void low(register_type mask) {
             mem[GPIOx_BRR] = mask;
         }
 
-        static inline void high(register_type mask = ~(register_type) 0) {
+        static inline void high(register_type mask) {
             mem[GPIOx_BSRR] = mask;
         }
 
-        static inline void toggle(register_type mask = ~(register_type) 0) {
+        static inline void toggle(register_type mask) {
             auto data = mem[GPIOx_ODR];
             mem[GPIOx_BRR] = data & mask;
             mem[GPIOx_BSRR] = ~data & mask;
         }
 
-        static inline void analogMode(register_type mask) {
+        static inline void analog_mode(register_type mask) {
             register_type vMODER = mem[GPIOx_MODER];
             for (register_type i = 0; i < 16; i++) {
                 auto v = (mask >> i) & 0x1;

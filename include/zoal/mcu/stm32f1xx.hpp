@@ -28,7 +28,7 @@ namespace zoal { namespace mcu {
         using irq_ctrl = ::zoal::utils::interrupt_control<nvic, Index, Mask>;
 
         template<uint32_t MaskAPB1ENR, uint32_t MaskAPB2ENR>
-        using clock = ::zoal::stm32x::peripheral_clock<rcc, 0, MaskAPB1ENR, MaskAPB2ENR>;
+        using clock = ::zoal::arch::stm32x::peripheral_clock<rcc, 0, MaskAPB1ENR, MaskAPB2ENR>;
     public:
         template<uintptr_t Address, class Clock>
         using port = typename ::zoal::arch::stm32f1::port<Address, Clock>;

@@ -1,8 +1,9 @@
 #pragma once
 
-#ifndef ZOAL_ARCH_ATMEL_AVR_HARDWARE_USART_HPP
-#define ZOAL_ARCH_ATMEL_AVR_HARDWARE_USART_HPP
+#ifndef ZOAL_ARCH_STM32F1_USART_HPP
+#define ZOAL_ARCH_STM32F1_USART_HPP
 
+#include "../../../io/stream_functor.hpp"
 #include "../../../data/ring_buffer.hpp"
 #include "../../../periph/usart_config.hpp"
 #include "../../../utils/interrupts.hpp"
@@ -15,10 +16,10 @@ namespace zoal { namespace arch { namespace stm32f1 {
         zoal::utils::nop<1>::place();
     }
 
-    template<uintptr_t BaseAddr, uintptr_t TxSize, uintptr_t RxSize, class Clock, class IrqCtrl, class TX, class RX>
+    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize, class Clock, class IrqCtrl, class TX, class RX>
     class usart : public Clock, public IrqCtrl {
     public:
-        using Class = usart<BaseAddr, TxSize, RxSize, Clock, IrqCtrl, TX, RX>;
+        using Class = usart<Address, TxSize, RxSize, Clock, IrqCtrl, TX, RX>;
 
         template<uintptr_t Size>
         using Buffer = typename ::zoal::data::ring_buffer<uint8_t, Size, waitUSART>;
@@ -50,7 +51,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static const uint16_t CR1_UE = 0x2000;
 
         constexpr static inline Class *instance() {
-            return (Class *) BaseAddr;
+            return (Class *) Address;
         }
 
         template<class Config>
@@ -83,16 +84,16 @@ namespace zoal { namespace arch { namespace stm32f1 {
         }
 
         template<class F>
-        static void write(F &fn) {
+        static void write(::zoal::io::output_stream_functor<F> &fn) {
             uint8_t data = 0;
-            while (fn(data)) {
+            while (static_cast<F &>(fn)(data)) {
                 write(data);
             }
         }
 
         template<class F>
-        static void read(F &fn) {
-            while (fn(rx.dequeue(true)));
+        static void read(::zoal::io::input_stream_functor<F> &fn) {
+            while (static_cast<F &>(fn)(rx.dequeue(true)));
         }
 
         static void handleIrq() {
@@ -112,11 +113,11 @@ namespace zoal { namespace arch { namespace stm32f1 {
         }
     };
 
-    template<uintptr_t BaseAddr, uintptr_t TxSize, uintptr_t RxSize, class Clock, class IrqCtrl, class TX, class RX>
-    ::zoal::data::ring_buffer<uint8_t, TxSize, waitUSART> usart<BaseAddr, TxSize, RxSize, Clock, IrqCtrl, TX, RX>::tx;
+    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize, class Clock, class IrqCtrl, class TX, class RX>
+    ::zoal::data::ring_buffer<uint8_t, TxSize, waitUSART> usart<Address, TxSize, RxSize, Clock, IrqCtrl, TX, RX>::tx;
 
-    template<uintptr_t BaseAddr, uintptr_t TxSize, uintptr_t RxSize, class Clock, class IrqCtrl, class TX, class RX>
-    ::zoal::data::ring_buffer<uint8_t, RxSize, waitUSART> usart<BaseAddr, TxSize, RxSize, Clock, IrqCtrl, TX, RX>::rx;
+    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize, class Clock, class IrqCtrl, class TX, class RX>
+    ::zoal::data::ring_buffer<uint8_t, RxSize, waitUSART> usart<Address, TxSize, RxSize, Clock, IrqCtrl, TX, RX>::rx;
 }}}
 
 #endif

@@ -24,16 +24,13 @@ namespace zoal { namespace mcu {
         using rcc = ::zoal::arch::stm32x::reset_and_clock_controller<0x40021000>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using options_ahbenr = ::zoal::stm32x::peripheral_option<rcc, ::zoal::stm32x::rcc_register::AHBENR, Set, Clear>;
+        using options_ahbenr = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::AHBENR, Set, Clear>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using options_cfgr2 = ::zoal::stm32x::peripheral_option<rcc, ::zoal::stm32x::rcc_register::CFGR2, Set, Clear>;
-
-        template<uint32_t MaskAHBENR>
-        using clock = ::zoal::stm32x::peripheral_clock<rcc, MaskAHBENR, 0, 0>;
+        using options_cfgr2 = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::CFGR2, Set, Clear>;
 
         template<uintptr_t Address, class PClock>
-        using port = typename ::zoal::gpio::stm32f3::port<Address, PClock>;
+        using port = typename ::zoal::arch::stm32f3::port<Address, PClock>;
 
         using port_a = port<0x48000000, options_ahbenr<0x000020000>>;
         using port_b = port<0x48000400, options_ahbenr<0x000040000>>;
@@ -52,8 +49,8 @@ namespace zoal { namespace mcu {
         using enable_adc34 = options_ahbenr<0x20000000>;
         using adc12_pll_div6 = options_cfgr2<0x00000130, ~0x000001F0u>;
         using adc34_pll_div6 = options_cfgr2<0x00002600, ~0x00003E00u>;
-        using adc12_options = ::zoal::stm32x::peripheral_option_set<enable_adc12, adc12_pll_div6>;
-        using adc34_options = ::zoal::stm32x::peripheral_option_set<enable_adc34, adc34_pll_div6>;
+        using adc12_options = ::zoal::arch::stm32x::clock_control_set<enable_adc12, adc12_pll_div6>;
+        using adc34_options = ::zoal::arch::stm32x::clock_control_set<enable_adc34, adc34_pll_div6>;
 
         using adc1 = adc<0x50000000, 1, adc_common12, adc12_options>;
         using adc2 = adc<0x50000100, 2, adc_common12, adc12_options>;

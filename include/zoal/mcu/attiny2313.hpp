@@ -47,9 +47,6 @@ namespace zoal { namespace mcu {
         using timer0 = timer8<0x50, pecs, 0>;
         using timer1 = timer16<0x44, pecs, 1>;
 
-        template<uint8_t Channel>
-        using adc_config = typename ::zoal::periph::adc_config<Channel, 0x00>;
-
         using pa0 = pin<port_a, 0>;
         using pa1 = pin<port_a, 1>;
 

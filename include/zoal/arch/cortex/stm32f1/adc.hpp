@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 namespace zoal { namespace arch { namespace stm32f1 {
-	template<uintptr_t BaseAddress, uint8_t N, class Clock>
+	template<uintptr_t Address, uint8_t N, class Clock>
 	class adc : public Clock {
 	public:
 		volatile uint32_t SR;
@@ -28,14 +28,14 @@ namespace zoal { namespace arch { namespace stm32f1 {
 		volatile uint32_t JDR4;
 		volatile uint32_t DR;
 
-		using Class = adc<BaseAddress, N, Clock>;
+		using Class = adc<Address, N, Clock>;
 
-		static constexpr uintptr_t Base = BaseAddress;
+		static constexpr uintptr_t Base = Address;
 		static constexpr uint8_t no = N;
 		static constexpr uint8_t resolution = 12;
 
 	    static inline Class* instance() {
-	        return (Class*)BaseAddress;
+	        return (Class*)Address;
 	    }
 
 	    template <class Config>

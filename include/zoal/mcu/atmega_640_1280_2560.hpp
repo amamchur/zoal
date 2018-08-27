@@ -36,13 +36,6 @@ namespace zoal { namespace mcu {
         using timer4 = atu::timer4;
         using timer5 = atu::timer5;
 
-        //
-        // Extra data used for ADCSRB configuration
-        // 0 byte - reset mask for ADCSRB
-        // 1 byte - set mask for ADCSRB
-        template<uint8_t Channel, uint32_t Extra>
-        using adc_config = typename ::zoal::periph::adc_config<Channel, Extra>;
-
         static constexpr uint32_t LCG = 0x0008; // Low channels - reset MUX5 bit
         static constexpr uint32_t HCG = 0x0800; // High channels - set MUX5 bit
 

@@ -70,8 +70,8 @@ int main() {
     test_adc();
 
     while (1) {
-        test_adc();
-//        Shield::handleKeypad(&handler);
+//        test_adc();
+        shield::handle_keypad(&handler);
     }
 
     return 0;

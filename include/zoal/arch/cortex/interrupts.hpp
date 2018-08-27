@@ -6,8 +6,8 @@
 namespace zoal { namespace utils {
 	class interrupts {
 	public:
-		inline interrupts(bool enable) {
-			primask = getPRIMASK();
+		inline explicit interrupts(bool enable) {
+			primask = get_primask();
 			if (enable) {
 				on();
 			} else {
@@ -16,7 +16,7 @@ namespace zoal { namespace utils {
 		}
 
 		inline ~interrupts() {
-		 	setPRIMASK(primask);
+			set_primask(primask);
 		}
 
 		static inline void off() {
@@ -27,13 +27,13 @@ namespace zoal { namespace utils {
 			asm volatile ("cpsie i" : : : "memory");
 		}
 	private:
-		static inline uint32_t getPRIMASK() {
+		static inline uint32_t get_primask() {
   			uint32_t result;	
   			asm volatile ("MRS %0, primask" : "=r" (result) );
   			return result;
 		}
 
-		static inline void setPRIMASK(uint32_t priMask) {
+		static inline void set_primask(uint32_t priMask) {
 			asm volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
 		}
 
