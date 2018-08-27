@@ -5,14 +5,14 @@
 #include "timer.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<class TimerModel, uintptr_t BaseAddress, class TIFRs, class TIMRs, class ClkSrc, uint8_t N>
-    class timer8 : public timer<TimerModel, BaseAddress, TIFRs, TIMRs, ClkSrc, N> {
+    template<class Model, uintptr_t Address, class TIFRs, class TIMRs, class ClkSrc, uint8_t N>
+    class timer8 : public timer<Model, Address, TIFRs, TIMRs, ClkSrc, N> {
     public:
-        using base_type = timer<TimerModel, BaseAddress, TIFRs, TIMRs, ClkSrc, N>;
+        using base_type = timer<Model, Address, TIFRs, TIMRs, ClkSrc, N>;
 
         timer8() = delete;
 
-        static typename base_type::word topValue() {
+        static typename base_type::word top_value() {
             return 0xFF;
         }
     };

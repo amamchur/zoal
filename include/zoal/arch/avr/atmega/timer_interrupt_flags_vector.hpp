@@ -1,11 +1,11 @@
-#ifndef ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_FLAG_VECTOR_HPP
-#define ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_FLAG_VECTOR_HPP
+#ifndef ZOAL_ARCH_AVR_ATMEGA_TIMER_INTERRUPT_FLAG_VECTOR_HPP
+#define ZOAL_ARCH_AVR_ATMEGA_TIMER_INTERRUPT_FLAG_VECTOR_HPP
 
 #include <stdint.h>  /* NOLINT */
 #include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<uintptr_t BaseAddress, uint8_t Count>
+    template<uintptr_t Address, uint8_t Count>
     class timer_interrupt_flags_vector {
     private:
         enum {
@@ -36,11 +36,11 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, BaseAddress> mem;
+        static zoal::utils::memory_segment<uint8_t, Address> mem;
     };
 
-    template<uintptr_t BaseAddress, uint8_t Count>
-    zoal::utils::memory_segment<uint8_t, BaseAddress> timer_interrupt_flags_vector<BaseAddress, Count>::mem;
+    template<uintptr_t Address, uint8_t Count>
+    zoal::utils::memory_segment<uint8_t, Address> timer_interrupt_flags_vector<Address, Count>::mem;
 }}}
 
 #endif

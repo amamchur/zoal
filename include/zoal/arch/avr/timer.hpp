@@ -6,13 +6,13 @@
 #include "../../utils/memory_segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<class TimerModel, uintptr_t Address, class TIFRs, class TIMRs, class ClkSrc, uint8_t N>
+    template<class TimerModel, uintptr_t Address, class TIFRs, class TIMRs, class ClockSource, uint8_t N>
     class timer {
     public:
-        using self_type = timer<TimerModel, Address, TIFRs, TIMRs, ClkSrc, N>;
+        using self_type = timer<TimerModel, Address, TIFRs, TIMRs, ClockSource, N>;
         using model = TimerModel;
         using word = typename model::word;
-        using clock_source = ClkSrc;
+        using clock_source = ClockSource;
 
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
@@ -21,10 +21,10 @@ namespace zoal { namespace arch { namespace avr {
 
         timer() = delete;
 
-        template<class clk>
+        template<class Clock>
         static inline void select_clock_source() {
             zoal::utils::memory_segment<uint8_t, Address> mem;
-            mem[model::TCCRxB] = (mem[model::TCCRxB] & ~static_cast<uint8_t >(7u)) | clk::mask;;
+            mem[model::TCCRxB] = (mem[model::TCCRxB] & ~static_cast<uint8_t >(7u)) | Clock::mask;;
             mem.happyInspection();
         }
 
@@ -127,12 +127,12 @@ namespace zoal { namespace arch { namespace avr {
             mem.happyInspection();
         }
 
-        template<uint8_t channel>
+        template<uint8_t Channel>
         static void output_compare_value(word value) {
-            static_assert(channel < channels_count, "Channel index is out of range");
+            static_assert(Channel < channels_count, "Channel index is out of range");
 
             zoal::utils::memory_segment<word, Address> memWord;
-            switch (channel) {
+            switch (Channel) {
                 case 0:
                     memWord[model::OCRxA] = value;
                     break;
@@ -146,12 +146,12 @@ namespace zoal { namespace arch { namespace avr {
             memWord.happyInspection();
         }
 
-        template<uint8_t channel>
+        template<uint8_t Channel>
         static word output_compare_value() {
-            static_assert(channel < channels_count, "Channel index is out of range");
+            static_assert(Channel < channels_count, "Channel index is out of range");
 
             zoal::utils::memory_segment<word, Address> memWord;
-            switch (channel) {
+            switch (Channel) {
                 case 0:
                     return memWord[model::OCRxA];
                 case 1:

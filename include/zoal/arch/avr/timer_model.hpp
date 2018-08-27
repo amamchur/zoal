@@ -108,7 +108,7 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uint16_t sICRx = 0xFFFF;
     };
 
-    template<mcu_type type>
+    template<mcu_type Type>
     class timer8_model {
     };
 

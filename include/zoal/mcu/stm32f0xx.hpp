@@ -135,7 +135,7 @@ namespace zoal { namespace mcu {
         using pf15 = pin<port_f, 0xF>;
 
         template<class Controller, class Next>
-        using aggregation_link = typename ::zoal::gpio::aggregation_link<Controller, Next>;
+        using aggregation_link = typename ::zoal::gpio::port_link<Controller, Next>;
 
         class aggregator_chain_builder {
         protected:

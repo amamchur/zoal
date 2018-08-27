@@ -24,7 +24,7 @@ namespace zoal { namespace io {
 
         uint8_t *formatNumber(uint8_t *ptr, uint32_t value) {
             do {
-                uint8_t v = static_cast<uint8_t>(value % radix);
+                auto v = static_cast<uint8_t>(value % radix);
                 value /= radix;
                 v += v < 0xA ? 0x30 : 0x37; // To ASCII
                 *--ptr = v;
@@ -37,7 +37,7 @@ namespace zoal { namespace io {
             uint8_t buffer[16];
             uint8_t *ptr = buffer + sizeof(buffer);
             ptr = formatNumber(ptr, value);
-            size_t length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
+            auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
             buffer_functor bf(ptr, length);
             Transport::write(bf);
             return *this;
@@ -67,7 +67,7 @@ namespace zoal { namespace io {
             uint8_t *ptr = buffer + sizeof(buffer);
             ptr = formatNumber(ptr, static_cast<uint32_t>(value));
 
-            size_t length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
+            auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
             buffer_functor bf(ptr, length);
             Transport::write(bf);
             return *this;
@@ -88,9 +88,9 @@ namespace zoal { namespace io {
                 Transport::write('-');
             }
 
-            uint32_t intPart = static_cast<uint32_t>(value);
-            double fraction = value - intPart;
-            *this << intPart;
+            auto int_part = static_cast<uint32_t>(value);
+            double fraction = value - int_part;
+            *this << int_part;
 
             if (precision == 0) {
                 return *this;
@@ -107,9 +107,9 @@ namespace zoal { namespace io {
 
             for (uint8_t i = 0; i < precision; i++) {
                 fraction *= 10.0;
-                intPart = static_cast<uint32_t>(fraction);
-                fraction -= intPart;
-                Transport::write(intPart + '0');
+                int_part = static_cast<uint32_t>(fraction);
+                fraction -= int_part;
+                Transport::write(int_part + '0');
             }
 
             return *this;

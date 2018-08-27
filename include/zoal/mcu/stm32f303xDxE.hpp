@@ -21,16 +21,16 @@ namespace zoal { namespace mcu {
     template<uint32_t Freq>
     class stm32f303xDxE : public base_mcu<Freq, 4> {
     public:
-        using RstClk = ::zoal::arch::stm32x::reset_and_clock_controller<0x40021000>;
+        using rcc = ::zoal::arch::stm32x::reset_and_clock_controller<0x40021000>;
 
-        template<uint32_t set, uint32_t clear = ~set>
-        using options_ahbenr = ::zoal::stm32x::peripheral_option<RstClk, ::zoal::stm32x::RCCReg::AHBENR, set, clear>;
+        template<uint32_t Set, uint32_t Clear = ~Set>
+        using options_ahbenr = ::zoal::stm32x::peripheral_option<rcc, ::zoal::stm32x::rcc_register::AHBENR, Set, Clear>;
 
-        template<uint32_t set, uint32_t clear = ~set>
-        using options_cfgr2 = ::zoal::stm32x::peripheral_option<RstClk, ::zoal::stm32x::RCCReg::CFGR2, set, clear>;
+        template<uint32_t Set, uint32_t Clear = ~Set>
+        using options_cfgr2 = ::zoal::stm32x::peripheral_option<rcc, ::zoal::stm32x::rcc_register::CFGR2, Set, Clear>;
 
         template<uint32_t MaskAHBENR>
-        using clock = ::zoal::stm32x::peripheral_clock<RstClk, MaskAHBENR, 0, 0>;
+        using clock = ::zoal::stm32x::peripheral_clock<rcc, MaskAHBENR, 0, 0>;
 
         template<uintptr_t Address, class PClock>
         using port = typename ::zoal::gpio::stm32f3::port<Address, PClock>;
@@ -209,7 +209,7 @@ namespace zoal { namespace mcu {
         using pf04_adc1 = adc1_connection<pf04, 0x05>;
 
         template<uintptr_t Address, uint32_t RCCMask>
-        using spi_controller = typename ::zoal::gpio::stm32f3::spi_controller<Address, RstClk, RCCMask>;
+        using spi_controller = typename ::zoal::gpio::stm32f3::spi_controller<Address, rcc, RCCMask>;
 
         template<class Ctrl>
         using spi = typename ::zoal::gpio::stm32f3::spi<Ctrl>;

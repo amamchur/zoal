@@ -5,17 +5,17 @@
 #include "timer.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<class TimerModel, uintptr_t Address, class TIFRs, class TIMRs, class ClkSrc, uint8_t N>
-    class timer16 : public timer<TimerModel, Address, TIFRs, TIMRs, ClkSrc, N> {
+    template<class Model, uintptr_t Address, class TIFRs, class TIMRs, class ClockSource, uint8_t N>
+    class timer16 : public timer<Model, Address, TIFRs, TIMRs, ClockSource, N> {
     public:
-        using base_type = timer<TimerModel, Address, TIFRs, TIMRs, ClkSrc, N>;
+        using base_type = timer<Model, Address, TIFRs, TIMRs, ClockSource, N>;
 
         timer16() = delete;
 
-        static typename TimerModel::Word topValue() {
+        static typename Model::Word top_value() {
             zoal::utils::memory_segment<uint8_t, Address> m8;
-            auto wgm1 = m8[TimerModel::TCCRxA] & 0x03;
-            auto wgm2 = m8[TimerModel::TCCRxB] & 0x18;
+            auto wgm1 = m8[Model::TCCRxA] & 0x03;
+            auto wgm2 = m8[Model::TCCRxB] & 0x18;
             auto wgm = wgm2 >> 1 | wgm1;
 
             switch (wgm) {

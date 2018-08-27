@@ -5,7 +5,7 @@
 #include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<uintptr_t BaseAddress, uint8_t Count>
+    template<uintptr_t Address, uint8_t Count>
     class timer_interrupt_mask_vector {
     private:
         enum {
@@ -63,11 +63,11 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, BaseAddress> mem;
+        static zoal::utils::memory_segment<uint8_t, Address> mem;
     };
 
-    template<uintptr_t BaseAddress, uint8_t Count>
-    zoal::utils::memory_segment<uint8_t, BaseAddress> timer_interrupt_mask_vector<BaseAddress, Count>::mem;
+    template<uintptr_t Address, uint8_t Count>
+    zoal::utils::memory_segment<uint8_t, Address> timer_interrupt_mask_vector<Address, Count>::mem;
 }}}
 
 #endif

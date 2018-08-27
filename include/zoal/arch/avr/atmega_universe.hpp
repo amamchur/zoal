@@ -42,11 +42,11 @@ namespace zoal { namespace arch { namespace avr {
         using timer8_model = avr::timer8_model<avr::mcu_type::atmega>;
         using timer16_model = avr::timer16_model<avr::mcu_type::atmega>;
 
-        template<uintptr_t BaseAddress, class ClkSrc, uint8_t N>
-        using timer8_type = typename avr::timer8<timer8_model, BaseAddress, tifrs, timrs, ClkSrc, N>;
+        template<uintptr_t Address, class ClockSource, uint8_t N>
+        using timer8_type = typename avr::timer8<timer8_model, Address, tifrs, timrs, ClockSource, N>;
 
-        template<uintptr_t BaseAddress, class ClkSrc, uint8_t N>
-        using timer16_type = typename avr::timer16<timer16_model, BaseAddress, tifrs, timrs, ClkSrc, N>;
+        template<uintptr_t Address, class ClockSource, uint8_t N>
+        using timer16_type = typename avr::timer16<timer16_model, Address, tifrs, timrs, ClockSource, N>;
 
         using timer0 = timer8_type<0x44, pecs, 0>;
         using timer1 = timer16_type<0x80, pecs, 1>;
@@ -57,8 +57,8 @@ namespace zoal { namespace arch { namespace avr {
 
         using adc0 = avr::adc<avr::mcu_type::atmega, 0x78, 0>;
 
-        template<uint32_t Freq, uint32_t BaudRate>
-        using usart_config = typename ::zoal::periph::usart_config<Freq, BaudRate>;
+        template<uint32_t Frequency, uint32_t BaudRate>
+        using usart_config = typename ::zoal::periph::usart_config<Frequency, BaudRate>;
 
         template<uintptr_t TxSize, uintptr_t RxSize>
         using usart0 = typename avr::usart<0xC0, TxSize, RxSize>;

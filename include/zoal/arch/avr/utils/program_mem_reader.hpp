@@ -9,9 +9,9 @@ namespace zoal { namespace utils {
 	public:
 		template <class T>
 		static void copy(T *dest, const T *src) {
-			uint8_t *d = (uint8_t *)dest;
-			uint8_t *s = (uint8_t *)src;
-			for (uint8_t i = 0; i < sizeof(T); i++) {
+			auto *d = (uint8_t *)dest;
+			auto *s = (uint8_t *)src;
+			for (auto i = 0; i < sizeof(T); i++) {
 				*d++ = pgm_read_byte(s++);
 			}
 		}

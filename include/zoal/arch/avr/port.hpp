@@ -1,5 +1,5 @@
-#ifndef ZOAL_GPIO_ATMEL_AVR_PORT_HPP
-#define ZOAL_GPIO_ATMEL_AVR_PORT_HPP
+#ifndef ZOAL_ARCH_AVR_PORT_HPP
+#define ZOAL_ARCH_AVR_PORT_HPP
 
 #include <stdint.h> /* NOLINT */
 
@@ -42,10 +42,10 @@ namespace zoal { namespace arch { namespace avr {
             mem[PORTx] ^= mask;
         }
 
-        template<::zoal::gpio::pin_mode md>
+        template<::zoal::gpio::pin_mode PinMode>
         static inline void mode(register_type mask) {
             using namespace ::zoal::gpio;
-            switch (md) {
+            switch (PinMode) {
                 case pin_mode::input_floating:
                 case pin_mode::input_pull_down:
                     mem[DDRx] &= ~mask;

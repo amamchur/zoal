@@ -5,7 +5,7 @@
 #include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<uintptr_t BaseAddress>
+    template<uintptr_t Address>
     class timer_interrupt_flag_register {
     public:
         static constexpr uintptr_t TIFRx = 0;
@@ -21,11 +21,11 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, BaseAddress> mem;
+        static zoal::utils::memory_segment<uint8_t, Address> mem;
     };
 
-    template<uintptr_t BaseAddress>
-    zoal::utils::memory_segment<uint8_t, BaseAddress> timer_interrupt_flag_register<BaseAddress>::mem;
+    template<uintptr_t Address>
+    zoal::utils::memory_segment<uint8_t, Address> timer_interrupt_flag_register<Address>::mem;
 }}}
 
 #endif

@@ -32,7 +32,7 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uint8_t Flags = 3 << 1;
     };
 
-    template<::zoal::periph::usart_parity parity>
+    template<::zoal::periph::usart_parity Parity>
     struct usart_parity_flags {
         static constexpr uint8_t Flags = 0;
     };
@@ -65,7 +65,7 @@ namespace zoal { namespace arch { namespace avr {
                                           | usart_stop_bit_flags<Config::stop_bits>::Flags;
     };
 
-    template<uintptr_t BaseAddress, uintptr_t TxSize, uintptr_t RxSize>
+    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize>
     class usart {
     private:
         enum UCSRxA_Flags : uint8_t {
@@ -166,17 +166,17 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, BaseAddress> mem;
+        static zoal::utils::memory_segment<uint8_t, Address> mem;
     };
 
-    template<uintptr_t BaseAddress, uintptr_t TxSize, uintptr_t RxSize>
-    typename usart<BaseAddress, TxSize, RxSize>::buffer_tx usart<BaseAddress, TxSize, RxSize>::tx;
+    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize>
+    typename usart<Address, TxSize, RxSize>::buffer_tx usart<Address, TxSize, RxSize>::tx;
 
-    template<uintptr_t BaseAddress, uintptr_t TxSize, uintptr_t RxSize>
-    typename usart<BaseAddress, TxSize, RxSize>::buffer_rx usart<BaseAddress, TxSize, RxSize>::rx;
+    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize>
+    typename usart<Address, TxSize, RxSize>::buffer_rx usart<Address, TxSize, RxSize>::rx;
 
-    template<uintptr_t BaseAddress, uintptr_t TxSize, uintptr_t RxSize>
-    zoal::utils::memory_segment<uint8_t, BaseAddress> usart<BaseAddress, TxSize, RxSize>::mem;
+    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize>
+    zoal::utils::memory_segment<uint8_t, Address> usart<Address, TxSize, RxSize>::mem;
 
 }}}
 

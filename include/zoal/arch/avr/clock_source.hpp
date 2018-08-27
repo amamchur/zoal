@@ -60,11 +60,11 @@ namespace zoal { namespace arch { namespace avr {
             static constexpr uint8_t mask = 0x07;
         };
 
-        template<uint8_t index, class Dummy = void>
-        struct ExtClock {
+        template<uint8_t Index, class Dummy = void>
+        struct ext_clock {
             static constexpr uint16_t value = 0xFFFF;
             static constexpr uint8_t mask = 0x00;
-            static_assert(index < external_clocks, "External clock index is out of range");
+            static_assert(Index < external_clocks, "External clock index is out of range");
         };
     };
 
@@ -106,19 +106,19 @@ namespace zoal { namespace arch { namespace avr {
             static constexpr uint8_t mask = 0x05;
         };
 
-        template<uint8_t index, class Dummy = void>
-        struct ExtClock {
+        template<uint8_t Index, class Dummy = void>
+        struct ext_clock {
             static constexpr uint16_t value = 0xFFFF;
             static constexpr uint8_t mask = 0x00;
-            static_assert(index < external_clocks, "External clock index is out of range");
+            static_assert(Index < external_clocks, "External clock index is out of range");
         };
         template<class Dummy>
-        struct ExtClock<0, Dummy> {
+        struct ext_clock<0, Dummy> {
             static constexpr uint16_t value = 0x0000;
             static constexpr uint8_t mask = 0x06;
         };
         template<class Dummy>
-        struct ExtClock<1, Dummy> {
+        struct ext_clock<1, Dummy> {
             static constexpr uint16_t value = 0x0001;
             static constexpr uint8_t mask = 0x07;
         };

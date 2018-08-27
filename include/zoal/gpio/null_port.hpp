@@ -9,7 +9,6 @@ namespace zoal { namespace gpio {
         using register_type = uint8_t;
 
         null_port() = delete;
-        null_port(const null_port&) = delete;
 
         static constexpr uintptr_t address = 0;
         
@@ -30,7 +29,7 @@ namespace zoal { namespace gpio {
         static inline void toggle(register_type) {
         }
 
-        template<::zoal::gpio::pin_mode md>
+        template<::zoal::gpio::pin_mode>
         static inline void mode(register_type) {
         }
     };

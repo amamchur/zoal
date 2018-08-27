@@ -6,53 +6,53 @@
 #include <stdint.h>
 
 namespace zoal { namespace stm32x {
-    enum class RCCReg {
+    enum class rcc_register {
         AHBENR,
         APB1ENR,
         APB2ENR,
         CFGR2
     };
 
-    template<class RCCtrl, RCCReg reg, uint32_t set, uint32_t clear = ~set>
+    template<class RCController, rcc_register Register, uint32_t SetMask, uint32_t ClearMask = ~SetMask>
     class peripheral_option {
     public:
-        static constexpr uint32_t SetMask = set;
-        static constexpr uint32_t ClearMask = clear;
+        static constexpr uint32_t set_mask = SetMask;
+        static constexpr uint32_t clear_mask = ClearMask;
 
         static void enable() {
             disable();
 
-            auto rcc = RCCtrl::instance();
-            switch (reg) {
-                case RCCReg::AHBENR:
-                    rcc->AHBENR |= set;
+            auto rcc = RCController::instance();
+            switch (Register) {
+                case rcc_register::AHBENR:
+                    rcc->AHBENR |= SetMask;
                     break;
-                case RCCReg::APB1ENR:
-                    rcc->APB1ENR |= set;
+                case rcc_register::APB1ENR:
+                    rcc->APB1ENR |= SetMask;
                     break;
-                case RCCReg::APB2ENR:
-                    rcc->APB2ENR |= set;
+                case rcc_register::APB2ENR:
+                    rcc->APB2ENR |= SetMask;
                     break;
-                case RCCReg::CFGR2:
-                    rcc->CFGR2 |= set;
+                case rcc_register::CFGR2:
+                    rcc->CFGR2 |= SetMask;
                     break;
             }
         }
 
         static void disable() {
-            auto rcc = RCCtrl::instance();
-            switch (reg) {
-                case RCCReg::AHBENR:
-                    rcc->AHBENR &= clear;
+            auto rcc = RCController::instance();
+            switch (Register) {
+                case rcc_register::AHBENR:
+                    rcc->AHBENR &= ClearMask;
                     break;
-                case RCCReg::APB1ENR:
-                    rcc->APB1ENR &= clear;
+                case rcc_register::APB1ENR:
+                    rcc->APB1ENR &= ClearMask;
                     break;
-                case RCCReg::APB2ENR:
-                    rcc->APB2ENR &= clear;
+                case rcc_register::APB2ENR:
+                    rcc->APB2ENR &= ClearMask;
                     break;
-                case RCCReg::CFGR2:
-                    rcc->CFGR2 &= clear;
+                case rcc_register::CFGR2:
+                    rcc->CFGR2 &= ClearMask;
                     break;
             }
         }
@@ -61,11 +61,11 @@ namespace zoal { namespace stm32x {
     template<class First, class ... Rest>
     class peripheral_option_set {
     public:
-        using Next = peripheral_option_set<Rest...>;
+        using next = peripheral_option_set<Rest...>;
 
         static inline void enable() {
             First::enable();
-            Next::enable();
+            next::enable();
         }
     };
 
@@ -77,49 +77,49 @@ namespace zoal { namespace stm32x {
         }
     };
 
-    template<class RCCtrl, uint32_t AHBENR, uint32_t APB1ENR, uint32_t APB2ENR>
+    template<class RCController, uint32_t MaskAHBENR, uint32_t MaskAPB1ENR, uint32_t MaskAPB2ENR>
     class peripheral_clock {
     };
 
-    template<class RCCtrl, uint32_t AHBENR>
-    class peripheral_clock<RCCtrl, AHBENR, 0, 0> {
+    template<class RCController, uint32_t MaskAHBENR>
+    class peripheral_clock<RCController, MaskAHBENR, 0, 0> {
     public:
-        using RCController = RCCtrl;
+        using rcc = RCController;
 
         static inline void enable() {
-            RCController::instance()->AHBENR |= AHBENR;
+            rcc::instance()->AHBENR |= MaskAHBENR;
         }
 
         static inline void disable() {
-            RCController::instance()->AHBENR &= ~AHBENR;
+            rcc::instance()->AHBENR &= ~MaskAHBENR;
         }
     };
 
-    template<class RCCtrl, uint32_t APB1ENR>
-    class peripheral_clock<RCCtrl, 0, APB1ENR, 0> {
+    template<class RCController, uint32_t MaskAPB1ENR>
+    class peripheral_clock<RCController, 0, MaskAPB1ENR, 0> {
     public:
-        using RCController = RCCtrl;
+        using rcc = RCController;
 
         static inline void enable() {
-            RCController::instance()->APB1ENR |= APB1ENR;
+            rcc::instance()->APB1ENR |= MaskAPB1ENR;
         }
 
         static inline void disable() {
-            RCController::instance()->APB1ENR &= ~APB1ENR;
+            rcc::instance()->APB1ENR &= ~MaskAPB1ENR;
         }
     };
 
-    template<class RCCtrl, uint32_t APB2ENR>
-    class peripheral_clock<RCCtrl, 0, 0, APB2ENR> {
+    template<class RCController, uint32_t MaskAPB2ENR>
+    class peripheral_clock<RCController, 0, 0, MaskAPB2ENR> {
     public:
-        using RCController = RCCtrl;
+        using rcc = RCController;
 
         static inline void enable() {
-            RCController::instance()->APB2ENR |= APB2ENR;
+            rcc::instance()->APB2ENR |= MaskAPB2ENR;
         }
 
         static inline void disable() {
-            RCController::instance()->APB2ENR &= ~APB2ENR;
+            rcc::instance()->APB2ENR &= ~MaskAPB2ENR;
         }
     };
 }}

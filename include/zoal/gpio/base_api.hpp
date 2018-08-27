@@ -7,67 +7,71 @@
 
 namespace zoal { namespace gpio {
     template<zoal::gpio::pin_mode PinMode>
-    class ModeFunctor {
+    class mode_functor {
     public:
-        template<class Iterator>
-        static inline void flush(const Iterator &c) {
-            Iterator::port::template mode<PinMode>(c.mask);
+        template<class Link>
+        static inline void flush(const Link &link) {
+            Link::port::template mode<PinMode>(link.mask);
         }
     };
 
-    class LowFunctor {
+    class low_functor {
     public:
-        template<class Iterator>
-        static inline void flush(const Iterator &c) {
-            Iterator::port::low(c.mask);
+        template<class Link>
+        static inline void flush(const Link &link) {
+            Link::port::low(link.mask);
         }
     };
 
-    class HighFunctor {
+    class high_functor {
     public:
-        template<class Iterator>
-        static inline void flush(const Iterator &c) {
-            Iterator::port::high(c.mask);
+        template<class Link>
+        static inline void flush(const Link &link) {
+            Link::port::high(link.mask);
         }
     };
 
-    class ToggleFunctor {
+    class toggle_functor {
     public:
-        template<class Iterator>
-        static inline void flush(const Iterator &c) {
-            Iterator::port::toggle(c.mask);
+        template<class Link>
+        static inline void flush(const Link &link) {
+            Link::port::toggle(link.mask);
         }
     };
 
-    class WriteFunctor {
+    class write_functor {
     public:
-        template<class Iterator>
-        static inline void flush(const Iterator &c) {
-            auto hb = c.data & c.mask;
-            auto lb = c.mask & ~c.data;
+        template<class Link>
+        static inline void flush(const Link &link) {
+            auto hb = link.data & link.mask;
+            auto lb = link.mask & ~link.data;
             if (lb) {
-                Iterator::port::low(lb);
+                Link::port::low(lb);
             }
 
             if (hb) {
-                Iterator::port::high(hb);
+                Link::port::high(hb);
             }
         }
     };
 
-    class EnableFunctor {
+    class enable_functor {
     public:
-        template<class Iterator>
-        static inline void flush(const Iterator &) {
-            Iterator::port::enable();
+        template<class Link>
+        static inline void flush(const Link &link) {
+            if (link.mask) {
+                Link::port::enable();
+            }
         }
     };
 
-    class DisableFunctor {
+    class disable_functor {
     public:
-        template<class Iterator>
-        static inline void flush(const Iterator &) {
-            Iterator::port::disable();
+        template<class Link>
+        static inline void flush(const Link &link) {
+            if (link.mask) {
+                Link::port::disable();
+            }
         }
     };
 
@@ -77,32 +81,32 @@ namespace zoal { namespace gpio {
         using chain = Chain;
 
         template<pin_mode PinMode>
-        static inline void mode(const chain &chain) {
-            chain.template flush<ModeFunctor<PinMode>>();
+        static inline void mode(const chain &&chain) {
+            chain.template flush<mode_functor<PinMode>>();
         }
 
-        static inline void low(const chain &chain) {
-            chain.template flush<LowFunctor>();
+        static inline void low(const chain &&chain) {
+            chain.template flush<low_functor>();
         }
 
-        static inline void high(const chain &chain) {
-            chain.template flush<HighFunctor>();
+        static inline void high(const chain &&chain) {
+            chain.template flush<high_functor>();
         }
 
-        static inline void toggle(const chain &chain) {
-            chain.template flush<ToggleFunctor>();
+        static inline void toggle(const chain &&chain) {
+            chain.template flush<toggle_functor>();
         }
 
-        static inline void write(const chain &chain) {
-            chain.template flush<WriteFunctor>();
+        static inline void write(const chain &&chain) {
+            chain.template flush<write_functor>();
         }
 
-        static inline void enable(const chain &chain) {
-            chain.template flush<EnableFunctor>();
+        static inline void enable(const chain &&chain) {
+            chain.template flush<enable_functor>();
         }
 
-        static inline void disable(const chain &chain) {
-            chain.template flush<DisableFunctor>();
+        static inline void disable(const chain &&chain) {
+            chain.template flush<disable_functor>();
         }
     };
 }}

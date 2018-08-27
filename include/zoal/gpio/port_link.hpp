@@ -10,46 +10,18 @@ namespace zoal { namespace gpio {
     class port_link_terminator {
     public:
         template<class T>
-        inline void operator<<(T) {}
-
-        template<class T>
-        inline void operator>>(T) {}
-
-        template<class T>
         inline void operator&(T) {}
 
         template<class T>
-        inline void aggregate(T) {}
-
-        template<class T>
-        void flush() const {}
+        inline void flush() const {}
     };
 
     template<class Port, class Next>
     class port_link {
-    protected:
-        Next next;
     public:
         using port = Port;
-
-        typename port::register_type mask;
-        typename port::register_type data;
-
-        port_link() : mask(0), data(0) {
-        }
-    };
-
-    template<class Port, class Next>
-    class aggregation_link {
-    public:
-        using port = Port;
-        typename port::register_type mask;
-        typename port::register_type data;
-
-        Next next;
-
-        inline aggregation_link() : mask(0), data(0) {
-        }
+        typename port::register_type mask{0};
+        typename port::register_type data{0};
 
         template<class T>
         inline void flush() const {
@@ -60,39 +32,17 @@ namespace zoal { namespace gpio {
         }
 
         template<class Pin>
-        inline void aggregate(Pin pin) {
+        port_link operator&(Pin pin) {
             if (Port::address == Pin::port::address) {
                 mask |= Pin::mask;
                 data |= pin.value << Pin::offset;
             }
-
-            next.aggregate(pin);
-        }
-
-        template<class Pin>
-        inline aggregation_link &operator&(Pin &&pin) {
-            this->aggregate(pin);
+            next.operator &(pin);
             return *this;
         }
-    };
 
-    template<class Ctrl, class Next, class Functor>
-    class functor_link : public port_link<Ctrl, Next> {
-    protected:
-        Functor functor_;
-    public:
-
-        template<class Pin>
-        inline functor_link &operator>>(Pin pin) {
-            if (Ctrl::Base == Pin::Port::Base) {
-                functor_(*this, pin);
-                return *this;
-            }
-
-            this->next << pin;
-
-            return *this;
-        }
+    private:
+        Next next;
     };
 
     template<class First, class ... Rest>
@@ -101,13 +51,13 @@ namespace zoal { namespace gpio {
         static_assert(!zoal::utils::has_duplicates<First, Rest...>::value, "Some port was used twice");
 
         using next_builder = chain_builder<Rest...>;
-        using chain = aggregation_link<First, typename next_builder::chain>;
+        using chain = port_link<First, typename next_builder::chain>;
     };
 
     template<class First>
     class chain_builder<First> {
     public:
-        using chain = aggregation_link<First, ::zoal::gpio::port_link_terminator>;
+        using chain = port_link<First, ::zoal::gpio::port_link_terminator>;
     };
 }}
 

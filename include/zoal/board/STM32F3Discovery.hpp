@@ -20,7 +20,7 @@ namespace zoal { namespace board {
     using BuildInUserButton = mcu::pa00;
 
     template<class Controller, class Next>
-    using aggregation_link = typename ::zoal::gpio::aggregation_link<Controller, Next>;
+    using aggregation_link = typename ::zoal::gpio::port_link<Controller, Next>;
 
     class aggregator_chain_builder {
     protected:

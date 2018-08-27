@@ -65,6 +65,7 @@ namespace zoal { namespace arch { namespace avr {
             zoal::utils::memory_segment<uint8_t, 0x4C> m8;
             m8[base_type::SPCRx] = static_cast<uint8_t>(1 << base_type::SPEx | 1 << base_type::MSTRx | Mode);
             m8[base_type::SPSRx] = 1 << base_type::SPI2Xx;
+            m8.happyInspection();
         }
     };
 
@@ -77,6 +78,7 @@ namespace zoal { namespace arch { namespace avr {
             zoal::utils::memory_segment<uint8_t, 0x4C> m8;
             m8[base_type::SPCRx] = static_cast<uint8_t>(1 << base_type::SPEx | 1 << base_type::MSTRx | 1 << base_type::DORDx | Mode);
             m8[base_type::SPSRx] = 1 << base_type::SPI2Xx;
+            m8.happyInspection();
         }
 
         template<class T>

@@ -24,14 +24,14 @@ namespace zoal { namespace utils {
     template<>
     struct nop_depth<1, 1> {
         static inline __attribute__((always_inline)) void place() {
-            asm volatile("nop"            "\n\t");
+            asm volatile("nop"            "\n");
         }
     };
 
     template<>
     struct nop_depth<2, 1> {
         static inline __attribute__((always_inline)) void place() {
-            asm volatile("rjmp .+0"        "\n\t");
+            asm volatile("rjmp .+0"        "\n");
         }
     };
 
@@ -39,7 +39,7 @@ namespace zoal { namespace utils {
     struct nop_depth<3, 1> {
         static inline __attribute__((always_inline)) void place() {
             asm volatile(
-            "lpm"            "\n\t"
+            "lpm"            "\n"
             );
         }
     };
@@ -48,8 +48,8 @@ namespace zoal { namespace utils {
     struct nop_depth<4, 1> {
         static inline __attribute__((always_inline)) void place() {
             asm volatile(
-            "rjmp .+0"        "\n\t"
-            "rjmp .+0"        "\n\t"
+            "rjmp .+0"        "\n"
+            "rjmp .+0"        "\n"
             );
         }
     };
@@ -58,8 +58,8 @@ namespace zoal { namespace utils {
     struct nop_depth<5, 1> {
         static inline __attribute__((always_inline)) void place() {
             asm volatile(
-            "rjmp .+0"        "\n\t"
-            "lpm"            "\n\t"
+            "rjmp .+0"        "\n"
+            "lpm"            "\n"
             );
         }
     };
@@ -68,8 +68,8 @@ namespace zoal { namespace utils {
     struct nop_depth<6, 1> {
         static inline __attribute__((always_inline)) void place() {
             asm volatile(
-            "lpm"            "\n\t"
-            "lpm"            "\n\t"
+            "lpm"            "\n"
+            "lpm"            "\n"
             );
         }
     };
@@ -78,9 +78,9 @@ namespace zoal { namespace utils {
     struct nop_depth<7, 1> {
         static inline __attribute__((always_inline)) void place() {
             asm volatile(
-            "lpm"            "\n\t"
-            "lpm"            "\n\t"
-            "nop"            "\n\t"
+            "lpm"            "\n"
+            "lpm"            "\n"
+            "nop"            "\n"
             );
         }
     };
@@ -89,9 +89,9 @@ namespace zoal { namespace utils {
     struct nop_depth<8, 1> {
         static inline __attribute__((always_inline)) void place() {
             asm volatile(
-            "lpm"            "\n\t"
-            "lpm"            "\n\t"
-            "rjmp .+0"        "\n\t"
+            "lpm"            "\n"
+            "lpm"            "\n"
+            "rjmp .+0"       "\n"
             );
         }
     };
@@ -100,9 +100,9 @@ namespace zoal { namespace utils {
     struct nop_depth<9, 1> {
         static inline __attribute__((always_inline)) void place() {
             asm volatile(
-            "lpm"            "\n\t"
-            "lpm"            "\n\t"
-            "lpm"            "\n\t"
+            "lpm"            "\n"
+            "lpm"            "\n"
+            "lpm"            "\n"
             );
         }
     };
@@ -149,9 +149,9 @@ namespace zoal { namespace utils {
 
         static inline __attribute__((always_inline)) void place() {
             asm volatile(
-            "		ldi  r18, %[loop0]"    "\n\t"
-            "1:		dec  r18"            "\n\t"
-            "		brne 1b"            "\n\t"
+            "		ldi  r18, %[loop0]" "\n"
+            "1:		dec  r18"           "\n"
+            "		brne 1b"            "\n"
             :
             :[loop0] "i"(loop0)
             : "r18"
@@ -170,10 +170,10 @@ namespace zoal { namespace utils {
             asm volatile(
             "    ldi  r18, %[loop0]"    "\n"
             "    ldi  r19, %[loop1]"    "\n"
-            "1:  dec  r19"                "\n"
-            "    brne 1b"                "\n"
-            "    dec  r18"                "\n"
-            "    brne 1b"                "\n"
+            "1:  dec  r19"              "\n"
+            "    brne 1b"               "\n"
+            "    dec  r18"              "\n"
+            "    brne 1b"               "\n"
             :
             :[loop0] "i"(loop0),[loop1] "i"(loop1)
             : "r18", "r19"
@@ -195,12 +195,12 @@ namespace zoal { namespace utils {
             "    ldi  r18, %[loop0]"    "\n"
             "    ldi  r19, %[loop1]"    "\n"
             "    ldi  r20, %[loop2]"    "\n"
-            "1:  dec  r20"                "\n"
-            "    brne 1b"                "\n"
-            "    dec  r19"                "\n"
-            "    brne 1b"                "\n"
-            "    dec  r18"                "\n"
-            "    brne 1b"                "\n"
+            "1:  dec  r20"              "\n"
+            "    brne 1b"               "\n"
+            "    dec  r19"              "\n"
+            "    brne 1b"               "\n"
+            "    dec  r18"              "\n"
+            "    brne 1b"               "\n"
             :
             :[loop0] "i"(loop0),[loop1] "i"(loop1),[loop2] "i"(loop2)
             : "r18", "r19", "r20"
@@ -224,14 +224,14 @@ namespace zoal { namespace utils {
             "    ldi  r19, %[loop1]"    "\n"
             "    ldi  r20, %[loop2]"    "\n"
             "    ldi  r21, %[loop3]"    "\n"
-            "1:  dec  r21"                "\n"
-            "    brne 1b"                "\n"
-            "    dec  r20"                "\n"
-            "    brne 1b"                "\n"
-            "    dec  r19"                "\n"
-            "    brne 1b"                "\n"
-            "    dec  r18"                "\n"
-            "    brne 1b"                "\n"
+            "1:  dec  r21"              "\n"
+            "    brne 1b"               "\n"
+            "    dec  r20"              "\n"
+            "    brne 1b"               "\n"
+            "    dec  r19"              "\n"
+            "    brne 1b"               "\n"
+            "    dec  r18"              "\n"
+            "    brne 1b"               "\n"
             :
             :[loop0] "i"(loop0),[loop1] "i"(loop1),[loop2] "i"(loop2),[loop3] "i"(loop3)
             : "r18", "r19", "r20", "r21"

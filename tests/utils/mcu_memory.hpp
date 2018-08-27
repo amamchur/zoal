@@ -101,6 +101,9 @@ namespace tests { namespace utils {
             Register operator[](uintptr_t offset) {
                 return Register(reinterpret_cast<uint8_t *>(&memory), base, offset);
             }
+
+            void happyInspection() {
+            }
         };
 
         static void clear() {

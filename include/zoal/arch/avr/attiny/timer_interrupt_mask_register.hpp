@@ -5,26 +5,26 @@
 #include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<uintptr_t BaseAddress, uint8_t toieMask, uint8_t ocieaMask, uint8_t ociebMask>
+    template<uintptr_t Address, uint8_t toieMask, uint8_t ocieaMask, uint8_t ociebMask>
     class timer_interrupt_mask_register {
     public:
 
         static constexpr uintptr_t TIMSKs = 0;
 
-        template<uint8_t timer>
+        template<uint8_t Timer>
         static inline void enable_overflow_interrupt() {
             mem[TIMSKs] |= toieMask;
         }
 
-        template<uint8_t timer>
+        template<uint8_t Timer>
         static inline void disable_overflow_interrupt() {
             mem[TIMSKs] &= ~toieMask;
         }
 
-        template<uint8_t timer, uint8_t channel>
+        template<uint8_t Timer, uint8_t Channel>
         static inline void enable_compare_match_interrupt() {
-            static_assert(channel < 2, "Channel index is out of range");
-            switch (channel) {
+            static_assert(Channel < 2, "Channel index is out of range");
+            switch (Channel) {
                 case 0:
                     mem[TIMSKs] |= ocieaMask;
                     break;
@@ -36,11 +36,11 @@ namespace zoal { namespace arch { namespace avr {
             }
         }
 
-        template<uint8_t timer, uint8_t channel>
+        template<uint8_t Timer, uint8_t Channel>
         static inline void disable_compare_match_interrupt() {
-            static_assert(channel < 2, "Channel index is out of range");
+            static_assert(Channel < 2, "Channel index is out of range");
 
-            switch (channel) {
+            switch (Channel) {
                 case 0:
                     mem[TIMSKs] &= ~ocieaMask;
                     break;
@@ -53,11 +53,11 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, BaseAddress> mem;
+        static zoal::utils::memory_segment<uint8_t, Address> mem;
     };
 
-    template<uintptr_t BaseAddress, uint8_t toieMask, uint8_t ocieaMask, uint8_t ociebMask>
-    zoal::utils::memory_segment<uint8_t, BaseAddress> timer_interrupt_mask_register<BaseAddress, toieMask, ocieaMask, ociebMask>::mem;
+    template<uintptr_t Address, uint8_t toieMask, uint8_t ocieaMask, uint8_t ociebMask>
+    zoal::utils::memory_segment<uint8_t, Address> timer_interrupt_mask_register<Address, toieMask, ocieaMask, ociebMask>::mem;
 }}}
 
 #endif

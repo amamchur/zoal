@@ -5,7 +5,7 @@
 #include "mcu_type.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<mcu_type type>
+    template<mcu_type Type>
     class adc_model {
     };
 

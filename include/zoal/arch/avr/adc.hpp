@@ -38,11 +38,11 @@ namespace zoal { namespace arch { namespace avr {
 
         template<class Config>
         static void connect() {
-            const uint8_t resetBits = (Config::extra >> 0) & 0xFF;
-            const uint8_t setBits = (Config::extra >> 8) & 0xFF;
+            const uint8_t reset_bits = (Config::extra >> 0) & 0xFF;
+            const uint8_t set_bits = (Config::extra >> 8) & 0xFF;
 
             if (Config::extra != 0) {
-                mem[model::ADCSRBx] = (mem[model::ADCSRBx] & ~resetBits) | setBits;
+                mem[model::ADCSRBx] = (mem[model::ADCSRBx] & ~reset_bits) | set_bits;
             }
 
             mem[model::ADMUXx] = model::ADMUXxDef | (Config::channel & 0x07);

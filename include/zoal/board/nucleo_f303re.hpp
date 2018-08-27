@@ -38,8 +38,8 @@ namespace zoal {
 		using ard_a04_adc = typename mcu::pc01_adc2;
 		using ard_a05_adc = typename mcu::pc00_adc2;
 
-		using BUILD_IN_LED = typename mcu::pa05;
-		using BUILD_IN_BUTTON = typename mcu::pc13;
+		using build_in_led = typename mcu::pa05;
+		using build_in_button = typename mcu::pc13;
 	};
 
 	using pcb = nucleo_f303re<72000000>;
