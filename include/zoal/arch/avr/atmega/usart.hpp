@@ -15,55 +15,55 @@ namespace zoal { namespace arch { namespace avr {
 
     template<>
     struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_5> {
-        static constexpr uint8_t Flags = 0 << 1;
+        static constexpr uint8_t flags = 0 << 1;
     };
 
     template<>
     struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_6> {
-        static constexpr uint8_t Flags = 1 << 1;
+        static constexpr uint8_t flags = 1 << 1;
     };
 
     template<>
     struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_7> {
-        static constexpr uint8_t Flags = 2 << 1;
+        static constexpr uint8_t flags = 2 << 1;
     };
 
     template<>
     struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_8> {
-        static constexpr uint8_t Flags = 3 << 1;
+        static constexpr uint8_t flags = 3 << 1;
     };
 
     template<::zoal::periph::usart_parity Parity>
     struct usart_parity_flags {
-        static constexpr uint8_t Flags = 0;
+        static constexpr uint8_t flags = 0;
     };
 
     template<>
     struct usart_parity_flags<::zoal::periph::usart_parity::even> {
-        static constexpr uint8_t Flags = 2 << 4;
+        static constexpr uint8_t flags = 2 << 4;
     };
 
     template<>
     struct usart_parity_flags<::zoal::periph::usart_parity::odd> {
-        static constexpr uint8_t Flags = 3 << 4;
+        static constexpr uint8_t flags = 3 << 4;
     };
 
     template<::zoal::periph::usart_stop_bits StopBits>
     struct usart_stop_bit_flags {
-        static constexpr uint8_t Flags = 0;
+        static constexpr uint8_t flags = 0;
     };
 
     template<>
     struct usart_stop_bit_flags<::zoal::periph::usart_stop_bits::stop_bits_2> {
-        static constexpr uint8_t Flags = 1 << 3;
+        static constexpr uint8_t flags = 1 << 3;
     };
 
     template<class Config>
     struct usart_mode {
         static constexpr uint8_t UCSRxC = static_cast<uint8_t >(0)
-                                          | usart_data_bits_flags<Config::data_bits>::Flags
-                                          | usart_parity_flags<Config::parity>::Flags
-                                          | usart_stop_bit_flags<Config::stop_bits>::Flags;
+                                          | usart_data_bits_flags<Config::data_bits>::flags
+                                          | usart_parity_flags<Config::parity>::flags
+                                          | usart_stop_bit_flags<Config::stop_bits>::flags;
     };
 
     template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize>
@@ -105,7 +105,7 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uintptr_t UDRx = 6;
 
         using buffer_tx = buffer<TxSize>;
-        using buffer_rx = buffer<TxSize>;
+        using buffer_rx = buffer<RxSize>;
 
         static buffer_tx tx;
         static buffer_rx rx;
@@ -159,7 +159,7 @@ namespace zoal { namespace arch { namespace avr {
 
         static void handle_rx_irq() {
             uint8_t data = mem[UDRx];
-            if (mem[UCSRxA] & 1 << UPEx) {
+            if (mem[UCSRxA] & (1 << UPEx)) {
                 return;
             }
 

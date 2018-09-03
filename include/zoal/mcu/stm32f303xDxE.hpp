@@ -13,31 +13,31 @@
 #include "../arch/cortex/stm32f3/spi.hpp"
 #include "../arch/cortex/stm32f3/adc.hpp"
 #include "../arch/cortex/stm32f3/adc_common_regs.hpp"
-#include "../arch/cortex/stm32x/reset_and_clock_controller.hpp"
-#include "../arch/cortex/stm32x/peripheral_clock.hpp"
+#include "zoal/arch/cortex/stm32x/reset_and_clock_control.hpp"
+#include "zoal/arch/cortex/stm32x/clock_control.hpp"
 #include "../arch/cortex/stm32x/interrupt_control.hpp"
 
 namespace zoal { namespace mcu {
     template<uint32_t Freq>
     class stm32f303xDxE : public base_mcu<Freq, 4> {
     public:
-        using rcc = ::zoal::arch::stm32x::reset_and_clock_controller<0x40021000>;
+        using rcc = ::zoal::arch::stm32x::reset_and_clock_control<0x40021000>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using options_ahbenr = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::AHBENR, Set, Clear>;
+        using clock_ahbenr = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::AHBENR, Set, Clear>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
         using options_cfgr2 = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::CFGR2, Set, Clear>;
 
-        template<uintptr_t Address, class PClock>
-        using port = typename ::zoal::arch::stm32f3::port<Address, PClock>;
+        template<uintptr_t Address, class Clock>
+        using port = typename ::zoal::arch::stm32f3::port<Address, Clock>;
 
-        using port_a = port<0x48000000, options_ahbenr<0x000020000>>;
-        using port_b = port<0x48000400, options_ahbenr<0x000040000>>;
-        using port_c = port<0x48000800, options_ahbenr<0x000080000>>;
-        using port_d = port<0x48000C00, options_ahbenr<0x000100000>>;
-        using port_e = port<0x48001000, options_ahbenr<0x000200000>>;
-        using port_f = port<0x48001400, options_ahbenr<0x000400000>>;
+        using port_a = port<0x48000000, clock_ahbenr<0x000020000>>;
+        using port_b = port<0x48000400, clock_ahbenr<0x000040000>>;
+        using port_c = port<0x48000800, clock_ahbenr<0x000080000>>;
+        using port_d = port<0x48000C00, clock_ahbenr<0x000100000>>;
+        using port_e = port<0x48001000, clock_ahbenr<0x000200000>>;
+        using port_f = port<0x48001400, clock_ahbenr<0x000400000>>;
 
         using adc_common12 = zoal::arch::stm32f3::adc_common_regs<0x50000300>;
         using adc_common34 = zoal::arch::stm32f3::adc_common_regs<0x50000700>;
@@ -45,8 +45,8 @@ namespace zoal { namespace mcu {
         template<uintptr_t Address, uint8_t N, class CommRegs, class Clock>
         using adc = typename ::zoal::arch::stm32f3::adc<Address, N, CommRegs, Clock>;
 
-        using enable_adc12 = options_ahbenr<0x10000000>;
-        using enable_adc34 = options_ahbenr<0x20000000>;
+        using enable_adc12 = clock_ahbenr<0x10000000>;
+        using enable_adc34 = clock_ahbenr<0x20000000>;
         using adc12_pll_div6 = options_cfgr2<0x00000130, ~0x000001F0u>;
         using adc34_pll_div6 = options_cfgr2<0x00002600, ~0x00003E00u>;
         using adc12_options = ::zoal::arch::stm32x::clock_control_set<enable_adc12, adc12_pll_div6>;
@@ -162,17 +162,17 @@ namespace zoal { namespace mcu {
         using pf14 = pin<port_f, 0xE>;
         using pf15 = pin<port_f, 0xF>;
 
-        template<class P, uint8_t Channel>
-        using adc1_connection = typename ::zoal::periph::adc_connection<P, adc1, Channel>;
+        template<class Pin, uint8_t Channel>
+        using adc1_connection = typename ::zoal::periph::adc_connection<Pin, adc1, Channel>;
 
-        template<class P, uint8_t Channel>
-        using adc2_connection = typename ::zoal::periph::adc_connection<P, adc2, Channel>;
+        template<class Pin, uint8_t Channel>
+        using adc2_connection = typename ::zoal::periph::adc_connection<Pin, adc2, Channel>;
 
-        template<class P, uint8_t Channel>
-        using adc3_connection = typename ::zoal::periph::adc_connection<P, adc3, Channel>;
+        template<class Pin, uint8_t Channel>
+        using adc3_connection = typename ::zoal::periph::adc_connection<Pin, adc3, Channel>;
 
-        template<class P, uint8_t Channel>
-        using adc4_connection = typename ::zoal::periph::adc_connection<P, adc3, Channel>;
+        template<class Pin, uint8_t Channel>
+        using adc4_connection = typename ::zoal::periph::adc_connection<Pin, adc3, Channel>;
 
         using pa00_adc1 = adc1_connection<pa00, 0x01>;
         using pa01_adc1 = adc1_connection<pa01, 0x02>;
@@ -206,10 +206,10 @@ namespace zoal { namespace mcu {
         using pf04_adc1 = adc1_connection<pf04, 0x05>;
 
         template<uintptr_t Address, uint32_t RCCMask>
-        using spi_controller = typename ::zoal::gpio::stm32f3::spi_controller<Address, rcc, RCCMask>;
+        using spi_controller = typename ::zoal::arch::stm32f3::spi_controller<Address, rcc, RCCMask>;
 
         template<class Ctrl>
-        using spi = typename ::zoal::gpio::stm32f3::spi<Ctrl>;
+        using spi = typename ::zoal::arch::stm32f3::spi<Ctrl>;
 
         using spi1 = spi<spi_controller<0x40013000, 0>>;
         using spi2 = spi<spi_controller<0x40003800, 1>>;

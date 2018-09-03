@@ -68,7 +68,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
             RX::template mode<pin_mode::input_floating>();
 
             double usartDiv = Config::Freq / 16.0 / Config::BaudRate;
-            uint16_t usartInt = usartDiv;
+            auto usartInt = static_cast<uint16_t>(usartDiv);
             usartDiv -= usartInt;
             usartDiv *= 16;
 

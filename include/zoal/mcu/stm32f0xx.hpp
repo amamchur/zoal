@@ -8,15 +8,15 @@
 #include "../gpio/base_api.hpp"
 #include "../gpio/port_link.hpp"
 #include "../arch/cortex/stm32f0/port.hpp"
-#include "../arch/cortex/stm32x/reset_and_clock_controller.hpp"
-#include "../arch/cortex/stm32x/peripheral_clock.hpp"
+#include "zoal/arch/cortex/stm32x/reset_and_clock_control.hpp"
+#include "zoal/arch/cortex/stm32x/clock_control.hpp"
 #include "../arch/cortex/stm32x/interrupt_control.hpp"
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
     class stm32f0xx : public base_mcu<Frequency, 4> {
     public:
-        using rcc = typename ::zoal::arch::stm32x::reset_and_clock_controller<0x40021000>;
+        using rcc = typename ::zoal::arch::stm32x::reset_and_clock_control<0x40021000>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
         using options_ahbenr = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::AHBENR, Set, Clear>;
