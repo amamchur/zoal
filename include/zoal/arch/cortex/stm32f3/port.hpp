@@ -70,23 +70,23 @@ namespace zoal { namespace arch { namespace stm32f3 {
             uint16_t pull_up_pull_down = 0;
             const uint32_t speedSettings = 0x1; // 10 MHz
             switch (PinMode) {
-                case pin_mode::input_floating:
-                    output_type = mask;
-                    break;
-                case pin_mode::input_pull_down:
-                    pull_up_pull_down = 0x02;
-                    break;
-                case pin_mode::input_pull_up:
-                    pull_up_pull_down = 0x01;
-                    break;
-                case pin_mode::output_open_drain:
-                    output_type = mask;
-                    pin_direction = 0x01;
-                    break;
-                case pin_mode::output_push_pull:
-                default:
-                    pin_direction = 0x01;
-                    break;
+            case pin_mode::input_floating:
+                output_type = mask;
+                break;
+            case pin_mode::input_pull_down:
+                pull_up_pull_down = 0x02;
+                break;
+            case pin_mode::input_pull_up:
+                pull_up_pull_down = 0x01;
+                break;
+            case pin_mode::output_open_drain:
+                output_type = mask;
+                pin_direction = 0x01;
+                break;
+            case pin_mode::output_push_pull:
+            default:
+                pin_direction = 0x01;
+                break;
             }
 
             register_type vOSPEEDR = mem[GPIOx_OSPEEDR];
@@ -113,13 +113,13 @@ namespace zoal { namespace arch { namespace stm32f3 {
             }
 
             switch (PinMode) {
-                case pin_mode::output_open_drain:
-                case pin_mode::output_push_pull:
-                    mem[GPIOx_OSPEEDR] = vOSPEEDR;
-                    mem[GPIOx_OTYPER] = vOTYPER;
-                    break;
-                default:
-                    break;
+            case pin_mode::output_open_drain:
+            case pin_mode::output_push_pull:
+                mem[GPIOx_OSPEEDR] = vOSPEEDR;
+                mem[GPIOx_OTYPER] = vOTYPER;
+                break;
+            default:
+                break;
             }
             mem[GPIOx_MODER] = vMODER;
             mem[GPIOx_PUPDR] = vPUPDR;
@@ -129,22 +129,22 @@ namespace zoal { namespace arch { namespace stm32f3 {
             using namespace ::zoal::gpio;
 
             switch (pm) {
-                case pin_mode::input_floating:
-                    mode<pin_mode::input_floating>(mask);
-                    break;
-                case pin_mode::input_pull_down:
-                    mode<pin_mode::input_pull_down>(mask);
-                    break;
-                case pin_mode::input_pull_up:
-                    mode<pin_mode::input_pull_up>(mask);
-                    break;
-                case pin_mode::output_open_drain:
-                    mode<pin_mode::output_open_drain>(mask);
-                    break;
-                case pin_mode::output_push_pull:
-                default:
-                    mode<pin_mode::output_push_pull>(mask);
-                    break;
+            case pin_mode::input_floating:
+                mode<pin_mode::input_floating>(mask);
+                break;
+            case pin_mode::input_pull_down:
+                mode<pin_mode::input_pull_down>(mask);
+                break;
+            case pin_mode::input_pull_up:
+                mode<pin_mode::input_pull_up>(mask);
+                break;
+            case pin_mode::output_open_drain:
+                mode<pin_mode::output_open_drain>(mask);
+                break;
+            case pin_mode::output_push_pull:
+            default:
+                mode<pin_mode::output_push_pull>(mask);
+                break;
             }
         }
 

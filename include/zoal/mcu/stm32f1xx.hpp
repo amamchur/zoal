@@ -8,11 +8,11 @@
 #include "../gpio/base_api.hpp"
 #include "../gpio/port_link.hpp"
 #include "../arch/cortex/stm32f1/port.hpp"
-#include "zoal/arch/cortex/stm32x/reset_and_clock_control.hpp"
-#include "../arch/cortex/stm32f1/nested_vectored_interrupt_controller.hpp"
+#include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
+#include "../arch/cortex/nested_vectored_interrupt_controller.hpp"
 #include "../arch/cortex/stm32f1/adc.hpp"
 #include "../arch/cortex/stm32f1/usart.hpp"
-#include "zoal/arch/cortex/stm32x/clock_control.hpp"
+#include "../arch/cortex/stm32x/clock_control.hpp"
 #include "../arch/cortex/stm32x/interrupt_control.hpp"
 #include "../utils/ms_counter.hpp"
 #include "../utils/tool_set.hpp"
@@ -21,17 +21,17 @@ namespace zoal { namespace mcu {
     template<uint32_t Frequency>
     class stm32f1xx : public base_mcu<Frequency, 4> {
     private:
-        using rcc = typename ::zoal::arch::stm32x::reset_and_clock_control<0x40021000>;
-        using nvic = typename ::zoal::arch::stm32f1::nested_vectored_interrupt_controller<0xE000E100>;
+        using rcc = typename ::zoal::arch::stm32x::reset_and_clock_control<>;
+        using nvic = typename ::zoal::arch::stm32f1::nested_vectored_interrupt_controller<>;
 
         template<uint8_t Index, uint32_t Mask>
         using irq_ctrl = ::zoal::utils::interrupt_control<nvic, Index, Mask>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_apb1 = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::APB1ENR, Set, Clear>;
+        using clock_apb1 = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::APB1, Set, Clear>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_apb2 = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::APB2ENR, Set, Clear>;
+        using clock_apb2 = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::APB2, Set, Clear>;
     public:
         template<uintptr_t Address, class Clock>
         using port = typename ::zoal::arch::stm32f1::port<Address, Clock>;

@@ -55,22 +55,22 @@ namespace zoal { namespace gpio {
         }
     };
 
-    class enable_functor {
+    class power_on_functor {
     public:
         template<class Link>
         static inline void flush(const Link &link) {
             if (link.mask) {
-                Link::port::enable();
+                Link::port::power_on();
             }
         }
     };
 
-    class disable_functor {
+    class power_off_functor {
     public:
         template<class Link>
         static inline void flush(const Link &link) {
             if (link.mask) {
-                Link::port::disable();
+                Link::port::power_off();
             }
         }
     };
@@ -101,12 +101,12 @@ namespace zoal { namespace gpio {
             chain.template flush<write_functor>();
         }
 
-        static inline void enable(const chain &&chain) {
-            chain.template flush<enable_functor>();
+        static inline void power_on(const chain &&chain) {
+            chain.template flush<power_on_functor>();
         }
 
-        static inline void disable(const chain &&chain) {
-            chain.template flush<disable_functor>();
+        static inline void power_off(const chain &&chain) {
+            chain.template flush<power_off_functor>();
         }
     };
 }}

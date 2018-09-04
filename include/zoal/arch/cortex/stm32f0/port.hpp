@@ -84,7 +84,7 @@ namespace zoal { namespace gpio { namespace stm32f0 {
                 }
 
                 register_type offset = i << 1;
-                register_type unmask = static_cast<register_type>(~(0x3 << offset));
+                auto unmask = static_cast<register_type>(~(0x3 << offset));
 
                 vOSPEEDR &= unmask;
                 vMODER &= unmask;

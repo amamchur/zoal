@@ -19,7 +19,7 @@ using delay = tools::delay;
 
 int main() {
     SysTick_Config(SystemCoreClock / 1000);
-    pcb::pa04::port::enable();
+    pcb::pa04::port::power_on();
     pcb::pa04::mode<pin_mode::output>();
     pcb::pa04::high();
 

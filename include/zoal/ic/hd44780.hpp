@@ -20,7 +20,7 @@ namespace zoal { namespace ic {
 		static void init() {
 			using namespace zoal::gpio;
 
-			api::enable(chain()
+			api::power_on(chain()
 				& RS() & EN()
 				& D4() & D5() & D6() & D7()
 			);

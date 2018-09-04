@@ -7,32 +7,31 @@
 #include <zoal/data/segment7.hpp>
 #include <zoal/gpio/pin.hpp>
 
-template<class Tools, class PCB>
+template<class Tools, class Board>
 class multi_function_shield {
 public:
-    using self_type = multi_function_shield<Tools, PCB>;
+    using self_type = multi_function_shield<Tools, Board>;
     using delay = typename Tools::delay;
     using counter = typename Tools::counter;
     using method_scheduler = typename Tools::template method_scheduler<self_type, 4>;
-    using led1 = zoal::gpio::active_low<typename PCB::ard_d13>;
-    using led2 = zoal::gpio::active_low<typename PCB::ard_d12>;
-    using led3 = zoal::gpio::active_low<typename PCB::ard_d11>;
-    using led4 = zoal::gpio::active_low<typename PCB::ard_d10>;
-    using beeper = zoal::gpio::active_drain<typename PCB::ard_d03>;
+    using led1 = zoal::gpio::active_low<typename Board::ard_d13>;
+    using led2 = zoal::gpio::active_low<typename Board::ard_d12>;
+    using led3 = zoal::gpio::active_low<typename Board::ard_d11>;
+    using led4 = zoal::gpio::active_low<typename Board::ard_d10>;
+    using beeper = zoal::gpio::active_drain<typename Board::ard_d03>;
     using display_type = zoal::ic::ic74hc595<
-            typename PCB::ard_d08,
-            typename PCB::ard_d04,
-            typename PCB::ard_d07>;
-
-    method_scheduler scheduler;
-    uint16_t value;
+            typename Board::ard_d08,
+            typename Board::ard_d04,
+            typename Board::ard_d07>;
+    uint16_t value{0};
     uint8_t segments[4]{0};
-    zoal::io::button_ext<typename PCB::ard_a01, counter> button1;
-    zoal::io::button_ext<typename PCB::ard_a02, counter> button2;
-    zoal::io::button_ext<typename PCB::ard_a03, counter> button3;
+    zoal::io::button_ext<typename Board::ard_a01, counter> button1;
+    zoal::io::button_ext<typename Board::ard_a02, counter> button2;
+    zoal::io::button_ext<typename Board::ard_a03, counter> button3;
 
-    multi_function_shield() : scheduler(this), value(0) {
-    }
+    multi_function_shield() = default;
+
+    multi_function_shield(const multi_function_shield &) = delete;
 
     void hex_to_segments(uint16_t value) {
         uint16_t v = value;
@@ -44,6 +43,21 @@ public:
     }
 
     void init() {
+        Board::mcu::api::power_on(
+                typename Board::mcu::port_chain()
+                & typename Board::ard_d13()
+                & typename Board::ard_d12()
+                & typename Board::ard_d11()
+                & typename Board::ard_d10()
+                & typename Board::ard_d08()
+                & typename Board::ard_d07()
+                & typename Board::ard_d04()
+                & typename Board::ard_d03()
+                & typename Board::ard_a01()
+                & typename Board::ard_a02()
+                & typename Board::ard_a03()
+        );
+
         led1::off();
         led2::off();
         led3::off();
@@ -56,8 +70,6 @@ public:
         beeper::on();
         delay::ms(10);
         beeper::off();
-
-        scheduler.schedule(0, &self_type::dynamic_indication);
     }
 
     void dynamic_indication() {
@@ -66,7 +78,6 @@ public:
         auto segmentValue = segments[segmentIndex];
         typename display_type::transaction() << segmentValue << segmentMask;
         segmentIndex = static_cast<uint8_t>((segmentIndex + 1) & 0x3);
-        scheduler.schedule(0, &self_type::dynamic_indication);
     }
 
     void button1_handler(zoal::io::button_event event) {
@@ -91,7 +102,7 @@ public:
     }
 
     void run_once() {
-        scheduler.handle();
+        dynamic_indication();
         button1.handle(this, &self_type::button1_handler);
         button2.handle(this, &self_type::button2_handler);
         button3.handle(this, &self_type::button3_handler);

@@ -5,51 +5,42 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace arch { namespace stm32x {
-    enum class rcc_register {
-        AHBENR,
-        APB1ENR,
-        APB2ENR,
-        CFGR2
-    };
+#include "../bus.hpp"
 
-    template<class ResetAndClockControl, rcc_register Register, uint32_t SetMask, uint32_t ClearMask = ~SetMask>
+namespace zoal { namespace arch { namespace stm32x {
+    template<class ResetAndClockControl, zoal::arch::cortex::bus Bus, uint32_t SetMask, uint32_t ClearMask = ~SetMask>
     class clock_control {
     public:
         using rcc = ResetAndClockControl;
         static constexpr uint32_t set_mask = SetMask;
         static constexpr uint32_t clear_mask = ClearMask;
 
-        static inline void enable() {
-            switch (Register) {
-            case rcc_register::AHBENR:
+        static inline void power_on() {
+            using namespace zoal::arch::cortex;
+            switch (Bus) {
+            case bus::AHB:
                 rcc::mem[rcc::RCCx_AHBENR] |= SetMask;
                 break;
-            case rcc_register::APB1ENR:
+            case bus::APB1:
                 rcc::mem[rcc::RCCx_APB1ENR] |= SetMask;
                 break;
-            case rcc_register::APB2ENR:
+            case bus::APB2:
                 rcc::mem[rcc::RCCx_APB2ENR] |= SetMask;
-                break;
-            case rcc_register::CFGR2:
-                rcc::mem[rcc::RCCx_CFGR2] |= SetMask;
                 break;
             }
         }
 
-        static inline void disable() {
-            switch (Register) {
-            case rcc_register::AHBENR:
+        static inline void power_off() {
+            using namespace zoal::arch::cortex;
+            switch (Bus) {
+            case bus::AHB:
                 rcc::mem[rcc::RCCx_AHBENR] &= ClearMask;
                 break;
-            case rcc_register::APB1ENR:
+            case bus::APB1:
                 rcc::mem[rcc::RCCx_APB1ENR] &= ClearMask;
                 break;
-            case rcc_register::APB2ENR:
+            case bus::APB2:
                 rcc::mem[rcc::RCCx_APB2ENR] &= ClearMask;
-                break;
-            case rcc_register::CFGR2:
-                rcc::mem[rcc::RCCx_CFGR2] &= ClearMask;
                 break;
             }
         }

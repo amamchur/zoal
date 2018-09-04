@@ -85,7 +85,6 @@ namespace zoal { namespace arch { namespace stm32f3 {
         }
 
         static void setup() {
-            Clock::enable();
             CommRegs::reset();
 
             mem[ADCx_CFGR] = 0x00002000; // Single conversion mode

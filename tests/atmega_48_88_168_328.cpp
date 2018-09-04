@@ -339,20 +339,20 @@ TEST_F(ATmegaxx8, GPIO_ENABLE_DISABLE) {
         EXPECT_TRUE(value);
     }
 
-    mcu::api::enable(mcu::port_chain() & mcu::pb0() & mcu::pc0() & mcu::pd0());
-    mcu::api::enable(mcu::port_chain() & mcu::pb0() & mcu::pc0());
-    mcu::api::enable(mcu::port_chain() & mcu::pb0());
-    mcu::api::enable(mcu::port_chain() & null_pin());
+    mcu::api::power_on(mcu::port_chain() & mcu::pb0() & mcu::pc0() & mcu::pd0());
+    mcu::api::power_on(mcu::port_chain() & mcu::pb0() & mcu::pc0());
+    mcu::api::power_on(mcu::port_chain() & mcu::pb0());
+    mcu::api::power_on(mcu::port_chain() & null_pin());
 
     auto result = mcu_memory::equal("data/ATmegaxx8_GPIO_CLEAR.mem");
     EXPECT_TRUE(result);
     EXPECT_EQ(mcu_memory::error, "");
 
-    mcu::api::disable(mcu::port_chain() & mcu::pb0() & mcu::pc0() & mcu::pd0());
-    mcu::api::disable(mcu::port_chain() & mcu::pb0() & mcu::pc0());
-    mcu::api::disable(mcu::port_chain() & mcu::pb0());
-    mcu::api::disable(mcu::port_chain());
-    mcu::api::disable(mcu::port_chain() & null_pin());
+    mcu::api::power_off(mcu::port_chain() & mcu::pb0() & mcu::pc0() & mcu::pd0());
+    mcu::api::power_off(mcu::port_chain() & mcu::pb0() & mcu::pc0());
+    mcu::api::power_off(mcu::port_chain() & mcu::pb0());
+    mcu::api::power_off(mcu::port_chain());
+    mcu::api::power_off(mcu::port_chain() & null_pin());
 
     result = mcu_memory::equal("data/ATmegaxx8_GPIO_CLEAR.mem");
     EXPECT_TRUE(result);

@@ -23,7 +23,7 @@ namespace zoal { namespace io {
         analog_keypad(const analog_keypad &) = delete;
 
         static void init() {
-            channel::pin::port::enable();
+            channel::pin::port::power_on();
             channel::adc::enable();
             channel::adc::setup();
             memset(states, 0, sizeof(states));

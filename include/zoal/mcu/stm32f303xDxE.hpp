@@ -13,31 +13,53 @@
 #include "../arch/cortex/stm32f3/spi.hpp"
 #include "../arch/cortex/stm32f3/adc.hpp"
 #include "../arch/cortex/stm32f3/adc_common_regs.hpp"
-#include "zoal/arch/cortex/stm32x/reset_and_clock_control.hpp"
-#include "zoal/arch/cortex/stm32x/clock_control.hpp"
+#include "../arch/cortex/stm32f3/general_purpose_timer.hpp"
+#include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
+#include "../arch/cortex/stm32x/clock_control.hpp"
 #include "../arch/cortex/stm32x/interrupt_control.hpp"
+#include "../arch/cortex/nested_vectored_interrupt_controller.hpp"
 
 namespace zoal { namespace mcu {
     template<uint32_t Freq>
     class stm32f303xDxE : public base_mcu<Freq, 4> {
     public:
-        using rcc = ::zoal::arch::stm32x::reset_and_clock_control<0x40021000>;
+        using nvic = ::zoal::arch::stm32f1::nested_vectored_interrupt_controller<>;
+        using rcc = ::zoal::arch::stm32x::reset_and_clock_control<>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_ahbenr = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::AHBENR, Set, Clear>;
+        using clock_ahb = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::AHB, Set, Clear>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using options_cfgr2 = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::CFGR2, Set, Clear>;
+        using clock_apb1 = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::APB1, Set, Clear>;
+
+//        template<uint32_t Set, uint32_t Clear = ~Set>
+//        using options_cfgr2 = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::CFGR2, Set, Clear>;
 
         template<uintptr_t Address, class Clock>
         using port = typename ::zoal::arch::stm32f3::port<Address, Clock>;
 
-        using port_a = port<0x48000000, clock_ahbenr<0x000020000>>;
-        using port_b = port<0x48000400, clock_ahbenr<0x000040000>>;
-        using port_c = port<0x48000800, clock_ahbenr<0x000080000>>;
-        using port_d = port<0x48000C00, clock_ahbenr<0x000100000>>;
-        using port_e = port<0x48001000, clock_ahbenr<0x000200000>>;
-        using port_f = port<0x48001400, clock_ahbenr<0x000400000>>;
+        using port_a = port<0x48000000, clock_ahb<0x000020000>>;
+        using port_b = port<0x48000400, clock_ahb<0x000040000>>;
+        using port_c = port<0x48000800, clock_ahb<0x000080000>>;
+        using port_d = port<0x48000C00, clock_ahb<0x000100000>>;
+        using port_e = port<0x48001000, clock_ahb<0x000200000>>;
+        using port_f = port<0x48001400, clock_ahb<0x000400000>>;
+
+        using timer2 = zoal::arch::stm32f3::general_purpose_timer<
+                0x40000000,
+                2,
+                clock_apb1<0x000000001>>;
+        using timer3 = zoal::arch::stm32f3::general_purpose_timer<
+                0x40000400,
+                3,
+                clock_apb1<0x000000002>>;
+        using timer4 = zoal::arch::stm32f3::general_purpose_timer<
+                0x40000800,
+                4,
+                clock_apb1<0x000000004>>;
+
+//        using timer6 = zoal::arch::stm32f3::general_purpose_timer<0x40001000, 5, clock_apb1<0x000000010>>;
+//        using timer7 = zoal::arch::stm32f3::general_purpose_timer<0x40002000, 7, clock_apb1<0x000000020>>;
 
         using adc_common12 = zoal::arch::stm32f3::adc_common_regs<0x50000300>;
         using adc_common34 = zoal::arch::stm32f3::adc_common_regs<0x50000700>;
@@ -45,17 +67,17 @@ namespace zoal { namespace mcu {
         template<uintptr_t Address, uint8_t N, class CommRegs, class Clock>
         using adc = typename ::zoal::arch::stm32f3::adc<Address, N, CommRegs, Clock>;
 
-        using enable_adc12 = clock_ahbenr<0x10000000>;
-        using enable_adc34 = clock_ahbenr<0x20000000>;
-        using adc12_pll_div6 = options_cfgr2<0x00000130, ~0x000001F0u>;
-        using adc34_pll_div6 = options_cfgr2<0x00002600, ~0x00003E00u>;
-        using adc12_options = ::zoal::arch::stm32x::clock_control_set<enable_adc12, adc12_pll_div6>;
-        using adc34_options = ::zoal::arch::stm32x::clock_control_set<enable_adc34, adc34_pll_div6>;
+        using enable_adc12 = clock_ahb<0x10000000>;
+        using enable_adc34 = clock_ahb<0x20000000>;
+//        using adc12_pll_div6 = options_cfgr2<0x00000130, ~0x000001F0u>;
+//        using adc34_pll_div6 = options_cfgr2<0x00002600, ~0x00003E00u>;
+//        using adc12_options = ::zoal::arch::stm32x::clock_control_set<enable_adc12, adc12_pll_div6>;
+//        using adc34_options = ::zoal::arch::stm32x::clock_control_set<enable_adc34, adc34_pll_div6>;
 
-        using adc1 = adc<0x50000000, 1, adc_common12, adc12_options>;
-        using adc2 = adc<0x50000100, 2, adc_common12, adc12_options>;
-        using adc3 = adc<0x50000400, 3, adc_common34, adc34_options>;
-        using adc4 = adc<0x50000500, 4, adc_common34, adc34_options>;
+        using adc1 = adc<0x50000000, 1, adc_common12, enable_adc12>;
+        using adc2 = adc<0x50000100, 2, adc_common12, enable_adc12>;
+        using adc3 = adc<0x50000400, 3, adc_common34, enable_adc34>;
+        using adc4 = adc<0x50000500, 4, adc_common34, enable_adc34>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;

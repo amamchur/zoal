@@ -25,7 +25,7 @@ public:
     }
 
     void init() {
-        Tools::api::enable(typename Tools::api::chain() & DI());
+        Tools::api::power_on(typename Tools::api::chain() & DI());
         ws2812::begin();
     }
 

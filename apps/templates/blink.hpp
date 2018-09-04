@@ -13,7 +13,7 @@ private:
     using chain = typename api::chain;
 public:
     void init() {
-        api::enable(chain() & LedPin());
+        api::power_on(chain() & LedPin());
         LedPin::template mode<zoal::gpio::pin_mode::output>();
     }
 

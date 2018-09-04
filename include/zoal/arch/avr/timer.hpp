@@ -21,6 +21,10 @@ namespace zoal { namespace arch { namespace avr {
 
         timer() = delete;
 
+        static inline void enable() {}
+
+        static inline void disable() {}
+
         template<class Clock>
         static inline void select_clock_source() {
             zoal::utils::memory_segment<uint8_t, Address> mem;
@@ -58,7 +62,7 @@ namespace zoal { namespace arch { namespace avr {
         }
 
         template<uint8_t channel>
-        static inline void disable_compare_match_nterrupt() {
+        static inline void disable_compare_match_interrupt() {
             static_assert(channel < channels_count, "Channel index is out of range");
             TIMRs::template disable_compare_match_interrupt<no, channel>();
         }
@@ -76,8 +80,8 @@ namespace zoal { namespace arch { namespace avr {
 
         static void reset() {
             disable_overflow_interrupt();
-            disable_compare_match_nterrupt<0>();
-            disable_compare_match_nterrupt<1>();
+            disable_compare_match_interrupt<0>();
+            disable_compare_match_interrupt<1>();
 
             clear_overflow_interrupt_flag();
             clear_channel_interrupt_flag<0>();
@@ -96,12 +100,12 @@ namespace zoal { namespace arch { namespace avr {
 
             zoal::utils::memory_segment<uint8_t, Address> mem;
             switch (Config::channel) {
-                case 0:
-                    mem[model::TCCRxA] |= static_cast<uint8_t >(1u << 7u); // COM2A1
-                    break;
-                case 1:
-                    mem[model::TCCRxA] |= static_cast<uint8_t >(1u << 5u); // COM2B1
-                    break;
+            case 0:
+                mem[model::TCCRxA] |= static_cast<uint8_t >(1u << 7u); // COM2A1
+                break;
+            case 1:
+                mem[model::TCCRxA] |= static_cast<uint8_t >(1u << 5u); // COM2B1
+                break;
             }
 
             mem.happyInspection();
@@ -117,12 +121,12 @@ namespace zoal { namespace arch { namespace avr {
 
             zoal::utils::memory_segment<uint8_t, Address> mem;
             switch (Config::channel) {
-                case 0:
-                    mem[model::TCCRxA] &= ~static_cast<uint8_t >(1u << 7u); // COM2A1
-                    break;
-                case 1:
-                    mem[model::TCCRxA] &= ~static_cast<uint8_t >(1u << 5u); // COM2B1
-                    break;
+            case 0:
+                mem[model::TCCRxA] &= ~static_cast<uint8_t >(1u << 7u); // COM2A1
+                break;
+            case 1:
+                mem[model::TCCRxA] &= ~static_cast<uint8_t >(1u << 5u); // COM2B1
+                break;
             }
             mem.happyInspection();
         }
@@ -133,14 +137,14 @@ namespace zoal { namespace arch { namespace avr {
 
             zoal::utils::memory_segment<word, Address> memWord;
             switch (Channel) {
-                case 0:
-                    memWord[model::OCRxA] = value;
-                    break;
-                case 1:
-                    memWord[model::OCRxB] = value;
-                    break;
-                default:
-                    break;
+            case 0:
+                memWord[model::OCRxA] = value;
+                break;
+            case 1:
+                memWord[model::OCRxB] = value;
+                break;
+            default:
+                break;
             }
 
             memWord.happyInspection();
@@ -152,12 +156,12 @@ namespace zoal { namespace arch { namespace avr {
 
             zoal::utils::memory_segment<word, Address> memWord;
             switch (Channel) {
-                case 0:
-                    return memWord[model::OCRxA];
-                case 1:
-                    return memWord[model::OCRxB];
-                default:
-                    break;
+            case 0:
+                return memWord[model::OCRxA];
+            case 1:
+                return memWord[model::OCRxB];
+            default:
+                break;
             }
 
             return 0;

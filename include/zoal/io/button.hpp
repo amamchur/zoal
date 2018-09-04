@@ -25,8 +25,8 @@ namespace zoal { namespace io {
         static constexpr uint16_t min_press_delay = MinPressDelay;
     };
 
-    using pull_up_button = button_config<zoal::gpio::pin_mode::input_pull_up, 10, 250>;
-    using pull_up_button_no_press = button_config<zoal::gpio::pin_mode::input_pull_up, 10, 0>;
+    using pull_up_button = button_config<zoal::gpio::pin_mode::input_pull_up, 5, 250>;
+    using pull_up_button_no_press = button_config<zoal::gpio::pin_mode::input_pull_up, 5, 0>;
 
     template<class CounterType>
     class button_base {
@@ -67,7 +67,7 @@ namespace zoal { namespace io {
             auto now = Counter::now();
             auto dt = now - this->prev_time;
             auto value = Cfg::mode == pin_mode::input_pull_up ? pin::read() ^ 1u : pin::read();
-            auto state = machine.handle_button(dt, this->button_state, value);
+            auto state = machine.handle_button(dt, this->button_state, static_cast<uint8_t>(value));
             auto events = state & button_state_trigger;
             this->button_state = state & ~button_state_trigger;
 
@@ -103,7 +103,7 @@ namespace zoal { namespace io {
             auto now = Counter::now();
             auto dt = now - this->prev_time;
             auto value = Config::mode == pin_mode::input_pull_up ? pin::read() ^ 1u : pin::read();
-            auto state = machine.handle_button(dt, this->button_state, value);
+            auto state = machine.handle_button(dt, this->button_state, static_cast<uint8_t>(value));
             auto events = state & button_state_trigger;
             this->button_state = state & ~button_state_trigger;
 

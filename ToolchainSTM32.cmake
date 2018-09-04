@@ -7,6 +7,7 @@ set(CMAKE_CXX_COMPILER_WORKS 1)
 
 set(CMAKE_OBJCOPY arm-none-eabi-objcopy)
 set(CMAKE_OBJDUMP arm-none-eabi-objdump)
+set(ARM_SIZE arm-none-eabi-size)
 
 set(COMMON_FLAGS "-mcpu=cortex-m0 -mthumb -specs=nosys.specs")
 set(CMAKE_CXX_FLAGS_INIT "${COMMON_FLAGS}")
@@ -159,32 +160,12 @@ function(add_stm32_executable NAME MCU)
     set_target_properties(${NAME}.elf
             PROPERTIES
             LINK_FLAGS "-T\"${LD_DIR}/${MCU}.ld\" -Wl,-Map,\"${NAME}.map\" -Wl,--gc-sections")
+    add_custom_command(
+            TARGET ${NAME}.elf
+            POST_BUILD
+            COMMAND ${ARM_SIZE} ${NAME}.elf
+    )
 endfunction()
-
-#set(STM32_STARTUP
-#        stm32/startup/_cxx.cpp
-#        stm32/startup/_sbrk.c
-#        stm32/startup/_syscalls.c
-#        stm32/startup/_exit.c
-#        stm32/startup/_startup.c
-#        stm32/startup/_reset_hardware.c
-#        stm32/startup/_initialize_hardware.c
-#        stm32/startup/exception_handlers.c)
-#
-#set(STM32F0XX_SRC
-#        stm32/system/src/cmsis/system_stm32f0xx.c
-#        stm32/system/src/cmsis/vectors_stm32f0xx.c)
-#set(STM32F10X_SRC
-#        stm32/system/src/cmsis/system_stm32f10x.c
-#        stm32/system/src/cmsis/vectors_stm32f10x.c)
-#
-#set(STM32F10X_INCLUDES
-#        "stm32/system/include"
-#        "stm32/system/include/cmsis"
-#        "stm32/system/include/cortexm"
-#        "stm32/system/include/stm32f1-stdperiph"
-#        )
-
 
 function(add_mcu_executable NAME MCU)
     if (${MCU} MATCHES "^[sS][tT][mM]32")

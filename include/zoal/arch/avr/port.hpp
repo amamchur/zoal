@@ -20,9 +20,9 @@ namespace zoal { namespace arch { namespace avr {
 
         port() = delete;
 
-        static inline void enable() {}
+        static inline void power_on() {}
 
-        static inline void disable() {
+        static inline void power_off() {
             mode<::zoal::gpio::pin_mode::input_floating>(0xFF);
         }
 
