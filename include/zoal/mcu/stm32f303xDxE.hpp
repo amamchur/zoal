@@ -10,18 +10,21 @@
 #include "../periph/adc_connection.hpp"
 #include "../periph/pwm_connection.hpp"
 #include "../arch/cortex/stm32f3/port.hpp"
+#include "../arch/cortex/stm32f3/usart.hpp"
 #include "../arch/cortex/stm32f3/spi.hpp"
 #include "../arch/cortex/stm32f3/adc.hpp"
 #include "../arch/cortex/stm32f3/adc_common_regs.hpp"
 #include "../arch/cortex/stm32f3/general_purpose_timer.hpp"
+#include "../arch/cortex/stm32f3/metadata_stm32f303xDxE.hpp"
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
 #include "../arch/cortex/stm32x/clock_control.hpp"
 #include "../arch/cortex/stm32x/interrupt_control.hpp"
+#include "../arch/cortex/stm32x/mux.hpp"
 #include "../arch/cortex/nested_vectored_interrupt_controller.hpp"
 
 namespace zoal { namespace mcu {
-    template<uint32_t Freq>
-    class stm32f303xDxE : public base_mcu<Freq, 4> {
+    template<uint32_t Frequency>
+    class stm32f303xDxE : public base_mcu<Frequency, 4> {
     public:
         using nvic = ::zoal::arch::stm32f1::nested_vectored_interrupt_controller<>;
         using rcc = ::zoal::arch::stm32x::reset_and_clock_control<>;
@@ -31,6 +34,9 @@ namespace zoal { namespace mcu {
 
         template<uint32_t Set, uint32_t Clear = ~Set>
         using clock_apb1 = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::APB1, Set, Clear>;
+
+        template<uint32_t Set, uint32_t Clear = ~Set>
+        using clock_apb2 = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::APB2, Set, Clear>;
 
 //        template<uint32_t Set, uint32_t Clear = ~Set>
 //        using options_cfgr2 = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::CFGR2, Set, Clear>;
@@ -61,23 +67,26 @@ namespace zoal { namespace mcu {
 //        using timer6 = zoal::arch::stm32f3::general_purpose_timer<0x40001000, 5, clock_apb1<0x000000010>>;
 //        using timer7 = zoal::arch::stm32f3::general_purpose_timer<0x40002000, 7, clock_apb1<0x000000020>>;
 
-        using adc_common12 = zoal::arch::stm32f3::adc_common_regs<0x50000300>;
-        using adc_common34 = zoal::arch::stm32f3::adc_common_regs<0x50000700>;
+        using adc_common12 = zoal::arch::stm32f3::adc_common_regs<0x50000300u>;
+        using adc_common34 = zoal::arch::stm32f3::adc_common_regs<0x50000700u>;
 
         template<uintptr_t Address, uint8_t N, class CommRegs, class Clock>
         using adc = typename ::zoal::arch::stm32f3::adc<Address, N, CommRegs, Clock>;
 
-        using enable_adc12 = clock_ahb<0x10000000>;
-        using enable_adc34 = clock_ahb<0x20000000>;
+        using enable_adc12 = clock_ahb<0x10000000u>;
+        using enable_adc34 = clock_ahb<0x20000000u>;
 //        using adc12_pll_div6 = options_cfgr2<0x00000130, ~0x000001F0u>;
 //        using adc34_pll_div6 = options_cfgr2<0x00002600, ~0x00003E00u>;
 //        using adc12_options = ::zoal::arch::stm32x::clock_control_set<enable_adc12, adc12_pll_div6>;
 //        using adc34_options = ::zoal::arch::stm32x::clock_control_set<enable_adc34, adc34_pll_div6>;
 
-        using adc1 = adc<0x50000000, 1, adc_common12, enable_adc12>;
-        using adc2 = adc<0x50000100, 2, adc_common12, enable_adc12>;
-        using adc3 = adc<0x50000400, 3, adc_common34, enable_adc34>;
-        using adc4 = adc<0x50000500, 4, adc_common34, enable_adc34>;
+        using adc1 = adc<0x50000000u, 1, adc_common12, enable_adc12>;
+        using adc2 = adc<0x50000100u, 2, adc_common12, enable_adc12>;
+        using adc3 = adc<0x50000400u, 3, adc_common34, enable_adc34>;
+        using adc4 = adc<0x50000500u, 4, adc_common34, enable_adc34>;
+
+        template<uintptr_t TxSize, uintptr_t RxSize>
+        using usart1 = typename ::zoal::arch::stm32f3::usart<0x40013800u, 1, TxSize, RxSize, clock_apb2<0x4000>>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;
@@ -239,6 +248,7 @@ namespace zoal { namespace mcu {
 
         using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;
+        using mux = ::zoal::arch::stm32x::stm32x_mux<api>;
     };
 }}
 

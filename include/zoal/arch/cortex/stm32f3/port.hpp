@@ -4,6 +4,7 @@
 #define ZOAL_ARCH_STM32F3_PORT_HPP
 
 #include "../../../gpio/pin_mode.hpp"
+#include "../../../utils/helpers.hpp"
 #include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace arch { namespace stm32f3 {
@@ -44,21 +45,6 @@ namespace zoal { namespace arch { namespace stm32f3 {
             auto data = mem[GPIOx_ODR];
             mem[GPIOx_BRR] = data & mask;
             mem[GPIOx_BSRR] = ~data & mask;
-        }
-
-        static inline void analog_mode(register_type mask) {
-            register_type vMODER = mem[GPIOx_MODER];
-            for (register_type i = 0; i < 16; i++) {
-                auto v = (mask >> i) & 0x1;
-                if (!v) {
-                    continue;
-                }
-
-                register_type offset = i << 1;
-                vMODER |= 0x3 << offset;
-            }
-
-            mem[GPIOx_MODER] = vMODER;
         }
 
         template<::zoal::gpio::pin_mode PinMode>
@@ -125,27 +111,16 @@ namespace zoal { namespace arch { namespace stm32f3 {
             mem[GPIOx_PUPDR] = vPUPDR;
         }
 
-        static void mode(register_type mask, ::zoal::gpio::pin_mode pm) {
-            using namespace ::zoal::gpio;
+        template<uint8_t pin, uint8_t af>
+        static inline void stm32_alternate_function() {
+            using namespace zoal::utils;
 
-            switch (pm) {
-            case pin_mode::input_floating:
-                mode<pin_mode::input_floating>(mask);
-                break;
-            case pin_mode::input_pull_down:
-                mode<pin_mode::input_pull_down>(mask);
-                break;
-            case pin_mode::input_pull_up:
-                mode<pin_mode::input_pull_up>(mask);
-                break;
-            case pin_mode::output_open_drain:
-                mode<pin_mode::output_open_drain>(mask);
-                break;
-            case pin_mode::output_push_pull:
-            default:
-                mode<pin_mode::output_push_pull>(mask);
-                break;
-            }
+            mem[GPIOx_OSPEEDR] |= (0x3 << (pin * 2)); // 50MHz
+            mem[GPIOx_OTYPER] &= ~(0x1 << pin); // Output push-pull
+            mem[GPIOx_MODER] = clear_and_set<0x3, 0x2, pin * 2>::apply(mem[GPIOx_MODER]);
+
+            constexpr auto index = pin < 8 ? GPIOx_AFRL : GPIOx_AFRH;
+            mem[index] = clear_and_set<0xF, af, (pin & 0x7) << 2>::apply(mem[index]);
         }
 
     private:

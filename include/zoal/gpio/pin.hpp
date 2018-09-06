@@ -10,8 +10,8 @@
 
 namespace zoal { namespace gpio {
 
-    template<class Port, uint8_t Offset>
-    class pin {
+    template<class Port, uint8_t Offset, class ... Mixin>
+    class pin : public Mixin... {
     public:
         using port = Port;
 

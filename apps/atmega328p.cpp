@@ -71,6 +71,10 @@ int main() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
+    usart::setup<usart_config>();
+
+    logger::info() << "asdasd";
+
     max7219::init(1);
     matrix.clear();
     long value = 0;
