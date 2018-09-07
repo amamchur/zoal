@@ -10,57 +10,45 @@
 namespace zoal { namespace gpio {
     template<zoal::gpio::pin_mode PinMode>
     struct mode_functor {
-        template <class Port, uintptr_t mask>
+        template<class Port, uintptr_t Mask>
         static inline void apply() {
-            if (mask) {
-                Port::template mode<PinMode, static_cast<typename Port::register_type>(mask)>();
-            }
+            Port::template mode<PinMode, static_cast<typename Port::register_type>(Mask)>();
         }
     };
 
     struct low_functor {
-        template <class Port, uintptr_t mask>
+        template<class Port, uintptr_t Mask>
         static inline void apply() {
-            if (mask) {
-                Port::low(static_cast<typename Port::register_type>(mask));
-            }
+            Port::low(static_cast<typename Port::register_type>(Mask));
         }
     };
 
     struct high_functor {
-        template <class Port, uintptr_t mask>
+        template<class Port, uintptr_t Mask>
         static inline void apply() {
-            if (mask) {
-                Port::high(static_cast<typename Port::register_type>(mask));
-            }
+            Port::high(static_cast<typename Port::register_type>(Mask));
         }
     };
 
     struct toggle_functor {
-        template <class Port, uintptr_t mask>
+        template<class Port, uintptr_t Mask>
         static inline void apply() {
-            if (mask) {
-                Port::toggle(static_cast<typename Port::register_type>(mask));
-            }
+            Port::toggle(static_cast<typename Port::register_type>(Mask));
         }
     };
 
     struct power_on_functor {
-        template <class Port, uintptr_t mask>
+        template<class Port, uintptr_t Mask>
         static inline void apply() {
-            if (mask) {
-                Port::power_on();
-            }
+            Port::power_on();
         }
     };
 
     struct power_off_functor {
     public:
-        template <class Port, uintptr_t mask>
+        template<class Port, uintptr_t Mask>
         static inline void apply() {
-            if (mask) {
-                Port::power_off();
-            }
+            Port::power_off();
         }
     };
 
@@ -83,23 +71,57 @@ namespace zoal { namespace gpio {
         static constexpr auto mask = 0;
     };
 
+    template<class Port, class Functor, class Next, uintptr_t Mask>
+    struct functor_invoker {
+        static inline void invoke() {
+            Functor::template apply<Port, Mask>();
+            Next::apply();
+        }
+    };
+
+    template<class Functor, class Next, uintptr_t Mask>
+    struct functor_invoker<null_port, Functor, Next, Mask> {
+        static inline void invoke() {
+        }
+    };
+
+    template<class Functor, class Next>
+    struct functor_invoker<null_port, Functor, Next, 0> {
+        static inline void invoke() {
+            Next::apply();
+        }
+    };
+
+    template<class Port, class Functor, uintptr_t Mask>
+    struct functor_invoker<Port, Functor, void, Mask> {
+        static inline void invoke() {
+            Functor::template apply<Port, Mask>();
+        }
+    };
+
+    template<class Port, class Functor, class Next>
+    struct functor_invoker<Port, Functor, Next, 0> {
+        static inline void invoke() {
+            Next::apply();
+        }
+    };
+
     template<class Link, class Functor, class ... Pins>
-    struct executor {
+    struct chain_action {
         using port = typename Link::port;
         using functor = Functor;
-        using next = executor<typename Link::next, Functor, Pins...>;
+        using next = chain_action<typename Link::next, Functor, Pins...>;
         using filter = pin_filter<port, Pins...>;
 
         static constexpr auto mask = filter::mask;
 
         static void apply() {
-            functor::template apply<port, mask>();
-            next::apply();
+            functor_invoker<port, functor, next, mask>::invoke();
         }
     };
 
     template<class Functor, class ... Pins>
-    struct executor<port_link_terminator, Functor, Pins...> {
+    struct chain_action<void, Functor, Pins...> {
         using port = null_port;
         using functor = Functor;
         using next = void;
@@ -109,22 +131,58 @@ namespace zoal { namespace gpio {
         }
     };
 
-    template <class A, class B>
-    struct merge {
+    template<class A, class B>
+    struct merge_actions {
+        static_assert(zoal::utils::is_same<
+                typename A::functor,
+                typename B::functor
+        >::value, "Actions have different functor");
+
+        static_assert(zoal::utils::is_same<
+                typename A::port,
+                typename B::port
+        >::value, "Port list does not match");
+
         using port = typename A::port;
         using functor = typename A::functor;
-        using next = merge<typename A::next, typename B::next>;
+        using next = merge_actions<typename A::next, typename B::next>;
         static constexpr auto mask = A::mask | B::mask;
 
         static void apply() {
-            functor::template apply<port, mask>();
-            next::apply();
+            functor_invoker<port, functor, next, mask>::invoke();
         }
     };
 
-    template <>
-    struct merge<void, void> {
+    template<>
+    struct merge_actions<void, void> {
+        using port = null_port;
         using next = void;
+        using functor = void;
+
+        static constexpr auto mask = 0;
+
+        static void apply() {
+        }
+    };
+
+    template<class A>
+    struct merge_actions<A, void> {
+        using port = null_port;
+        using next = void;
+        using functor = void;
+
+        static constexpr auto mask = 0;
+
+        static void apply() {
+        }
+    };
+
+    template<class B>
+    struct merge_actions<void, B> {
+        using port = null_port;
+        using next = void;
+        using functor = void;
+
         static constexpr auto mask = 0;
 
         static void apply() {
@@ -136,23 +194,23 @@ namespace zoal { namespace gpio {
         using chain = Chain;
         using register_type = typename chain::port::register_type;
 
-        template<class ... Pins>
-        using power_on = executor<chain, power_on_functor, Pins...>;
+        template<class ...Pins>
+        using power_on = chain_action<chain, power_on_functor, Pins...>;
 
-        template<class ... Pins>
-        using power_off = executor<chain, power_off_functor, Pins...>;
+        template<class ...Pins>
+        using power_off = chain_action<chain, power_off_functor, Pins...>;
 
-        template<class ... Pins>
-        using low = executor<chain, low_functor, Pins...>;
+        template<class ...Pins>
+        using low = chain_action<chain, low_functor, Pins...>;
 
-        template<class ... Pins>
-        using high = executor<chain, high_functor, Pins...>;
+        template<class ...Pins>
+        using high = chain_action<chain, high_functor, Pins...>;
 
-        template<class ... Pins>
-        using toggle = executor<chain, toggle_functor, Pins...>;
+        template<class ...Pins>
+        using toggle = chain_action<chain, toggle_functor, Pins...>;
 
-        template<zoal::gpio::pin_mode PinMode, class ... Pins>
-        using mode = executor<chain, mode_functor<PinMode>, Pins...>;
+        template<zoal::gpio::pin_mode PinMode, class ...Pins>
+        using mode = chain_action<chain, mode_functor<PinMode>, Pins...>;
     };
 }}
 

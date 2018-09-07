@@ -19,7 +19,7 @@ int main() {
     using a = mcu::api::low<mcu::pa00>;
     using b = mcu::api::low<mcu::pa01>;
     using c = mcu::api::low<mcu::pa00, mcu::pa01>;
-    using m = merge<a, b>;
+    using m = merge_actions<b, c>;
     m::apply();
 
 
