@@ -5,8 +5,8 @@ set(CMAKE_C_COMPILER_WORKS 1)
 set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 
-set(CMAKE_OBJCOPY arm-none-eabi-objcopy)
-set(CMAKE_OBJDUMP arm-none-eabi-objdump)
+set(ARM_OBJCOPY arm-none-eabi-objcopy)
+set(ARM_OBJDUMP arm-none-eabi-objdump)
 set(ARM_SIZE arm-none-eabi-size)
 
 set(COMMON_FLAGS "-mcpu=cortex-m0 -mthumb -specs=nosys.specs")
@@ -160,10 +160,21 @@ function(add_stm32_executable NAME MCU)
     set_target_properties(${NAME}.elf
             PROPERTIES
             LINK_FLAGS "-T\"${LD_DIR}/${MCU}.ld\" -Wl,-Map,\"${NAME}.map\" -Wl,--gc-sections")
+
+
+    set(lst_file ${NAME}.lst)
     add_custom_command(
             TARGET ${NAME}.elf
             POST_BUILD
+            COMMAND ${ARM_OBJDUMP} -S ${NAME}.elf > ${lst_file}
             COMMAND ${ARM_SIZE} ${NAME}.elf
+    )
+    set_property(
+        DIRECTORY
+        APPEND
+        PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+        "${lst_file}"
+        "${NAME}.map"
     )
 endfunction()
 

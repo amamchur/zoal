@@ -43,20 +43,19 @@ public:
     }
 
     void init() {
-        Board::mcu::api::power_on(
-                typename Board::mcu::port_chain()
-                & typename Board::ard_d13()
-                & typename Board::ard_d12()
-                & typename Board::ard_d11()
-                & typename Board::ard_d10()
-                & typename Board::ard_d08()
-                & typename Board::ard_d07()
-                & typename Board::ard_d04()
-                & typename Board::ard_d03()
-                & typename Board::ard_a01()
-                & typename Board::ard_a02()
-                & typename Board::ard_a03()
-        );
+        Board::mcu::api::template power_on<
+                typename Board::ard_d13,
+                typename Board::ard_d12,
+                typename Board::ard_d11,
+                typename Board::ard_d10,
+                typename Board::ard_d08,
+                typename Board::ard_d07,
+                typename Board::ard_d04,
+                typename Board::ard_d03,
+                typename Board::ard_a01,
+                typename Board::ard_a02,
+                typename Board::ard_a03
+        >::apply();
 
         led1::off();
         led2::off();

@@ -13,7 +13,7 @@ namespace zoal { namespace metadata {
         static constexpr int ck = Ck;
     };
 
-    template<uint8_t Usart, uint32_t port, uint8_t ping>
+    template<uint8_t Usart, uint32_t Port, uint8_t PinOffset>
     struct stm32_usart_af_mapping : public usart_af<-1, -1, -1> {
     };
 

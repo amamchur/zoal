@@ -14,6 +14,7 @@
 #include "../arch/cortex/stm32f1/usart.hpp"
 #include "../arch/cortex/stm32x/clock_control.hpp"
 #include "../arch/cortex/stm32x/interrupt_control.hpp"
+#include "../arch/cortex/stm32x/mux.hpp"
 #include "../utils/ms_counter.hpp"
 #include "../utils/tool_set.hpp"
 

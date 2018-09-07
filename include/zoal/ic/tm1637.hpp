@@ -84,7 +84,7 @@ namespace zoal { namespace ic {
 
         static void begin() {
             using namespace zoal::gpio;
-            api::template mode<pin_mode::output>(typename api::chain() & DIO() & CLK());
+            api::template mode<pin_mode::output, DIO, CLK>::apply();
         }
     };
 }}

@@ -3,12 +3,15 @@
 #ifndef ZOAL_GPIO_Port_ITERATOR_HPP
 #define ZOAL_GPIO_Port_ITERATOR_HPP
 
+#include "null_port.hpp"
 #include "../utils/helpers.hpp"
 
 namespace zoal { namespace gpio {
 
     class port_link_terminator {
     public:
+        using port = null_port;
+
         template<class T>
         inline void operator&(T) {}
 
@@ -20,6 +23,8 @@ namespace zoal { namespace gpio {
     class port_link {
     public:
         using port = Port;
+        using next = Next;
+
         typename port::register_type mask{0};
         typename port::register_type data{0};
 
@@ -28,21 +33,21 @@ namespace zoal { namespace gpio {
             if (mask) {
                 T::flush(*this);
             }
-            next.template flush<T>();
+            next_.template flush<T>();
         }
 
         template<class Pin>
-        port_link operator&(Pin pin) {
+        inline port_link operator&(Pin pin) {
             if (Port::address == Pin::port::address) {
                 mask |= Pin::mask;
                 data |= pin.value << Pin::offset;
             }
-            next.operator &(pin);
+            next_.operator &(pin);
             return *this;
         }
 
     private:
-        Next next;
+        Next next_;
     };
 
     template<class First, class ... Rest>

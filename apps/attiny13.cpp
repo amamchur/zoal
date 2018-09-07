@@ -33,11 +33,11 @@ int main() {
     asm volatile("nop"            "\n");
     asm volatile("nop"            "\n");
     asm volatile("nop"            "\n");
-    mcu::api::high(mcu::port_chain() & mcu::pb0() & mcu::pb1() & mcu::pb2() & mcu::pb3() & mcu::pb4() & mcu::pb5());
+    mcu::api::high<mcu::pb0, mcu::pb1, mcu::pb2, mcu::pb3, mcu::pb4, mcu::pb5>::apply();
     asm volatile("nop"            "\n");
-    mcu::api::low(mcu::port_chain() & mcu::pb0() & mcu::pb1() & mcu::pb2() & mcu::pb3() & mcu::pb4() & mcu::pb5());
+    mcu::api::low<mcu::pb0, mcu::pb1, mcu::pb2, mcu::pb3, mcu::pb4, mcu::pb5>::apply();
     asm volatile("nop"            "\n");
-    mcu::api::toggle(mcu::port_chain() & mcu::pb0() & mcu::pb1() & mcu::pb2() & mcu::pb3() & mcu::pb4() & mcu::pb5());
+    mcu::api::toggle<mcu::pb0, mcu::pb1, mcu::pb2, mcu::pb3, mcu::pb4, mcu::pb5>::apply();
     asm volatile("nop"            "\n");
 //
 //    ms_timer::mode<zoal::periph::timer_mode::fast_pwm_8bit>();

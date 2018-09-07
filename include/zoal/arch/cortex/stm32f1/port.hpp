@@ -88,19 +88,21 @@ namespace zoal { namespace arch { namespace stm32f1 {
             }
         }
 
-        static inline void analog_mode(register_type mask) {
-            config_reg<0>(mem[GPIOx_CRL], mask & 0xFF);
-            config_reg<0>(mem[GPIOx_CRH], mask >> 0x8);
-        }
-
-        static inline void alternate_push_pullMode(register_type mask) {
-            config_reg<0x8 | 0x1>(mem[GPIOx_CRL], mask & 0xFF);
-            config_reg<0x8 | 0x1>(mem[GPIOx_CRH], mask >> 0x8);
-        }
-
-        static inline void alternate_open_drain_mode(register_type mask) {
-            config_reg<0xC | 0x1>(mem[GPIOx_CRL], mask & 0xFF);
-            config_reg<0xC | 0x1>(mem[GPIOx_CRH], mask >> 0x8);
+        template<::zoal::gpio::pin_mode PinMode, register_type mask>
+        static inline void mode() {
+            using namespace zoal::gpio;
+            config_reg<pin_mode_to_cnf_mode<PinMode>::value>(mem[GPIOx_CRL], mask & 0xFF);
+            config_reg<pin_mode_to_cnf_mode<PinMode>::value>(mem[GPIOx_CRH], mask >> 0x8);
+            switch (PinMode) {
+                case pin_mode::input_pull_down:
+                    mem[GPIOx_BRR] = mask;
+                    break;
+                case pin_mode::input_pull_up:
+                    mem[GPIOx_BSRR] = mask;
+                    break;
+                default:
+                    break;
+            }
         }
     private:
         static zoal::utils::memory_segment<uint32_t, Address> mem;

@@ -34,6 +34,9 @@ namespace zoal {
         struct is_pin : integral_constant<bool, T::port::address != 0 && T::offset != 0> {
         };
 
+        template<class Pin, class Port>
+        struct belongs_to_port : is_same<typename Pin::port, Port> {
+        };
 
         template<typename T, typename... Rest>
         struct has_duplicates : false_type {
@@ -44,7 +47,8 @@ namespace zoal {
         };
 
         template<typename T, typename First, typename... Rest>
-        struct has_duplicates<T, First, Rest...> : integral_constant<bool, is_same<T, First>::value || has_duplicates<T, Rest...>::value> {
+        struct has_duplicates<T, First, Rest...> : integral_constant<bool,
+                is_same<T, First>::value || has_duplicates<T, Rest...>::value> {
         };
 
         template<class T, class U>
@@ -90,8 +94,35 @@ namespace zoal {
             static constexpr uint32_t set_mask = static_cast<uint32_t>(static_cast<uint64_t >(Set) << Shift);
 
             template<class T>
-            static inline T apply(T value) {
-                return (value & ~clear_mask) | set_mask;
+            static inline void apply(T &value) {
+                value = (value & ~clear_mask) | set_mask;
+            }
+        };
+
+        template<uint8_t Shift>
+        struct clear_and_set<0, 0, Shift> {
+            template<class T>
+            static inline void apply(T &) {
+            }
+        };
+
+        template<uintptr_t Clear, uint8_t Shift>
+        struct clear_and_set<Clear, 0, Shift> {
+            static constexpr uint32_t clear_mask = static_cast<uint32_t>(static_cast<uint64_t >(Clear) << Shift);
+
+            template<class T>
+            static inline void apply(T &value) {
+                value &= ~clear_mask;
+            }
+        };
+
+        template<uintptr_t Set, uint8_t Shift>
+        struct clear_and_set<0, Set, Shift> {
+            static constexpr uint32_t set_mask = static_cast<uint32_t>(static_cast<uint64_t >(Set) << Shift);
+
+            template<class T>
+            static inline void apply(T &value) {
+                value |= set_mask;
             }
         };
     };

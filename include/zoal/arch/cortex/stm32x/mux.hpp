@@ -6,7 +6,7 @@
 #include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace metadata {
-    template<uint8_t Usart, uint32_t port, uint8_t ping>
+    template<uint8_t Usart, uint32_t Port, uint8_t PinOffset>
     struct stm32_usart_af_mapping;
 }}
 
@@ -25,13 +25,13 @@ namespace zoal { namespace arch { namespace stm32x {
             using rx_af = zoal::metadata::stm32_usart_af_mapping<U::no, PinRX::port::address, PinRX::offset>;
             using ck_af = zoal::metadata::stm32_usart_af_mapping<U::no, PinCK::port::address, PinCK::offset>;
 
-            static_assert(tx_af::tx >= 0, "Unsupported TX mapping");
-            static_assert(rx_af::rx >= 0, "Unsupported RX mapping");
-            static_assert(ck_af::ck >= 0, "Unsupported CK mapping");
+            static_assert(tx_af::tx >= 0, "Unsupported TX pin mapping");
+            static_assert(rx_af::rx >= 0, "Unsupported RX pin mapping");
+            static_assert(ck_af::ck >= 0, "Unsupported CK pin mapping");
 
             static inline void on() {
                 using namespace zoal::utils;
-                Api::power_on(typename Api::chain() & PinTX() & PinRX() & PinCK());
+                Api::template power_on<PinTX, PinRX, PinCK>::apply();
 
                 if (is_pin<PinTX>::value) {
                     PinTX::port::template stm32_alternate_function<PinTX::offset, tx_af::tx>();

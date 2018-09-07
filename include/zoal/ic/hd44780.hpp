@@ -20,22 +20,10 @@ namespace zoal { namespace ic {
 		static void init() {
 			using namespace zoal::gpio;
 
-			api::power_on(chain()
-				& RS() & EN()
-				& D4() & D5() & D6() & D7()
-			);
-
-			api::template mode<pin_mode::output_push_pull>(chain()
-				& RS() & EN()
-				& D4() & D5() & D6() & D7()
-			);
-
-			api::low(chain()
-				& RS() & EN()
-				& D6() & D7()
-			);
-
-			tools::api::high(typename tools::api::chain() & D4() & D5());
+			api::template power_on<RS, EN, D4, D5, D6, D7>::apply();
+			api::template mode<pin_mode::output_push_pull, RS, EN, D4, D5, D6, D7>::apply();
+			api::template low<RS, EN, D6, D7>::apply();
+			api::template high<D4, D5>::apply();
 
 			pulseEnable();
 			delay::ms(5);

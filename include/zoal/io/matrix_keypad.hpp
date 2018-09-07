@@ -59,13 +59,12 @@ namespace zoal { namespace io {
             using namespace zoal::gpio;
 
             // Configure all pins to high impedance state
-            API::template mode<pin_mode::input_floating>(
-                    typename API::chain()
-                    & R00() & R01() & R02() & R03()
-                    & R04() & R05() & R06() & R07()
-                    & R08() & R09() & R10() & R11()
-                    & R12() & R13() & R14() & R15()
-            );
+            API::template mode<pin_mode::input_floating,
+                    R00, R01, R02, R03,
+                    R04, R05, R06, R07,
+                    R08, R09, R10, R11,
+                    R12, R13, R14, R15
+            >::apply();
 
             switch (row) {
                 case 0x0:
@@ -162,13 +161,12 @@ namespace zoal { namespace io {
         static void begin() {
             using namespace zoal::gpio;
 
-            api::template mode<pin_mode::input_pull_up>(
-                    typename api::chain()
-                    & C00() & C01() & C02() & C03()
-                    & C04() & C05() & C06() & C07()
-                    & C08() & C09() & C10() & C11()
-                    & C12() & C13() & C14() & C15()
-            );
+            api::template mode<pin_mode::input_pull_up,
+                    C00, C01, C02, C03,
+                    C04, C05, C06, C07,
+                    C08, C09, C10, C11,
+                    C12, C13, C14, C15
+            >::apply();
         }
 
         static uint8_t read_column(uint8_t column) {

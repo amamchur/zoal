@@ -25,7 +25,7 @@ namespace zoal { namespace gpio {
 
         template<::zoal::gpio::pin_mode PinMode>
         static inline void mode() {
-            port::template mode<PinMode>(mask);
+            port::template mode<PinMode, mask>();
         }
 
         static inline uint8_t read() {

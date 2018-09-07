@@ -62,9 +62,25 @@ namespace zoal { namespace arch { namespace avr {
             }
         }
 
-        static inline void analog_mode(register_type) {
+        template<::zoal::gpio::pin_mode PinMode, register_type mask>
+        static inline void mode() {
+            using namespace ::zoal::gpio;
+            switch (PinMode) {
+                case pin_mode::input_floating:
+                case pin_mode::input_pull_down:
+                    mem[DDRx] &= ~mask;
+                    mem[PORTx] &= ~mask;
+                    break;
+                case pin_mode::input_pull_up:
+                    mem[DDRx] &= ~mask;
+                    mem[PORTx] |= mask;
+                    break;
+                case pin_mode::output_open_drain:
+                case pin_mode::output_push_pull:
+                    mem[DDRx] |= mask;
+                    break;
+            }
         }
-
     private:
         static zoal::utils::memory_segment<uint8_t, Address> mem;
     };

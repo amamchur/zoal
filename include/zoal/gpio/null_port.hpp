@@ -32,6 +32,10 @@ namespace zoal { namespace gpio {
         template<::zoal::gpio::pin_mode>
         static inline void mode(register_type) {
         }
+
+        template<::zoal::gpio::pin_mode, register_type>
+        static inline void mode() {
+        }
     };
 }}
 

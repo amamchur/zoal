@@ -25,7 +25,6 @@ namespace zoal { namespace periph {
         static constexpr uint16_t max_value = static_cast<const uint16_t>((1 << resolution) - 1);
 
         static void on() {
-            port::analog_mode(pin::mask);
             adc::template connect<self_type>();
         }
 
