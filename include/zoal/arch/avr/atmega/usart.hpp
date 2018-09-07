@@ -7,66 +7,67 @@
 #include "../../../utils/memory_segment.hpp"
 #include "../../../data/ring_buffer.hpp"
 #include "../../../periph/usart_config.hpp"
+#include "../../bus.hpp"
 
 namespace zoal { namespace arch { namespace avr {
     template<::zoal::periph::usart_data_bits Bits>
-    struct usart_data_bits_flags {
+    struct atmega_usart_data_bits_flags {
     };
 
     template<>
-    struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_5> {
+    struct atmega_usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_5> {
         static constexpr uint8_t flags = 0 << 1;
     };
 
     template<>
-    struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_6> {
+    struct atmega_usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_6> {
         static constexpr uint8_t flags = 1 << 1;
     };
 
     template<>
-    struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_7> {
+    struct atmega_usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_7> {
         static constexpr uint8_t flags = 2 << 1;
     };
 
     template<>
-    struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_8> {
+    struct atmega_usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_8> {
         static constexpr uint8_t flags = 3 << 1;
     };
 
     template<::zoal::periph::usart_parity Parity>
-    struct usart_parity_flags {
+    struct atmega_usart_parity_flags {
         static constexpr uint8_t flags = 0;
     };
 
     template<>
-    struct usart_parity_flags<::zoal::periph::usart_parity::even> {
+    struct atmega_usart_parity_flags<::zoal::periph::usart_parity::even> {
         static constexpr uint8_t flags = 2 << 4;
     };
 
     template<>
-    struct usart_parity_flags<::zoal::periph::usart_parity::odd> {
+    struct atmega_usart_parity_flags<::zoal::periph::usart_parity::odd> {
         static constexpr uint8_t flags = 3 << 4;
     };
 
     template<::zoal::periph::usart_stop_bits StopBits>
-    struct usart_stop_bit_flags {
+    struct atmega_usart_stop_bit_flags {
         static constexpr uint8_t flags = 0;
     };
 
     template<>
-    struct usart_stop_bit_flags<::zoal::periph::usart_stop_bits::stop_bits_2> {
+    struct atmega_usart_stop_bit_flags<::zoal::periph::usart_stop_bits::stop_bits_2> {
         static constexpr uint8_t flags = 1 << 3;
     };
 
     template<class Config>
-    struct usart_mode {
+    struct atmega_usart_mode {
         static constexpr uint8_t UCSRxC = static_cast<uint8_t >(0)
-                                          | usart_data_bits_flags<Config::data_bits>::flags
-                                          | usart_parity_flags<Config::parity>::flags
-                                          | usart_stop_bit_flags<Config::stop_bits>::flags;
+                                          | atmega_usart_data_bits_flags<Config::data_bits>::flags
+                                          | atmega_usart_parity_flags<Config::parity>::flags
+                                          | atmega_usart_stop_bit_flags<Config::stop_bits>::flags;
     };
 
-    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize>
+    template<uintptr_t Address, uint8_t N, uintptr_t TxSize, uintptr_t RxSize>
     class usart {
     private:
         enum UCSRxA_Flags : uint8_t {
@@ -91,6 +92,10 @@ namespace zoal { namespace arch { namespace avr {
             TXB8x = 0
         };
     public:
+        static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
+        static constexpr auto address = Address;
+        static constexpr uint8_t no = N;
+
         using yield = zoal::utils::yield<>;
 
         template<uintptr_t Size>
@@ -123,7 +128,21 @@ namespace zoal { namespace arch { namespace avr {
             mem[UBRRxH] = static_cast<uint8_t>(value >> 0x8u);
             mem[UCSRxA] = ucsra;
             mem[UCSRxB] = static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
-            mem[UCSRxC] = usart_mode<Config>::UCSRxC;
+            mem[UCSRxC] = atmega_usart_mode<Config>::UCSRxC;
+        }
+
+        static void power_on() {
+        }
+
+        static void power_off() {
+        }
+
+        static void enable() {
+            mem[UCSRxB] |= static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);;
+        }
+
+        static void disable() {
+            mem[UCSRxB] &= ~static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
         }
 
         static inline void flush() {
@@ -170,14 +189,14 @@ namespace zoal { namespace arch { namespace avr {
         static zoal::utils::memory_segment<uint8_t, Address> mem;
     };
 
-    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize>
-    typename usart<Address, TxSize, RxSize>::buffer_tx usart<Address, TxSize, RxSize>::tx;
+    template<uintptr_t Address, uint8_t N, uintptr_t TxSize, uintptr_t RxSize>
+    typename usart<Address, N, TxSize, RxSize>::buffer_tx usart<Address, N, TxSize, RxSize>::tx;
 
-    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize>
-    typename usart<Address, TxSize, RxSize>::buffer_rx usart<Address, TxSize, RxSize>::rx;
+    template<uintptr_t Address, uint8_t N, uintptr_t TxSize, uintptr_t RxSize>
+    typename usart<Address, N, TxSize, RxSize>::buffer_rx usart<Address, N, TxSize, RxSize>::rx;
 
-    template<uintptr_t Address, uintptr_t TxSize, uintptr_t RxSize>
-    zoal::utils::memory_segment<uint8_t, Address> usart<Address, TxSize, RxSize>::mem;
+    template<uintptr_t Address, uint8_t N, uintptr_t TxSize, uintptr_t RxSize>
+    zoal::utils::memory_segment<uint8_t, Address> usart<Address, N, TxSize, RxSize>::mem;
 
 }}}
 

@@ -5,6 +5,7 @@
 
 #include "../../gpio/pin_mode.hpp"
 #include "../../utils/memory_segment.hpp"
+#include "../bus.hpp"
 
 namespace zoal { namespace arch { namespace avr {
     template<uintptr_t Address>
@@ -13,6 +14,7 @@ namespace zoal { namespace arch { namespace avr {
         using self_type = port<Address>;
         using register_type = uint8_t;
 
+        static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr uintptr_t address = Address;
         static constexpr uintptr_t PINx = 0x00;
         static constexpr uintptr_t DDRx = 0x01;

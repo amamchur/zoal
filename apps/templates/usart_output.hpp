@@ -16,11 +16,10 @@ public:
     zoal::io::output_stream<USART> cout;
 
     void run_once() {
-        cout << "DataBits: " << (uint8_t) Config::data_bits << "\r\n";
-        cout << "Parity  : " << (uint8_t) Config::parity << "\r\n";
-        cout << "StopBits: " << (uint8_t) Config::stop_bits << "\r\n";
+        cout << "DataBits: " << (uint16_t) Config::data_bits << "\r\n";
+        cout << "Parity  : " << (uint16_t) Config::parity << "\r\n";
+        cout << "StopBits: " << (uint16_t) Config::stop_bits << "\r\n";
         cout << "\r\n";
-        Tools::delay::ms(1000);
     }
 
     void run() {
@@ -29,6 +28,7 @@ public:
         cout << "\r\nStart!!!\r\n";
         while (true) {
             run_once();
+            Tools::delay::ms(1000);
         }
     }
 };

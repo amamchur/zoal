@@ -191,16 +191,16 @@ namespace zoal { namespace mcu {
         using usart_config = typename ::zoal::periph::usart_config<Frequency, BaudRate>;
 
         template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart0 = typename ::zoal::arch::avr::usart<0xC0, TxSize, RxSize>;
+        using usart0 = typename ::zoal::arch::avr::usart<0xC0, 0, TxSize, RxSize>;
 
         template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart1 = typename ::zoal::arch::avr::usart<0xC8, TxSize, RxSize>;
+        using usart1 = typename ::zoal::arch::avr::usart<0xC8, 1, TxSize, RxSize>;
 
         template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart2 = typename ::zoal::arch::avr::usart<0xD0, TxSize, RxSize>;
+        using usart2 = typename ::zoal::arch::avr::usart<0xD0, 2, TxSize, RxSize>;
 
         template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart3 = typename ::zoal::arch::avr::usart<0x130, TxSize, RxSize>;
+        using usart3 = typename ::zoal::arch::avr::usart<0x130, 3, TxSize, RxSize>;
 
         using port_chain = typename ::zoal::gpio::chain_builder<
                 port_a,

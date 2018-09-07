@@ -238,7 +238,7 @@ namespace zoal { namespace ic {
 			delay::template us<37>();
 
 			for (int i = 0; i < 8; i++) {
-				write(data[i]);
+				write_byte(data[i]);
 			}
 		}
 

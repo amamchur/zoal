@@ -5,6 +5,7 @@
 #include "mcu_type.hpp"
 #include "adc_model.hpp"
 #include "../../utils/memory_segment.hpp"
+#include "../bus.hpp"
 
 namespace zoal { namespace arch { namespace avr {
     template<mcu_type Type, uintptr_t Address, uint8_t N>
@@ -12,6 +13,7 @@ namespace zoal { namespace arch { namespace avr {
     public:
         using model = adc_model<Type>;
 
+        static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
         static constexpr uint8_t resolution = 10;

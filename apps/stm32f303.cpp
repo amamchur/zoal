@@ -61,7 +61,7 @@ void initTimer() {
 
 void USART1_Init() {
     usart::power_on();
-    mcu::mux::usart<usart, mcu::pa09, mcu::pa10, mcu::pa08>::on();
+    mcu::mux::usart<usart, mcu::pa10, mcu::pa09, mcu::pa08>::on();
     mcu::cfg::usart<usart, 57600>::apply();
     usart::enable();
 

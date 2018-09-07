@@ -50,6 +50,11 @@ using check = compile_check<app0, app1, app2, app3, app4, app5, app6, app7>;
 app1 app;
 
 void initialize() {
+    usart::power_on();
+    mcu::mux::usart<usart, mcu::pd0, mcu::pd1>::on();
+    mcu::cfg::usart<usart, 115200>::apply();
+    usart::enable();
+
     usart::setup<usart_config>();
 
     ms_timer::reset();

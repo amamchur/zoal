@@ -10,7 +10,7 @@
 #include "../periph/adc_connection.hpp"
 #include "../periph/pwm_connection.hpp"
 #include "../arch/avr/attiny_universe.hpp"
-#include "zoal/arch/avr/adc.hpp"
+#include "../arch/avr/adc.hpp"
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>

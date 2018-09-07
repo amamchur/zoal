@@ -9,11 +9,9 @@
 #include "../gpio/port_link.hpp"
 #include "../arch/cortex/stm32f1/port.hpp"
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
-//#include "../arch/cortex/nested_vectored_interrupt_controller.hpp"
 #include "../arch/cortex/stm32f1/adc.hpp"
 #include "../arch/cortex/stm32f1/usart.hpp"
-#include "zoal/arch/cortex/stm32x/bus_clock_control.hpp"
-#include "../arch/cortex/stm32x/interrupt_control.hpp"
+#include "../arch/cortex/stm32x/bus_clock_control.hpp"
 #include "../arch/cortex/stm32x/mux.hpp"
 #include "../utils/ms_counter.hpp"
 #include "../utils/tool_set.hpp"
@@ -23,16 +21,12 @@ namespace zoal { namespace mcu {
     class stm32f1xx : public base_mcu<Frequency, 4> {
     private:
         using rcc = typename ::zoal::arch::stm32x::reset_and_clock_control<>;
-//        using nvic = typename ::zoal::arch::stm32f1::nested_vectored_interrupt_controller<>;
-
-//        template<uint8_t Index, uint32_t Mask>
-//        using irq_ctrl = ::zoal::utils::interrupt_control<nvic, Index, Mask>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_apb1 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::cortex::bus_type::APB1, Set, Clear>;
+        using clock_apb1 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::bus::cortex_apb1, Set, Clear>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_apb2 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::cortex::bus_type::APB2, Set, Clear>;
+        using clock_apb2 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::bus::cortex_apb2, Set, Clear>;
     public:
         template<uintptr_t Address, class Clock>
         using port = typename ::zoal::arch::stm32f1::port<Address, Clock>;

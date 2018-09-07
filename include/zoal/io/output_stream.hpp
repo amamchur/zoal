@@ -6,7 +6,6 @@
 #include <stdint.h>
 #include <math.h> /* NOLINT */
 #include <stdlib.h> /* NOLINT */
-
 #include "stream.hpp"
 
 namespace zoal { namespace io {
@@ -16,21 +15,15 @@ namespace zoal { namespace io {
         uint8_t radix{10};
         uint8_t precision{2};
 
+        output_stream &operator<<(char ch) {
+            Transport::write_byte(ch);
+            return *this;
+        }
+
         output_stream &operator<<(const char *str) {
             string_functor sf(str);
             Transport::write(sf);
             return *this;
-        }
-
-        uint8_t *formatNumber(uint8_t *ptr, uint32_t value) {
-            do {
-                auto v = static_cast<uint8_t>(value % radix);
-                value /= radix;
-                v += v < 0xA ? 0x30 : 0x37; // To ASCII
-                *--ptr = v;
-            } while (value > 0);
-
-            return ptr;
         }
 
         output_stream &operator<<(unsigned long value) {
@@ -114,15 +107,15 @@ namespace zoal { namespace io {
             return *this << (double) value;
         }
 
-        template<uint8_t v>
-        output_stream &operator<<(const stream_value<v> &) {
-            Transport::write_byte(v);
+        template<uint8_t Value>
+        output_stream &operator<<(const stream_value<Value> &) {
+            Transport::write_byte(Value);
             return *this;
         }
 
-        template<uint8_t v>
-        output_stream &operator<<(const radix_value<v> &) {
-            this->radix = v;
+        template<uint8_t Value>
+        output_stream &operator<<(const radix_value<Value> &) {
+            this->radix = Value;
             return *this;
         }
 
@@ -140,6 +133,18 @@ namespace zoal { namespace io {
         output_stream &operator<<(T t) {
             Transport::write(t);
             return *this;
+        }
+
+    private:
+        uint8_t *formatNumber(uint8_t *ptr, uint32_t value) {
+            do {
+                auto v = static_cast<uint8_t>(value % radix);
+                value /= radix;
+                v += v < 0xA ? 0x30 : 0x37; // To ASCII
+                *--ptr = v;
+            } while (value > 0);
+
+            return ptr;
         }
     };
 }}

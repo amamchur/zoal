@@ -11,35 +11,35 @@ namespace zoal { namespace gpio {
     template<zoal::gpio::pin_mode PinMode>
     struct mode_functor {
         template<class Port, uintptr_t Mask>
-        static inline void apply() {
+        static void apply() {
             Port::template mode<PinMode, static_cast<typename Port::register_type>(Mask)>();
         }
     };
 
     struct low_functor {
         template<class Port, uintptr_t Mask>
-        static inline void apply() {
+        static void apply() {
             Port::low(static_cast<typename Port::register_type>(Mask));
         }
     };
 
     struct high_functor {
         template<class Port, uintptr_t Mask>
-        static inline void apply() {
+        static void apply() {
             Port::high(static_cast<typename Port::register_type>(Mask));
         }
     };
 
     struct toggle_functor {
         template<class Port, uintptr_t Mask>
-        static inline void apply() {
+        static void apply() {
             Port::toggle(static_cast<typename Port::register_type>(Mask));
         }
     };
 
     struct power_on_functor {
         template<class Port, uintptr_t Mask>
-        static inline void apply() {
+        static void apply() {
             Port::power_on();
         }
     };
@@ -47,7 +47,7 @@ namespace zoal { namespace gpio {
     struct power_off_functor {
     public:
         template<class Port, uintptr_t Mask>
-        static inline void apply() {
+        static void apply() {
             Port::power_off();
         }
     };
@@ -73,7 +73,7 @@ namespace zoal { namespace gpio {
 
     template<class Port, class Functor, class Next, uintptr_t Mask>
     struct functor_invoker {
-        static inline void invoke() {
+        static void invoke() {
             Functor::template apply<Port, Mask>();
             Next::apply();
         }
@@ -81,27 +81,27 @@ namespace zoal { namespace gpio {
 
     template<class Functor, class Next, uintptr_t Mask>
     struct functor_invoker<null_port, Functor, Next, Mask> {
-        static inline void invoke() {
+        static void invoke() {
         }
     };
 
     template<class Functor, class Next>
     struct functor_invoker<null_port, Functor, Next, 0> {
-        static inline void invoke() {
+        static void invoke() {
             Next::apply();
         }
     };
 
     template<class Port, class Functor, uintptr_t Mask>
     struct functor_invoker<Port, Functor, void, Mask> {
-        static inline void invoke() {
+        static void invoke() {
             Functor::template apply<Port, Mask>();
         }
     };
 
     template<class Port, class Functor, class Next>
     struct functor_invoker<Port, Functor, Next, 0> {
-        static inline void invoke() {
+        static void invoke() {
             Next::apply();
         }
     };

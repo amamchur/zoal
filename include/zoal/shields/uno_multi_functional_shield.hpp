@@ -2,7 +2,7 @@
 #define ZOAL_SHIELDS_UNO_MULTI_FUNCTIONAL_SHIELD_HPP
 
 #include "../gpio/pin.hpp"
-#include "zoal/ic/ic74hc595.hpp"
+#include "../ic/ic74hc595.hpp"
 #include "../io/button.hpp"
 #include "../data/segment7.hpp"
 

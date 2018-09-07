@@ -4,6 +4,7 @@
 #include <stdint.h> /* NOLINT */
 
 #include "base_mcu.hpp"
+#include "metadata/atmega_48_88_168_328.hpp"
 #include "../arch/avr/atmega_universe.hpp"
 #include "../gpio/pin.hpp"
 #include "../gpio/base_api.hpp"
@@ -64,11 +65,8 @@ namespace zoal { namespace mcu {
         using pc4_adc0 = adc_connection<pc4, 4>;
         using pc5_adc0 = adc_connection<pc5, 5>;
 
-        template<uint32_t BaudRate>
-        using usart_config = typename ::zoal::periph::usart_config<Frequency, BaudRate>;
-
         template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart0 = typename ::zoal::arch::avr::usart<0xC0, TxSize, RxSize>;
+        using usart0 = typename ::zoal::arch::avr::usart<0xC0, 0, TxSize, RxSize>;
 
         template<uintptr_t BufferSize>
         using i2c0 = typename ::zoal::arch::avr::i2c<0xB8, BufferSize, pc4, pc5>;
@@ -99,6 +97,8 @@ namespace zoal { namespace mcu {
 
         using port_chain = typename ::zoal::gpio::chain_builder<port_b, port_c, port_d>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;
+        using mux = ::zoal::arch::avr::atmega::mux<api>;
+        using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;
     };
 }}
 

@@ -7,11 +7,10 @@
 #include "../gpio/pin.hpp"
 #include "../gpio/base_api.hpp"
 #include "../gpio/port_link.hpp"
-#include "zoal/arch/cortex/bus_type.hpp"
+#include "../arch/bus.hpp"
 #include "../arch/cortex/stm32f0/port.hpp"
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
-#include "zoal/arch/cortex/stm32x/bus_clock_control.hpp"
-#include "../arch/cortex/stm32x/interrupt_control.hpp"
+#include "../arch/cortex/stm32x/bus_clock_control.hpp"
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
@@ -20,7 +19,7 @@ namespace zoal { namespace mcu {
         using rcc = typename ::zoal::arch::stm32x::reset_and_clock_control<>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using options_ahbenr = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::cortex::bus_type::AHB, Set, Clear>;
+        using options_ahbenr = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::bus::cortex_ahb, Set, Clear>;
 
         template<uintptr_t Address, class Clock>
         using port = typename ::zoal::gpio::stm32f0::port<Address, Clock>;

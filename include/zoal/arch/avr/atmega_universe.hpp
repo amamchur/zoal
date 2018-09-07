@@ -8,11 +8,12 @@
 #include "atmega/spi.hpp"
 #include "atmega/timer_interrupt_flags_vector.hpp"
 #include "atmega/timer_interrupt_mask_vector.hpp"
+#include "atmega/mux.hpp"
+#include "atmega/cfg.hpp"
 #include "port.hpp"
 #include "timer_model.hpp"
 #include "timer8.hpp"
 #include "timer16.hpp"
-
 #include "../../periph/usart_config.hpp"
 #include "../../gpio/pin.hpp"
 
@@ -56,21 +57,6 @@ namespace zoal { namespace arch { namespace avr {
         using timer5 = timer16_type<0x0124, pecs, 5>;
 
         using adc0 = avr::adc<avr::mcu_type::atmega, 0x78, 0>;
-
-        template<uint32_t Frequency, uint32_t BaudRate>
-        using usart_config = typename ::zoal::periph::usart_config<Frequency, BaudRate>;
-
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart0 = typename avr::usart<0xC0, TxSize, RxSize>;
-
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart1 = typename avr::usart<0xC8, TxSize, RxSize>;
-
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart2 = typename avr::usart<0xD0, TxSize, RxSize>;
-
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart3 = typename avr::usart<0x130, TxSize, RxSize>;
     };
 }}}
 

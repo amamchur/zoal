@@ -8,73 +8,20 @@
 namespace zoal { namespace metadata {
     template<uint8_t No>
     struct stm32_default_usart_freq;
+
+    template<zoal::periph::usart_data_bits Bits>
+    struct stm32_data_bits_to_cr1;
+
+    template<zoal::periph::usart_parity Parity>
+    struct stm32_parity_to_cr1;
+
+    template<zoal::periph::usart_stop_bits StopBit>
+    struct stm32_stop_bits_to_cr2;
 }}
 
 namespace zoal { namespace arch { namespace stm32x {
-    template<zoal::periph::usart_data_bits Bits>
-    struct data_bits_to_cr1 {
-
-    };
-
-    template<>
-    struct data_bits_to_cr1<zoal::periph::usart_data_bits::data_bits_7> {
-        static const uint32_t set_mask = 0x10000000;
-        static const uint32_t clear_mask = 0x10001000;
-    };
-
-    template<>
-    struct data_bits_to_cr1<zoal::periph::usart_data_bits::data_bits_8> {
-        static const uint32_t set_mask = 0x0;
-        static const uint32_t clear_mask = 0x10001000;
-    };
-
-    template<>
-    struct data_bits_to_cr1<zoal::periph::usart_data_bits::data_bits_9> {
-        static const uint32_t set_mask = 0x1000;
-        static const uint32_t clear_mask = 0x10001000;
-    };
-
-
-    template<zoal::periph::usart_parity Parity>
-    struct parity_to_cr1 {
-    };
-
-    template<>
-    struct parity_to_cr1<zoal::periph::usart_parity::none> {
-        static const uint32_t set_mask = 0x0;
-        static const uint32_t clear_mask = 0x600;
-    };
-
-    template<>
-    struct parity_to_cr1<zoal::periph::usart_parity::even> {
-        static const uint32_t set_mask = 0x400;
-        static const uint32_t clear_mask = 0x600;
-    };
-
-    template<>
-    struct parity_to_cr1<zoal::periph::usart_parity::odd> {
-        static const uint32_t set_mask = 0x600;
-        static const uint32_t clear_mask = 0x600;
-    };
-
-    template<zoal::periph::usart_stop_bits StopBit>
-    struct stop_bits_to_cr2 {
-    };
-
-    template<>
-    struct stop_bits_to_cr2<zoal::periph::usart_stop_bits::stop_bits_1> {
-        static const uint32_t set_mask = 0x0;
-        static const uint32_t clear_mask = 0x3000;
-    };
-
-    template<>
-    struct stop_bits_to_cr2<zoal::periph::usart_stop_bits::stop_bits_2> {
-        static const uint32_t set_mask = 0x2000;
-        static const uint32_t clear_mask = 0x3000;
-    };
-
     template<class Api>
-    class stm32x_cfg {
+    class cfg {
     public:
         template<
                 class U,
@@ -86,9 +33,9 @@ namespace zoal { namespace arch { namespace stm32x {
         >
         class usart {
         public:
-            using dbc1 = data_bits_to_cr1<Bits>;
-            using ptc1 = parity_to_cr1<Parity>;
-            using sbc2 = stop_bits_to_cr2<StopBits>;
+            using dbc1 = zoal::metadata::stm32_data_bits_to_cr1<Bits>;
+            using ptc1 = zoal::metadata::stm32_parity_to_cr1<Parity>;
+            using sbc2 = zoal::metadata::stm32_stop_bits_to_cr2<StopBits>;
 
             static constexpr auto enable_rx_tx = 0x0C;
             static constexpr auto c1_clear = dbc1::clear_mask | ptc1::clear_mask;

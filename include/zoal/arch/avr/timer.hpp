@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "../../periph/timer_mode.hpp"
 #include "../../utils/memory_segment.hpp"
+#include "../bus.hpp"
 
 namespace zoal { namespace arch { namespace avr {
     template<class TimerModel, uintptr_t Address, class TIFRs, class TIMRs, class ClockSource, uint8_t N>
@@ -14,6 +15,7 @@ namespace zoal { namespace arch { namespace avr {
         using word = typename model::word;
         using clock_source = ClockSource;
 
+        static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
         static constexpr uint8_t channels_count = 2;

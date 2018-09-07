@@ -21,7 +21,7 @@ using prescaler = zoal::utils::prescaler_le<ms_timer, 64>::result;
 using irq_handler = counter::handler<zoal::pcb::mcu::frequency, prescaler::value, ms_timer>;
 
 using usart_config = zoal::periph::usart_config<zoal::pcb::mcu::frequency, 115200>;
-using usart = zoal::pcb::mcu::usart0<32, 8>;
+using usart = zoal::pcb::mcu::usart1<32, 8>;
 
 using logger = zoal::utils::plain_logger<usart, zoal::utils::log_level::trace>;
 using tools = zoal::utils::tool_set<zoal::pcb::mcu, counter, logger>;
