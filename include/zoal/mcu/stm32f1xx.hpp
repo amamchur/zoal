@@ -9,10 +9,10 @@
 #include "../gpio/port_link.hpp"
 #include "../arch/cortex/stm32f1/port.hpp"
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
-#include "../arch/cortex/nested_vectored_interrupt_controller.hpp"
+//#include "../arch/cortex/nested_vectored_interrupt_controller.hpp"
 #include "../arch/cortex/stm32f1/adc.hpp"
 #include "../arch/cortex/stm32f1/usart.hpp"
-#include "../arch/cortex/stm32x/clock_control.hpp"
+#include "zoal/arch/cortex/stm32x/bus_clock_control.hpp"
 #include "../arch/cortex/stm32x/interrupt_control.hpp"
 #include "../arch/cortex/stm32x/mux.hpp"
 #include "../utils/ms_counter.hpp"
@@ -23,16 +23,16 @@ namespace zoal { namespace mcu {
     class stm32f1xx : public base_mcu<Frequency, 4> {
     private:
         using rcc = typename ::zoal::arch::stm32x::reset_and_clock_control<>;
-        using nvic = typename ::zoal::arch::stm32f1::nested_vectored_interrupt_controller<>;
+//        using nvic = typename ::zoal::arch::stm32f1::nested_vectored_interrupt_controller<>;
 
-        template<uint8_t Index, uint32_t Mask>
-        using irq_ctrl = ::zoal::utils::interrupt_control<nvic, Index, Mask>;
-
-        template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_apb1 = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::APB1, Set, Clear>;
+//        template<uint8_t Index, uint32_t Mask>
+//        using irq_ctrl = ::zoal::utils::interrupt_control<nvic, Index, Mask>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_apb2 = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::APB2, Set, Clear>;
+        using clock_apb1 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::cortex::bus_type::APB1, Set, Clear>;
+
+        template<uint32_t Set, uint32_t Clear = ~Set>
+        using clock_apb2 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::cortex::bus_type::APB2, Set, Clear>;
     public:
         template<uintptr_t Address, class Clock>
         using port = typename ::zoal::arch::stm32f1::port<Address, Clock>;
@@ -174,14 +174,14 @@ namespace zoal { namespace mcu {
         using pg14 = pin<port_g, 0xE>;
         using pg15 = pin<port_g, 0xF>;
 
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart1 = typename ::zoal::arch::stm32f1::usart<0x40013800u, TxSize, RxSize, clock_apb2<0x04000>, irq_ctrl<1, 0x20>, pa09, pa10>;
-
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart2 = typename ::zoal::arch::stm32f1::usart<0x40004400u, TxSize, RxSize, clock_apb1<0x20000>, irq_ctrl<1, 0x40>, pa02, pa03>;
-
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart3 = typename ::zoal::arch::stm32f1::usart<0x40004800u, TxSize, RxSize, clock_apb1<0x40000>, irq_ctrl<1, 0x80>, pb10, pa11>;
+//        template<uintptr_t TxSize, uintptr_t RxSize>
+//        using usart1 = typename ::zoal::arch::stm32f1::usart<0x40013800u, TxSize, RxSize, clock_apb2<0x04000>, irq_ctrl<1, 0x20>, pa09, pa10>;
+//
+//        template<uintptr_t TxSize, uintptr_t RxSize>
+//        using usart2 = typename ::zoal::arch::stm32f1::usart<0x40004400u, TxSize, RxSize, clock_apb1<0x20000>, irq_ctrl<1, 0x40>, pa02, pa03>;
+//
+//        template<uintptr_t TxSize, uintptr_t RxSize>
+//        using usart3 = typename ::zoal::arch::stm32f1::usart<0x40004800u, TxSize, RxSize, clock_apb1<0x40000>, irq_ctrl<1, 0x80>, pb10, pa11>;
 
         using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f, port_g>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;

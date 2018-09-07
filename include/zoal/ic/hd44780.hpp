@@ -212,7 +212,7 @@ namespace zoal { namespace ic {
 			delay::template us<37>();
 		}
 
-		static void write(uint8_t charCode) {
+		static void write_byte(uint8_t charCode) {
 			Interface::send(charCode, 1);
 			delay::template us<37>();
 		}
@@ -225,10 +225,10 @@ namespace zoal { namespace ic {
 		}
 
 		template<class F>
-		static void write(F &fn) {
+		static void write(::zoal::io::output_stream_functor<F> &fn) {
 			uint8_t data = 0;
-			while (fn(data))  {
-				write(data);
+			while (static_cast<F &>(fn)(data)) {
+				write_byte(data);
 			}
 		}
 

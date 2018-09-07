@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 #include "../gpio/pin_mode.hpp"
-#include "zoal/ic/hd44780.hpp"
+#include "../ic/hd44780.hpp"
 #include "../io/analog_keypad.hpp"
 #include "../utils/helpers.hpp"
 #include "../utils/nop.hpp"

@@ -4,207 +4,209 @@
 #include "../io/output_stream.hpp"
 
 namespace zoal { namespace utils {
-	enum class log_level {
-		trace,
-		debug,
-		info,
-		warn,
-		error,
-		highest
-	};
+    enum class log_level {
+        trace,
+        debug,
+        info,
+        warn,
+        error,
+        highest
+    };
 
-	template <class Prefixer>
-	class prefix_placer {
-	public:
-		template <class T>
-		void place_preffix() {
-			Prefixer p;
-			T::write(p);
-		}
-	};
+    template<class Prefixer>
+    class prefix_placer {
+    public:
+        template<class T>
+        void place_preffix() {
+            Prefixer p;
+            T::write(p);
+        }
+    };
 
-	template <>
-	class prefix_placer<void> {
-	public:
-		template <class T>
-		inline void place_preffix() {
-		}
-	};
+    template<>
+    class prefix_placer<void> {
+    public:
+        template<class T>
+        inline void place_preffix() {
+        }
+    };
 
-	template <class Suffixer>
-	class suffix_placer {
-	public:
-		suffix_placer() : enabled(false) {
-		}
+    template<class Suffixer>
+    class suffix_placer {
+    public:
+        suffix_placer() : enabled(false) {
+        }
 
-		template <class T>
-		void place_suffix() {
-			if (enabled) {
-				Suffixer p;
-				T::write(p);
-			}
-		}
+        template<class T>
+        void place_suffix() {
+            if (enabled) {
+                Suffixer p;
+                T::write(p);
+            }
+        }
 
-		void enable_suffix() {
-			enabled = true;
-		}
+        void enable_suffix() {
+            enabled = true;
+        }
 
-		bool enabled;
-	};
+        bool enabled;
+    };
 
-	template <>
-	class suffix_placer<void> {
-	public:
-		template <class T>
-		inline void place_suffix() {
-		}
+    template<>
+    class suffix_placer<void> {
+    public:
+        template<class T>
+        inline void place_suffix() {
+        }
 
-		inline void enable_suffix() {
-		}
-	};
+        inline void enable_suffix() {
+        }
+    };
 
-	template <
-		class Transport,
-		class Prefixer = void,
-		class Suffixer = void,
-		log_level Current = log_level::highest,
-		log_level MinLevel = log_level::highest
-	>
-	class log_stream : public prefix_placer<Prefixer>, suffix_placer<Suffixer> {
-	public:
-		log_stream() {
-			if (Current >= MinLevel) {
-                this->template place_preffix<Transport>();
-			}
-		}
+    template<
+            class Transport,
+            class Prefixer = void,
+            class Suffixer = void,
+            bool enabled = true
+    >
+    class log_stream : public prefix_placer<Prefixer>, suffix_placer<Suffixer> {
+    public:
+        log_stream() {
+            this->template place_preffix<Transport>();
+        }
 
-		log_stream(const log_stream &log) noexcept {
+        log_stream(const log_stream &log) noexcept {
             log.flush = false;
-			stream.precision = log.stream.precision;
-			stream.radix = log.stream.radix;
-			if (Current >= MinLevel) {
-				this->enable_suffix();
-			}
-		}
+            stream.precision = log.stream.precision;
+            stream.radix = log.stream.radix;
+            this->enable_suffix();
+        }
 
-		~log_stream() {
-			if (Current >= MinLevel) {
-				this->template place_suffix<Transport>();
-			}
-			if (flush) {
+        ~log_stream() {
+            if (flush) {
+                this->template place_suffix<Transport>();
                 Transport::flush();
             }
-		}
+        }
 
-		template<class T>
-		inline log_stream& operator<< (T value) {
-			if (Current >= MinLevel) {
-				stream << value;
-			}
-			return *this;
-		}
+        template<class T>
+        inline log_stream &operator<<(T value) {
+            stream << value;
+            return *this;
+        }
 
-		log_stream& place(const char *file, int line) {
-			stream << file << ":" << line << " ";
-			return *this;
-		}
-	private:
-	    mutable bool flush{true};
-		zoal::io::output_stream<Transport> stream;
-	};
+        log_stream &place(const char *file, int line) {
+            stream << file << ":" << line << " ";
+            return *this;
+        }
 
-	template <class Prefixer, class Suffixer, log_level Current, log_level MinLevel>
-	class log_stream<void, Prefixer, Suffixer, Current, MinLevel> {
-	public:
-		template<class T>
-		inline log_stream& operator<< (T) {
-			return *this;
-		}
-	};
+    private:
+        mutable bool flush{true};
+        zoal::io::output_stream<Transport> stream;
+    };
 
-	template <
-		class Transport,
-		log_level MinLevel = log_level::info,
-		class Prefixer = zoal::io::new_line_cr_lf,
-		class Suffixer = void
-	>
-	class plain_logger {
-	public:
-		static constexpr log_level min_level = MinLevel;
+    template<class Prefixer, class Suffixer, bool enabled>
+    class log_stream<void, Prefixer, Suffixer, enabled> {
+    public:
+        template<class T>
+        inline log_stream &operator<<(T) {
+            return *this;
+        }
+    };
 
-		template <log_level Current>
-		using ls = typename zoal::utils::log_stream<Transport, Prefixer, Suffixer, Current, MinLevel>;
-		using hs = typename zoal::utils::log_stream<Transport, void, void, log_level::highest, log_level::highest>;
+    template<class Transport, class Prefixer, class Suffixer>
+    class log_stream<Transport, Prefixer, Suffixer, false> {
+    public:
+        template<class T>
+        inline log_stream &operator<<(T) {
+            return *this;
+        }
+    };
 
-		static inline hs stream() {
-			return hs();
-		}
+    template<
+            class Transport,
+            log_level MinLevel = log_level::info,
+            class Prefixer = zoal::io::new_line_cr_lf,
+            class Suffixer = void
+    >
+    class plain_logger {
+    public:
+        static constexpr log_level min_level = MinLevel;
+
+        template<bool enabled>
+        using ls = typename zoal::utils::log_stream<Transport, Prefixer, Suffixer, enabled>;
+        using hs = typename zoal::utils::log_stream<Transport, void, void, true>;
+
+        static inline hs stream() {
+            return hs();
+        }
 
         static inline void clear() {
         }
 
-		static inline ls<log_level::trace> trace() {
-			return ls<log_level::trace>();
-		}
+        static inline ls<log_level::trace >= MinLevel> trace() {
+            return ls<log_level::trace >= MinLevel>();
+        }
 
-		static inline ls<log_level::info> info() {
-			return ls<log_level::info>();
-		}
+        static inline ls<log_level::info >= MinLevel> info() {
+            return ls<log_level::info >= MinLevel>();
+        }
 
-		static inline ls<log_level::debug> debug() {
-			return ls<log_level::debug>();
-		}
+        static inline ls<log_level::debug >= MinLevel> debug() {
+            return ls<log_level::debug >= MinLevel>();
+        }
 
-		static inline ls<log_level::warn> warn() {
-			return ls<log_level::warn>();
-		}
+        static inline ls<log_level::warn >= MinLevel> warn() {
+            return ls<log_level::warn >= MinLevel>();
+        }
 
-		static inline ls<log_level::error> error() {
-			return ls<log_level::error>();
-		}
-	};
+        static inline ls<log_level::error >= MinLevel> error() {
+            return ls<log_level::error >= MinLevel>();
+        }
+    };
 
-	template <
-		class Transport,
-		log_level MinLevel = log_level::info,
-		class Prefixer = zoal::io::new_line_cr_lf,
-		class Suffixer = zoal::io::stop_escape_sequence
-	>
-	class terminal_logger {
-	public:
-		static constexpr log_level min_level = MinLevel;
+    template<
+            class Transport,
+            log_level MinLevel = log_level::info,
+            class Prefixer = zoal::io::new_line_cr_lf,
+            class Suffixer = zoal::io::stop_escape_sequence
+    >
+    class terminal_logger {
+    public:
+        static constexpr log_level min_level = MinLevel;
 
-		template <log_level Current>
-		using ls = typename zoal::utils::log_stream<Transport, Prefixer, Suffixer, Current, MinLevel>;
-		using hs = typename zoal::utils::log_stream<Transport, void, void, log_level::highest, log_level::highest>;
+        template<bool enabled>
+        using ls = typename zoal::utils::log_stream<Transport, Prefixer, Suffixer, enabled>;
+        using hs = typename zoal::utils::log_stream<Transport, void, void, true>;
 
-		static inline hs stream() {
-			return hs();
-		}
-		static inline void clear() {
-			hs() << "\033c";
-		}
+        static hs stream() {
+            return hs();
+        }
 
-		static inline ls<log_level::trace> trace() {
-			return ls<log_level::trace>() << "\033[36;0mTRACE ";
-		}
+        static void clear() {
+            hs() << "\033c";
+        }
 
-		static inline ls<log_level::debug> debug() {
-			return ls<log_level::debug>() << "\033[34;0mDEBUG ";
-		}
+        static ls<log_level::trace >= MinLevel> trace() {
+            return ls<log_level::trace >= MinLevel>() << "\033[0;36mTRACE ";
+        }
 
-		static inline ls<log_level::info> info() {
-			return ls<log_level::info>() << "\033[32;0mINFO  ";
-		}
+        static ls<log_level::debug >= MinLevel>debug() {
+            return ls<log_level::debug >= MinLevel>() << "\033[0;37mDEBUG ";
+        }
 
-		static inline ls<log_level::warn> warn() {
-			return ls<log_level::warn>() << "\033[33;0mWARN  ";
-		}
+        static ls<log_level::info >= MinLevel>info() {
+            return ls<log_level::info >= MinLevel>() << "\033[0;32mINFO  ";
+        }
 
-		static inline ls<log_level::error> error() {
-			return ls<log_level::error>() << "\033[31;0mERROR ";
-		}
-	};
+        static ls<log_level::warn >= MinLevel>warn() {
+            return ls<log_level::warn >= MinLevel>() << "\033[0;33mWARN  ";
+        }
+
+        static ls<log_level::error >= MinLevel> error() {
+            return ls<log_level::error >= MinLevel>() << "\033[0;31mERROR ";
+        }
+    };
 }}
 
 #endif

@@ -33,8 +33,8 @@ namespace zoal { namespace io {
             return ptr;
         }
 
-        output_stream &operator<<(uint32_t value) {
-            uint8_t buffer[16];
+        output_stream &operator<<(unsigned long value) {
+            uint8_t buffer[32];
             uint8_t *ptr = buffer + sizeof(buffer);
             ptr = formatNumber(ptr, value);
             auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
@@ -43,27 +43,22 @@ namespace zoal { namespace io {
             return *this;
         }
 
-        output_stream &operator<<(uint16_t value) {
-            return *this << (uint32_t) value;
+        output_stream &operator<<(unsigned int value) {
+            return *this << (unsigned long) value;
         }
 
-        output_stream &operator<<(uint8_t value) {
-            return *this << (uint32_t) value;
+        output_stream &operator<<(unsigned short value) {
+            return *this << (unsigned long) value;
         }
 
-        output_stream &operator<<(char value) {
-            Transport::write((uint8_t) value);
-            return *this;
-        }
-
-        output_stream &operator<<(int32_t value) {
+        output_stream &operator<<(long value) {
             bool negative = value < 0;
             if (negative) {
                 value = -value;
-                Transport::write('-');
+                Transport::write_byte('-');
             }
 
-            uint8_t buffer[16];
+            uint8_t buffer[32];
             uint8_t *ptr = buffer + sizeof(buffer);
             ptr = formatNumber(ptr, static_cast<uint32_t>(value));
 
@@ -73,19 +68,19 @@ namespace zoal { namespace io {
             return *this;
         }
 
-        output_stream &operator<<(int16_t value) {
-            return *this << (int32_t) value;
+        output_stream &operator<<(int value) {
+            return *this << (long) value;
         }
 
-        output_stream &operator<<(int8_t value) {
-            return *this << (int32_t) value;
+        output_stream &operator<<(short value) {
+            return *this << (long) value;
         }
 
         output_stream &operator<<(double value) {
             bool negative = value < 0.0;
             if (negative) {
                 value = -value;
-                Transport::write('-');
+                Transport::write_byte('-');
             }
 
             auto int_part = static_cast<uint32_t>(value);
@@ -96,7 +91,7 @@ namespace zoal { namespace io {
                 return *this;
             }
 
-            Transport::write('.');
+            Transport::write_byte('.');
 
             double e = 0.5;
             for (uint8_t i = 0; i < precision; i++) {
@@ -109,7 +104,7 @@ namespace zoal { namespace io {
                 fraction *= 10.0;
                 int_part = static_cast<uint32_t>(fraction);
                 fraction -= int_part;
-                Transport::write(int_part + '0');
+                Transport::write_byte(int_part + '0');
             }
 
             return *this;
@@ -121,7 +116,7 @@ namespace zoal { namespace io {
 
         template<uint8_t v>
         output_stream &operator<<(const stream_value<v> &) {
-            Transport::write(v);
+            Transport::write_byte(v);
             return *this;
         }
 
@@ -143,8 +138,7 @@ namespace zoal { namespace io {
 
         template<class T>
         output_stream &operator<<(T t) {
-            auto a = t.abstraction();
-            Transport::write(a);
+            Transport::write(t);
             return *this;
         }
     };

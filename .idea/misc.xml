@@ -4,7 +4,4 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
   </component>
-  <component name="elmot.OpenOcdPlugin">
-    <option name="openOcdHome" value="C:/msys64/mingw64" />
-  </component>
 </project>

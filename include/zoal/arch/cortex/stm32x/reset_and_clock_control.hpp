@@ -5,8 +5,8 @@
 
 #include <stdint.h>
 #include "../../../utils/memory_segment.hpp"
-#include "../bus.hpp"
-#include "clock_control.hpp"
+#include "zoal/arch/cortex/bus_type.hpp"
+#include "bus_clock_control.hpp"
 
 namespace zoal { namespace arch { namespace stm32x {
     template<uintptr_t Address = 0x40021000>
@@ -32,8 +32,8 @@ namespace zoal { namespace arch { namespace stm32x {
         reset_and_clock_control() = delete;
 
     private:
-        template<class RCController, zoal::arch::cortex::bus Bus, uint32_t SetMask, uint32_t ClearMask = ~SetMask>
-        friend class ::zoal::arch::stm32x::clock_control;
+        template<class RCController, zoal::arch::cortex::bus_type Bus, uint32_t SetMask, uint32_t ClearMask = ~SetMask>
+        friend class ::zoal::arch::stm32x::bus_clock_control;
 
         static zoal::utils::memory_segment<uint32_t, Address> mem;
     };

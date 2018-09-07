@@ -10,7 +10,7 @@
 #include <zoal/io/output_stream.hpp>
 #include <zoal/shields/uno_lcd_shield.hpp>
 #include <zoal/arch/cortex/stm32f3/adc.hpp>
-#include <zoal/arch/cortex/stm32x/clock_control.hpp>
+#include <zoal/arch/cortex/stm32x/bus_clock_control.hpp>
 #include <zoal/arch/cortex/semihosting_transport.hpp>
 #include <zoal/periph/adc_connection.hpp>
 #include <zoal/mcu/atmega_640_1280_2560.hpp>
@@ -24,7 +24,7 @@ volatile uint32_t milliseconds_counter = 0;
 
 using mcu = zoal::pcb::mcu;
 using usart = mcu::usart1<32, 32>;
-using logger = zoal::utils::plain_logger<usart, zoal::utils::log_level::info>;
+using logger = zoal::utils::terminal_logger<usart, zoal::utils::log_level::trace>;
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using delay = typename tools::delay;
@@ -45,7 +45,7 @@ void handler(uint8_t button, zoal::io::button_event e) {
         return;
     }
 
-    stream << zoal::io::pos(1, 0) << "Button: " << button;
+    stream << zoal::io::pos(1, 0) << "Button: ";// << button;
 }
 
 void initTimer() {
@@ -59,64 +59,13 @@ void initTimer() {
     mcu::timer2::enable();
 }
 
-#define RINGBUF_SIZE_BITS 5
-#define RINGBUF_SIZE (1<<RINGBUF_SIZE_BITS)
-
-volatile uint8_t USART1_ringbuf[RINGBUF_SIZE];
-volatile uint32_t USART1_readidx = 0;
-volatile uint32_t USART1_writeidx = 0;
-
 void USART1_Init() {
     usart::power_on();
-
     mcu::mux::usart<usart, mcu::pa09, mcu::pa10, mcu::pa08>::on();
-
-    USART_InitTypeDef USART_InitStructure;
-    USART_StructInit(&USART_InitStructure);
-    USART_InitStructure.USART_BaudRate = 57600;
-    USART_Init(USART1, &USART_InitStructure);
-
-    USART_Cmd(USART1, ENABLE);
+    mcu::cfg::usart<usart, 57600>::apply();
+    usart::enable();
 
     NVIC_EnableIRQ(USART1_IRQn);
-}
-
-#define MIN(a, b) ((a)<(b)?(a):(b))
-
-void USART1_putc(char ch) {
-    while (1) {
-        uint32_t capacity = RINGBUF_SIZE - (USART1_writeidx - USART1_readidx);
-        if (capacity > 0)
-            break;
-    }
-    USART1_ringbuf[(USART1_writeidx++) & (RINGBUF_SIZE - 1)] = ch;
-}
-
-void USART1_write(const char *str, int len) {
-    uint32_t i = 0;
-    while (i < len) {
-        uint32_t writeidx = USART1_writeidx & (RINGBUF_SIZE - 1);
-        uint32_t len_to_end = RINGBUF_SIZE - writeidx;
-        uint32_t capacity = RINGBUF_SIZE - (USART1_writeidx - USART1_readidx);
-        uint32_t max_len = MIN(len_to_end, capacity);
-        if (max_len == 0)
-            continue;
-
-        uint32_t this_len = MIN(max_len, len - i);
-
-        int j;
-        for (j = 0; j < this_len; ++j) {
-            USART1_ringbuf[writeidx++] = str[i++];
-        }
-        USART1_writeidx += this_len;
-
-        USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
-    }
-}
-
-void USART1_print(const char *str) {
-    uint32_t len = strlen(str);
-    USART1_write(str, len);
 }
 
 int main() {
@@ -125,24 +74,38 @@ int main() {
 
     USART1_Init();
 
-//    initTimer();
+    //    initTimer();
 //
 //    TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 //    NVIC_EnableIRQ(TIM2_IRQn);
+//
+    logger::clear();
+    logger::info() << "----- Started!!! -----";
+    logger::trace() << "logger::trace";
+    logger::debug() << "logger::debug";
+    logger::info() << "logger::info";
+    logger::warn() << "logger::warn";
+    logger::error() << "logger::error";
 
-//    logger::info() << "logger::info";
+    using uc = mcu::cfg::usart<usart, 57600>;
+#define CR1_CLEAR_MASK            ((uint32_t)(USART_CR1_M | USART_CR1_PCE | \
+                                              USART_CR1_PS | USART_CR1_TE | \
+                                              USART_CR1_RE))
+    logger::info() << "CR1_CLEAR_MASK: 0x" << zoal::io::hex << CR1_CLEAR_MASK;
+    logger::info() << "c1_clear: 0x" << zoal::io::hex << uc::c1_clear;
+    logger::info() << "c1_set: 0x" << zoal::io::hex << uc::c1_set;
 
-    usart::write('A');
-    usart::write('A');
-    usart::write('A');
-    usart::write('\r');
-    usart::write('\n');
+//    usart::write('A');
+//    usart::write('A');
+//    usart::write('A');
+//    usart::write('\r');
+//    usart::write('\n');
 //    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
 //    USART1_print("USART1_print\n\n");
 
+    int counter = 0;
     while (1) {
-//        USART1_print("USART1_print\n\n");
-        logger::info() << "Hello logger";
+        logger::info() << "counter: " << counter++;
         delay::ms(1000);
     }
 
@@ -174,8 +137,8 @@ extern "C" void SysTick_Handler() {
     milliseconds_counter++;
 }
 
-extern "C" void TIM2_IRQHandler() {
-    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-
-    zoal::pcb::build_in_led::toggle();
-}
+//extern "C" void TIM2_IRQHandler() {
+//    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+//
+//    zoal::pcb::build_in_led::toggle();
+//}

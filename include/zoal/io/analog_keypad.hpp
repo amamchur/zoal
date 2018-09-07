@@ -45,7 +45,7 @@ namespace zoal { namespace io {
             counter_value_type dt = milliseconds - prev_time;
 
             uint8_t allEvents = 0;
-            for (uint8_t i = 0; i < button_count; i++) {
+            for (int i = 0; i < button_count; i++) {
                 uint8_t dv = 0;
                 int buttonValue = values[i];
                 if (buttonValue - Threshold < value && value < buttonValue + Threshold) {

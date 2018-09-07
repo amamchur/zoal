@@ -129,7 +129,7 @@ namespace zoal { namespace arch { namespace avr {
         static inline void flush() {
         }
 
-        static void write(uint8_t data) {
+        static void write_byte(uint8_t data) {
             zoal::utils::interrupts ni(false);
             tx.enqueue(data, true);
             mem[UCSRxB] |= 1 << UDRIEx;
@@ -139,7 +139,7 @@ namespace zoal { namespace arch { namespace avr {
         static void write(::zoal::io::output_stream_functor<F> &fn) {
             uint8_t data = 0;
             while (static_cast<F &>(fn)(data)) {
-                write(data);
+                write_byte(data);
             }
         }
 

@@ -13,8 +13,11 @@ namespace zoal { namespace arch { namespace stm32f3 {
     template<uintptr_t Address, uint8_t N, uintptr_t TxSize, uintptr_t RxSize, class ... Mixin>
     class usart : public Mixin ... {
     public:
+        static constexpr uintptr_t address = Address;
+
         static constexpr uint32_t USARTx_ISR_bit_TXE = 1 << 7; // Bit 7 TXE: Transmit data register empty
         static constexpr uint32_t USARTx_CR1_bit_TXEIE = 1 << 7; // Bit 7 TXEIE: interrupt enable
+        static constexpr uint32_t USARTx_CR1_bit_UE = 1 << 0; // Bit 0 UE: USART enable
 
         static constexpr uintptr_t USARTx_CR1 = 0x00;
         static constexpr uintptr_t USARTx_CR2 = 0x04;
@@ -30,7 +33,6 @@ namespace zoal { namespace arch { namespace stm32f3 {
 
         static constexpr uint8_t no = N;
 
-
         using yield = zoal::utils::yield<>;
 
         template<uintptr_t Size>
@@ -41,12 +43,15 @@ namespace zoal { namespace arch { namespace stm32f3 {
         static buffer_tx tx;
         static buffer_rx rx;
 
-        template<class Config>
-        static void begin() {
-
+        static void enable() {
+            mem[USARTx_CR1] |= USARTx_CR1_bit_UE;
         }
 
-        static void write(uint8_t data) {
+        static void disable() {
+            mem[USARTx_CR1] &= ~USARTx_CR1_bit_UE;
+        }
+
+        static void write_byte(uint8_t data) {
             zoal::utils::interrupts ni(false);
             tx.enqueue(data, true);
             mem[USARTx_CR1] |= USARTx_CR1_bit_TXEIE;
@@ -56,7 +61,7 @@ namespace zoal { namespace arch { namespace stm32f3 {
         static void write(::zoal::io::output_stream_functor<F> &fn) {
             uint8_t data = 0;
             while (static_cast<F &>(fn)(data)) {
-                write(data);
+                write_byte(data);
             }
         }
 

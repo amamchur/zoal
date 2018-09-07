@@ -117,6 +117,16 @@ namespace zoal {
         };
 
         template<uintptr_t Set, uint8_t Shift>
+        struct clear_and_set<Set, Set, Shift> {
+            static constexpr uint32_t set_mask = static_cast<uint32_t>(static_cast<uint64_t >(Set) << Shift);
+
+            template<class T>
+            static inline void apply(T &value) {
+                value |= set_mask;
+            }
+        };
+
+        template<uintptr_t Set, uint8_t Shift>
         struct clear_and_set<0, Set, Shift> {
             static constexpr uint32_t set_mask = static_cast<uint32_t>(static_cast<uint64_t >(Set) << Shift);
 

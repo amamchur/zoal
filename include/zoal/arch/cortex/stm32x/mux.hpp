@@ -1,5 +1,5 @@
-#ifndef ZOAL_MUX_HPP
-#define ZOAL_MUX_HPP
+#ifndef ZOAL_ARCH_STM32X_MUX_HPP
+#define ZOAL_ARCH_STM32X_MUX_HPP
 
 #include <stdint.h>
 #include "../../../gpio/pin.hpp"

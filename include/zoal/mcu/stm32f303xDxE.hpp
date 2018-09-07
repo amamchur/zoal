@@ -17,8 +17,9 @@
 #include "../arch/cortex/stm32f3/general_purpose_timer.hpp"
 #include "../arch/cortex/stm32f3/metadata_stm32f303xDxE.hpp"
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
-#include "../arch/cortex/stm32x/clock_control.hpp"
+#include "../arch/cortex/stm32x/bus_clock_control.hpp"
 #include "../arch/cortex/stm32x/interrupt_control.hpp"
+#include "../arch/cortex/stm32x/cfg.hpp"
 #include "../arch/cortex/stm32x/mux.hpp"
 #include "../arch/cortex/nested_vectored_interrupt_controller.hpp"
 
@@ -30,13 +31,13 @@ namespace zoal { namespace mcu {
         using rcc = ::zoal::arch::stm32x::reset_and_clock_control<>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_ahb = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::AHB, Set, Clear>;
+        using clock_ahb = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::cortex::bus_type::AHB, Set, Clear>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_apb1 = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::APB1, Set, Clear>;
+        using clock_apb1 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::cortex::bus_type::APB1, Set, Clear>;
 
         template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_apb2 = ::zoal::arch::stm32x::clock_control<rcc, zoal::arch::cortex::bus::APB2, Set, Clear>;
+        using clock_apb2 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::cortex::bus_type::APB2, Set, Clear>;
 
 //        template<uint32_t Set, uint32_t Clear = ~Set>
 //        using options_cfgr2 = ::zoal::arch::stm32x::clock_control<rcc, ::zoal::arch::stm32x::rcc_register::CFGR2, Set, Clear>;
@@ -249,6 +250,7 @@ namespace zoal { namespace mcu {
         using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;
         using mux = ::zoal::arch::stm32x::stm32x_mux<api>;
+        using cfg = ::zoal::arch::stm32x::stm32x_cfg<api>;
     };
 }}
 
