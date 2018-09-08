@@ -1,5 +1,5 @@
-#ifndef ZOAL_MCU_METADATA_ATMEGA_48_88_168_328_HPP
-#define ZOAL_MCU_METADATA_ATMEGA_48_88_168_328_HPP
+#ifndef ZOAL_MCU_METADATA_ATMEGA_16_32_U4_HPP
+#define ZOAL_MCU_METADATA_ATMEGA_16_32_U4_HPP
 
 #include "atmega.hpp"
 
@@ -16,15 +16,15 @@ namespace zoal { namespace metadata {
     };
 
     template<>
-    struct atmega_usart_mapping<0xC0, 0x0000, 0> : public atmega_base_usart_mapping<-1, -1, 0xFF> {
+    struct atmega_usart_mapping<0xC8, 0x0000, 0> : public atmega_base_usart_mapping<-1, -1, 0xFF> {
     };
 
     template<>
-    struct atmega_usart_mapping<0xC0, 0x0029, 0> : public atmega_base_usart_mapping<-1, 0, -1> {
+    struct atmega_usart_mapping<0xC8, 0x0029, 2> : public atmega_base_usart_mapping<-1, 0, -1> {
     };
 
     template<>
-    struct atmega_usart_mapping<0xC0, 0x0029, 1> : public atmega_base_usart_mapping<0, -1, -1> {
+    struct atmega_usart_mapping<0xC8, 0x0029, 3> : public atmega_base_usart_mapping<0, -1, -1> {
     };
 }}
 

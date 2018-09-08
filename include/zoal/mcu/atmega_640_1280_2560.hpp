@@ -2,6 +2,7 @@
 #define ZOAL_MCU_ATMEGA_640_1280_2560_HPP
 
 #include "base_mcu.hpp"
+#include "metadata/atmega_48_88_168_328.hpp"
 #include "../arch/avr/atmega_universe.hpp"
 #include "../gpio/pin.hpp"
 #include "../gpio/base_api.hpp"
@@ -187,9 +188,6 @@ namespace zoal { namespace mcu {
             using lsbf3 = lsbf_spi<3>;
         };
 
-        template<uint32_t BaudRate>
-        using usart_config = typename ::zoal::periph::usart_config<Frequency, BaudRate>;
-
         template<uintptr_t TxSize, uintptr_t RxSize>
         using usart0 = typename ::zoal::arch::avr::usart<0xC0, 0, TxSize, RxSize>;
 
@@ -215,6 +213,8 @@ namespace zoal { namespace mcu {
                 port_k,
                 port_l>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;
+        using mux = ::zoal::arch::avr::atmega::mux<api>;
+        using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;
     };
 }}
 

@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "base_mcu.hpp"
+#include "metadata/atmega_16_32_U4.hpp"
 #include "../arch/avr/atmega_universe.hpp"
 #include "../gpio/pin.hpp"
 #include "../gpio/base_api.hpp"
@@ -81,6 +82,8 @@ namespace zoal { namespace mcu {
 
         using port_chain = typename ::zoal::gpio::chain_builder<port_b, port_c, port_d, port_e, port_f>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;
+        using mux = ::zoal::arch::avr::atmega::mux<api>;
+        using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;
     };
 }}
 

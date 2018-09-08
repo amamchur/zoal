@@ -15,6 +15,7 @@
 
 volatile uint32_t milliseconds = 0;
 
+using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using ms_timer = zoal::pcb::mcu::timer0;
 using prescaler = zoal::utils::prescaler_le<ms_timer, 64>::result;
@@ -34,7 +35,11 @@ App app;
 uint16_t ButtonValues[App::shield::button_count] __attribute__((section (".eeprom"))) = {637, 411, 258, 101, 0};
 
 void initializeHardware() {
-    usart::setup<usart_config>();
+    usart::power_on();
+    mcu::mux::usart<usart, zoal::pcb::ard_d00, zoal::pcb::ard_d01>::on();
+    mcu::cfg::usart<usart, 115200>::apply();
+    usart::enable();
+
     ms_timer::reset();
     ms_timer::mode<zoal::periph::timer_mode::fast_pwm_8bit>();
     ms_timer::select_clock_source<prescaler>();

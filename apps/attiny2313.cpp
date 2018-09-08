@@ -21,7 +21,6 @@
 #include "templates/neo_pixel.hpp"
 #include "templates/tm1637.hpp"
 #include "templates/uno_lcd_shield.hpp"
-#include "templates/usart_output.hpp"
 
 volatile uint16_t milliseconds = 0;
 

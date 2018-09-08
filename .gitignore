@@ -1,2 +1,3 @@
 cmake-build-*
 coverage
+node_modules

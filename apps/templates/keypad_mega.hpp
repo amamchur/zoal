@@ -4,8 +4,6 @@
 #include <zoal/io/matrix_keypad.hpp>
 #include <zoal/board/arduino_mega.hpp>
 
-using namespace zoal;
-
 class keypad_config {
 public:
     static constexpr uint16_t read_delay_us = 4;
@@ -27,16 +25,16 @@ class keypad_builder {
 template<>
 struct keypad_builder<keypad_type::keypad_5x4> {
     typedef zoal::io::keypad_row_selector<
-            pcb::ard_d35,
-            pcb::ard_d37,
-            pcb::ard_d39,
-            pcb::ard_d41,
-            pcb::ard_d43> row_selector;
+            zoal::pcb::ard_d35,
+            zoal::pcb::ard_d37,
+            zoal::pcb::ard_d39,
+            zoal::pcb::ard_d41,
+            zoal::pcb::ard_d43> row_selector;
     typedef zoal::io::keypad_column_reader<
-            pcb::ard_d51,
-            pcb::ard_d49,
-            pcb::ard_d47,
-            pcb::ard_d45> column_reader;
+            zoal::pcb::ard_d51,
+            zoal::pcb::ard_d49,
+            zoal::pcb::ard_d47,
+            zoal::pcb::ard_d45> column_reader;
     static char layout[5][4];
 };
 
@@ -51,15 +49,15 @@ char keypad_builder<keypad_type::keypad_5x4>::layout[5][4] = {
 template<>
 struct keypad_builder<keypad_type::keypad_4x4> {
     typedef zoal::io::keypad_row_selector<
-            pcb::ard_d51,
-            pcb::ard_d49,
-            pcb::ard_d47,
-            pcb::ard_d45> row_selector;
+            zoal::pcb::ard_d51,
+            zoal::pcb::ard_d49,
+            zoal::pcb::ard_d47,
+            zoal::pcb::ard_d45> row_selector;
     typedef zoal::io::keypad_column_reader<
-            pcb::ard_d43,
-            pcb::ard_d41,
-            pcb::ard_d39,
-            pcb::ard_d37> column_reader;
+            zoal::pcb::ard_d43,
+            zoal::pcb::ard_d41,
+            zoal::pcb::ard_d39,
+            zoal::pcb::ard_d37> column_reader;
     static char layout[4][4];
 };
 
@@ -73,14 +71,14 @@ char keypad_builder<keypad_type::keypad_4x4>::layout[4][4] = {
 template<>
 struct keypad_builder<keypad_type::keypad_4x3> {
     typedef zoal::io::keypad_row_selector<
-            pcb::ard_d51,
-            pcb::ard_d49,
-            pcb::ard_d47,
-            pcb::ard_d45> row_selector;
+            zoal::pcb::ard_d51,
+            zoal::pcb::ard_d49,
+            zoal::pcb::ard_d47,
+            zoal::pcb::ard_d45> row_selector;
     typedef zoal::io::keypad_column_reader<
-            pcb::ard_d43,
-            pcb::ard_d41,
-            pcb::ard_d39> column_reader;
+            zoal::pcb::ard_d43,
+            zoal::pcb::ard_d41,
+            zoal::pcb::ard_d39> column_reader;
     static char layout[4][3];
 };
 
@@ -93,8 +91,12 @@ char keypad_builder<keypad_type::keypad_4x3>::layout[4][3] = {
 
 template<>
 struct keypad_builder<keypad_type::keypad_1x4> {
-    typedef zoal::io::keypad_row_selector<pcb::ard_d33> row_selector;
-    typedef zoal::io::keypad_column_reader<pcb::ard_d31, pcb::ard_d29, pcb::ard_d27, pcb::ard_d25> column_reader;
+    typedef zoal::io::keypad_row_selector<zoal::pcb::ard_d33> row_selector;
+    typedef zoal::io::keypad_column_reader<
+            zoal::pcb::ard_d31,
+            zoal::pcb::ard_d29,
+            zoal::pcb::ard_d27,
+            zoal::pcb::ard_d25> column_reader;
     static char layout[1][4];
 };
 

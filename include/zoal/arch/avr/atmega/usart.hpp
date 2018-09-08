@@ -115,22 +115,6 @@ namespace zoal { namespace arch { namespace avr {
         static buffer_tx tx;
         static buffer_rx rx;
 
-        template<class Config>
-        static void setup() {
-            uint32_t value = (Config::mcu_freq / (8 * Config::baud_rate)) - 1;
-            uint8_t ucsra = 1u << U2Xx;
-            if (value > 4095) {
-                ucsra = 0;
-                value = (Config::mcu_freq / (16 * Config::baud_rate)) - 1;
-            }
-
-            mem[UBRRxL] = static_cast<uint8_t>(value & 0xFFu);
-            mem[UBRRxH] = static_cast<uint8_t>(value >> 0x8u);
-            mem[UCSRxA] = ucsra;
-            mem[UCSRxB] = static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
-            mem[UCSRxC] = atmega_usart_mode<Config>::UCSRxC;
-        }
-
         static void power_on() {
         }
 
