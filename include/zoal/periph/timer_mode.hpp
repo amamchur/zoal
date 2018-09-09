@@ -3,17 +3,21 @@
 
 namespace zoal { namespace periph {
 	enum class timer_mode {
-		normal,
+		up,
+		down,
+		up_down,
 
-		fast_pwm_8bit,
-		fast_pwm_9bit,
-		fast_pwm_10bit,
-		fast_pwm_16bit,
-
-		phase_correct_8bit,
-		phase_correct_9bit,
-		phase_correct_10bit,
-		phase_correct_16bit
+//		normal,
+//
+//		fast_pwm_8bit,
+//		fast_pwm_9bit,
+//		fast_pwm_10bit,
+//		fast_pwm_16bit,
+//
+//		phase_correct_8bit,
+//		phase_correct_9bit,
+//		phase_correct_10bit,
+//		phase_correct_16bit
 	};
 }}
 

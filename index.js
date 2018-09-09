@@ -9,7 +9,8 @@ const includesMap = {
         '#include <zoal/mcu/base_mcu.hpp">',
         '#include <zoal/gpio/pin.hpp>',
         '#include <zoal/gpio/base_api.hpp>',
-        '#include <zoal/gpio/port_link.hpp>'
+        '#include <zoal/gpio/port_link.hpp>',
+        '#include <zoal/arch/avr/atmega/irq.hpp>'
     ]
 };
 
@@ -48,56 +49,67 @@ function placeIncludes(family) {
 
 function placeAliases() {
     buffer += 'template<uintptr_t Address, uint8_t PinMask>\n';
-    buffer += 'using port = typename zoal::arch::avr::port<Address, PinMask>;\n\n';
+    buffer += 'using port = typename ::zoal::arch::avr::port<Address, PinMask>;\n\n';
 }
 
 function placePort(name, address, mask) {
-    let dec = parseInt(address); // your number
-    let hex = '0x' + ("0000" + dec.toString(16)).substr(-4);
+    let hex = '0x' + ("0000" + address.toString(16)).substr(-4);
     mask = '0x' + ("00" + mask.toString(16)).substr(-2);
 
     buffer += `using ${name} = port<${hex}, ${mask}>;\n`;
 }
 
-function getPortModule(modules) {
-    let portModule = null;
+function getModule(modules, regex) {
+    let result = null;
     for (let i = 0; i < modules.length; i++) {
         let m = modules[i];
-        if (m.$.name === 'PORT') {
-            portModule = m;
+        if (m.$.name.match(regex)) {
+            result = m;
             break;
         }
     }
 
-    return portModule;
+    return result;
+}
+
+function getModules(modules, regex) {
+    let results = [];
+    for (let i = 0; i < modules.length; i++) {
+        let m = modules[i];
+        if (m.$.name.match(regex)) {
+            results.push(m);
+        }
+    }
+
+    return results;
+}
+
+function registerOffset(registers, regex) {
+    for (let i = 0; i < registers.length; i++) {
+        let reg = registers[i];
+        if (reg.$.name.match(regex)) {
+            return parseInt(reg.$.offset, 16);
+        }
+    }
+
+    return null;
 }
 
 function placePorts(modules) {
-    let portModule = getPortModule(modules);
-
-    function minRegOffset(registers) {
-        let array = [].concat(registers);
-        array.sort(function (a, b) {
-            let ah = parseInt(a.$.offset, 16);
-            let bh = parseInt(b.$.offset, 16);
-            return ah - bh;
-        });
-
-        return array[0].$.offset;
-    }
-
+    let portModule = getModule(modules, /PORT/);
     let ports = portModule['register-group'];
     for (let i = 0; i < ports.length; i++) {
         let port = ports[i];
         let mask = parseInt(port.register[0].$.mask, 16); //port
         let name = port.$.name.toLowerCase();
-        let address = minRegOffset(port.register);
+        let address = registerOffset(port.register, /PIN\w/);
         let shortName = name.replace(/port(.)/, "$1");
         name = name.replace(/port(.)/, "port_$1");
         placePort(name, address, mask);
 
         let obj = {
             name: name,
+            address: address,
             sn: shortName
         };
 
@@ -107,7 +119,7 @@ function placePorts(modules) {
 }
 
 function placePins(modules) {
-    let portModule = getPortModule(modules);
+    let portModule = getModule(modules, /PORT/);
     let ports = portModule['register-group'];
     for (let i = 0; i < ports.length; i++) {
         buffer += '\n';
@@ -126,7 +138,7 @@ function placePins(modules) {
             if (exists) {
                 let suffix = ("00" + offset.toString(16)).substr(-2);
                 let pos = '0x' + offset.toString(16);
-                let pinName = `${prefix}${suffix}`;
+                let pinName = `${prefix}_${suffix}`;
                 buffer += `using ${pinName} = pin<${portName}, ${pos}>;\n`;
                 portObj.pins[offset] = {
                     name: pinName,
@@ -139,8 +151,64 @@ function placePins(modules) {
     }
 
     buffer += '\n';
+}
 
-    // console.log(mcu.portsMap['a'].pins);
+function placeTimers(modules) {
+    buffer += '\n';
+
+    let array = getModules(modules, /^TC(8|16)/);
+    let timers = [];
+    let moduleMap = {};
+    mcu.timers = [];
+    mcu.timersMap = {};
+    for (let i = 0; i < array.length; i++) {
+        let m = array[i];
+        let g = m['register-group'];
+        for (let j = 0; j < g.length; j++) {
+            let t = g[j];
+            moduleMap[t.$.name] = m;
+        }
+        timers = timers.concat(g);
+    }
+
+    for (let i = 0; i < timers.length; i++) {
+        let t = timers[i];
+        let name = t.$.name;
+        let address = registerOffset(t.register, /TCCR\dA/);
+        let tccrc = registerOffset(t.register, /TCCR\dC/);
+        let n = name.replace(/TC(\d+)/, '$1');
+
+        name = 'timer_' +  ("0000" + n).substr(-2);
+        let obj = {
+            name: name,
+            avrName: t.$.name,
+            sn: n,
+            type: tccrc ? 'timer16' : 'timer8',
+            address: address
+        };
+
+        mcu.timers.push(obj);
+        mcu.timersMap[obj.sn] = obj;
+    }
+
+    mcu.timers.sort(function (a, b) {
+       return a.sn - b.sn;
+    });
+
+    for (let i = 0; i < mcu.timers.length; i++) {
+        let t = mcu.timers[i];
+        let hex = '0x' + ("0000" + t.address.toString(16)).substr(-4);
+        let m = moduleMap[t.avrName];
+
+        if (t.type === 'timer16') {
+            buffer += `using ${t.name} = ::zoal::arch::avr::atmega::timer16<${hex}, ${t.sn}>;\n`;
+        } else {
+            let async = m.$.name.match(/ASYNC/i) != null;
+            buffer += `using ${t.name} = ::zoal::arch::avr::atmega::timer8<${hex}, ${t.sn}, ${async}>;\n`;
+        }
+    }
+
+    buffer += '\n';
 }
 
 function placeAPI() {
@@ -158,6 +226,7 @@ function placeAPI() {
     buffer += 'using api = ::zoal::gpio::base_api<port_chain>;\n';
     buffer += 'using mux = ::zoal::arch::avr::atmega::mux<api>;\n';
     buffer += 'using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;\n';
+    buffer += 'using irq = ::zoal::arch::avr::atmega::irq;\n';
 }
 
 function beginNamespace() {
@@ -189,6 +258,7 @@ function printPorts(metadata) {
     beginClass(device.$.name);
     placeAliases();
     placePorts(root.modules[0].module);
+    placeTimers(root.modules[0].module);
     placePins(root.modules[0].module);
     placeAPI();
     endClass();

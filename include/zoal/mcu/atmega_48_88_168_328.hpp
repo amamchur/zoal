@@ -6,6 +6,7 @@
 #include "base_mcu.hpp"
 #include "metadata/atmega_48_88_168_328.hpp"
 #include "../arch/avr/atmega_universe.hpp"
+#include "../arch/avr/atmega/irq.hpp"
 #include "../gpio/pin.hpp"
 #include "../gpio/base_api.hpp"
 #include "../gpio/port_link.hpp"
@@ -99,6 +100,7 @@ namespace zoal { namespace mcu {
         using api = ::zoal::gpio::base_api<port_chain>;
         using mux = ::zoal::arch::avr::atmega::mux<api>;
         using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;
+        using irq = ::zoal::arch::avr::atmega::irq;
     };
 }}
 

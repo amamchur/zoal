@@ -7,13 +7,12 @@
 #include "../bus.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<class TimerModel, uintptr_t Address, class TIFRs, class TIMRs, class ClockSource, uint8_t N>
+    template<class TimerModel, uintptr_t Address, uint8_t N>
     class timer {
     public:
-        using self_type = timer<TimerModel, Address, TIFRs, TIMRs, ClockSource, N>;
+        using self_type = timer<TimerModel, Address, N>;
         using model = TimerModel;
         using word = typename model::word;
-        using clock_source = ClockSource;
 
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr uintptr_t address = Address;
@@ -21,79 +20,31 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uint8_t channels_count = 2;
         static constexpr uint8_t resolution = sizeof(word) * 8;
 
+        static constexpr uintptr_t TCCRxA = model::TCCRxA;
+        static constexpr uintptr_t TCCRxB = model::TCCRxB;
+        static constexpr uintptr_t TCNTx = model::TCNTx;
+        static constexpr uintptr_t OCRxA = model::OCRxA;
+        static constexpr uintptr_t OCRxB = model::OCRxB;
+
         timer() = delete;
+
+        static inline void power_on() {}
+
+        static inline void power_off() {}
 
         static inline void enable() {}
 
         static inline void disable() {}
 
-        template<class Clock>
-        static inline void select_clock_source() {
-            zoal::utils::memory_segment<uint8_t, Address> mem;
-            mem[model::TCCRxB] = (mem[model::TCCRxB] & ~static_cast<uint8_t >(7u)) | Clock::mask;;
-            mem.happyInspection();
-        }
-
         static inline void counter(word value) {
             zoal::utils::memory_segment<word, Address> memWord;
-            memWord[model::TCNTx] = value;
+            memWord[TCNTx] = value;
             memWord.happyInspection();
         }
 
         static inline word counter() {
             zoal::utils::memory_segment<word, Address> memWord;
-            return memWord[model::TCNTx];
-        }
-
-        static inline void enable_overflow_interrupt() {
-            TIMRs::template enable_overflow_interrupt<no>();
-        }
-
-        static inline void disable_overflow_interrupt() {
-            TIMRs::template disable_overflow_interrupt<no>();
-        }
-
-        static inline void clear_overflow_interrupt_flag() {
-            TIFRs::template clear_counter_flag<no>();
-        }
-
-        template<uint8_t channel>
-        static inline void enable_compare_match_interrupt() {
-            static_assert(channel < channels_count, "Channel index is out of range");
-            TIMRs::template enable_compare_match_interrupt<no, channel>();
-        }
-
-        template<uint8_t channel>
-        static inline void disable_compare_match_interrupt() {
-            static_assert(channel < channels_count, "Channel index is out of range");
-            TIMRs::template disable_compare_match_interrupt<no, channel>();
-        }
-
-        template<uint8_t channel>
-        static inline void clear_channel_interrupt_flag() {
-            static_assert(channel < channels_count, "Channel index is out of range");
-            TIFRs::template clear_channel_flag<no, channel>();
-        }
-
-        template<zoal::periph::timer_mode TimerMode>
-        static inline void mode() {
-            model::template mode<self_type, TimerMode>();
-        }
-
-        static void reset() {
-            disable_overflow_interrupt();
-            disable_compare_match_interrupt<0>();
-            disable_compare_match_interrupt<1>();
-
-            clear_overflow_interrupt_flag();
-            clear_channel_interrupt_flag<0>();
-            clear_channel_interrupt_flag<1>();
-
-            mode<zoal::periph::timer_mode::normal>();
-
-            counter(0);
-            output_compare_value<0>(0);
-            output_compare_value<1>(0);
+            return memWord[TCNTx];
         }
 
         template<class Config>
@@ -103,10 +54,10 @@ namespace zoal { namespace arch { namespace avr {
             zoal::utils::memory_segment<uint8_t, Address> mem;
             switch (Config::channel) {
             case 0:
-                mem[model::TCCRxA] |= static_cast<uint8_t >(1u << 7u); // COM2A1
+                mem[TCCRxA] |= static_cast<uint8_t >(1u << 7u); // COM2A1
                 break;
             case 1:
-                mem[model::TCCRxA] |= static_cast<uint8_t >(1u << 5u); // COM2B1
+                mem[TCCRxA] |= static_cast<uint8_t >(1u << 5u); // COM2B1
                 break;
             }
 
@@ -124,10 +75,10 @@ namespace zoal { namespace arch { namespace avr {
             zoal::utils::memory_segment<uint8_t, Address> mem;
             switch (Config::channel) {
             case 0:
-                mem[model::TCCRxA] &= ~static_cast<uint8_t >(1u << 7u); // COM2A1
+                mem[TCCRxA] &= ~static_cast<uint8_t >(1u << 7u); // COM2A1
                 break;
             case 1:
-                mem[model::TCCRxA] &= ~static_cast<uint8_t >(1u << 5u); // COM2B1
+                mem[TCCRxA] &= ~static_cast<uint8_t >(1u << 5u); // COM2B1
                 break;
             }
             mem.happyInspection();
@@ -140,10 +91,10 @@ namespace zoal { namespace arch { namespace avr {
             zoal::utils::memory_segment<word, Address> memWord;
             switch (Channel) {
             case 0:
-                memWord[model::OCRxA] = value;
+                memWord[OCRxA] = value;
                 break;
             case 1:
-                memWord[model::OCRxB] = value;
+                memWord[OCRxB] = value;
                 break;
             default:
                 break;
@@ -159,9 +110,9 @@ namespace zoal { namespace arch { namespace avr {
             zoal::utils::memory_segment<word, Address> memWord;
             switch (Channel) {
             case 0:
-                return memWord[model::OCRxA];
+                return memWord[OCRxA];
             case 1:
-                return memWord[model::OCRxB];
+                return memWord[OCRxB];
             default:
                 break;
             }

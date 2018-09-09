@@ -1,16 +1,16 @@
 #ifndef ZOAL_MCU_ATTINY2313_HPP
 #define ZOAL_MCU_ATTINY2313_HPP
 
-#include <stdint.h>
-
-#include "base_mcu.hpp"
-#include "../gpio/pin.hpp"
+#include "../arch/avr/adc.hpp"
+#include "../arch/avr/attiny_universe.hpp"
 #include "../gpio/base_api.hpp"
+#include "../gpio/pin.hpp"
 #include "../gpio/port_link.hpp"
 #include "../periph/adc_connection.hpp"
 #include "../periph/pwm_connection.hpp"
-#include "../arch/avr/attiny_universe.hpp"
-#include "../arch/avr/adc.hpp"
+#include "base_mcu.hpp"
+
+#include <stdint.h>
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
@@ -27,8 +27,6 @@ namespace zoal { namespace mcu {
 
         using adc0 = ::zoal::arch::avr::adc<zoal::arch::avr::mcu_type::attiny13, 0x23, 0>;
 
-        using pecs = zoal::arch::avr::prescaler_and_ext_clock_source;
-        using tifrs = zoal::arch::avr::timer_interrupt_flag_register<0x58>;
         using t0imr = zoal::arch::avr::timer_interrupt_mask_register<0x59, 1 << 1, 1 << 0, 1 << 2>;
         using t1imr = zoal::arch::avr::timer_interrupt_mask_register<0x59, 1 << 7, 1 << 6, 1 << 5>;
 
@@ -38,14 +36,14 @@ namespace zoal { namespace mcu {
         using timer8_model = zoal::arch::avr::timer8_model<Timer8Type>;
         using timer16_model = zoal::arch::avr::timer16_model<Timer16Type>;
 
-        template<uintptr_t Address, class ClkSrc, uint8_t N>
-        using timer8 = typename zoal::arch::avr::timer8<timer8_model, Address, tifrs, t0imr, ClkSrc, N>;
+        template<uintptr_t Address, uint8_t N>
+        using timer8 = typename zoal::arch::avr::timer8<timer8_model, Address, N>;
 
-        template<uintptr_t Address, class ClkSrc, uint8_t N>
-        using timer16 = typename zoal::arch::avr::timer16<timer16_model, Address, tifrs, t1imr, ClkSrc, N>;
+        template<uintptr_t Address, uint8_t N>
+        using timer16 = typename zoal::arch::avr::timer16<timer16_model, Address, N>;
 
-        using timer0 = timer8<0x50, pecs, 0>;
-        using timer1 = timer16<0x44, pecs, 1>;
+        using timer0 = timer8<0x50, 0>;
+        using timer1 = timer16<0x44, 1>;
 
         using pa0 = pin<port_a, 0>;
         using pa1 = pin<port_a, 1>;

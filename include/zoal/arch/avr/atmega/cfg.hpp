@@ -1,7 +1,9 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_CFG_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_CFG_HPP
 
+#include "../../../periph/timer_mode.hpp"
 #include "../../../periph/usart_config.hpp"
+#include "../../../utils/helpers.hpp"
 #include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace metadata {
@@ -13,6 +15,12 @@ namespace zoal { namespace metadata {
 
     template<::zoal::periph::usart_stop_bits StopBits>
     struct atmega_usart_stop_bit_flags;
+
+    template<::zoal::periph::timer_mode Mode>
+    struct atmega_timer_mode;
+
+    template<bool async, uintptr_t ClockDivider>
+    struct atmega_timer_clock_divider;
 }}
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
@@ -53,6 +61,22 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 mem[U::UCSRxA] = UCSRxA_value;
                 mem[U::UCSRxC] = atmega_usart_mode<Bits, Parity, StopBits>::UCSRxC_value;
                 mem.happyInspection();
+            }
+        };
+
+        template<class T, zoal::periph::timer_mode Mode, uintptr_t ClockDivider, uintptr_t Prescale, uintptr_t Period>
+        class timer {
+        public:
+            static constexpr auto async = T::async;
+            using TCCRxA_cfg = typename zoal::metadata::atmega_timer_mode<Mode>::TCCRxA;
+            using TCCRxB_cfg = zoal::utils::merge_clear_and_set<typename zoal::metadata::atmega_timer_mode<Mode>::TCCRxB,
+                                                                typename zoal::metadata::atmega_timer_clock_divider<async, ClockDivider>::TCCRxB>;
+            static void apply() {
+                T::disable();
+
+                zoal::utils::memory_segment<uint8_t, T::address> mem;
+                TCCRxA_cfg::apply(mem[T::TCCRxA]);
+                TCCRxB_cfg::apply(mem[T::TCCRxB]);
             }
         };
     };

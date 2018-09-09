@@ -4,10 +4,9 @@
 #include "attiny/timer_interrupt_flag_register.hpp"
 #include "attiny/timer_interrupt_mask_register.hpp"
 #include "port.hpp"
-#include "clock_source.hpp"
-#include "timer_model.hpp"
 #include "timer8.hpp"
 #include "timer16.hpp"
+#include "timer_model.hpp"
 
 namespace zoal { namespace arch {
     class attiny_universe {

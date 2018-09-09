@@ -26,9 +26,8 @@ volatile uint32_t milliseconds = 0;
 
 using mcu = zoal::pcb::mcu;
 using ms_timer = typename mcu::timer0;
-using prescaler = zoal::utils::prescaler_le<ms_timer, 64>::result;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using irq_handler = typename counter::handler<mcu::frequency, prescaler::value, ms_timer>;
+using irq_handler = typename counter::handler<mcu::frequency, 64, ms_timer>;
 using usart = mcu::usart0<64, 8>;
 using logger = zoal::utils::terminal_logger<usart, zoal::utils::log_level::info>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
@@ -64,9 +63,10 @@ int main() {
     mcu::cfg::usart<usart, 115200>::apply();
     usart::enable();
 
-    ms_timer::reset();
-    ms_timer::select_clock_source<prescaler>();
-    ms_timer::enable_overflow_interrupt();
+    ms_timer::power_on();
+    mcu::cfg::timer<ms_timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
+    ms_timer::enable();
+    mcu::irq::timer<ms_timer>::enable_overflow_interrupt();
     zoal::utils::interrupts::on();
 
     logger::info() << "Started ATmega2560";

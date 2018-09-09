@@ -24,8 +24,7 @@ volatile uint8_t milliseconds = 0;
 using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using ms_timer = mcu::timer0;
-using prescaler = zoal::utils::prescaler_le<ms_timer, 32>::result;
-using ms_handler = counter::handler<mcu::frequency, prescaler::value, ms_timer>;
+using ms_handler = counter::handler<mcu::frequency, 64, ms_timer>;
 using sspi = zoal::gpio::tx_software_spi<mcu::pb3, mcu::pb2>;
 using max7219 = zoal::ic::max72xx<sspi, mcu::pb1>;
 

@@ -18,8 +18,7 @@ volatile uint32_t milliseconds = 0;
 using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using ms_timer = zoal::pcb::mcu::timer0;
-using prescaler = zoal::utils::prescaler_le<ms_timer, 64>::result;
-using irq_handler = counter::handler<zoal::pcb::mcu::frequency, prescaler::value, ms_timer>;
+using irq_handler = counter::handler<zoal::pcb::mcu::frequency, 64, ms_timer>;
 
 using usart_config = zoal::periph::usart_config<zoal::pcb::mcu::frequency, 115200>;
 using usart = zoal::pcb::mcu::usart1<32, 8>;
@@ -40,10 +39,10 @@ void initializeHardware() {
     mcu::cfg::usart<usart, 115200>::apply();
     usart::enable();
 
-    ms_timer::reset();
-    ms_timer::mode<zoal::periph::timer_mode::fast_pwm_8bit>();
-    ms_timer::select_clock_source<prescaler>();
-    ms_timer::enable_overflow_interrupt();
+    ms_timer::power_on();
+    mcu::cfg::timer<ms_timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
+    ms_timer::enable();
+    mcu::irq::timer<ms_timer>::enable_overflow_interrupt();
     zoal::utils::interrupts::on();
 }
 

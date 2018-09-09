@@ -4,7 +4,6 @@
 #include <zoal/gpio/software_spi.hpp>
 #include <zoal/utils/tool_set.hpp>
 #include <zoal/utils/ms_counter.hpp>
-#include <zoal/utils/prescalers.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/helpers.hpp>
 #include <zoal/ic/max72xx.hpp>
@@ -29,8 +28,7 @@ volatile uint32_t milliseconds = 0;
 using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using ms_timer = mcu::timer0;
-using prescaler = zoal::utils::prescaler_le<ms_timer, 64>::result;
-using irq_handler = counter::handler<mcu::frequency, prescaler::value, ms_timer>;
+using irq_handler = counter::handler<mcu::frequency, 64, ms_timer>;
 using usart_config = zoal::periph::usart_config<mcu::frequency, 115200>;
 using usart = mcu::usart0<4, 8>;
 using logger = zoal::utils::plain_logger<usart, zoal::utils::log_level::info>;
@@ -49,14 +47,17 @@ app1 app;
 
 void initialize() {
     usart::power_on();
+    ms_timer::power_on();
+
     mcu::mux::usart<usart, mcu::pd0, mcu::pd1>::on();
     mcu::cfg::usart<usart, 115200>::apply();
-    usart::enable();
+    mcu::cfg::timer<ms_timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
 
-    ms_timer::reset();
-    ms_timer::mode<zoal::periph::timer_mode::fast_pwm_8bit>();
-    ms_timer::select_clock_source<prescaler>();
-    ms_timer::enable_overflow_interrupt();
+    mcu::irq::timer<ms_timer>::enable_overflow_interrupt();
+
+    usart::enable();
+    ms_timer::enable();
+
     zoal::utils::interrupts::on();
 }
 
