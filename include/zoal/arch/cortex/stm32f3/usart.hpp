@@ -7,7 +7,7 @@
 #include "../../../utils/memory_segment.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../../utils/nop.hpp"
-#include "../../../utils/yield.hpp"
+#include "zoal/utils/cooperation.hpp"
 
 namespace zoal { namespace arch { namespace stm32f3 {
     template<uintptr_t Address, uint8_t N, uintptr_t TxSize, uintptr_t RxSize, class ... Mixin>
@@ -33,7 +33,7 @@ namespace zoal { namespace arch { namespace stm32f3 {
 
         static constexpr uint8_t no = N;
 
-        using yield = zoal::utils::yield<>;
+        using yield = zoal::utils::cooperation<>;
 
         template<uintptr_t Size>
         using buffer = typename ::zoal::data::ring_buffer<uint8_t, Size, yield::place>;

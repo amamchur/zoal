@@ -1,26 +1,26 @@
-#include <avr/eeprom.h>
+#include "templates/blink.hpp"
+#include "templates/compile_check.hpp"
+#include "templates/ir_remove.hpp"
+#include "templates/keypad_mega.hpp"
+#include "templates/max72xx.hpp"
+#include "templates/multi_function_shield.hpp"
+#include "templates/neo_pixel.hpp"
+#include "templates/tm1637.hpp"
+#include "templates/uno_lcd_shield.hpp"
 
+#include <avr/eeprom.h>
+#include <zoal/board/arduino_atmegaxx8.hpp>
 #include <zoal/board/arduino_mega.hpp>
+#include <zoal/data/rx_tx_buffer.hpp>
 #include <zoal/gpio/software_spi.hpp>
-#include <zoal/utils/tool_set.hpp>
+#include <zoal/ic/max72xx.hpp>
+#include <zoal/io/analog_keypad.hpp>
+#include <zoal/io/button.hpp>
+#include <zoal/shields/uno_lcd_shield.hpp>
+#include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/prescalers.hpp>
-#include <zoal/utils/logger.hpp>
-#include <zoal/ic/max72xx.hpp>
-#include <zoal/io/button.hpp>
-#include <zoal/io/analog_keypad.hpp>
-#include <zoal/shields/uno_lcd_shield.hpp>
-#include <zoal/board/arduino_atmegaxx8.hpp>
-
-#include "templates/keypad_mega.hpp"
-#include "templates/neo_pixel.hpp"
-#include "templates/multi_function_shield.hpp"
-#include "templates/blink.hpp"
-#include "templates/uno_lcd_shield.hpp"
-#include "templates/max72xx.hpp"
-#include "templates/ir_remove.hpp"
-#include "templates/tm1637.hpp"
-#include "templates/compile_check.hpp"
+#include <zoal/utils/tool_set.hpp>
 
 volatile uint32_t milliseconds = 0;
 
@@ -28,7 +28,7 @@ using mcu = zoal::pcb::mcu;
 using ms_timer = typename mcu::timer0;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using irq_handler = typename counter::handler<mcu::frequency, 64, ms_timer>;
-using usart = mcu::usart0<64, 8>;
+using usart = mcu::usart0<zoal::data::rx_tx_buffer<8, 8>>;
 using logger = zoal::utils::terminal_logger<usart, zoal::utils::log_level::info>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
@@ -74,10 +74,10 @@ int main() {
     app.init();
     app.run();
 
-//#pragma clang diagnostic push
-//#pragma clang diagnostic ignored "-Wmissing-noreturn"
-//    while (true) {
-//    }
+    //#pragma clang diagnostic push
+    //#pragma clang diagnostic ignored "-Wmissing-noreturn"
+    //    while (true) {
+    //    }
     return 0;
-//#pragma clang diagnostic pop
+    //#pragma clang diagnostic pop
 }

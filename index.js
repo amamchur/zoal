@@ -119,6 +119,10 @@ function placePorts(modules) {
 }
 
 function placePins(modules) {
+
+    buffer += 'template<class Port, uint8_t Offset>\n';
+    buffer += 'using pin = typename ::zoal::gpio::pin<Port, Offset>;\n\n';
+
     let portModule = getModule(modules, /PORT/);
     let ports = portModule['register-group'];
     for (let i = 0; i < ports.length; i++) {
@@ -178,7 +182,7 @@ function placeTimers(modules) {
         let tccrc = registerOffset(t.register, /TCCR\dC/);
         let n = name.replace(/TC(\d+)/, '$1');
 
-        name = 'timer_' +  ("0000" + n).substr(-2);
+        name = 'timer_' + ("0000" + n).substr(-2);
         let obj = {
             name: name,
             avrName: t.$.name,
@@ -192,7 +196,7 @@ function placeTimers(modules) {
     }
 
     mcu.timers.sort(function (a, b) {
-       return a.sn - b.sn;
+        return a.sn - b.sn;
     });
 
     for (let i = 0; i < mcu.timers.length; i++) {
@@ -208,6 +212,53 @@ function placeTimers(modules) {
         }
     }
 
+    buffer += '\n';
+}
+
+function placeUSARTs(modules) {
+    buffer += '\n';
+
+    let array = getModules(modules, /^USART$/);
+    let moduleMap = {};
+    let usarts = [];
+    mcu.usarts = [];
+    mcu.usartsMap = {};
+    for (let i = 0; i < array.length; i++) {
+        let m = array[i];
+        let g = m['register-group'];
+        for (let j = 0; j < g.length; j++) {
+            let t = g[j];
+            moduleMap[t.$.name] = m;
+        }
+        usarts = usarts.concat(g);
+    }
+
+    for (let i = 0; i < usarts.length; i++) {
+        let u = usarts[i];
+        let name = u.$.name;
+        let address = registerOffset(u.register, /UCSR\dA/);
+        let n = name.replace(/USART(\d+)/, '$1');
+
+        name = 'usart_' + ("0000" + n).substr(-2);
+        let obj = {
+            name: name,
+            avrName: u.$.name,
+            sn: n,
+            address: address
+        };
+
+        mcu.usarts.push(obj);
+        mcu.usartsMap[obj.sn] = obj;
+    }
+
+    for (let i = 0; i < mcu.usarts.length; i++) {
+        let u = mcu.usarts[i];
+        let hex = '0x' + ("0000" + u.address.toString(16)).substr(-4);
+        buffer += `template<class Buffer>\n`;
+        buffer += `using ${u.name} = typename ::zoal::arch::avr::usart<${hex}, ${u.sn}, Buffer>;\n\n`;
+    }
+
+    console.log(usarts);
     buffer += '\n';
 }
 
@@ -259,6 +310,7 @@ function printPorts(metadata) {
     placeAliases();
     placePorts(root.modules[0].module);
     placeTimers(root.modules[0].module);
+    placeUSARTs(root.modules[0].module);
     placePins(root.modules[0].module);
     placeAPI();
     endClass();

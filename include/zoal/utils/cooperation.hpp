@@ -7,9 +7,9 @@
 
 namespace zoal { namespace utils {
 	template<uint64_t NoOps = 1>
-	class yield {
+	class cooperation {
 	public:
-		static void place() {
+		static void yield() {
 			zoal::utils::interrupts ei(true);
 			zoal::utils::nop<NoOps>::place();
 		}

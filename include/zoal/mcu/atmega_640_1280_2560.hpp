@@ -189,17 +189,17 @@ namespace zoal { namespace mcu {
             using lsbf3 = lsbf_spi<3>;
         };
 
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart0 = typename ::zoal::arch::avr::usart<0xC0, 0, TxSize, RxSize>;
+        template<class Buffer>
+        using usart0 = typename ::zoal::arch::avr::usart<0xC0, 0, Buffer>;
 
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart1 = typename ::zoal::arch::avr::usart<0xC8, 1, TxSize, RxSize>;
+        template<class Buffer>
+        using usart1 = typename ::zoal::arch::avr::usart<0xC8, 1, Buffer>;
 
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart2 = typename ::zoal::arch::avr::usart<0xD0, 2, TxSize, RxSize>;
+        template<class Buffer>
+        using usart2 = typename ::zoal::arch::avr::usart<0xD0, 2, Buffer>;
 
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart3 = typename ::zoal::arch::avr::usart<0x130, 3, TxSize, RxSize>;
+        template<class Buffer>
+        using usart3 = typename ::zoal::arch::avr::usart<0x130, 3, Buffer>;
 
         using port_chain = typename ::zoal::gpio::chain_builder<
                 port_a,

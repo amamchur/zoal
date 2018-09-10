@@ -22,22 +22,6 @@ namespace zoal { namespace periph {
         stop_bits_1,
         stop_bits_2
     };
-
-    template<
-            uint32_t Freq,
-            uint32_t BaudRate,
-            usart_data_bits Bits = usart_data_bits::data_bits_8,
-            usart_parity Parity = usart_parity::none,
-            usart_stop_bits StopBits = usart_stop_bits::stop_bits_1
-    >
-    class usart_config {
-    public:
-        static constexpr uint32_t mcu_freq = Freq;
-        static constexpr uint32_t baud_rate = BaudRate;
-        static constexpr usart_data_bits data_bits = Bits;
-        static constexpr usart_parity parity = Parity;
-        static constexpr usart_stop_bits stop_bits = StopBits;
-    };
 }}
 
 #endif

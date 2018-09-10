@@ -28,8 +28,8 @@ namespace zoal { namespace mcu {
         using timer1 = atu::timer1;
         using timer2 = atu::timer2;
 
-        template<class Controller, uint8_t Offset>
-        using pin = typename ::zoal::gpio::pin<Controller, Offset>;
+        template<class Port, uint8_t Offset>
+        using pin = typename ::zoal::gpio::pin<Port, Offset>;
 
         using pb0 = pin<port_b, 0>;
         using pb1 = pin<port_b, 1>;
@@ -66,8 +66,8 @@ namespace zoal { namespace mcu {
         using pc4_adc0 = adc_connection<pc4, 4>;
         using pc5_adc0 = adc_connection<pc5, 5>;
 
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart0 = typename ::zoal::arch::avr::usart<0xC0, 0, TxSize, RxSize>;
+        template<class Buffer>
+        using usart0 = typename ::zoal::arch::avr::usart<0xC0, 0, Buffer>;
 
         template<uintptr_t BufferSize>
         using i2c0 = typename ::zoal::arch::avr::i2c<0xB8, BufferSize, pc4, pc5>;

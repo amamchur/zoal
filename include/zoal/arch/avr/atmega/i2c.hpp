@@ -4,7 +4,7 @@
 #include <stdint.h> /* NOLINT */
 #include "../../../data/ring_buffer.hpp"
 #include "../../../utils/interrupts.hpp"
-#include "../../../utils/yield.hpp"
+#include "zoal/utils/cooperation.hpp"
 #include "../../../utils/nop.hpp"
 #include "../../../utils/memory_segment.hpp"
 #include "../../../periph/i2c_config.hpp"
@@ -130,10 +130,10 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uint8_t TWENx = 2;
         static constexpr uint8_t TWIEx = 0;
     public:
-        using yield = zoal::utils::yield<>;
+        using yield = zoal::utils::cooperation<>;
 
         template<uintptr_t Size>
-        using ring_buffer = typename ::zoal::data::ring_buffer<uint8_t, Size, yield::place>;
+        using ring_buffer = typename ::zoal::data::ring_buffer<uint8_t, Size, yield::yield>;
 
         using self_type = i2c<Address, BufferSize, I2CSDA, I2CSCL>;
 

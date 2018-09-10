@@ -1,18 +1,16 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_VECTOR_HPP
 #define ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_VECTOR_HPP
 
-#include <stdint.h> /* NOLINT */
 #include "../../../utils/memory_segment.hpp"
+
+#include <stdint.h> /* NOLINT */
 
 namespace zoal { namespace arch { namespace avr {
     template<uintptr_t Address, uint8_t Count>
     class timer_interrupt_mask_vector {
     private:
-        enum {
-            TOIEx = 0,
-            OCIEAx = 1,
-            OCIEBx = 2
-        };
+        enum { TOIEx = 0, OCIEAx = 1, OCIEBx = 2 };
+
     public:
         template<uint8_t Timer>
         static inline void enable_overflow_interrupt() {
@@ -34,14 +32,14 @@ namespace zoal { namespace arch { namespace avr {
             static_assert(Channel < 2, "Channel index is out of range");
 
             switch (Channel) {
-                case 0:
-                    mem[Timer] |= (1 << OCIEAx);
-                    break;
-                case 1:
-                    mem[Timer] |= (1 << OCIEBx);
-                    break;
-                default:
-                    break;
+            case 0:
+                mem[Timer] |= (1 << OCIEAx);
+                break;
+            case 1:
+                mem[Timer] |= (1 << OCIEBx);
+                break;
+            default:
+                break;
             }
         }
 
@@ -51,14 +49,14 @@ namespace zoal { namespace arch { namespace avr {
             static_assert(Channel < 2, "Channel index is out of range");
 
             switch (Channel) {
-                case 0:
-                    mem[Timer] &= ~(1 << OCIEAx);
-                    break;
-                case 1:
-                    mem[Timer] &= ~(1 << OCIEBx);
-                    break;
-                default:
-                    break;
+            case 0:
+                mem[Timer] &= ~(1 << OCIEAx);
+                break;
+            case 1:
+                mem[Timer] &= ~(1 << OCIEBx);
+                break;
+            default:
+                break;
             }
         }
 

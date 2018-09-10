@@ -129,6 +129,8 @@ namespace zoal { namespace metadata {
 
     template<>
     struct atmega_timer_clock_divider<true, 1024> : atmega_tcd_cas<0x7> {};
+
+    struct timer_clock_dividers : zoal::utils::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024>{};
 }}
 
 #endif
