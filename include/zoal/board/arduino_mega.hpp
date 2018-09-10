@@ -3,14 +3,15 @@
 #ifndef ZOAL_BOARD_ARDUINO_MEGA_HPP
 #define ZOAL_BOARD_ARDUINO_MEGA_HPP
 
-#include "../mcu/atmega_640_1280_2560.hpp"
 #include "../arch/avr/atmega/spi.hpp"
+#include "../mcu/atmega2560.hpp"
+#include "../mcu/metadata/atmega_640_1280_2560.hpp"
 
 namespace zoal {
     template<uint32_t Frequency>
     class arduino_mega {
     public:
-        using mcu = zoal::mcu::atmega_640_1280_2560<Frequency>;
+        using mcu = zoal::mcu::atmega2560<Frequency>;
 
         using ard_d00 = typename mcu::pe_00;
         using ard_d01 = typename mcu::pe_01;
@@ -88,7 +89,6 @@ namespace zoal {
 
         using port_chain = typename mcu::port_chain;
         using api = ::zoal::gpio::base_api<port_chain>;
-
     };
 
 #if defined(F_CPU)

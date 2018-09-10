@@ -24,8 +24,6 @@
 #include "templates/tm1637.hpp"
 #include "templates/compile_check.hpp"
 
-#include "../atmega328p.hpp"
-
 volatile uint32_t milliseconds = 0;
 
 //using mcu = zoal::mcu::atmega328p<16000000>; //zoal::pcb::mcu;

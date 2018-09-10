@@ -6,7 +6,6 @@
 #include <zoal/io/input_stream.hpp>
 #include <zoal/io/ir_remote_receiver.hpp>
 #include <zoal/io/rotary_encoder.hpp>
-#include <zoal/mcu/atmega_640_1280_2560.hpp>
 #include <zoal/shields/uno_lcd_shield.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>

@@ -19,7 +19,7 @@ using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using ms_timer = zoal::pcb::mcu::timer_00;
 using irq_handler = counter::handler<zoal::pcb::mcu::frequency, 64, ms_timer>;
-using usart = mcu::usart1<zoal::data::rx_tx_buffer<8, 8>>;
+using usart = mcu::usart_01<zoal::data::rx_tx_buffer<8, 8>>;
 
 using logger = zoal::utils::plain_logger<usart, zoal::utils::log_level::trace>;
 using tools = zoal::utils::tool_set<zoal::pcb::mcu, counter, logger>;

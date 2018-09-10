@@ -34,32 +34,32 @@ namespace zoal { namespace metadata {
     };
 
     template<>
-    struct atmega_pin_to_adc_channel<0x0078, 0x002F, 0> {
+    struct atmega_pin_to_adc_channel<0x0078, 0x002f, 0> {
         static constexpr int channel = 0;
     };
 
     template<>
-    struct atmega_pin_to_adc_channel<0x0078, 0x002F, 1> {
+    struct atmega_pin_to_adc_channel<0x0078, 0x002f, 1> {
         static constexpr int channel = 1;
     };
 
     template<>
-    struct atmega_pin_to_adc_channel<0x0078, 0x002F, 4> {
+    struct atmega_pin_to_adc_channel<0x0078, 0x002f, 4> {
         static constexpr int channel = 2;
     };
 
     template<>
-    struct atmega_pin_to_adc_channel<0x0078, 0x002F, 5> {
+    struct atmega_pin_to_adc_channel<0x0078, 0x002f, 5> {
         static constexpr int channel = 3;
     };
 
     template<>
-    struct atmega_pin_to_adc_channel<0x0078, 0x002F, 6> {
+    struct atmega_pin_to_adc_channel<0x0078, 0x002f, 6> {
         static constexpr int channel = 4;
     };
 
     template<>
-    struct atmega_pin_to_adc_channel<0x0078, 0x002F, 7> {
+    struct atmega_pin_to_adc_channel<0x0078, 0x002f, 7> {
         static constexpr int channel = 5;
     };
 

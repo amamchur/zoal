@@ -2,13 +2,14 @@
 #define ZOAL_BOARD_ARDUINO_ATMAGEXX8_HPP
 
 #include "../periph/pwm_connection.hpp"
-#include "../mcu/atmega_48_88_168_328.hpp"
+#include "../mcu/atmega328p.hpp"
+#include "../mcu/metadata/atmega_48_88_168_328.hpp"
 
 namespace zoal { namespace board {
     template<uint32_t Frequency>
     class arduino_atmegaxx8 {
     public:
-        using mcu = typename mcu::atmega_48_88_168_328<Frequency>;
+        using mcu = typename mcu::atmega328p<Frequency>;
 
         using ard_d00 = typename mcu::pd_00;
         using ard_d01 = typename mcu::pd_01;
