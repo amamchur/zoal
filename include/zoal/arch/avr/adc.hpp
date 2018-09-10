@@ -18,47 +18,41 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uint8_t no = N;
         static constexpr uint8_t resolution = 10;
 
+        static constexpr uintptr_t ADCLx = model::ADCLx;
+        static constexpr uintptr_t ADCHx = model::ADCHx;
+        static constexpr uintptr_t ADCSRAx = model::ADCSRAx;
+        static constexpr uintptr_t ADCSRBx = model::ADCSRBx;
+        static constexpr uintptr_t ADMUXx = model::ADMUXx;
+
         adc() = delete;
 
         adc(const adc &) = delete;
 
-        static inline void enable() {
-            mem[model::ADCSRAx] = 0x87;
+        static void power_on() {}
+
+        static void power_off() {}
+
+        static void enable() {
+            mem[model::ADCSRAx] |= static_cast<uint8_t >(1u << 7u);
         }
 
-        static inline void disable() {
+        static void disable() {
             mem[model::ADCSRAx] &= ~static_cast<uint8_t >(1u << 7u);
         }
 
-        static inline void enable_interrupt() {
+        static void enable_interrupt() {
             mem[model::ADCSRAx] |= 0x08;
         }
 
-        static inline void disable_interrupt() {
+        static void disable_interrupt() {
             mem[model::ADCSRAx] &= ~0x08;
         }
 
-        template<class Config>
-        static void connect() {
-            const uint8_t reset_bits = (Config::extra >> 0) & 0xFF;
-            const uint8_t set_bits = (Config::extra >> 8) & 0xFF;
-
-            if (Config::extra != 0) {
-                mem[model::ADCSRBx] = (mem[model::ADCSRBx] & ~reset_bits) | set_bits;
-            }
-
-            mem[model::ADMUXx] = model::ADMUXxDef | (Config::channel & 0x07);
-        }
-
-        template<class Config>
-        static void disconnect() {
-        }
-
-        static inline void start() {
+        static void start() {
             mem[model::ADCSRAx] |= 1 << 6;
         }
 
-        static inline void wait() {
+        static void wait() {
             while (mem[model::ADCSRAx] & (1 << 6));
         }
 
@@ -76,10 +70,6 @@ namespace zoal { namespace arch { namespace avr {
             wait();
             return value();
         }
-
-        static inline void setup() {
-        }
-
     private:
         static zoal::utils::memory_segment<uint8_t, Address> mem;
     };

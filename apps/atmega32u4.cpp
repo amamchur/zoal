@@ -17,7 +17,7 @@ volatile uint32_t milliseconds = 0;
 
 using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using ms_timer = zoal::pcb::mcu::timer0;
+using ms_timer = zoal::pcb::mcu::timer_00;
 using irq_handler = counter::handler<zoal::pcb::mcu::frequency, 64, ms_timer>;
 using usart = mcu::usart1<zoal::data::rx_tx_buffer<8, 8>>;
 

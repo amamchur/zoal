@@ -1,6 +1,7 @@
 #ifndef ZOAL_MCU_METADATA_ATMEGA_HPP
 #define ZOAL_MCU_METADATA_ATMEGA_HPP
 
+#include "../../periph/adc_config.hpp"
 #include "../../periph/timer_mode.hpp"
 #include "../../periph/usart_config.hpp"
 #include "../../utils/helpers.hpp"
@@ -54,7 +55,8 @@ namespace zoal { namespace metadata {
         static constexpr uint8_t flags = 1 << 3;
     };
 
-    enum : uint8_t {
+    enum : uint8_t
+    {
         WGMx0 = 0,
         WGMx1 = 1,
         WGMx2 = 3,
@@ -130,7 +132,58 @@ namespace zoal { namespace metadata {
     template<>
     struct atmega_timer_clock_divider<true, 1024> : atmega_tcd_cas<0x7> {};
 
-    struct timer_clock_dividers : zoal::utils::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024>{};
+    struct atmega_timer_clock_dividers : zoal::utils::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024> {};
+
+    template<zoal::periph::adc_ref Ref>
+    struct atmega_adc_ref {};
+
+    template<>
+    struct atmega_adc_ref<zoal::periph::adc_ref::internal> {
+        using ADMUXx = zoal::utils::clear_and_set<0xC0, 0xC0>;
+    };
+
+    template<>
+    struct atmega_adc_ref<zoal::periph::adc_ref::external> {
+        using ADMUXx = zoal::utils::clear_and_set<0xC0, 0x40>;
+    };
+
+    template<uintptr_t ClockDivider>
+    struct atmega_adc_clock_divider {};
+
+    template<>
+    struct atmega_adc_clock_divider<2> {
+        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x01>;
+    };
+
+    template<>
+    struct atmega_adc_clock_divider<4> {
+        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x02>;
+    };
+
+    template<>
+    struct atmega_adc_clock_divider<8> {
+        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x03>;
+    };
+
+    template<>
+    struct atmega_adc_clock_divider<16> {
+        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x04>;
+    };
+
+    template<>
+    struct atmega_adc_clock_divider<32> {
+        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x05>;
+    };
+
+    template<>
+    struct atmega_adc_clock_divider<64> {
+        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x06>;
+    };
+
+    template<>
+    struct atmega_adc_clock_divider<128> {
+        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x07>;
+    };
 }}
 
 #endif

@@ -7,7 +7,6 @@
 #include "../gpio/pin.hpp"
 #include "../gpio/base_api.hpp"
 #include "../gpio/port_link.hpp"
-#include "../periph/adc_connection.hpp"
 #include "../periph/pwm_connection.hpp"
 #include "../arch/avr/attiny_universe.hpp"
 #include "../arch/avr/adc.hpp"
@@ -35,15 +34,7 @@ namespace zoal { namespace mcu {
         using pb5 = pin<port_b, 5>;
 
         template<class Pin, uint8_t Channel>
-        using adc_connection = typename ::zoal::periph::adc_connection<Pin, adc0, Channel>;
-
-        template<class Pin, uint8_t Channel>
         using pwm_connection = typename ::zoal::periph::pwm_connection<Pin, timer0, Channel>;
-
-        using pb5_adc0 = adc_connection<pb2, 0>;
-        using pb2_adc0 = adc_connection<pb3, 1>;
-        using pb4_adc0 = adc_connection<pb4, 2>;
-        using pb3_adc0 = adc_connection<pb5, 3>;
 
         using pb0_timer0 = pwm_connection<pb0, 0>;
         using pb1_timer0 = pwm_connection<pb1, 1>;

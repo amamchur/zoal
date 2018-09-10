@@ -23,50 +23,30 @@ namespace zoal { namespace arch { namespace avr {
 
         port() = delete;
 
-        static inline void power_on() {}
+        static void power_on() {}
 
-        static inline void power_off() {
+        static void power_off() {
             mode<::zoal::gpio::pin_mode::input_floating>(0xFF);
         }
 
-        static inline register_type read() {
+        static register_type read() {
             return mem[PINx];
         }
 
-        static inline void low(register_type mask) {
+        static void low(register_type mask) {
             mem[PORTx] &= ~mask;
         }
 
-        static inline void high(register_type mask) {
+        static void high(register_type mask) {
             mem[PORTx] |= mask;
         }
 
-        static inline void toggle(register_type mask) {
+        static void toggle(register_type mask) {
             mem[PORTx] ^= mask;
         }
 
-        template<::zoal::gpio::pin_mode PinMode>
-        static inline void mode(register_type mask) {
-            using namespace ::zoal::gpio;
-            switch (PinMode) {
-            case pin_mode::input_floating:
-            case pin_mode::input_pull_down:
-                mem[DDRx] &= ~mask;
-                mem[PORTx] &= ~mask;
-                break;
-            case pin_mode::input_pull_up:
-                mem[DDRx] &= ~mask;
-                mem[PORTx] |= mask;
-                break;
-            case pin_mode::output_open_drain:
-            case pin_mode::output_push_pull:
-                mem[DDRx] |= mask;
-                break;
-            }
-        }
-
         template<::zoal::gpio::pin_mode PinMode, register_type mask>
-        static inline void mode() {
+        static void mode() {
             using namespace ::zoal::gpio;
             switch (PinMode) {
             case pin_mode::input_floating:

@@ -18,8 +18,8 @@
 namespace zoal { namespace arch { namespace avr {
     class atmega_universe {
     private:
-        using tifrs = avr::timer_interrupt_flags_vector<0x35, 6>;
-        using timrs = avr::timer_interrupt_mask_vector<0x6E, 6>;
+        using tifrs = avr::timer_interrupt_flags_vector<0x35>;
+        using timrs = avr::timer_interrupt_mask_vector<0x6E>;
     public:
         template<uintptr_t Address>
         using port = typename avr::port<Address>;
@@ -42,14 +42,14 @@ namespace zoal { namespace arch { namespace avr {
         template<uintptr_t Address, uint8_t N>
         using timer16_type = typename avr::atmega::timer16<Address, N>;
 
-        using timer0 = timer8_type<0x44, 0>;
-        using timer1 = timer16_type<0x80, 1>;
-        using timer2 = timer8_type<0xB0, 2, true>;
-        using timer3 = timer16_type<0x0090, 3>;
-        using timer4 = timer16_type<0x00A0, 4>;
-        using timer5 = timer16_type<0x0124, 5>;
+        using timer_00 = timer8_type<0x44, 0>;
+        using timer_01 = timer16_type<0x80, 1>;
+        using timer_02 = timer8_type<0xB0, 2, true>;
+        using timer_03 = timer16_type<0x0090, 3>;
+        using timer_04 = timer16_type<0x00A0, 4>;
+        using timer_05 = timer16_type<0x0124, 5>;
 
-        using adc0 = avr::adc<avr::mcu_type::atmega, 0x78, 0>;
+        using adc_00 = avr::adc<avr::mcu_type::atmega, 0x78, 0>;
     };
 }}}
 

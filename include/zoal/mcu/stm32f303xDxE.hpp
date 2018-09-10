@@ -8,7 +8,6 @@
 #include "../gpio/pin.hpp"
 #include "../gpio/base_api.hpp"
 #include "../gpio/port_link.hpp"
-#include "../periph/adc_connection.hpp"
 #include "../periph/pwm_connection.hpp"
 #include "../arch/cortex/stm32f3/port.hpp"
 #include "../arch/cortex/stm32f3/usart.hpp"
@@ -82,8 +81,8 @@ namespace zoal { namespace mcu {
         using adc3 = adc<0x50000400u, 3, adc_common34, enable_adc34>;
         using adc4 = adc<0x50000500u, 4, adc_common34, enable_adc34>;
 
-        template<uintptr_t TxSize, uintptr_t RxSize>
-        using usart1 = typename ::zoal::arch::stm32f3::usart<0x40013800u, 1, TxSize, RxSize, clock_apb2<0x4000>>;
+        template<class Buffer>
+        using usart1 = typename ::zoal::arch::stm32f3::usart<0x40013800u, 1, Buffer, clock_apb2<0x4000>>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;
@@ -189,49 +188,6 @@ namespace zoal { namespace mcu {
         using pf13 = pin<port_f, 0xD>;
         using pf14 = pin<port_f, 0xE>;
         using pf15 = pin<port_f, 0xF>;
-
-        template<class Pin, uint8_t Channel>
-        using adc1_connection = typename ::zoal::periph::adc_connection<Pin, adc1, Channel>;
-
-        template<class Pin, uint8_t Channel>
-        using adc2_connection = typename ::zoal::periph::adc_connection<Pin, adc2, Channel>;
-
-        template<class Pin, uint8_t Channel>
-        using adc3_connection = typename ::zoal::periph::adc_connection<Pin, adc3, Channel>;
-
-        template<class Pin, uint8_t Channel>
-        using adc4_connection = typename ::zoal::periph::adc_connection<Pin, adc3, Channel>;
-
-        using pa00_adc1 = adc1_connection<pa00, 0x01>;
-        using pa01_adc1 = adc1_connection<pa01, 0x02>;
-        using pa02_adc1 = adc1_connection<pa02, 0x03>;
-        using pa03_adc1 = adc1_connection<pa03, 0x04>;
-        using pa04_adc2 = adc2_connection<pa04, 0x01>;
-        using pa05_adc2 = adc2_connection<pa05, 0x02>;
-        using pa06_adc2 = adc2_connection<pa06, 0x03>;
-        using pa07_adc2 = adc2_connection<pa07, 0x04>;
-        using pb00_adc3 = adc3_connection<pb00, 0x0C>;
-        using pb01_adc3 = adc3_connection<pb01, 0x01>;
-        using pb02_adc2 = adc2_connection<pb02, 0x0C>;
-        using pb12_adc4 = adc4_connection<pb12, 0x03>;
-        using pb13_adc3 = adc3_connection<pb13, 0x05>;
-        using pb14_adc4 = adc4_connection<pb14, 0x04>;
-        using pb15_adc4 = adc4_connection<pb15, 0x05>;
-        using pc00_adc2 = adc2_connection<pc00, 0x06>;
-        using pc01_adc2 = adc2_connection<pc01, 0x07>;
-        using pc04_adc2 = adc2_connection<pc04, 0x05>;
-        using pc05_adc2 = adc2_connection<pc05, 0x0B>;
-        using pd08_adc4 = adc4_connection<pd08, 0x0C>;
-        using pd09_adc4 = adc4_connection<pd09, 0x0D>;
-        using pe07_adc3 = adc3_connection<pe07, 0x0D>;
-        using pe09_adc3 = adc3_connection<pe09, 0x02>;
-        using pe10_adc3 = adc3_connection<pe10, 0x0E>;
-        using pe11_adc3 = adc3_connection<pe11, 0x0F>;
-        using pe12_adc3 = adc3_connection<pe12, 0x10>;
-        using pe13_adc3 = adc3_connection<pe13, 0x03>;
-        using pe14_adc4 = adc4_connection<pe14, 0x01>;
-        using pe15_adc4 = adc4_connection<pe15, 0x02>;
-        using pf04_adc1 = adc1_connection<pf04, 0x05>;
 
         template<uintptr_t Address, uint32_t RCCMask>
         using spi_controller = typename ::zoal::arch::stm32f3::spi_controller<Address, rcc, RCCMask>;

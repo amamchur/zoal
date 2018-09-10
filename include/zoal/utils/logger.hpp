@@ -27,7 +27,7 @@ namespace zoal { namespace utils {
     class prefix_placer<void> {
     public:
         template<class T>
-        inline void place_preffix() {
+        void place_preffix() {
         }
     };
 
@@ -56,10 +56,10 @@ namespace zoal { namespace utils {
     class suffix_placer<void> {
     public:
         template<class T>
-        inline void place_suffix() {
+        void place_suffix() {
         }
 
-        inline void enable_suffix() {
+        void enable_suffix() {
         }
     };
 
@@ -90,7 +90,7 @@ namespace zoal { namespace utils {
         }
 
         template<class T>
-        inline log_stream &operator<<(T value) {
+        log_stream &operator<<(T value) {
             stream << value;
             return *this;
         }
@@ -109,7 +109,7 @@ namespace zoal { namespace utils {
     class log_stream<void, Prefixer, Suffixer, enabled> {
     public:
         template<class T>
-        inline log_stream &operator<<(T) {
+        log_stream &operator<<(T) {
             return *this;
         }
     };
@@ -118,7 +118,7 @@ namespace zoal { namespace utils {
     class log_stream<Transport, Prefixer, Suffixer, false> {
     public:
         template<class T>
-        inline log_stream &operator<<(T) {
+        log_stream &operator<<(T) {
             return *this;
         }
     };
@@ -137,30 +137,30 @@ namespace zoal { namespace utils {
         using ls = typename zoal::utils::log_stream<Transport, Prefixer, Suffixer, enabled>;
         using hs = typename zoal::utils::log_stream<Transport, void, void, true>;
 
-        static inline hs stream() {
+        static hs stream() {
             return hs();
         }
 
-        static inline void clear() {
+        static void clear() {
         }
 
-        static inline ls<log_level::trace >= MinLevel> trace() {
+        static ls<log_level::trace >= MinLevel> trace() {
             return ls<log_level::trace >= MinLevel>();
         }
 
-        static inline ls<log_level::info >= MinLevel> info() {
+        static ls<log_level::info >= MinLevel> info() {
             return ls<log_level::info >= MinLevel>();
         }
 
-        static inline ls<log_level::debug >= MinLevel> debug() {
+        static ls<log_level::debug >= MinLevel> debug() {
             return ls<log_level::debug >= MinLevel>();
         }
 
-        static inline ls<log_level::warn >= MinLevel> warn() {
+        static ls<log_level::warn >= MinLevel> warn() {
             return ls<log_level::warn >= MinLevel>();
         }
 
-        static inline ls<log_level::error >= MinLevel> error() {
+        static ls<log_level::error >= MinLevel> error() {
             return ls<log_level::error >= MinLevel>();
         }
     };

@@ -65,7 +65,7 @@ namespace zoal { namespace arch { namespace avr {
             mem[UCSRxB] &= ~static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
         }
 
-        static inline void flush() {}
+        static void flush() {}
 
         static void write_byte(uint8_t data) {
             zoal::utils::interrupts ni(false);

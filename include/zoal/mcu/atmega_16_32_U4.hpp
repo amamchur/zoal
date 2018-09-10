@@ -9,7 +9,6 @@
 #include "../arch/avr/atmega/irq.hpp"
 #include "../gpio/pin.hpp"
 #include "../gpio/base_api.hpp"
-#include "../periph/adc_connection.hpp"
 #include "../gpio/port_link.hpp"
 
 namespace zoal { namespace mcu {
@@ -27,53 +26,43 @@ namespace zoal { namespace mcu {
         using port_e = atu::port_e;
         using port_f = atu::port_f;
 
-        using adc0 = atu::adc0;
+        using adc_00 = atu::adc_00;
 
-        using timer0 = atu::timer0;
-        using timer1 = atu::timer1;
-        using timer2 = atu::timer2;
-        using timer3 = atu::timer3;
+        using timer_00 = atu::timer_00;
+        using timer_01 = atu::timer_01;
+        using timer_02 = atu::timer_02;
+        using timer_03 = atu::timer_03;
 
-        using pb0 = pin<port_b, 0>;
-        using pb1 = pin<port_b, 1>;
-        using pb2 = pin<port_b, 2>;
-        using pb3 = pin<port_b, 3>;
-        using pb4 = pin<port_b, 4>;
-        using pb5 = pin<port_b, 5>;
-        using pb6 = pin<port_b, 6>;
-        using pb7 = pin<port_b, 7>;
+        using pb_00 = pin<port_b, 0>;
+        using pb_01 = pin<port_b, 1>;
+        using pb_02 = pin<port_b, 2>;
+        using pb_03 = pin<port_b, 3>;
+        using pb_04 = pin<port_b, 4>;
+        using pb_05 = pin<port_b, 5>;
+        using pb_06 = pin<port_b, 6>;
+        using pb_07 = pin<port_b, 7>;
 
-        using pc6 = pin<port_c, 6>;
-        using pc7 = pin<port_c, 7>;
+        using pc_06 = pin<port_c, 6>;
+        using pc_07 = pin<port_c, 7>;
 
-        using pd0 = pin<port_d, 0>;
-        using pd1 = pin<port_d, 1>;
-        using pd2 = pin<port_d, 2>;
-        using pd3 = pin<port_d, 3>;
-        using pd4 = pin<port_d, 4>;
-        using pd5 = pin<port_d, 5>;
-        using pd6 = pin<port_d, 6>;
-        using pd7 = pin<port_d, 7>;
+        using pd_00 = pin<port_d, 0>;
+        using pd_01 = pin<port_d, 1>;
+        using pd_02 = pin<port_d, 2>;
+        using pd_03 = pin<port_d, 3>;
+        using pd_04 = pin<port_d, 4>;
+        using pd_05 = pin<port_d, 5>;
+        using pd_06 = pin<port_d, 6>;
+        using pd_07 = pin<port_d, 7>;
 
-        using pe2 = pin<port_e, 2>;
-        using pe6 = pin<port_e, 6>;
+        using pe_02 = pin<port_e, 2>;
+        using pe_06 = pin<port_e, 6>;
 
-        using pf0 = pin<port_f, 0>;
-        using pf1 = pin<port_f, 1>;
-        using pf4 = pin<port_f, 4>;
-        using pf3 = pin<port_f, 5>;
-        using pf6 = pin<port_f, 6>;
-        using pf7 = pin<port_f, 7>;
-
-        template<class Pin, uint8_t Channel>
-        using adc_connection = typename ::zoal::periph::adc_connection<Pin, adc0, Channel>;
-
-        using pf0_adc0 = adc_connection<pf0, 0>;
-        using pf1_adc0 = adc_connection<pf1, 1>;
-        using pf3_adc0 = adc_connection<pf3, 2>;
-        using pf4_adc0 = adc_connection<pf4, 3>;
-        using pf6_adc0 = adc_connection<pf6, 4>;
-        using pf7_adc0 = adc_connection<pf7, 5>;
+        using pf_00 = pin<port_f, 0>;
+        using pf_01 = pin<port_f, 1>;
+        using pf_04 = pin<port_f, 4>;
+        using pf_03 = pin<port_f, 5>;
+        using pf_06 = pin<port_f, 6>;
+        using pf_07 = pin<port_f, 7>;
 
         template<class Buffer>
         using usart1 = typename ::zoal::arch::avr::usart<0xC8, 1, Buffer>;

@@ -6,8 +6,12 @@ const includesMap = {
         '#include <zoal/arch/avr/atmega/mux.hpp>',
         '#include <zoal/arch/avr/atmega/cfg.hpp>',
         '#include <zoal/arch/avr/port.hpp>',
-        '#include <zoal/mcu/base_mcu.hpp">',
+        '#include <zoal/mcu/base_mcu.hpp>',
         '#include <zoal/gpio/pin.hpp>',
+        '#include <zoal/arch/avr/adc.hpp>',
+        '#include <zoal/arch/avr/atmega/usart.hpp>',
+        '#include <zoal/arch/avr/timer16.hpp>',
+        '#include <zoal/arch/avr/timer8.hpp>',
         '#include <zoal/gpio/base_api.hpp>',
         '#include <zoal/gpio/port_link.hpp>',
         '#include <zoal/arch/avr/atmega/irq.hpp>'
@@ -20,9 +24,6 @@ program
     .option('-m, --metadata [metadata]', 'MCU metadata file')
     .option('-o, --out [out]', 'Output file')
     .parse(process.argv);
-console.log('  - %s', program.family);
-console.log('  - %s', program.metadata);
-console.log('  - %s', program.out);
 
 let buffer = '';
 let mcu = {
@@ -33,7 +34,7 @@ let mcu = {
 function beginHeaderGuard(name) {
     name = name.toUpperCase();
     buffer += `#ifndef ZOAL_MCU_${name}_HPP\n`;
-    buffer += `#ifndef ZOAL_MCU_${name}_HPP\n`;
+    buffer += `#define ZOAL_MCU_${name}_HPP\n`;
 }
 
 function endHeaderGuard() {
@@ -41,7 +42,6 @@ function endHeaderGuard() {
 }
 
 function placeIncludes(family) {
-    console.log(family);
     buffer += '\n';
     buffer += ['#include <stdint.h>'].concat(includesMap[family] || {}).join('\n');
     buffer += '\n\n';
@@ -258,8 +258,19 @@ function placeUSARTs(modules) {
         buffer += `using ${u.name} = typename ::zoal::arch::avr::usart<${hex}, ${u.sn}, Buffer>;\n\n`;
     }
 
-    console.log(usarts);
     buffer += '\n';
+}
+
+function placeADCs(modules) {
+    buffer += '\n';
+
+    let module = getModules(modules, /^ADC/)[0];
+    let adc = module['register-group'][0];
+    let address = registerOffset(adc.register, /ADC/);
+    let hex = '0x' + ("0000" + address.toString(16)).substr(-4);
+
+    buffer += `using adc_00 = ::zoal::arch::avr::adc<::zoal::arch::avr::mcu_type::atmega, ${hex}, 0>;\n\n`;
+    console.log(adc);
 }
 
 function placeAPI() {
@@ -311,11 +322,12 @@ function printPorts(metadata) {
     placePorts(root.modules[0].module);
     placeTimers(root.modules[0].module);
     placeUSARTs(root.modules[0].module);
+    placeADCs(root.modules[0].module);
     placePins(root.modules[0].module);
     placeAPI();
     endClass();
     endNamespace();
-    endHeaderGuard(device.$.name);
+    endHeaderGuard();
 }
 
 function write() {

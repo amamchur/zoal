@@ -28,21 +28,21 @@ namespace zoal { namespace arch { namespace avr {
 
         timer() = delete;
 
-        static inline void power_on() {}
+        static void power_on() {}
 
-        static inline void power_off() {}
+        static void power_off() {}
 
-        static inline void enable() {}
+        static void enable() {}
 
-        static inline void disable() {}
+        static void disable() {}
 
-        static inline void counter(word value) {
+        static void counter(word value) {
             zoal::utils::memory_segment<word, Address> memWord;
             memWord[TCNTx] = value;
             memWord.happyInspection();
         }
 
-        static inline word counter() {
+        static word counter() {
             zoal::utils::memory_segment<word, Address> memWord;
             return memWord[TCNTx];
         }

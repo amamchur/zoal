@@ -26,7 +26,7 @@ namespace zoal { namespace arch { namespace avr {
 
         base_spi(const base_spi &) = delete;
 
-        static uint8_t inline transfer_byte(uint8_t data) {
+        static uint8_t transfer_byte(uint8_t data) {
             zoal::utils::memory_segment<uint8_t, 0x4C> m8;
             m8[SPDRx] = data;
 
@@ -51,7 +51,7 @@ namespace zoal { namespace arch { namespace avr {
         using base_type = base_spi<MOSI, MISO, SCLK, SS>;
 
         template<class T>
-        static T inline transfer(T data) {
+        static T transfer(T data) {
             T result = 0;
             uint8_t i = sizeof(T) * 8;
             do {
@@ -82,7 +82,7 @@ namespace zoal { namespace arch { namespace avr {
         }
 
         template<class T>
-        static T inline transfer(T data) {
+        static T transfer(T data) {
             T result = 0;
             uint8_t i = 0;
             uint8_t j = sizeof(T) * 8;

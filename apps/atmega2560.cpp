@@ -9,7 +9,6 @@
 #include "templates/uno_lcd_shield.hpp"
 
 #include <avr/eeprom.h>
-#include <zoal/board/arduino_atmegaxx8.hpp>
 #include <zoal/board/arduino_mega.hpp>
 #include <zoal/data/rx_tx_buffer.hpp>
 #include <zoal/gpio/software_spi.hpp>
@@ -25,7 +24,7 @@
 volatile uint32_t milliseconds = 0;
 
 using mcu = zoal::pcb::mcu;
-using ms_timer = typename mcu::timer0;
+using ms_timer = typename mcu::timer_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using irq_handler = typename counter::handler<mcu::frequency, 64, ms_timer>;
 using usart = mcu::usart0<zoal::data::rx_tx_buffer<8, 8>>;
@@ -59,7 +58,7 @@ int main() {
     check::check();
 
     usart::power_on();
-    mcu::mux::usart<usart, mcu::pd0, mcu::pd1>::on();
+    mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01>::on();
     mcu::cfg::usart<usart, 115200>::apply();
     usart::enable();
 

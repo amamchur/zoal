@@ -37,14 +37,16 @@ namespace zoal { namespace shields {
         using calibration_pin_b = typename Optional<typename Cfg::calibration_pin_b, typename Board::ard_d03>::type;
         using logger = typename Tools::logger;
 
-        using analog_channel = typename Board::ard_a00_adc;
+        using analog_pin = typename Board::ard_a00;
+        using mcu = typename Board::mcu;
+        using adc = typename mcu::adc_00;
 
         using address_selector = zoal::ic::hd44780_address_selector<16, 2>;
         using lcd = zoal::ic::hd44780<interface_type, address_selector>;
 
         static constexpr uint8_t button_count = 5;
 
-        using keypad = zoal::io::analog_keypad<Tools, analog_channel, button_count>;
+        using keypad = zoal::io::analog_keypad<Tools, button_count>;
 
         static void init() {
             keypad::init();
@@ -76,12 +78,12 @@ namespace zoal { namespace shields {
                 value = value << 1 | calibration_pin_b::read();
             }
 
-            logger::trace() << "value:" << value << " f: " << ((int)force);
+            logger::trace() << "value:" << value << " force: " << ((int)force);
             if (value != 85 && !force) {
                 return;
             }
 
-            analog_channel::on();
+            mcu::mux::template adc<adc, analog_pin>::on();
             keypad::values[0] = calibrate_button("SELECT");
             keypad::values[1] = calibrate_button("LEFT");
             keypad::values[2] = calibrate_button("DOWN");
@@ -101,7 +103,7 @@ namespace zoal { namespace shields {
         static uint16_t read_adc() {
             uint16_t result = 1 << 12;
             do {
-                uint16_t value = analog_channel::read();
+                uint16_t value = adc::read();
                 result = result > value ? value : result;
 
                 int diff = static_cast<int>(result) - value;
@@ -125,8 +127,8 @@ namespace zoal { namespace shields {
 
         template<class H>
         static void handle_keypad(H handler) {
-            analog_channel::on();
-            handle_keypad(handler, (int16_t) analog_channel::read());
+            mcu::mux::template adc<adc, analog_pin>::on();
+            handle_keypad(handler, (int16_t) adc::read());
         }
 
         template<class H>

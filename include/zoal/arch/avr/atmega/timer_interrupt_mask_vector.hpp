@@ -6,31 +6,24 @@
 #include <stdint.h> /* NOLINT */
 
 namespace zoal { namespace arch { namespace avr {
-    template<uintptr_t Address, uint8_t Count>
+    template<uintptr_t Address>
     class timer_interrupt_mask_vector {
     private:
         enum { TOIEx = 0, OCIEAx = 1, OCIEBx = 2 };
 
     public:
         template<uint8_t Timer>
-        static inline void enable_overflow_interrupt() {
-            static_assert(Timer < Count, "Timer index is out of range");
-
+        static void enable_overflow_interrupt() {
             mem[Timer] |= (1 << TOIEx);
         }
 
         template<uint8_t Timer>
-        static inline void disable_overflow_interrupt() {
-            static_assert(Timer < Count, "Timer index is out of range");
-
+        static void disable_overflow_interrupt() {
             mem[Timer] &= ~(1 << TOIEx);
         }
 
         template<uint8_t Timer, uint8_t Channel>
-        static inline void enable_compare_match_interrupt() {
-            static_assert(Timer < Count, "Timer index is out of range");
-            static_assert(Channel < 2, "Channel index is out of range");
-
+        static void enable_compare_match_interrupt() {
             switch (Channel) {
             case 0:
                 mem[Timer] |= (1 << OCIEAx);
@@ -44,10 +37,7 @@ namespace zoal { namespace arch { namespace avr {
         }
 
         template<uint8_t Timer, uint8_t Channel>
-        static inline void disable_compare_match_interrupt() {
-            static_assert(Timer < Count, "Timer index is out of range");
-            static_assert(Channel < 2, "Channel index is out of range");
-
+        static void disable_compare_match_interrupt() {
             switch (Channel) {
             case 0:
                 mem[Timer] &= ~(1 << OCIEAx);
@@ -64,8 +54,8 @@ namespace zoal { namespace arch { namespace avr {
         static zoal::utils::memory_segment<uint8_t, Address> mem;
     };
 
-    template<uintptr_t Address, uint8_t Count>
-    zoal::utils::memory_segment<uint8_t, Address> timer_interrupt_mask_vector<Address, Count>::mem;
+    template<uintptr_t Address>
+    zoal::utils::memory_segment<uint8_t, Address> timer_interrupt_mask_vector<Address>::mem;
 }}}
 
 #endif

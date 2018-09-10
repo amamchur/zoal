@@ -17,11 +17,6 @@ namespace zoal {
         using pb4 = typename mcu::pb4;
         using pb5 = typename mcu::pb5;
 
-        using pb2_adc0 = typename mcu::pb2_adc0;
-        using pb3_adc0 = typename mcu::pb3_adc0;
-        using pb4_adc0 = typename mcu::pb4_adc0;
-        using pb5_adc0 = typename mcu::pb5_adc0;
-
         using pb0_timer0 = typename mcu::pb0_timer0;
         using pb1_timer0 = typename mcu::pb1_timer0;
     };

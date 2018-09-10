@@ -3,7 +3,6 @@
 
 #include "../mcu/stm32f1xx.hpp"
 #include "../gpio/base_api.hpp"
-#include "../periph/adc_connection.hpp"
 
 namespace zoal {
     template<uint32_t Frequency>

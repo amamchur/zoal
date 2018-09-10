@@ -27,7 +27,7 @@ namespace zoal { namespace utils {
             static constexpr uint16_t us_inc = static_cast<const uint16_t>(us_per_overflow / 1000);
             static constexpr uint16_t fraction_inc = static_cast<const uint16_t>(us_per_overflow % 1000);
 
-            static inline void increment() {
+            static void increment() {
                 fraction_ += fraction_inc;
                 if (fraction_ >= 1000) {
                     fraction_ -= 1000;

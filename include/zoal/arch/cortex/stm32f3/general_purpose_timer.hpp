@@ -93,26 +93,26 @@ namespace zoal { namespace arch { namespace stm32f3 {
 
         template<zoal::periph::timer_mode TimerMode>
         static inline void mode() {
-            switch (TimerMode) {
-            case zoal::periph::timer_mode::fast_pwm_8bit:
-            case zoal::periph::timer_mode::phase_correct_8bit:
-                mem[TIMx_ARR] = 0xFF;
-                break;
-            case zoal::periph::timer_mode::fast_pwm_9bit:
-            case zoal::periph::timer_mode::phase_correct_9bit:
-                mem[TIMx_ARR] = 0x1FF;
-                break;
-            case zoal::periph::timer_mode::fast_pwm_10bit:
-            case zoal::periph::timer_mode::phase_correct_10bit:
-                mem[TIMx_ARR] = 0x3FF;
-                break;
-            case zoal::periph::timer_mode::fast_pwm_16bit:
-            case zoal::periph::timer_mode::phase_correct_16bit:
-                mem[TIMx_ARR] = 0xFFFF;
-                break;
-            default:
-                break;
-            }
+//            switch (TimerMode) {
+//            case zoal::periph::timer_mode::fast_pwm_8bit:
+//            case zoal::periph::timer_mode::phase_correct_8bit:
+//                mem[TIMx_ARR] = 0xFF;
+//                break;
+//            case zoal::periph::timer_mode::fast_pwm_9bit:
+//            case zoal::periph::timer_mode::phase_correct_9bit:
+//                mem[TIMx_ARR] = 0x1FF;
+//                break;
+//            case zoal::periph::timer_mode::fast_pwm_10bit:
+//            case zoal::periph::timer_mode::phase_correct_10bit:
+//                mem[TIMx_ARR] = 0x3FF;
+//                break;
+//            case zoal::periph::timer_mode::fast_pwm_16bit:
+//            case zoal::periph::timer_mode::phase_correct_16bit:
+//                mem[TIMx_ARR] = 0xFFFF;
+//                break;
+//            default:
+//                break;
+//            }
         }
 
         template<class ClockSource>

@@ -12,9 +12,9 @@
 #include <zoal/arch/cortex/stm32f3/adc.hpp>
 #include <zoal/arch/cortex/stm32x/bus_clock_control.hpp>
 #include <zoal/arch/cortex/semihosting_transport.hpp>
-#include <zoal/periph/adc_connection.hpp>
 #include <zoal/mcu/atmega_640_1280_2560.hpp>
 #include <zoal/mcu/stm32f1xx.hpp>
+#include <zoal/data/rx_tx_buffer.hpp>
 
 #include "templates/multi_function_shield.hpp"
 #include "templates/ir_remove.hpp"
@@ -23,30 +23,29 @@
 volatile uint32_t milliseconds_counter = 0;
 
 using mcu = zoal::pcb::mcu;
-using usart = mcu::usart1<32, 32>;
+using usart = mcu::usart1<zoal::data::rx_tx_buffer<8, 8>>;
 using logger = zoal::utils::terminal_logger<usart, zoal::utils::log_level::trace>;
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using delay = typename tools::delay;
-using connection = mcu::pa00_adc1;
-using shield = zoal::shields::uno_lcd_shield<tools, zoal::pcb>;
-using lcd_output_stream = zoal::io::output_stream<shield::lcd>;
+//using shield = zoal::shields::uno_lcd_shield<tools, zoal::pcb>;
+//using lcd_output_stream = zoal::io::output_stream<shield::lcd>;
 
-using app1 = multi_function_shield<tools, zoal::pcb>;
-using check = compile_check<app1>;
+//using app1 = multi_function_shield<tools, zoal::pcb>;
+//using check = compile_check<app1>;
 
-app1 app;
-lcd_output_stream stream;
+//app1 app;
+//lcd_output_stream stream;
 
 #pragma GCC diagnostic push
 
-void handler(uint8_t button, zoal::io::button_event e) {
-    if (e != zoal::io::button_event::press) {
-        return;
-    }
-
-    stream << zoal::io::pos(1, 0) << "Button: ";// << button;
-}
+//void handler(uint8_t button, zoal::io::button_event e) {
+//    if (e != zoal::io::button_event::press) {
+//        return;
+//    }
+//
+//    stream << zoal::io::pos(1, 0) << "Button: ";// << button;
+//}
 
 void initTimer() {
     zoal::pcb::build_in_led::port::power_on();

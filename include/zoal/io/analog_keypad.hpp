@@ -6,13 +6,12 @@
 #include "button_state_machine.hpp"
 
 namespace zoal { namespace io {
-    template<class Tools, class Channel, uint8_t Count, int Threshold = 5>
+    template<class Tools, uint8_t Count, int Threshold = 5>
     class analog_keypad {
     public:
         static constexpr auto button_count = Count;
 
         using button_value_type = uint16_t;
-        using channel = Channel;
         using counter = typename Tools::counter;
         using delay = typename Tools::delay;
         using logger = typename Tools::logger;
@@ -23,17 +22,7 @@ namespace zoal { namespace io {
         analog_keypad(const analog_keypad &) = delete;
 
         static void init() {
-            channel::pin::port::power_on();
-            channel::adc::enable();
-            channel::adc::setup();
             memset(states, 0, sizeof(states));
-        }
-
-        template<class H>
-        static void handle(H handler) {
-            channel::on();
-            handle(handler, channel::read());
-            channel::off();
         }
 
         template<class H>
@@ -89,16 +78,16 @@ namespace zoal { namespace io {
         static uint8_t states[Count];
     };
 
-    template<class Tools, class Channel, uint8_t Count, int Threshold>
-    typename analog_keypad<Tools, Channel, Count, Threshold>::button_value_type
-            analog_keypad<Tools, Channel, Count, Threshold>::values[Count];
+    template<class Tools, uint8_t Count, int Threshold>
+    typename analog_keypad<Tools, Count, Threshold>::button_value_type
+            analog_keypad<Tools, Count, Threshold>::values[Count];
 
-    template<class Tools, class Channel, uint8_t Count, int Threshold>
-    typename analog_keypad<Tools, Channel, Count, Threshold>::counter_value_type
-            analog_keypad<Tools, Channel, Count, Threshold>::prev_time = 0;
+    template<class Tools, uint8_t Count, int Threshold>
+    typename analog_keypad<Tools, Count, Threshold>::counter_value_type
+            analog_keypad<Tools, Count, Threshold>::prev_time = 0;
 
-    template<class Tools, class Channel, uint8_t Count, int Threshold>
-    uint8_t analog_keypad<Tools, Channel, Count, Threshold>::states[Count];
+    template<class Tools, uint8_t Count, int Threshold>
+    uint8_t analog_keypad<Tools, Count, Threshold>::states[Count];
 }}
 
 #endif

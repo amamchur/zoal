@@ -31,13 +31,6 @@ namespace zoal {
 		using ard_a04 = typename mcu::pc01;
 		using ard_a05 = typename mcu::pc00;
 
-		using ard_a00_adc = typename mcu::pa00_adc1;
-		using ard_a01_adc = typename mcu::pa01_adc1;
-		using ard_a02_adc = typename mcu::pa04_adc2;
-		using ard_a03_adc = typename mcu::pb00_adc3;
-		using ard_a04_adc = typename mcu::pc01_adc2;
-		using ard_a05_adc = typename mcu::pc00_adc2;
-
 		using build_in_led = typename mcu::pa05;
 		using build_in_button = typename mcu::pc13;
 	};

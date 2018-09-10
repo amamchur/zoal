@@ -10,9 +10,11 @@
 #include "zoal/utils/cooperation.hpp"
 
 namespace zoal { namespace arch { namespace stm32f3 {
-    template<uintptr_t Address, uint8_t N, uintptr_t TxSize, uintptr_t RxSize, class ... Mixin>
+    template<uintptr_t Address, uint8_t N, class Buffer, class ... Mixin>
     class usart : public Mixin ... {
     public:
+        using buffer_type = Buffer;
+
         static constexpr uintptr_t address = Address;
 
         static constexpr uint32_t USARTx_ISR_bit_TXE = 1 << 7; // Bit 7 TXE: Transmit data register empty
@@ -33,15 +35,7 @@ namespace zoal { namespace arch { namespace stm32f3 {
 
         static constexpr uint8_t no = N;
 
-        using yield = zoal::utils::cooperation<>;
-
-        template<uintptr_t Size>
-        using buffer = typename ::zoal::data::ring_buffer<uint8_t, Size, yield::place>;
-        using buffer_tx = buffer<TxSize>;
-        using buffer_rx = buffer<RxSize>;
-
-        static buffer_tx tx;
-        static buffer_rx rx;
+        static buffer_type buffer;
 
         static void enable() {
             mem[USARTx_CR1] |= USARTx_CR1_bit_UE;
@@ -53,7 +47,7 @@ namespace zoal { namespace arch { namespace stm32f3 {
 
         static void write_byte(uint8_t data) {
             zoal::utils::interrupts ni(false);
-            tx.enqueue(data, true);
+            buffer.tx.enqueue(data, true);
             mem[USARTx_CR1] |= USARTx_CR1_bit_TXEIE;
         }
 
@@ -70,10 +64,10 @@ namespace zoal { namespace arch { namespace stm32f3 {
 
         static void handleIrq() {
             if ((mem[USARTx_ISR] & USARTx_ISR_bit_TXE) != 0) {
-                if (tx.empty()) {
+                if (buffer.tx.empty()) {
                     mem[USARTx_CR1] &= ~USARTx_CR1_bit_TXEIE;
                 } else {
-                    mem[USARTx_TDR] = tx.dequeue();
+                    mem[USARTx_TDR] = buffer.tx.dequeue();
                 }
             }
         }
@@ -82,14 +76,11 @@ namespace zoal { namespace arch { namespace stm32f3 {
         static zoal::utils::memory_segment<uint32_t, Address> mem;
     };
 
-    template<uintptr_t Address, uint8_t N, uintptr_t TxSize, uintptr_t RxSize, class ... Mixin>
-    zoal::utils::memory_segment<uint32_t, Address> usart<Address, N, TxSize, RxSize, Mixin...>::mem;
+    template<uintptr_t Address, uint8_t N, class Buffer, class ... Mixin>
+    zoal::utils::memory_segment<uint32_t, Address> usart<Address, N, Buffer, Mixin...>::mem;
 
-    template<uintptr_t Address, uint8_t N, uintptr_t TxSize, uintptr_t RxSize, class ... Mixin>
-    typename usart<Address, N, TxSize, RxSize, Mixin...>::buffer_tx usart<Address, N, TxSize, RxSize, Mixin...>::tx;
-
-    template<uintptr_t Address, uint8_t N, uintptr_t TxSize, uintptr_t RxSize, class ... Mixin>
-    typename usart<Address, N, TxSize, RxSize, Mixin...>::buffer_rx usart<Address, N, TxSize, RxSize, Mixin...>::rx;
+    template<uintptr_t Address, uint8_t N, class Buffer, class ... Mixin>
+    typename usart<Address, N, Buffer, Mixin...>::buffer_type usart<Address, N, Buffer, Mixin...>::buffer;
 }}}
 
 #endif

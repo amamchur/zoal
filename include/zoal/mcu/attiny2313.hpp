@@ -1,16 +1,15 @@
 #ifndef ZOAL_MCU_ATTINY2313_HPP
 #define ZOAL_MCU_ATTINY2313_HPP
 
-#include "../arch/avr/adc.hpp"
-#include "../arch/avr/attiny_universe.hpp"
-#include "../gpio/base_api.hpp"
-#include "../gpio/pin.hpp"
-#include "../gpio/port_link.hpp"
-#include "../periph/adc_connection.hpp"
-#include "../periph/pwm_connection.hpp"
-#include "base_mcu.hpp"
-
 #include <stdint.h>
+
+#include "base_mcu.hpp"
+#include "../gpio/pin.hpp"
+#include "../gpio/base_api.hpp"
+#include "../gpio/port_link.hpp"
+#include "../periph/pwm_connection.hpp"
+#include "../arch/avr/attiny_universe.hpp"
+#include "../arch/avr/adc.hpp"
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
@@ -72,9 +71,6 @@ namespace zoal { namespace mcu {
         using d5_timer0 = pwm_connection<pd5, timer0, 1>;
         using b3_timer1 = pwm_connection<pb3, timer1, 0>;
         using b4_timer1 = pwm_connection<pb4, timer1, 1>;
-
-        template<class P, uint8_t Channel>
-        using adc_connection = typename ::zoal::periph::adc_connection<P, adc0, Channel>;
 
         using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_d>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;
