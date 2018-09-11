@@ -50,7 +50,7 @@ void initialize() {
     usart::power_on();
     ms_timer::power_on();
 
-    mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01>::on();
+    mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::on();
     mcu::cfg::usart<usart, 115200>::apply();
     mcu::cfg::timer<ms_timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
 
@@ -74,9 +74,9 @@ int main() {
 //    max7219::init(1);
 //    matrix.clear();
 
-    zoal::utils::list_iterator<zoal::metadata::atmega_timer_clock_dividers>::for_each([](size_t index, uintptr_t value){
-        logger::info() << "Index: " << index << " Value: " << value;
-    });
+//    zoal::utils::list_iterator<zoal::metadata::timer_clock_dividers>::for_each([](size_t index, uintptr_t value){
+//        logger::info() << "Index: " << index << " Value: " << value;
+//    });
 
     mcu::adc_00::power_on();
     mcu::cfg::adc<mcu::adc_00>::apply();

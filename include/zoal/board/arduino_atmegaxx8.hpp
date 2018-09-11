@@ -3,7 +3,6 @@
 
 #include "../periph/pwm_connection.hpp"
 #include "../mcu/atmega328p.hpp"
-#include "../mcu/metadata/atmega_48_88_168_328.hpp"
 
 namespace zoal { namespace board {
     template<uint32_t Frequency>

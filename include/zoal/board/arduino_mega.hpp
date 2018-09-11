@@ -5,7 +5,6 @@
 
 #include "../arch/avr/atmega/spi.hpp"
 #include "../mcu/atmega2560.hpp"
-#include "../mcu/metadata/atmega_640_1280_2560.hpp"
 
 namespace zoal {
     template<uint32_t Frequency>

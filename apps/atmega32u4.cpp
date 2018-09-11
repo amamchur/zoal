@@ -33,7 +33,7 @@ uint16_t ButtonValues[App::shield::button_count] __attribute__((section(".eeprom
 
 void initializeHardware() {
     usart::power_on();
-    mcu::mux::usart<usart, zoal::pcb::ard_d00, zoal::pcb::ard_d01>::on();
+    mcu::mux::usart<usart, zoal::pcb::ard_d00, zoal::pcb::ard_d01, mcu::pd_05>::on();
     mcu::cfg::usart<usart, 115200>::apply();
     usart::enable();
 

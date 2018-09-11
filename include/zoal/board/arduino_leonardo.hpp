@@ -2,7 +2,6 @@
 #define ZOAL_BOARD_HPP
 
 #include "../mcu/atmega32u4.hpp"
-#include "../mcu/metadata/atmega_16_32_U4.hpp"
 
 namespace zoal {
     template<uint32_t Frequency>

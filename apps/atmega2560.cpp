@@ -58,7 +58,7 @@ int main() {
     check::check();
 
     usart::power_on();
-    mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01>::on();
+    mcu::mux::usart<usart, mcu::pe_00, mcu::pe_01, mcu::pe_02>::on();
     mcu::cfg::usart<usart, 115200>::apply();
     usart::enable();
 

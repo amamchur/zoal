@@ -14,7 +14,8 @@ const includesMap = {
         '#include <zoal/arch/avr/timer8.hpp>',
         '#include <zoal/gpio/base_api.hpp>',
         '#include <zoal/gpio/port_link.hpp>',
-        '#include <zoal/arch/avr/atmega/irq.hpp>'
+        '#include <zoal/arch/avr/atmega/irq.hpp>',
+        '#include <zoal/mcu/metadata/atmega.hpp>'
     ]
 };
 
@@ -78,7 +79,7 @@ function getModule(modules, regex) {
     return result;
 }
 
-function getModules(modules, regex) {
+function getByName(modules, regex) {
     let results = [];
     for (let i = 0; i < modules.length; i++) {
         let m = modules[i];
@@ -166,7 +167,7 @@ function placePins(modules) {
 function placeTimers(modules) {
     buffer += '\n';
 
-    let array = getModules(modules, /^TC(8|16)/);
+    let array = getByName(modules, /^TC(8|16)/);
     let timers = [];
     let moduleMap = {};
     mcu.timers = [];
@@ -221,10 +222,10 @@ function placeTimers(modules) {
     buffer += '\n';
 }
 
-function placeUSARTs(modules) {
+function placeUSARTs(root) {
     buffer += '\n';
 
-    let array = getModules(modules, /^USART$/);
+    let array = getByName(root.modules[0].module, /^USART$/);
     let moduleMap = {};
     let usarts = [];
     mcu.usarts = [];
@@ -244,13 +245,30 @@ function placeUSARTs(modules) {
         let name = u.$.name;
         let address = registerOffset(u.register, /UCSR\dA/);
         let n = name.replace(/USART(\d+)/, '$1');
+        let periph = getByName(root.devices[0].device[0].peripherals[0].module, /^USART/)[0];
+        let signals = periph.instance[0].signals[0].signal;
+
+        let array = [];
+        for (let j = 0; j < signals.length; j++) {
+            let signal = signals[j];
+            let pad = signal.$.pad.toLowerCase();
+            let port = pad.replace(/p(\w)\d/, '$1');
+            let offset = pad.replace(/p\w(\d)/, '$1');
+            array.push({
+                group: signal.$.group,
+                pad: pad,
+                port: mcu.portsMap[port],
+                offset: offset - 0
+            });
+        }
 
         name = 'usart_' + ("0000" + n).substr(-2);
         let obj = {
             name: name,
             avrName: u.$.name,
             sn: n,
-            address: address
+            address: address,
+            signals: array
         };
 
         mcu.usarts.push(obj);
@@ -267,16 +285,37 @@ function placeUSARTs(modules) {
     buffer += '\n';
 }
 
-function placeADCs(modules) {
+function placeADCs(root) {
     buffer += '\n';
 
-    let module = getModules(modules, /^ADC/)[0];
+    let module = getByName(root.modules[0].module, /^ADC/)[0];
+    let periph = getByName(root.devices[0].device[0].peripherals[0].module, /^ADC/)[0];
+    let signals = periph.instance[0].signals[0].signal;
     let adc = module['register-group'][0];
     let address = registerOffset(adc.register, /^ADC$/);
     let hex = '0x' + ("0000" + address.toString(16)).substr(-4);
-
     buffer += `using adc_00 = ::zoal::arch::avr::adc<::zoal::arch::avr::mcu_type::atmega, ${hex}, 0>;\n\n`;
-    console.log(adc);
+
+    let array = [];
+    for (let i = 0; i < signals.length; i++) {
+        let signal = signals[i];
+        let pad = signal.$.pad.toLowerCase();
+        let port = pad.replace(/p(\w)\d/, '$1');
+        let offset = pad.replace(/p\w(\d)/, '$1');
+        array.push({
+            channel: signal.$.index - 0,
+            pad: pad,
+            port: mcu.portsMap[port],
+            offset: offset - 0
+        });
+    }
+
+    mcu.adcs = [{
+        name: 'adc_00',
+        sn: '0',
+        address: address,
+        signals: array
+    }];
 }
 
 function placeAPI() {
@@ -297,11 +336,11 @@ function placeAPI() {
     buffer += 'using irq = ::zoal::arch::avr::atmega::irq;\n';
 }
 
-function beginNamespace() {
+function beginClassNamespace() {
     buffer += 'namespace zoal { namespace mcu {\n';
 }
 
-function endNamespace() {
+function endClassNamespace() {
     buffer += '}}\n\n';
 }
 
@@ -316,6 +355,55 @@ function endClass() {
     buffer += '};\n';
 }
 
+function beginMetaNamespace() {
+    buffer += 'namespace zoal { namespace metadata {\n';
+    buffer += 'using zoal::utils::integral_constant;\n\n'
+}
+
+function endMetaNamespace() {
+    buffer += '}}\n\n';
+}
+
+function placeADCsMetadata() {
+    let adc = mcu.adcs[0];
+    let signals = adc.signals;
+    for (let i = 0; i < signals.length; i++) {
+        let s = signals[i];
+        let adcHex = '0x' + ("0000" + adc.address.toString(16)).substr(-4);
+        let portHex = '0x' + ("0000" + s.port.address.toString(16)).substr(-4);
+
+        buffer += `template<>`;
+        buffer += `struct pin_to_adc_channel<${adcHex}, ${portHex}, ${s.offset}> : integral_constant<int, ${s.channel}> {};\n\n`;
+    }
+}
+
+function placeUSARTSsMetadata() {
+    for (let i = 0; i < mcu.usarts.length; i++) {
+        let usart = mcu.usarts[i];
+        let usartHex = '0x' + ("0000" + usart.address.toString(16)).substr(-4);
+        let signals = usart.signals;
+
+        buffer += `template<>\n`;
+        buffer += `struct usart_mapping<${usartHex}, 0x0000, 0> : public base_usart_mapping<0, 0, 0> {\n`;
+        buffer += `};\n\n`;
+
+        for (let j = 0; j < signals.length; j++) {
+            let s = signals[j];
+            let portHex = '0x' + ("0000" + s.port.address.toString(16)).substr(-4);
+            let rx = s.group === 'RXD' ? 0 : -1;
+            let tx = s.group === 'TXD' ? 0 : -1;
+            let ck = s.group === 'XCK' ? 0 : -1;
+            if (rx < 0 && tx < 0 && ck < 0) {
+                continue;
+            }
+
+            buffer += `template<>\n`;
+            buffer += `struct usart_mapping<${usartHex}, ${portHex}, ${s.offset}> : public base_usart_mapping<${rx}, ${tx}, ${ck}> {\n`;
+            buffer += `};\n\n`;
+        }
+    }
+}
+
 function printPorts(metadata) {
     let root = metadata['avr-tools-device-file'];
     let device = root.devices[0].device[0];
@@ -323,17 +411,24 @@ function printPorts(metadata) {
     placeHeaderComment();
     beginHeaderGuard(device.$.name);
     placeIncludes(device.$.family);
-    beginNamespace();
+
+    beginClassNamespace();
     beginClass(device.$.name);
     placeAliases();
     placePorts(root.modules[0].module);
     placeTimers(root.modules[0].module);
-    placeUSARTs(root.modules[0].module);
-    placeADCs(root.modules[0].module);
+    placeUSARTs(root);
+    placeADCs(root);
     placePins(root.modules[0].module);
     placeAPI();
     endClass();
-    endNamespace();
+    endClassNamespace();
+
+    beginMetaNamespace();
+    placeUSARTSsMetadata();
+    placeADCsMetadata();
+    endMetaNamespace();
+
     endHeaderGuard();
 }
 

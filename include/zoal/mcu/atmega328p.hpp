@@ -17,6 +17,7 @@
 #include <zoal/gpio/pin.hpp>
 #include <zoal/gpio/port_link.hpp>
 #include <zoal/mcu/base_mcu.hpp>
+#include <zoal/mcu/metadata/atmega.hpp>
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
@@ -73,6 +74,41 @@ namespace zoal { namespace mcu {
         using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;
         using irq = ::zoal::arch::avr::atmega::irq;
     };
+}}
+
+namespace zoal { namespace metadata {
+    using zoal::utils::integral_constant;
+
+    template<>
+    struct usart_mapping<0x00c0, 0x0000, 0> : public base_usart_mapping<0, 0, 0> {};
+
+    template<>
+    struct usart_mapping<0x00c0, 0x0029, 1> : public base_usart_mapping<-1, 0, -1> {};
+
+    template<>
+    struct usart_mapping<0x00c0, 0x0029, 0> : public base_usart_mapping<0, -1, -1> {};
+
+    template<>
+    struct usart_mapping<0x00c0, 0x0029, 4> : public base_usart_mapping<-1, -1, 0> {};
+
+    template<>
+    struct pin_to_adc_channel<0x0078, 0x0026, 0> : integral_constant<int, 0> {};
+
+    template<>
+    struct pin_to_adc_channel<0x0078, 0x0026, 1> : integral_constant<int, 1> {};
+
+    template<>
+    struct pin_to_adc_channel<0x0078, 0x0026, 2> : integral_constant<int, 2> {};
+
+    template<>
+    struct pin_to_adc_channel<0x0078, 0x0026, 3> : integral_constant<int, 3> {};
+
+    template<>
+    struct pin_to_adc_channel<0x0078, 0x0026, 4> : integral_constant<int, 4> {};
+
+    template<>
+    struct pin_to_adc_channel<0x0078, 0x0026, 5> : integral_constant<int, 5> {};
+
 }}
 
 #endif
