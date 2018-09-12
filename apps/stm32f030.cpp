@@ -1,7 +1,8 @@
 #include "stm32f0xx.h"
+
+#include <zoal/board/stm32f030.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
-#include <zoal/board/stm32f030.hpp>
 
 volatile uint32_t milliseconds_counter = 0;
 

@@ -18,7 +18,7 @@ namespace zoal { namespace shields {
         using calibration_pin_b = PinB;
     };
 
-    template<class Tools, class Board, class Cfg = uno_lcd_shield_config<>>
+    template<class Tools, class Board, class Adc, class Cfg = uno_lcd_shield_config<>>
     class uno_lcd_shield {
     public:
         using interface_type = zoal::ic::hd44780_interface_4bit<Tools,
@@ -39,7 +39,7 @@ namespace zoal { namespace shields {
 
         using analog_pin = typename Board::ard_a00;
         using mcu = typename Board::mcu;
-        using adc = typename mcu::adc_00;
+        using adc = Adc;
 
         using address_selector = zoal::ic::hd44780_address_selector<16, 2>;
         using lcd = zoal::ic::hd44780<interface_type, address_selector>;

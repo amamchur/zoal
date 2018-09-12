@@ -25,7 +25,7 @@ using logger = zoal::utils::plain_logger<usart, zoal::utils::log_level::trace>;
 using tools = zoal::utils::tool_set<zoal::pcb::mcu, counter, logger>;
 using delay = tools::delay;
 
-using App = uno_lcd_shield<tools, zoal::pcb>;
+using App = uno_lcd_shield<tools, zoal::pcb, mcu::adc_00>;
 using Keypad = App::shield::keypad;
 
 App app;

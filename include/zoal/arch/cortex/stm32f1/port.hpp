@@ -157,25 +157,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
     private:
         static zoal::utils::memory_segment<uint32_t, Address> mem;
-
-        template<uint32_t ConfigAndModeBits>
-        static inline void config_reg(volatile register_type &reg, register_type mask) {
-            using namespace ::zoal::gpio;
-            if (mask == 0) {
-                return;
-            }
-
-            register_type reset = 0;
-            register_type set = 0;
-            for (register_type i = 0; i < 8; i++) {
-                if ((mask >> i) & 1) {
-                    reset |= (0xF << (i << 2));
-                    set |= ConfigAndModeBits << (i << 2);
-                }
-            }
-
-            reg = (reg & ~reset) | set;
-        }
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask>

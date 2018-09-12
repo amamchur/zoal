@@ -26,54 +26,54 @@ namespace zoal { namespace mcu {
         template<uintptr_t Address, uint8_t PinMask>
         using port = typename ::zoal::arch::avr::port<Address, PinMask>;
 
-        using port_d = port<0x0029, 0xff>;
-        using port_b = port<0x0023, 0xff>;
-        using port_c = port<0x0026, 0xc0>;
-        using port_e = port<0x002c, 0x44>;
-        using port_f = port<0x002f, 0xf3>;
+        using port_d = port<0x0029, 0xFF>;
+        using port_b = port<0x0023, 0xFF>;
+        using port_c = port<0x0026, 0xC0>;
+        using port_e = port<0x002C, 0x44>;
+        using port_f = port<0x002F, 0xF3>;
 
         using timer_00 = ::zoal::arch::avr::atmega::timer8<0x0044, 0, false>;
         using timer_01 = ::zoal::arch::avr::atmega::timer16<0x0080, 1>;
         using timer_03 = ::zoal::arch::avr::atmega::timer16<0x0090, 3>;
 
         template<class Buffer>
-        using usart_01 = typename ::zoal::arch::avr::usart<0x00c8, 1, Buffer>;
+        using usart_01 = typename ::zoal::arch::avr::usart<0x00C8, 1, Buffer>;
 
         using adc_00 = ::zoal::arch::avr::adc<::zoal::arch::avr::mcu_type::atmega, 0x0078, 0>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;
 
-        using pd_00 = pin<port_d, 0x0>;
-        using pd_01 = pin<port_d, 0x1>;
-        using pd_02 = pin<port_d, 0x2>;
-        using pd_03 = pin<port_d, 0x3>;
-        using pd_04 = pin<port_d, 0x4>;
-        using pd_05 = pin<port_d, 0x5>;
-        using pd_06 = pin<port_d, 0x6>;
-        using pd_07 = pin<port_d, 0x7>;
+        using pd_00 = pin<port_d, 0>;
+        using pd_01 = pin<port_d, 1>;
+        using pd_02 = pin<port_d, 2>;
+        using pd_03 = pin<port_d, 3>;
+        using pd_04 = pin<port_d, 4>;
+        using pd_05 = pin<port_d, 5>;
+        using pd_06 = pin<port_d, 6>;
+        using pd_07 = pin<port_d, 7>;
 
-        using pb_00 = pin<port_b, 0x0>;
-        using pb_01 = pin<port_b, 0x1>;
-        using pb_02 = pin<port_b, 0x2>;
-        using pb_03 = pin<port_b, 0x3>;
-        using pb_04 = pin<port_b, 0x4>;
-        using pb_05 = pin<port_b, 0x5>;
-        using pb_06 = pin<port_b, 0x6>;
-        using pb_07 = pin<port_b, 0x7>;
+        using pb_00 = pin<port_b, 0>;
+        using pb_01 = pin<port_b, 1>;
+        using pb_02 = pin<port_b, 2>;
+        using pb_03 = pin<port_b, 3>;
+        using pb_04 = pin<port_b, 4>;
+        using pb_05 = pin<port_b, 5>;
+        using pb_06 = pin<port_b, 6>;
+        using pb_07 = pin<port_b, 7>;
 
-        using pc_06 = pin<port_c, 0x6>;
-        using pc_07 = pin<port_c, 0x7>;
+        using pc_06 = pin<port_c, 6>;
+        using pc_07 = pin<port_c, 7>;
 
-        using pe_02 = pin<port_e, 0x2>;
-        using pe_06 = pin<port_e, 0x6>;
+        using pe_02 = pin<port_e, 2>;
+        using pe_06 = pin<port_e, 6>;
 
-        using pf_00 = pin<port_f, 0x0>;
-        using pf_01 = pin<port_f, 0x1>;
-        using pf_04 = pin<port_f, 0x4>;
-        using pf_05 = pin<port_f, 0x5>;
-        using pf_06 = pin<port_f, 0x6>;
-        using pf_07 = pin<port_f, 0x7>;
+        using pf_00 = pin<port_f, 0>;
+        using pf_01 = pin<port_f, 1>;
+        using pf_04 = pin<port_f, 4>;
+        using pf_05 = pin<port_f, 5>;
+        using pf_06 = pin<port_f, 6>;
+        using pf_07 = pin<port_f, 7>;
 
         using port_chain = typename ::zoal::gpio::chain_builder<port_d, port_b, port_c, port_e, port_f>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;
@@ -105,34 +105,34 @@ namespace zoal { namespace metadata {
     struct pin_to_pwm_channel<0x0090, 0x0023, 6, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
+    struct usart_mapping<0x00C8, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x0029, 3> : base_usart_mapping<-1, 0, -1> {};
+    struct usart_mapping<0x00C8, 0x0029, 3> : base_usart_mapping<-1, 0, -1> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x0029, 2> : base_usart_mapping<0, -1, -1> {};
+    struct usart_mapping<0x00C8, 0x0029, 2> : base_usart_mapping<0, -1, -1> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x0029, 5> : base_usart_mapping<-1, -1, 0> {};
+    struct usart_mapping<0x00C8, 0x0029, 5> : base_usart_mapping<-1, -1, 0> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x002f, 0> : integral_constant<int, 0> {};
+    struct pin_to_adc_channel<0x0078, 0x002F, 0> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x002f, 1> : integral_constant<int, 1> {};
+    struct pin_to_adc_channel<0x0078, 0x002F, 1> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x002f, 4> : integral_constant<int, 4> {};
+    struct pin_to_adc_channel<0x0078, 0x002F, 4> : integral_constant<int, 4> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x002f, 5> : integral_constant<int, 5> {};
+    struct pin_to_adc_channel<0x0078, 0x002F, 5> : integral_constant<int, 5> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x002f, 6> : integral_constant<int, 6> {};
+    struct pin_to_adc_channel<0x0078, 0x002F, 6> : integral_constant<int, 6> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x002f, 7> : integral_constant<int, 7> {};
+    struct pin_to_adc_channel<0x0078, 0x002F, 7> : integral_constant<int, 7> {};
 
     template<>
     struct pin_to_adc_channel<0x0078, 0x0029, 4> : integral_constant<int, 8> {};
@@ -151,7 +151,6 @@ namespace zoal { namespace metadata {
 
     template<>
     struct pin_to_adc_channel<0x0078, 0x0023, 6> : integral_constant<int, 13> {};
-
 }}
 
 #endif

@@ -76,10 +76,10 @@ namespace zoal { namespace mcu {
 //        using adc12_options = ::zoal::arch::stm32x::clock_control_set<enable_adc12, adc12_pll_div6>;
 //        using adc34_options = ::zoal::arch::stm32x::clock_control_set<enable_adc34, adc34_pll_div6>;
 
-        using adc1 = adc<0x50000000u, 1, adc_common12, enable_adc12>;
-        using adc2 = adc<0x50000100u, 2, adc_common12, enable_adc12>;
-        using adc3 = adc<0x50000400u, 3, adc_common34, enable_adc34>;
-        using adc4 = adc<0x50000500u, 4, adc_common34, enable_adc34>;
+        using adc_01 = adc<0x50000000u, 1, adc_common12, enable_adc12>;
+        using adc_02 = adc<0x50000100u, 2, adc_common12, enable_adc12>;
+        using adc_03 = adc<0x50000400u, 3, adc_common34, enable_adc34>;
+        using adc_04 = adc<0x50000500u, 4, adc_common34, enable_adc34>;
 
         template<class Buffer>
         using usart1 = typename ::zoal::arch::stm32x::usart<0x40013800u, 1, Buffer, clock_apb2<0x4000>>;

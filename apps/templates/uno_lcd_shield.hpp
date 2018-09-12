@@ -9,11 +9,11 @@
 #include <zoal/io/output_stream.hpp>
 #include <zoal/utils/method_invoker.hpp>
 
-template<class Tools, class PCB>
+template<class Tools, class PCB, class Adc>
 class uno_lcd_shield {
 public:
-    using self_type = uno_lcd_shield<Tools, PCB>;
-    using shield = zoal::shields::uno_lcd_shield<Tools, PCB>;
+    using self_type = uno_lcd_shield<Tools, PCB, Adc>;
+    using shield = zoal::shields::uno_lcd_shield<Tools, PCB, Adc>;
     using lcd_stream = zoal::io::output_stream<typename shield::lcd>;
     using delay = typename Tools::delay;
     using logger = typename Tools::logger;

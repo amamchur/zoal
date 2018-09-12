@@ -1,28 +1,27 @@
-#include <avr/eeprom.h>
-
-#include <zoal/board/arduino_uno.hpp>
-#include <zoal/gpio/software_spi.hpp>
-#include <zoal/utils/tool_set.hpp>
-#include <zoal/utils/ms_counter.hpp>
-#include <zoal/utils/logger.hpp>
-#include <zoal/utils/helpers.hpp>
-#include <zoal/data/rx_tx_buffer.hpp>
-#include <zoal/ic/max72xx.hpp>
-#include <zoal/io/input_stream.hpp>
-#include <zoal/io/button.hpp>
-#include <zoal/io/analog_keypad.hpp>
-#include <zoal/io/rotary_encoder.hpp>
-#include <zoal/io/ir_remote_receiver.hpp>
-#include <zoal/shields/uno_lcd_shield.hpp>
-
-#include "templates/neo_pixel.hpp"
-#include "templates/multi_function_shield.hpp"
 #include "templates/blink.hpp"
-#include "templates/uno_lcd_shield.hpp"
-#include "templates/max72xx.hpp"
-#include "templates/ir_remove.hpp"
-#include "templates/tm1637.hpp"
 #include "templates/compile_check.hpp"
+#include "templates/ir_remove.hpp"
+#include "templates/max72xx.hpp"
+#include "templates/multi_function_shield.hpp"
+#include "templates/neo_pixel.hpp"
+#include "templates/tm1637.hpp"
+#include "templates/uno_lcd_shield.hpp"
+
+#include <avr/eeprom.h>
+#include <zoal/board/arduino_uno.hpp>
+#include <zoal/data/rx_tx_buffer.hpp>
+#include <zoal/gpio/software_spi.hpp>
+#include <zoal/ic/max72xx.hpp>
+#include <zoal/io/analog_keypad.hpp>
+#include <zoal/io/button.hpp>
+#include <zoal/io/input_stream.hpp>
+#include <zoal/io/ir_remote_receiver.hpp>
+#include <zoal/io/rotary_encoder.hpp>
+#include <zoal/shields/uno_lcd_shield.hpp>
+#include <zoal/utils/helpers.hpp>
+#include <zoal/utils/logger.hpp>
+#include <zoal/utils/ms_counter.hpp>
+#include <zoal/utils/tool_set.hpp>
 
 volatile uint32_t milliseconds = 0;
 
@@ -38,7 +37,7 @@ using delay = tools::delay;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
 using app1 = multi_function_shield<tools, zoal::pcb>;
 using app2 = blink<tools, zoal::pcb::ard_d13>;
-using app3 = uno_lcd_shield<tools, zoal::pcb>;
+using app3 = uno_lcd_shield<tools, zoal::pcb, mcu::adc_00>;
 //using app5 = max72xx<tools, mcu::mosi0, mcu::sclk0, zoal::pcb::ard_d10>;
 using app6 = ir_remove<zoal::pcb::ard_d10, tools, 25>;
 using app7 = tm1637<tools, zoal::pcb::ard_d10, zoal::pcb::ard_d11>;
@@ -73,40 +72,43 @@ int main() {
 
     logger::info() << "Started!!!";
 
-
-    asm volatile("nop"            "\n");
-    asm volatile("nop"            "\n");
-//    mcu::api::mode<pin_mode::output, mcu::pa04>();
+    asm volatile("nop"
+                 "\n");
+    asm volatile("nop"
+                 "\n");
+    //    mcu::api::mode<pin_mode::output, mcu::pa04>();
     mcu::api::low<mcu::pb_00>::apply();
-//    mcu::pb_00::low();
-//    mcu::pa04::mode<pin_mode::output>();
-//    pcb::pa04::mode<pin_mode::output>();
-//    pcb::pa04::mode<pin_mode::output>();
-    asm volatile("nop"            "\n");
-    asm volatile("nop"            "\n");
+    //    mcu::pb_00::low();
+    //    mcu::pa04::mode<pin_mode::output>();
+    //    pcb::pa04::mode<pin_mode::output>();
+    //    pcb::pa04::mode<pin_mode::output>();
+    asm volatile("nop"
+                 "\n");
+    asm volatile("nop"
+                 "\n");
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
-//
-//    max7219::init(1);
-//    matrix.clear();
+    //
+    //    max7219::init(1);
+    //    matrix.clear();
 
-//    zoal::utils::list_iterator<zoal::metadata::timer_clock_dividers>::for_each([](size_t index, uintptr_t value){
-//        logger::info() << "Index: " << index << " Value: " << value;
-//    });
+    //    zoal::utils::list_iterator<zoal::metadata::timer_clock_dividers>::for_each([](size_t index, uintptr_t value){
+    //        logger::info() << "Index: " << index << " Value: " << value;
+    //    });
 
-//    mcu::adc_00::power_on();
-//    mcu::cfg::adc<mcu::adc_00>::apply();
-//    mcu::adc_00::enable();
-//
-//    app.init();
+    //    mcu::adc_00::power_on();
+    //    mcu::cfg::adc<mcu::adc_00>::apply();
+    //    mcu::adc_00::enable();
+    //
+    //    app.init();
     while (true) {
-//        app.run_once();
-//        logger::info() << value++;
-//        matrix.print(zoal::data::segment7::gfed_ascii, (long) value);
-//        max7219::display(matrix);
-//        value++;
-//        ::delay::ms(1000);
+        //        app.run_once();
+        //        logger::info() << value++;
+        //        matrix.print(zoal::data::segment7::gfed_ascii, (long) value);
+        //        max7219::display(matrix);
+        //        value++;
+        //        ::delay::ms(1000);
     }
     return 0;
 #pragma clang diagnostic pop
