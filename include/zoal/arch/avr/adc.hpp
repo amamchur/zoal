@@ -3,7 +3,7 @@
 
 #include <stdint.h> /* NOLINT */
 #include "mcu_type.hpp"
-#include "adc_model.hpp"
+#include "adc_mem_model.hpp"
 #include "../../utils/memory_segment.hpp"
 #include "../bus.hpp"
 
@@ -11,7 +11,7 @@ namespace zoal { namespace arch { namespace avr {
     template<mcu_type Type, uintptr_t Address, uint8_t N>
     class adc {
     public:
-        using model = adc_model<Type>;
+        using model = adc_mem_model<Type>;
 
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr uintptr_t address = Address;

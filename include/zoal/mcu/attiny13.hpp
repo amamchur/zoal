@@ -23,7 +23,7 @@ namespace zoal { namespace mcu {
         using port_b = atu::port_b;
         using adc0 = ::zoal::arch::avr::adc<zoal::arch::avr::mcu_type::attiny13, 0x23, 0>;
 
-        using timer8_model = zoal::arch::avr::timer8_model<zoal::arch::avr::mcu_type::attiny13>;
+        using timer8_model = zoal::arch::avr::timer8_mem_model<zoal::arch::avr::mcu_type::attiny13>;
         using timer0 = zoal::arch::avr::timer8<timer8_model, 0x49, 0>;
 
         using pb0 = pin<port_b, 0>;

@@ -47,62 +47,6 @@ namespace zoal { namespace arch { namespace avr {
             return memWord[TCNTx];
         }
 
-        template<class Config>
-        static void connect_output_channel() {
-            static_assert(Config::channel < channels_count, "Output channel index is out of range");
-
-            zoal::utils::memory_segment<uint8_t, Address> mem;
-            switch (Config::channel) {
-            case 0:
-                mem[TCCRxA] |= static_cast<uint8_t >(1u << 7u); // COM2A1
-                break;
-            case 1:
-                mem[TCCRxA] |= static_cast<uint8_t >(1u << 5u); // COM2B1
-                break;
-            }
-
-            mem.happyInspection();
-        }
-
-        template<class Config>
-        static void disconnect_output_channel() {
-            static_assert(Config::channel < channels_count, "Output channel index is out of range");
-
-            if ((Config::Timers & (1 << N)) == 0) {
-                return;
-            }
-
-            zoal::utils::memory_segment<uint8_t, Address> mem;
-            switch (Config::channel) {
-            case 0:
-                mem[TCCRxA] &= ~static_cast<uint8_t >(1u << 7u); // COM2A1
-                break;
-            case 1:
-                mem[TCCRxA] &= ~static_cast<uint8_t >(1u << 5u); // COM2B1
-                break;
-            }
-            mem.happyInspection();
-        }
-
-        template<uint8_t Channel>
-        static void output_compare_value(word value) {
-            static_assert(Channel < channels_count, "Channel index is out of range");
-
-            zoal::utils::memory_segment<word, Address> memWord;
-            switch (Channel) {
-            case 0:
-                memWord[OCRxA] = value;
-                break;
-            case 1:
-                memWord[OCRxB] = value;
-                break;
-            default:
-                break;
-            }
-
-            memWord.happyInspection();
-        }
-
         template<uint8_t Channel>
         static word output_compare_value() {
             static_assert(Channel < channels_count, "Channel index is out of range");

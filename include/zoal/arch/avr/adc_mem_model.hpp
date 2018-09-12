@@ -6,14 +6,12 @@
 
 namespace zoal { namespace arch { namespace avr {
     template<mcu_type Type>
-    class adc_model {
+    class adc_mem_model {
     };
 
     template<>
-    class adc_model<mcu_type::atmega> {
+    class adc_mem_model<mcu_type::atmega> {
     public:
-        static constexpr uintptr_t ADMUXxDef = 1 << 6;
-
         static constexpr uintptr_t ADCLx = 0;
         static constexpr uintptr_t ADCHx = 1;
         static constexpr uintptr_t ADCSRAx = 2;
@@ -22,10 +20,8 @@ namespace zoal { namespace arch { namespace avr {
     };
 
     template<>
-    class adc_model<mcu_type::attiny13> {
+    class adc_mem_model<mcu_type::attiny13> {
     public:
-        static constexpr uintptr_t ADMUXxDef = 0;
-
         static constexpr uintptr_t ADCSRBx = 0;
         static constexpr uintptr_t ADCLx = 1;
         static constexpr uintptr_t ADCHx = 2;

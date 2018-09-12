@@ -9,8 +9,8 @@
 #include "../gpio/base_api.hpp"
 #include "../gpio/port_link.hpp"
 #include "../periph/pwm_connection.hpp"
-#include "../arch/cortex/stm32f3/port.hpp"
-#include "../arch/cortex/stm32f3/usart.hpp"
+#include "../arch/cortex/stm32x/port.hpp"
+#include "../arch/cortex/stm32x/usart.hpp"
 #include "../arch/cortex/stm32f3/spi.hpp"
 #include "../arch/cortex/stm32f3/adc.hpp"
 #include "../arch/cortex/stm32f3/adc_common_regs.hpp"
@@ -38,7 +38,7 @@ namespace zoal { namespace mcu {
         using clock_apb2 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::bus::cortex_apb2, Set, Clear>;
 
         template<uintptr_t Address, class Clock>
-        using port = typename ::zoal::arch::stm32f3::port<Address, Clock>;
+        using port = typename ::zoal::arch::stm32x::port<Address, Clock>;
 
         using port_a = port<0x48000000, clock_ahb<0x000020000>>;
         using port_b = port<0x48000400, clock_ahb<0x000040000>>;
@@ -82,7 +82,7 @@ namespace zoal { namespace mcu {
         using adc4 = adc<0x50000500u, 4, adc_common34, enable_adc34>;
 
         template<class Buffer>
-        using usart1 = typename ::zoal::arch::stm32f3::usart<0x40013800u, 1, Buffer, clock_apb2<0x4000>>;
+        using usart1 = typename ::zoal::arch::stm32x::usart<0x40013800u, 1, Buffer, clock_apb2<0x4000>>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;

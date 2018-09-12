@@ -59,24 +59,24 @@ namespace zoal { namespace metadata {
     };
 
 
-    template<zoal::periph::usart_data_bits Bits>
+    template<uint8_t Bits>
     struct stm32_data_bits_to_cr1 {
     };
 
     template<>
-    struct stm32_data_bits_to_cr1<zoal::periph::usart_data_bits::data_bits_7> {
+    struct stm32_data_bits_to_cr1<7> {
         static const uint32_t set_mask = 0x10000000;
         static const uint32_t clear_mask = 0x10001000;
     };
 
     template<>
-    struct stm32_data_bits_to_cr1<zoal::periph::usart_data_bits::data_bits_8> {
+    struct stm32_data_bits_to_cr1<8> {
         static const uint32_t set_mask = 0x0;
         static const uint32_t clear_mask = 0x10001000;
     };
 
     template<>
-    struct stm32_data_bits_to_cr1<zoal::periph::usart_data_bits::data_bits_9> {
+    struct stm32_data_bits_to_cr1<9> {
         static const uint32_t set_mask = 0x1000;
         static const uint32_t clear_mask = 0x10001000;
     };

@@ -11,7 +11,11 @@ namespace zoal { namespace gpio {
         null_port() = delete;
 
         static constexpr uintptr_t address = 0;
-        
+
+        static void power_on() {}
+
+        static void power_off() {}
+
         static inline void enable() {}
 
         static inline void disable() {}
@@ -20,22 +24,17 @@ namespace zoal { namespace gpio {
             return 0;
         }
 
-        static inline void low(register_type) {
-        }
+        template<register_type>
+        static inline void low() {}
 
-        static inline void high(register_type) {
-        }
+        template<register_type>
+        static inline void high() {}
 
-        static inline void toggle(register_type) {
-        }
-
-        template<::zoal::gpio::pin_mode>
-        static inline void mode(register_type) {
-        }
+        template<register_type>
+        static inline void toggle() {}
 
         template<::zoal::gpio::pin_mode, register_type>
-        static inline void mode() {
-        }
+        static inline void mode() {}
     };
 }}
 

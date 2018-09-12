@@ -8,7 +8,7 @@
 #include "../gpio/base_api.hpp"
 #include "../gpio/port_link.hpp"
 #include "../arch/bus.hpp"
-#include "../arch/cortex/stm32f0/port.hpp"
+#include "../arch/cortex/stm32x/port.hpp"
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
 #include "../arch/cortex/stm32x/bus_clock_control.hpp"
 
@@ -22,7 +22,7 @@ namespace zoal { namespace mcu {
         using options_ahbenr = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::bus::cortex_ahb, Set, Clear>;
 
         template<uintptr_t Address, class Clock>
-        using port = typename ::zoal::gpio::stm32f0::port<Address, Clock>;
+        using port = typename ::zoal::arch::stm32x::port<Address, Clock>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;
@@ -34,107 +34,107 @@ namespace zoal { namespace mcu {
         using port_e = port<0x48001000, options_ahbenr<0x000200000>>;
         using port_f = port<0x48001400, options_ahbenr<0x000400000>>;
 
-        using pa00 = pin<port_a, 0x0>;
-        using pa01 = pin<port_a, 0x1>;
-        using pa02 = pin<port_a, 0x2>;
-        using pa03 = pin<port_a, 0x3>;
-        using pa04 = pin<port_a, 0x4>;
-        using pa05 = pin<port_a, 0x5>;
-        using pa06 = pin<port_a, 0x6>;
-        using pa07 = pin<port_a, 0x7>;
-        using pa08 = pin<port_a, 0x8>;
-        using pa09 = pin<port_a, 0x9>;
-        using pa10 = pin<port_a, 0xA>;
-        using pa11 = pin<port_a, 0xB>;
-        using pa12 = pin<port_a, 0xC>;
-        using pa13 = pin<port_a, 0xD>;
-        using pa14 = pin<port_a, 0xE>;
-        using pa15 = pin<port_a, 0xF>;
+        using pa_00 = pin<port_a, 0x0>;
+        using pa_01 = pin<port_a, 0x1>;
+        using pa_02 = pin<port_a, 0x2>;
+        using pa_03 = pin<port_a, 0x3>;
+        using pa_04 = pin<port_a, 0x4>;
+        using pa_05 = pin<port_a, 0x5>;
+        using pa_06 = pin<port_a, 0x6>;
+        using pa_07 = pin<port_a, 0x7>;
+        using pa_08 = pin<port_a, 0x8>;
+        using pa_09 = pin<port_a, 0x9>;
+        using pa_10 = pin<port_a, 0xA>;
+        using pa_11 = pin<port_a, 0xB>;
+        using pa_12 = pin<port_a, 0xC>;
+        using pa_13 = pin<port_a, 0xD>;
+        using pa_14 = pin<port_a, 0xE>;
+        using pa_15 = pin<port_a, 0xF>;
 
-        using pb00 = pin<port_b, 0x0>;
-        using pb01 = pin<port_b, 0x1>;
-        using pb02 = pin<port_b, 0x2>;
-        using pb03 = pin<port_b, 0x3>;
-        using pb04 = pin<port_b, 0x4>;
-        using pb05 = pin<port_b, 0x5>;
-        using pb06 = pin<port_b, 0x6>;
-        using pb07 = pin<port_b, 0x7>;
-        using pb08 = pin<port_b, 0x8>;
-        using pb09 = pin<port_b, 0x9>;
-        using pb10 = pin<port_b, 0xA>;
-        using pb11 = pin<port_b, 0xB>;
-        using pb12 = pin<port_b, 0xC>;
-        using pb13 = pin<port_b, 0xD>;
-        using pb14 = pin<port_b, 0xE>;
-        using pb15 = pin<port_b, 0xF>;
+        using pb_00 = pin<port_b, 0x0>;
+        using pb_01 = pin<port_b, 0x1>;
+        using pb_02 = pin<port_b, 0x2>;
+        using pb_03 = pin<port_b, 0x3>;
+        using pb_04 = pin<port_b, 0x4>;
+        using pb_05 = pin<port_b, 0x5>;
+        using pb_06 = pin<port_b, 0x6>;
+        using pb_07 = pin<port_b, 0x7>;
+        using pb_08 = pin<port_b, 0x8>;
+        using pb_09 = pin<port_b, 0x9>;
+        using pb_10 = pin<port_b, 0xA>;
+        using pb_11 = pin<port_b, 0xB>;
+        using pb_12 = pin<port_b, 0xC>;
+        using pb_13 = pin<port_b, 0xD>;
+        using pb_14 = pin<port_b, 0xE>;
+        using pb_15 = pin<port_b, 0xF>;
 
-        using pc00 = pin<port_c, 0x0>;
-        using pc01 = pin<port_c, 0x1>;
-        using pc02 = pin<port_c, 0x2>;
-        using pc03 = pin<port_c, 0x3>;
-        using pc04 = pin<port_c, 0x4>;
-        using pc05 = pin<port_c, 0x5>;
-        using pc06 = pin<port_c, 0x6>;
-        using pc07 = pin<port_c, 0x7>;
-        using pc08 = pin<port_c, 0x8>;
-        using pc09 = pin<port_c, 0x9>;
-        using pc10 = pin<port_c, 0xA>;
-        using pc11 = pin<port_c, 0xB>;
-        using pc12 = pin<port_c, 0xC>;
-        using pc13 = pin<port_c, 0xD>;
-        using pc14 = pin<port_c, 0xE>;
-        using pc15 = pin<port_c, 0xF>;
+        using pc_00 = pin<port_c, 0x0>;
+        using pc_01 = pin<port_c, 0x1>;
+        using pc_02 = pin<port_c, 0x2>;
+        using pc_03 = pin<port_c, 0x3>;
+        using pc_04 = pin<port_c, 0x4>;
+        using pc_05 = pin<port_c, 0x5>;
+        using pc_06 = pin<port_c, 0x6>;
+        using pc_07 = pin<port_c, 0x7>;
+        using pc_08 = pin<port_c, 0x8>;
+        using pc_09 = pin<port_c, 0x9>;
+        using pc_10 = pin<port_c, 0xA>;
+        using pc_11 = pin<port_c, 0xB>;
+        using pc_12 = pin<port_c, 0xC>;
+        using pc_13 = pin<port_c, 0xD>;
+        using pc_14 = pin<port_c, 0xE>;
+        using pc_15 = pin<port_c, 0xF>;
 
-        using pd00 = pin<port_d, 0x0>;
-        using pd01 = pin<port_d, 0x1>;
-        using pd02 = pin<port_d, 0x2>;
-        using pd03 = pin<port_d, 0x3>;
-        using pd04 = pin<port_d, 0x4>;
-        using pd05 = pin<port_d, 0x5>;
-        using pd06 = pin<port_d, 0x6>;
-        using pd07 = pin<port_d, 0x7>;
-        using pd08 = pin<port_d, 0x8>;
-        using pd09 = pin<port_d, 0x9>;
-        using pd10 = pin<port_d, 0xA>;
-        using pd11 = pin<port_d, 0xB>;
-        using pd12 = pin<port_d, 0xC>;
-        using pd13 = pin<port_d, 0xD>;
-        using pd14 = pin<port_d, 0xE>;
-        using pd15 = pin<port_d, 0xF>;
+        using pd_00 = pin<port_d, 0x0>;
+        using pd_01 = pin<port_d, 0x1>;
+        using pd_02 = pin<port_d, 0x2>;
+        using pd_03 = pin<port_d, 0x3>;
+        using pd_04 = pin<port_d, 0x4>;
+        using pd_05 = pin<port_d, 0x5>;
+        using pd_06 = pin<port_d, 0x6>;
+        using pd_07 = pin<port_d, 0x7>;
+        using pd_08 = pin<port_d, 0x8>;
+        using pd_09 = pin<port_d, 0x9>;
+        using pd_10 = pin<port_d, 0xA>;
+        using pd_11 = pin<port_d, 0xB>;
+        using pd_12 = pin<port_d, 0xC>;
+        using pd_13 = pin<port_d, 0xD>;
+        using pd_14 = pin<port_d, 0xE>;
+        using pd_15 = pin<port_d, 0xF>;
 
-        using pe00 = pin<port_e, 0x0>;
-        using pe01 = pin<port_e, 0x1>;
-        using pe02 = pin<port_e, 0x2>;
-        using pe03 = pin<port_e, 0x3>;
-        using pe04 = pin<port_e, 0x4>;
-        using pe05 = pin<port_e, 0x5>;
-        using pe06 = pin<port_e, 0x6>;
-        using pe07 = pin<port_e, 0x7>;
-        using pe08 = pin<port_e, 0x8>;
-        using pe09 = pin<port_e, 0x9>;
-        using pe10 = pin<port_e, 0xA>;
-        using pe11 = pin<port_e, 0xB>;
-        using pe12 = pin<port_e, 0xC>;
-        using pe13 = pin<port_e, 0xD>;
-        using pe14 = pin<port_e, 0xE>;
-        using pe15 = pin<port_e, 0xF>;
+        using pe_00 = pin<port_e, 0x0>;
+        using pe_01 = pin<port_e, 0x1>;
+        using pe_02 = pin<port_e, 0x2>;
+        using pe_03 = pin<port_e, 0x3>;
+        using pe_04 = pin<port_e, 0x4>;
+        using pe_05 = pin<port_e, 0x5>;
+        using pe_06 = pin<port_e, 0x6>;
+        using pe_07 = pin<port_e, 0x7>;
+        using pe_08 = pin<port_e, 0x8>;
+        using pe_09 = pin<port_e, 0x9>;
+        using pe_10 = pin<port_e, 0xA>;
+        using pe_11 = pin<port_e, 0xB>;
+        using pe_12 = pin<port_e, 0xC>;
+        using pe_13 = pin<port_e, 0xD>;
+        using pe_14 = pin<port_e, 0xE>;
+        using pe_15 = pin<port_e, 0xF>;
 
-        using pf00 = pin<port_f, 0x0>;
-        using pf01 = pin<port_f, 0x1>;
-        using pf02 = pin<port_f, 0x2>;
-        using pf03 = pin<port_f, 0x3>;
-        using pf04 = pin<port_f, 0x4>;
-        using pf05 = pin<port_f, 0x5>;
-        using pf06 = pin<port_f, 0x6>;
-        using pf07 = pin<port_f, 0x7>;
-        using pf08 = pin<port_f, 0x8>;
-        using pf09 = pin<port_f, 0x9>;
-        using pf10 = pin<port_f, 0xA>;
-        using pf11 = pin<port_f, 0xB>;
-        using pf12 = pin<port_f, 0xC>;
-        using pf13 = pin<port_f, 0xD>;
-        using pf14 = pin<port_f, 0xE>;
-        using pf15 = pin<port_f, 0xF>;
+        using pf_00 = pin<port_f, 0x0>;
+        using pf_01 = pin<port_f, 0x1>;
+        using pf_02 = pin<port_f, 0x2>;
+        using pf_03 = pin<port_f, 0x3>;
+        using pf_04 = pin<port_f, 0x4>;
+        using pf_05 = pin<port_f, 0x5>;
+        using pf_06 = pin<port_f, 0x6>;
+        using pf_07 = pin<port_f, 0x7>;
+        using pf_08 = pin<port_f, 0x8>;
+        using pf_09 = pin<port_f, 0x9>;
+        using pf_10 = pin<port_f, 0xA>;
+        using pf_11 = pin<port_f, 0xB>;
+        using pf_12 = pin<port_f, 0xC>;
+        using pf_13 = pin<port_f, 0xD>;
+        using pf_14 = pin<port_f, 0xE>;
+        using pf_15 = pin<port_f, 0xF>;
 
         using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;

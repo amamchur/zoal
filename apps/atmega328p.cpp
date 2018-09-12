@@ -52,6 +52,8 @@ void initialize() {
 
     mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::on();
     mcu::cfg::usart<usart, 115200>::apply();
+
+    mcu::mux::timer<ms_timer, mcu::pd_06, 0>::on();
     mcu::cfg::timer<ms_timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
 
     mcu::irq::timer<ms_timer>::enable_overflow_interrupt();
@@ -68,6 +70,21 @@ zoal::ic::max72xx_data<1> matrix;
 
 int main() {
     initialize();
+
+    logger::info() << "Started!!!";
+
+
+    asm volatile("nop"            "\n");
+    asm volatile("nop"            "\n");
+//    mcu::api::mode<pin_mode::output, mcu::pa04>();
+    mcu::api::low<mcu::pb_00>::apply();
+//    mcu::pb_00::low();
+//    mcu::pa04::mode<pin_mode::output>();
+//    pcb::pa04::mode<pin_mode::output>();
+//    pcb::pa04::mode<pin_mode::output>();
+    asm volatile("nop"            "\n");
+    asm volatile("nop"            "\n");
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 //
@@ -78,17 +95,17 @@ int main() {
 //        logger::info() << "Index: " << index << " Value: " << value;
 //    });
 
-    mcu::adc_00::power_on();
-    mcu::cfg::adc<mcu::adc_00>::apply();
-    mcu::adc_00::enable();
-
-    app.init();
+//    mcu::adc_00::power_on();
+//    mcu::cfg::adc<mcu::adc_00>::apply();
+//    mcu::adc_00::enable();
+//
+//    app.init();
     while (true) {
-        app.run_once();
+//        app.run_once();
 //        logger::info() << value++;
-////        matrix.print(zoal::data::segment7::gfed_ascii, (long) value);
-////        max7219::display(matrix);
-////        value++;
+//        matrix.print(zoal::data::segment7::gfed_ascii, (long) value);
+//        max7219::display(matrix);
+//        value++;
 //        ::delay::ms(1000);
     }
     return 0;

@@ -3,10 +3,6 @@
 #include <zoal/utils/tool_set.hpp>
 #include <zoal/board/stm32f030.hpp>
 
-using namespace zoal;
-using namespace zoal::gpio;
-using namespace zoal::mcu;
-
 volatile uint32_t milliseconds_counter = 0;
 
 extern "C" void SysTick_Handler(void) {
@@ -14,20 +10,22 @@ extern "C" void SysTick_Handler(void) {
 }
 
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
-using tools = zoal::utils::tool_set<zoal::pcb::mcu, counter>;
+using mcu = zoal::pcb::mcu;
+using tools = zoal::utils::tool_set<mcu, counter>;
 using delay = tools::delay;
 
 int main() {
+    using namespace zoal::gpio;
+
     SysTick_Config(SystemCoreClock / 1000);
-    pcb::pa04::port::power_on();
-    pcb::pa04::mode<pin_mode::output>();
-    pcb::pa04::high();
+    mcu::pa_04::port::power_on();
+    mcu::pa_04::mode<pin_mode::output>();
 
     while (true) {
-        pcb::pa04::low();
+        mcu::pa_04::low();
         ::delay::ms(500);
 
-        pcb::pa04::high();
+        mcu::pa_04::high();
         ::delay::ms(500);
     }
 

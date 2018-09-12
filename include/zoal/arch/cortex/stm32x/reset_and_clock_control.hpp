@@ -1,12 +1,11 @@
-#pragma once
-
 #ifndef ZOAL_GPIO_STM32X_RESET_AND_CLOCK_CONTROLL_HPP
 #define ZOAL_GPIO_STM32X_RESET_AND_CLOCK_CONTROLL_HPP
 
-#include <stdint.h>
-#include "../../../utils/memory_segment.hpp"
 #include "../../../arch/bus.hpp"
+#include "../../../utils/memory_segment.hpp"
 #include "bus_clock_control.hpp"
+
+#include <stdint.h>
 
 namespace zoal { namespace arch { namespace stm32x {
     template<uintptr_t Address = 0x40021000>

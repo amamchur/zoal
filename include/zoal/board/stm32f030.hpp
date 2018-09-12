@@ -10,34 +10,34 @@ namespace zoal {
     public:
         using mcu = typename mcu::stm32f0xx<Frequency>;
 
-        using pa00 = typename mcu::pa00;
-        using pa01 = typename mcu::pa01;
-        using pa02 = typename mcu::pa02;
-        using pa03 = typename mcu::pa03;
-        using pa04 = typename mcu::pa04;
-        using pa05 = typename mcu::pa05;
-        using pa06 = typename mcu::pa06;
-        using pa07 = typename mcu::pa07;
-        using pa08 = typename mcu::pa08;
-        using pa09 = typename mcu::pa09;
-        using pa10 = typename mcu::pa10;
-        using pa11 = typename mcu::pa11;
-        using pa12 = typename mcu::pa12;
-        using pa13 = typename mcu::pa13;
-        using pa14 = typename mcu::pa14;
-        using pa15 = typename mcu::pa15;
+        using pa_00 = typename mcu::pa_00;
+        using pa_01 = typename mcu::pa_01;
+        using pa_02 = typename mcu::pa_02;
+        using pa_03 = typename mcu::pa_03;
+        using pa_04 = typename mcu::pa_04;
+        using pa_05 = typename mcu::pa_05;
+        using pa_06 = typename mcu::pa_06;
+        using pa_07 = typename mcu::pa_07;
+        using pa_08 = typename mcu::pa_08;
+        using pa_09 = typename mcu::pa_09;
+        using pa_10 = typename mcu::pa_10;
+        using pa_11 = typename mcu::pa_11;
+        using pa_12 = typename mcu::pa_12;
+        using pa_13 = typename mcu::pa_13;
+        using pa_14 = typename mcu::pa_14;
+        using pa_15 = typename mcu::pa_15;
 
-        using pb00 = typename mcu::pb00;
-        using pb01 = typename mcu::pb01;
-        using pb02 = typename mcu::pb02;
-        using pb03 = typename mcu::pb03;
-        using pb04 = typename mcu::pb04;
-        using pb05 = typename mcu::pb05;
-        using pb06 = typename mcu::pb06;
-        using pb07 = typename mcu::pb07;
+        using pb_00 = typename mcu::pb_00;
+        using pb_01 = typename mcu::pb_01;
+        using pb_02 = typename mcu::pb_02;
+        using pb_03 = typename mcu::pb_03;
+        using pb_04 = typename mcu::pb_04;
+        using pb_05 = typename mcu::pb_05;
+        using pb_06 = typename mcu::pb_06;
+        using pb_07 = typename mcu::pb_07;
 
-        using pf00 = typename mcu::pf00;
-        using pf01 = typename mcu::pf01;
+        using pf_00 = typename mcu::pf_00;
+        using pf_01 = typename mcu::pf_01;
     };
 
     using pcb = stm32f030<72000000>;

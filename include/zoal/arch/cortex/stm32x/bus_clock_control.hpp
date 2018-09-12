@@ -1,11 +1,9 @@
-#pragma once
-
 #ifndef ZOAL_ARCH_STM32X_CLOCK_CONTROL_HPP
 #define ZOAL_ARCH_STM32X_CLOCK_CONTROL_HPP
 
-#include <stdint.h>
-
 #include "../../../arch/bus.hpp"
+
+#include <stdint.h>
 
 namespace zoal { namespace arch { namespace stm32x {
     template<class ResetAndClockControl, zoal::arch::bus Bus, uint32_t SetMask, uint32_t ClearMask = ~SetMask>

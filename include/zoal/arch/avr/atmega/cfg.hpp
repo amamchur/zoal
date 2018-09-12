@@ -8,7 +8,7 @@
 #include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace metadata {
-    template<::zoal::periph::usart_data_bits Bits>
+    template<uint8_t Bits>
     struct usart_data_bits_flags;
 
     template<::zoal::periph::usart_parity Parity>
@@ -38,14 +38,13 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::metadata::usart_data_bits_flags;
     using zoal::metadata::usart_parity_flags;
     using zoal::metadata::usart_stop_bit_flags;
-    using zoal::periph::usart_data_bits;
     using zoal::periph::usart_parity;
     using zoal::periph::usart_stop_bits;
     using zoal::utils::clear_and_set;
     using zoal::utils::memory_segment;
     using zoal::utils::merge_clear_and_set;
 
-    template<usart_data_bits Bits, usart_parity Parity, usart_stop_bits StopBits>
+    template<uint8_t Bits, usart_parity Parity, usart_stop_bits StopBits>
     struct usart_mode {
         using db_flags = usart_data_bits_flags<Bits>;
         using pt_flags = usart_parity_flags<Parity>;
@@ -60,7 +59,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
         template<class U,
                  uint32_t BaudRate,
-                 usart_data_bits Bits = usart_data_bits::data_bits_8,
+                 uint8_t Bits = 8,
                  usart_parity Parity = usart_parity::none,
                  usart_stop_bits StopBits = usart_stop_bits::stop_bits_1,
                  uint32_t Freq = frequency>

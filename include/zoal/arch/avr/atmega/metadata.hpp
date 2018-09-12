@@ -1,32 +1,32 @@
 #ifndef ZOAL_MCU_METADATA_HPP
 #define ZOAL_MCU_METADATA_HPP
 
-#include "../../periph/adc_config.hpp"
-#include "../../periph/timer_mode.hpp"
-#include "../../periph/usart_config.hpp"
-#include "../../utils/helpers.hpp"
+#include "../../../periph/adc_config.hpp"
+#include "../../../periph/timer_mode.hpp"
+#include "../../../periph/usart_config.hpp"
+#include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace metadata {
-    template<::zoal::periph::usart_data_bits Bits>
+    template<uint8_t Bits>
     struct usart_data_bits_flags {};
 
     template<>
-    struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_5> {
+    struct usart_data_bits_flags<5> {
         static constexpr uint8_t flags = 0 << 1;
     };
 
     template<>
-    struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_6> {
+    struct usart_data_bits_flags<6> {
         static constexpr uint8_t flags = 1 << 1;
     };
 
     template<>
-    struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_7> {
+    struct usart_data_bits_flags<7> {
         static constexpr uint8_t flags = 2 << 1;
     };
 
     template<>
-    struct usart_data_bits_flags<::zoal::periph::usart_data_bits::data_bits_8> {
+    struct usart_data_bits_flags<8> {
         static constexpr uint8_t flags = 3 << 1;
     };
 
@@ -203,6 +203,14 @@ namespace zoal { namespace metadata {
 
     template<class Adc, class Pin>
     struct adc_mapping : pin_to_adc_channel<Adc::address, Pin::port::address, Pin::offset> {
+    };
+
+    template<uintptr_t TimerAddress, uintptr_t PortAddress, uint8_t PinOffset, uint8_t Channel>
+    struct pin_to_pwm_channel : zoal::utils::integral_constant<bool, false> {
+    };
+
+    template<class Timer, class Pin, uint8_t Channel>
+    struct pwm_channel_mapping : pin_to_pwm_channel<Timer::address, Pin::port::address, Pin::offset, Channel> {
     };
 }}
 

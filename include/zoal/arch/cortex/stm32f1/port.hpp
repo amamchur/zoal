@@ -5,41 +5,103 @@
 
 #include "../../../gpio/pin_mode.hpp"
 #include "../../../utils/memory_segment.hpp"
+#include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace arch { namespace stm32f1 {
-    template <::zoal::gpio::pin_mode PinMode>
+    template<::zoal::gpio::pin_mode PinMode, uint32_t Mask>
     struct pin_mode_to_cnf_mode {
     };
 
-    template <>
-    struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::input_floating> {
+    template<uint32_t Mask>
+    struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::input_floating, Mask> {
         static constexpr uint32_t value = 0x4 | 0x0;
+        using GPIOx_BRR = ::zoal::utils::write_only_mask<0, 0>;
+        using GPIOx_BSRR = ::zoal::utils::write_only_mask<0, 0>;
     };
 
-    template <>
-    struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::input_pull_down> {
+    template<uint32_t Mask>
+    struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::input_pull_down, Mask> {
         static constexpr uint32_t value = 0x8 | 0x0;
+        using GPIOx_BRR = ::zoal::utils::write_only_mask<Mask, 0>;
+        using GPIOx_BSRR = ::zoal::utils::write_only_mask<0, 0>;
     };
 
-    template <>
-    struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::input_pull_up> {
+    template<uint32_t Mask>
+    struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::input_pull_up, Mask> {
         static constexpr uint32_t value = 0x8 | 0x0;
+        using GPIOx_BRR = ::zoal::utils::write_only_mask<0, 0>;
+        using GPIOx_BSRR = ::zoal::utils::write_only_mask<Mask, 0>;
     };
 
-    template <>
-    struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::output_open_drain> {
-        static constexpr uint32_t value = 0x4 | 0x1;
+    template<uint32_t Mask>
+    struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::output_open_drain, Mask> {
+        static constexpr uint32_t value = 0x4 | 0x3;
+        using GPIOx_BRR = ::zoal::utils::clear_and_set<0, 0>;
+        using GPIOx_BSRR = ::zoal::utils::clear_and_set<0, 0>;
     };
 
-    template <>
-    struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::output_push_pull> {
-        static constexpr uint32_t value = 0x0 | 0x1;
+    template<uint32_t Mask>
+    struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::output_push_pull, Mask> {
+        static constexpr uint32_t value = 0x0 | 0x3;
+        using GPIOx_BRR = ::zoal::utils::write_only_mask<0, 0>;
+        using GPIOx_BSRR = ::zoal::utils::write_only_mask<0, 0>;
     };
 
-    template<uintptr_t Address, class Clock>
+    template<::zoal::gpio::pin_mode PinMode, uint32_t Mask>
+    struct pin_mode_cfg {
+        static constexpr auto cnf_clear = 0x03;
+
+        using mode = pin_mode_to_cnf_mode<PinMode, Mask>;
+        using GPIOx_BRR = typename mode::GPIOx_BRR;
+        using GPIOx_BSRR = typename mode::GPIOx_BSRR;
+
+        template<uintptr_t V, uint8_t Shift = 0>
+        using cr_cas = struct ::zoal::utils::clear_and_set<(V != 0 ? cnf_clear : 0), (V != 0 ? mode::value : 0), Shift>;
+
+        using crl_p00 = cr_cas<(Mask & 1 << 0x0), 0>;
+        using crl_p01 = cr_cas<(Mask & 1 << 0x1), 4>;
+        using crl_p02 = cr_cas<(Mask & 1 << 0x2), 8>;
+        using crl_p03 = cr_cas<(Mask & 1 << 0x3), 12>;
+        using crl_p04 = cr_cas<(Mask & 1 << 0x4), 16>;
+        using crl_p05 = cr_cas<(Mask & 1 << 0x5), 20>;
+        using crl_p06 = cr_cas<(Mask & 1 << 0x6), 24>;
+        using crl_p07 = cr_cas<(Mask & 1 << 0x7), 28>;
+
+        using crh_p08 = cr_cas<(Mask & 1 << 0x8), 0>;
+        using crh_p09 = cr_cas<(Mask & 1 << 0x9), 4>;
+        using crh_p10 = cr_cas<(Mask & 1 << 0xA), 8>;
+        using crh_p11 = cr_cas<(Mask & 1 << 0xB), 12>;
+        using crh_p12 = cr_cas<(Mask & 1 << 0xC), 16>;
+        using crh_p13 = cr_cas<(Mask & 1 << 0xD), 20>;
+        using crh_p14 = cr_cas<(Mask & 1 << 0xE), 24>;
+        using crh_p15 = cr_cas<(Mask & 1 << 0xF), 28>;
+
+        using GPIOx_CRL = ::zoal::utils::merge_clear_and_set<
+                crl_p00,
+                crl_p01,
+                crl_p02,
+                crl_p03,
+                crl_p04,
+                crl_p05,
+                crl_p06,
+                crl_p07>;
+        using GPIOx_CRH = ::zoal::utils::merge_clear_and_set<
+                crh_p08,
+                crh_p09,
+                crh_p10,
+                crh_p11,
+                crh_p12,
+                crh_p13,
+                crh_p14,
+                crh_p15>;
+    };
+
+    template<uintptr_t Address, class Clock, uint32_t PinMask = 0xFFFF>
     class port : public Clock {
     public:
         using register_type = uint32_t;
+        static constexpr uintptr_t address = Address;
+        static constexpr uint32_t pin_mask = PinMask;
 
         static constexpr uintptr_t GPIOx_CRL = 0x00;
         static constexpr uintptr_t GPIOx_CRH = 0x04;
@@ -49,61 +111,50 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static constexpr uintptr_t GPIOx_BRR = 0x14;
         static constexpr uintptr_t GPIOx_LCKR = 0x18;
 
-        static constexpr uintptr_t address = Address;
-
         port() = delete;
 
         static inline register_type read() {
             return mem[GPIOx_IDR];
         }
 
-        static inline void low(register_type mask) {
-            mem[GPIOx_BRR] = mask;
+        template<register_type Mask>
+        static void low() {
+            static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
+            mem[GPIOx_BRR] = Mask;
         }
 
-        static inline void high(register_type mask) {
-            mem[GPIOx_BSRR] = mask;
+        template<register_type Mask>
+        static void high() {
+            static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
+            mem[GPIOx_BSRR] = Mask;
         }
 
-        static inline void toggle(register_type mask) {
+        template<register_type Mask>
+        static void toggle() {
+            static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
             auto data = mem[GPIOx_ODR];
-            mem[GPIOx_BRR] = data & mask;
-            mem[GPIOx_BSRR] = ~data & mask;
+            mem[GPIOx_BRR] = data & Mask;
+            mem[GPIOx_BSRR] = ~data & Mask;
         }
 
-        template<::zoal::gpio::pin_mode PinMode>
-        static inline void mode(register_type mask) {
-            using namespace zoal::gpio;
-            config_reg<pin_mode_to_cnf_mode<PinMode>::value>(mem[GPIOx_CRL], mask & 0xFF);
-            config_reg<pin_mode_to_cnf_mode<PinMode>::value>(mem[GPIOx_CRH], mask >> 0x8);
-            switch (PinMode) {
-                case pin_mode::input_pull_down:
-                    mem[GPIOx_BRR] = mask;
-                    break;
-                case pin_mode::input_pull_up:
-                    mem[GPIOx_BSRR] = mask;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        template<::zoal::gpio::pin_mode PinMode, register_type mask>
+        template<::zoal::gpio::pin_mode PinMode, register_type Mask, bool TimeStable = false>
         static inline void mode() {
             using namespace zoal::gpio;
-            config_reg<pin_mode_to_cnf_mode<PinMode>::value>(mem[GPIOx_CRL], mask & 0xFF);
-            config_reg<pin_mode_to_cnf_mode<PinMode>::value>(mem[GPIOx_CRH], mask >> 0x8);
-            switch (PinMode) {
-                case pin_mode::input_pull_down:
-                    mem[GPIOx_BRR] = mask;
-                    break;
-                case pin_mode::input_pull_up:
-                    mem[GPIOx_BSRR] = mask;
-                    break;
-                default:
-                    break;
+            using cfg = pin_mode_cfg<PinMode, Mask>;
+            if (TimeStable) {
+                // Do not use clear_and_set & write_only template optimization
+                mem[GPIOx_CRL] = (mem[GPIOx_CRL] & ~cfg::GPIOx_CRL::clear_mask) | cfg::GPIOx_CRL::set_mask;
+                mem[GPIOx_CRH] = (mem[GPIOx_CRH] & ~cfg::GPIOx_CRH::clear_mask) | cfg::GPIOx_CRH::set_mask;
+                mem[GPIOx_BRR] = cfg::GPIOx_BRR::mask;
+                mem[GPIOx_BSRR] = cfg::GPIOx_BSRR::mask;
+            } else {
+                cfg::GPIOx_CRL::apply(mem[GPIOx_CRL]);
+                cfg::GPIOx_CRH::apply(mem[GPIOx_CRH]);
+                cfg::GPIOx_BRR::apply(mem[GPIOx_BRR]);
+                cfg::GPIOx_BSRR::apply(mem[GPIOx_BSRR]);
             }
         }
+
     private:
         static zoal::utils::memory_segment<uint32_t, Address> mem;
 
@@ -127,8 +178,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
         }
     };
 
-    template<uintptr_t Address, class Clock>
-    zoal::utils::memory_segment<uint32_t, Address> port<Address, Clock>::mem;
+    template<uintptr_t Address, class Clock, uint32_t PinMask>
+    zoal::utils::memory_segment<uint32_t, Address> port<Address, Clock, PinMask>::mem;
 }}}
 
 #endif

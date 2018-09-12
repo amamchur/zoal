@@ -46,6 +46,14 @@ namespace zoal { namespace arch { namespace stm32f3 {
         static constexpr uint8_t no = N;
         static constexpr uint8_t resolution = 12;
 
+        static void enable() {
+            mem[ADCx_CR] |= Enable;
+        }
+
+        static void disable() {
+            mem[ADCx_CR] &= ~Enable;
+        }
+
         template<class Config>
         static void connect() {
             auto vSQR1 = mem[ADCx_SQR1];

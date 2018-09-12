@@ -32,7 +32,7 @@ namespace zoal { namespace mcu {
         static constexpr auto Timer8Type = zoal::arch::avr::mcu_type::attiny2313;
         static constexpr auto Timer16Type = zoal::arch::avr::mcu_type::attiny2313;
 
-        using timer8_model = zoal::arch::avr::timer8_model<Timer8Type>;
+        using timer8_model = zoal::arch::avr::timer8_mem_model<Timer8Type>;
         using timer16_model = zoal::arch::avr::timer16_model<Timer16Type>;
 
         template<uintptr_t Address, uint8_t N>

@@ -2,7 +2,7 @@
 #define ZOAL_DATA_RX_TX_BUFFER_HPP
 
 #include "ring_buffer.hpp"
-#include "zoal/utils/cooperation.hpp"
+#include "../utils/cooperation.hpp"
 
 namespace zoal { namespace data {
     template<uintptr_t RxSize, uintptr_t TxSize>

@@ -34,31 +34,31 @@ namespace zoal { namespace gpio {
 
         static inline void write(uint8_t value) {
             if (value) {
-                port::high(mask);
+                port::template high<mask>();
             } else {
-                port::low(mask);
+                port::template low<mask>();
             }
         }
 
-        template<uint8_t value>
+        template<uint8_t Value>
         static inline void set() {
-            if (value) {
-                port::high(mask);
+            if (Value) {
+                port::template high<mask>();
             } else {
-                port::low(mask);
+                port::template low<mask>();
             }
         }
 
         static inline void low() {
-            port::low(mask);
+            port::template low<mask>();
         }
 
         static inline void high() {
-            port::high(mask);
+            port::template high<mask>();
         }
 
         static inline void toggle() {
-            port::toggle(mask);
+            port::template toggle<mask>();
         }
     };
 

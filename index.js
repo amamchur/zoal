@@ -3,6 +3,7 @@ const xml2js = require('xml2js');
 const program = require('commander');
 const includesMap = {
     megaAVR: [
+        '#include <zoal/arch/avr/atmega/metadata.hpp>',
         '#include <zoal/arch/avr/atmega/mux.hpp>',
         '#include <zoal/arch/avr/atmega/cfg.hpp>',
         '#include <zoal/arch/avr/port.hpp>',
@@ -14,8 +15,7 @@ const includesMap = {
         '#include <zoal/arch/avr/timer8.hpp>',
         '#include <zoal/gpio/base_api.hpp>',
         '#include <zoal/gpio/port_link.hpp>',
-        '#include <zoal/arch/avr/atmega/irq.hpp>',
-        '#include <zoal/mcu/metadata/atmega.hpp>'
+        '#include <zoal/arch/avr/atmega/irq.hpp>'
     ]
 };
 
@@ -85,6 +85,22 @@ function getByName(modules, regex) {
         let m = modules[i];
         if (m.$.name.match(regex)) {
             results.push(m);
+        }
+    }
+
+    return results;
+}
+
+
+function getByInstanceName(modules, regex) {
+    let results = [];
+    for (let i = 0; i < modules.length; i++) {
+        let m = modules[i];
+        for (let j = 0; j < m.instance.length; j++) {
+            let name = m.instance[j].$.name;
+            if (name.match(regex)) {
+                results.push(m);
+            }
         }
     }
 
@@ -164,16 +180,16 @@ function placePins(modules) {
     buffer += '\n';
 }
 
-function placeTimers(modules) {
+function placeTimers(root, modules) {
     buffer += '\n';
 
-    let array = getByName(modules, /^TC(8|16)/);
+    let timers_group = getByName(modules, /^TC(8|16)/);
     let timers = [];
     let moduleMap = {};
     mcu.timers = [];
     mcu.timersMap = {};
-    for (let i = 0; i < array.length; i++) {
-        let m = array[i];
+    for (let i = 0; i < timers_group.length; i++) {
+        let m = timers_group[i];
         let g = m['register-group'];
         for (let j = 0; j < g.length; j++) {
             let t = g[j];
@@ -189,13 +205,37 @@ function placeTimers(modules) {
         let tccrc = registerOffset(t.register, /TCCR\dC/);
         let n = name.replace(/TC(\d+)/, '$1');
 
+        let regex = new RegExp(t.$.name);
+        let periph = getByInstanceName(root.devices[0].device[0].peripherals[0].module, regex)[0];
+        let array = periph.instance[0].signals[0].signal;
+        let signals = [];
+
+        for (let j = 0; j < array.length; j++) {
+            let s = array[j];
+            let g = s.$.group;
+            let pad = s.$.pad.toLowerCase();
+            let port = pad.replace(/p(\w)\d/, '$1');
+            let offset = pad.replace(/p\w(\d)/, '$1');
+            if (g === 'OCA' || g === 'OCB') {
+                signals.push({
+                    channel: g === 'OCA' ? 0 : 1,
+                    pad: pad,
+                    port: mcu.portsMap[port],
+                    offset: offset - 0
+                });
+            }
+        }
+
+        console.log(signals);
+
         name = 'timer_' + ("0000" + n).substr(-2);
         let obj = {
             name: name,
             avrName: t.$.name,
             sn: n,
             type: tccrc ? 'timer16' : 'timer8',
-            address: address
+            address: address,
+            signals: signals
         };
 
         mcu.timers.push(obj);
@@ -377,6 +417,19 @@ function placeADCsMetadata() {
     }
 }
 
+function placeTimersMetadata() {
+    for (let i = 0; i < mcu.timers.length; i++) {
+        let t = mcu.timers[i];
+        for (let j = 0; j < t.signals.length; j++) {
+            let s = t.signals[j];
+            let timerHex = '0x' + ("0000" + t.address.toString(16)).substr(-4);
+            let portHex = '0x' + ("0000" + s.port.address.toString(16)).substr(-4);
+            buffer += `template<>\n`;
+            buffer += `struct pin_to_pwm_channel<${timerHex}, ${portHex}, ${s.offset}, ${s.channel}> : integral_constant<bool, true> {};\n\n`;
+        }
+    }
+}
+
 function placeUSARTSsMetadata() {
     for (let i = 0; i < mcu.usarts.length; i++) {
         let usart = mcu.usarts[i];
@@ -384,8 +437,7 @@ function placeUSARTSsMetadata() {
         let signals = usart.signals;
 
         buffer += `template<>\n`;
-        buffer += `struct usart_mapping<${usartHex}, 0x0000, 0> : public base_usart_mapping<0, 0, 0> {\n`;
-        buffer += `};\n\n`;
+        buffer += `struct usart_mapping<${usartHex}, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};\n\n\n`;
 
         for (let j = 0; j < signals.length; j++) {
             let s = signals[j];
@@ -398,7 +450,7 @@ function placeUSARTSsMetadata() {
             }
 
             buffer += `template<>\n`;
-            buffer += `struct usart_mapping<${usartHex}, ${portHex}, ${s.offset}> : public base_usart_mapping<${rx}, ${tx}, ${ck}> {\n`;
+            buffer += `struct usart_mapping<${usartHex}, ${portHex}, ${s.offset}> : base_usart_mapping<${rx}, ${tx}, ${ck}> {\n`;
             buffer += `};\n\n`;
         }
     }
@@ -416,7 +468,7 @@ function printPorts(metadata) {
     beginClass(device.$.name);
     placeAliases();
     placePorts(root.modules[0].module);
-    placeTimers(root.modules[0].module);
+    placeTimers(root, root.modules[0].module);
     placeUSARTs(root);
     placeADCs(root);
     placePins(root.modules[0].module);
@@ -425,6 +477,7 @@ function printPorts(metadata) {
     endClassNamespace();
 
     beginMetaNamespace();
+    placeTimersMetadata();
     placeUSARTSsMetadata();
     placeADCsMetadata();
     endMetaNamespace();

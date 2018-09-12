@@ -10,7 +10,7 @@ using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using tools = zoal::utils::tool_set<mcu, counter>;
 using delay = tools::delay;
 
-int main() {
+int main__() {
     using namespace zoal::gpio;
     asm volatile("nop"            "\n");
     asm volatile("nop"            "\n");
@@ -42,10 +42,10 @@ int main() {
     return 0;
 }
 
-//int main__() {
-//    using namespace zoal::gpio;
-//
-//    SysTick_Config(SystemCoreClock / 1000);
+int main() {
+    using namespace zoal::gpio;
+
+    SysTick_Config(SystemCoreClock / 1000);
 //    asm volatile("nop"            "\n");
 //    asm volatile("nop"            "\n");
 //    asm volatile("nop"            "\n");
@@ -66,17 +66,23 @@ int main() {
 //    asm volatile("nop"            "\n");
 //    asm volatile("nop"            "\n");
 //
-//    while (true) {
-//        mcu::pc13::low();
-//        ::delay::ms(100);
-//
-//        mcu::pc13::high();
-//        ::delay::ms(100);
-//    }
-//
-//    return 0;
-//}
+    asm volatile("nop"            "\n");
+    asm volatile("nop"            "\n");
+    mcu::pc13::mode<zoal::gpio::pin_mode::output>();
+    asm volatile("nop"            "\n");
+    asm volatile("nop"            "\n");
 
-//extern "C" void SysTick_Handler(void) {
-//    milliseconds_counter++;
-//}
+    while (true) {
+        mcu::pc13::low();
+        ::delay::ms(100);
+
+        mcu::pc13::high();
+        ::delay::ms(100);
+    }
+
+    return 0;
+}
+
+extern "C" void SysTick_Handler(void) {
+    milliseconds_counter++;
+}

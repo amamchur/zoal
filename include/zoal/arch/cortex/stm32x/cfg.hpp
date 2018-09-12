@@ -9,7 +9,7 @@ namespace zoal { namespace metadata {
     template<uint8_t No>
     struct stm32_default_usart_freq;
 
-    template<zoal::periph::usart_data_bits Bits>
+    template<uint8_t Bits>
     struct stm32_data_bits_to_cr1;
 
     template<zoal::periph::usart_parity Parity>
@@ -26,7 +26,7 @@ namespace zoal { namespace arch { namespace stm32x {
         template<
                 class U,
                 uint32_t BaudRate,
-                zoal::periph::usart_data_bits Bits = zoal::periph::usart_data_bits::data_bits_8,
+                uint8_t Bits = 8,
                 zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
                 zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1,
                 uint32_t Freq = zoal::metadata::stm32_default_usart_freq<U::no>::value

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "../../../gpio/pin.hpp"
 #include "../../../utils/helpers.hpp"
+#include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace metadata {
     template<uint8_t Usart, uint32_t Port, uint8_t PinOffset>
@@ -34,16 +35,30 @@ namespace zoal { namespace arch { namespace stm32x {
                 Api::template power_on<PinTX, PinRX, PinCK>::apply();
 
                 if (is_pin<PinTX>::value) {
-                    PinTX::port::template stm32_alternate_function<PinTX::offset, tx_af::tx>();
+                    stm32_alternate_function<typename PinTX::port, PinTX::offset, tx_af::tx>();
                 }
 
                 if (is_pin<PinRX>::value) {
-                    PinTX::port::template stm32_alternate_function<PinRX::offset, rx_af::rx>();
+                    stm32_alternate_function<typename PinTX::port,PinRX::offset, rx_af::rx>();
                 }
 
                 if (is_pin<PinCK>::value) {
-                    PinTX::port::template stm32_alternate_function<PinCK::offset, ck_af::ck>();
+                    stm32_alternate_function<typename PinTX::port,PinCK::offset, ck_af::ck>();
                 }
+            }
+
+        private:
+            template<class Port, uint8_t Pin, uint8_t af>
+            static inline void stm32_alternate_function() {
+                using namespace zoal::utils;
+
+                zoal::utils::memory_segment<uint32_t, Port::address> mem;
+                mem[Port::GPIOx_OSPEEDR] |= (0x3 << (Pin * 2)); // 50MHz
+                mem[Port::GPIOx_OTYPER] &= ~(0x1 << Pin); // Output push-pull
+                clear_and_set<0x3, 0x2, Pin * 2>::apply(mem[Port::GPIOx_MODER]);
+
+                constexpr auto index = Pin < 8 ? Port::GPIOx_AFRL : Port::GPIOx_AFRH;
+                clear_and_set<0xF, af, (Pin & 0x7) << 2>::apply(mem[index]);
             }
         };
     };

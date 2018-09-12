@@ -4,7 +4,7 @@
 #include <stdint.h> /* NOLINT */
 #include "../../../data/ring_buffer.hpp"
 #include "../../../utils/interrupts.hpp"
-#include "zoal/utils/cooperation.hpp"
+#include "../utils/cooperation.hpp"
 #include "../../../utils/nop.hpp"
 #include "../../../utils/memory_segment.hpp"
 #include "../../../periph/i2c_config.hpp"

@@ -12,7 +12,6 @@
 #include <zoal/arch/cortex/stm32f3/adc.hpp>
 #include <zoal/arch/cortex/stm32x/bus_clock_control.hpp>
 #include <zoal/arch/cortex/semihosting_transport.hpp>
-#include <zoal/mcu/atmega_640_1280_2560.hpp>
 #include <zoal/mcu/stm32f1xx.hpp>
 #include <zoal/data/rx_tx_buffer.hpp>
 

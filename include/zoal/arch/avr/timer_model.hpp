@@ -9,11 +9,11 @@
 
 namespace zoal { namespace arch { namespace avr {
     template<mcu_type Type>
-    class timer8_model {
+    class timer8_mem_model {
     };
 
     template<>
-    class timer8_model<mcu_type::attiny13> {
+    class timer8_mem_model<mcu_type::attiny13> {
     public:
         using word = uint8_t;
 
@@ -25,7 +25,7 @@ namespace zoal { namespace arch { namespace avr {
     };
 
     template<>
-    class timer8_model<mcu_type::attiny2313> {
+    class timer8_mem_model<mcu_type::attiny2313> {
     public:
         using word = uint8_t;
 

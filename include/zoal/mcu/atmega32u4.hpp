@@ -8,6 +8,7 @@
 #include <zoal/arch/avr/adc.hpp>
 #include <zoal/arch/avr/atmega/cfg.hpp>
 #include <zoal/arch/avr/atmega/irq.hpp>
+#include <zoal/arch/avr/atmega/metadata.hpp>
 #include <zoal/arch/avr/atmega/mux.hpp>
 #include <zoal/arch/avr/atmega/usart.hpp>
 #include <zoal/arch/avr/port.hpp>
@@ -17,7 +18,6 @@
 #include <zoal/gpio/pin.hpp>
 #include <zoal/gpio/port_link.hpp>
 #include <zoal/mcu/base_mcu.hpp>
-#include <zoal/mcu/metadata/atmega.hpp>
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
@@ -87,16 +87,34 @@ namespace zoal { namespace metadata {
     using zoal::utils::integral_constant;
 
     template<>
-    struct usart_mapping<0x00c8, 0x0000, 0> : public base_usart_mapping<0, 0, 0> {};
+    struct pin_to_pwm_channel<0x0044, 0x0029, 0, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x0029, 3> : public base_usart_mapping<-1, 0, -1> {};
+    struct pin_to_pwm_channel<0x0044, 0x0023, 7, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x0029, 2> : public base_usart_mapping<0, -1, -1> {};
+    struct pin_to_pwm_channel<0x0080, 0x0023, 5, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x0029, 5> : public base_usart_mapping<-1, -1, 0> {};
+    struct pin_to_pwm_channel<0x0080, 0x0023, 6, 1> : integral_constant<bool, true> {};
+
+    template<>
+    struct pin_to_pwm_channel<0x0090, 0x0023, 5, 0> : integral_constant<bool, true> {};
+
+    template<>
+    struct pin_to_pwm_channel<0x0090, 0x0023, 6, 1> : integral_constant<bool, true> {};
+
+    template<>
+    struct usart_mapping<0x00c8, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
+
+    template<>
+    struct usart_mapping<0x00c8, 0x0029, 3> : base_usart_mapping<-1, 0, -1> {};
+
+    template<>
+    struct usart_mapping<0x00c8, 0x0029, 2> : base_usart_mapping<0, -1, -1> {};
+
+    template<>
+    struct usart_mapping<0x00c8, 0x0029, 5> : base_usart_mapping<-1, -1, 0> {};
 
     template<>
     struct pin_to_adc_channel<0x0078, 0x002f, 0> : integral_constant<int, 0> {};

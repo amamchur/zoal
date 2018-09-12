@@ -1,17 +1,18 @@
-#ifndef ZOAL_ARCH_STM32F3_USART_HPP
-#define ZOAL_ARCH_STM32F3_USART_HPP
+#ifndef ZOAL_ARCH_STM32X_USART_HPP
+#define ZOAL_ARCH_STM32X_USART_HPP
 
-#include <stdint.h>
 #include "../../../data/ring_buffer.hpp"
 #include "../../../io/stream_functor.hpp"
-#include "../../../utils/memory_segment.hpp"
+#include "../../../utils/cooperation.hpp"
 #include "../../../utils/interrupts.hpp"
+#include "../../../utils/memory_segment.hpp"
 #include "../../../utils/nop.hpp"
-#include "zoal/utils/cooperation.hpp"
 
-namespace zoal { namespace arch { namespace stm32f3 {
-    template<uintptr_t Address, uint8_t N, class Buffer, class ... Mixin>
-    class usart : public Mixin ... {
+#include <stdint.h>
+
+namespace zoal { namespace arch { namespace stm32x {
+    template<uintptr_t Address, uint8_t N, class Buffer, class... Mixin>
+    class usart : public Mixin... {
     public:
         using buffer_type = Buffer;
 
@@ -59,8 +60,7 @@ namespace zoal { namespace arch { namespace stm32f3 {
             }
         }
 
-        static inline void flush() {
-        }
+        static inline void flush() {}
 
         static void handleIrq() {
             if ((mem[USARTx_ISR] & USARTx_ISR_bit_TXE) != 0) {
@@ -76,10 +76,10 @@ namespace zoal { namespace arch { namespace stm32f3 {
         static zoal::utils::memory_segment<uint32_t, Address> mem;
     };
 
-    template<uintptr_t Address, uint8_t N, class Buffer, class ... Mixin>
+    template<uintptr_t Address, uint8_t N, class Buffer, class... Mixin>
     zoal::utils::memory_segment<uint32_t, Address> usart<Address, N, Buffer, Mixin...>::mem;
 
-    template<uintptr_t Address, uint8_t N, class Buffer, class ... Mixin>
+    template<uintptr_t Address, uint8_t N, class Buffer, class... Mixin>
     typename usart<Address, N, Buffer, Mixin...>::buffer_type usart<Address, N, Buffer, Mixin...>::buffer;
 }}}
 

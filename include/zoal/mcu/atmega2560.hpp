@@ -8,6 +8,7 @@
 #include <zoal/arch/avr/adc.hpp>
 #include <zoal/arch/avr/atmega/cfg.hpp>
 #include <zoal/arch/avr/atmega/irq.hpp>
+#include <zoal/arch/avr/atmega/metadata.hpp>
 #include <zoal/arch/avr/atmega/mux.hpp>
 #include <zoal/arch/avr/atmega/usart.hpp>
 #include <zoal/arch/avr/port.hpp>
@@ -17,7 +18,6 @@
 #include <zoal/gpio/pin.hpp>
 #include <zoal/gpio/port_link.hpp>
 #include <zoal/mcu/base_mcu.hpp>
-#include <zoal/mcu/metadata/atmega.hpp>
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
@@ -171,52 +171,88 @@ namespace zoal { namespace metadata {
     using zoal::utils::integral_constant;
 
     template<>
-    struct usart_mapping<0x00c0, 0x0000, 0> : public base_usart_mapping<0, 0, 0> {};
+    struct pin_to_pwm_channel<0x0044, 0x0032, 5, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c0, 0x002c, 1> : public base_usart_mapping<-1, 0, -1> {};
+    struct pin_to_pwm_channel<0x0044, 0x0023, 7, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c0, 0x002c, 0> : public base_usart_mapping<0, -1, -1> {};
+    struct pin_to_pwm_channel<0x0080, 0x0109, 3, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c0, 0x002c, 2> : public base_usart_mapping<-1, -1, 0> {};
+    struct pin_to_pwm_channel<0x0080, 0x0109, 4, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x0000, 0> : public base_usart_mapping<0, 0, 0> {};
+    struct pin_to_pwm_channel<0x00b0, 0x0023, 4, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x002c, 1> : public base_usart_mapping<-1, 0, -1> {};
+    struct pin_to_pwm_channel<0x00b0, 0x0100, 6, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x002c, 0> : public base_usart_mapping<0, -1, -1> {};
+    struct pin_to_pwm_channel<0x0090, 0x0109, 3, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00c8, 0x002c, 2> : public base_usart_mapping<-1, -1, 0> {};
+    struct pin_to_pwm_channel<0x0090, 0x0109, 4, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00d0, 0x0000, 0> : public base_usart_mapping<0, 0, 0> {};
+    struct pin_to_pwm_channel<0x00a0, 0x0109, 3, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00d0, 0x002c, 1> : public base_usart_mapping<-1, 0, -1> {};
+    struct pin_to_pwm_channel<0x00a0, 0x0109, 4, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00d0, 0x002c, 0> : public base_usart_mapping<0, -1, -1> {};
+    struct pin_to_pwm_channel<0x0120, 0x0109, 3, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00d0, 0x002c, 2> : public base_usart_mapping<-1, -1, 0> {};
+    struct pin_to_pwm_channel<0x0120, 0x0109, 4, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x0130, 0x0000, 0> : public base_usart_mapping<0, 0, 0> {};
+    struct usart_mapping<0x00c0, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
 
     template<>
-    struct usart_mapping<0x0130, 0x002c, 1> : public base_usart_mapping<-1, 0, -1> {};
+    struct usart_mapping<0x00c0, 0x002c, 1> : base_usart_mapping<-1, 0, -1> {};
 
     template<>
-    struct usart_mapping<0x0130, 0x002c, 0> : public base_usart_mapping<0, -1, -1> {};
+    struct usart_mapping<0x00c0, 0x002c, 0> : base_usart_mapping<0, -1, -1> {};
 
     template<>
-    struct usart_mapping<0x0130, 0x002c, 2> : public base_usart_mapping<-1, -1, 0> {};
+    struct usart_mapping<0x00c0, 0x002c, 2> : base_usart_mapping<-1, -1, 0> {};
+
+    template<>
+    struct usart_mapping<0x00c8, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
+
+    template<>
+    struct usart_mapping<0x00c8, 0x002c, 1> : base_usart_mapping<-1, 0, -1> {};
+
+    template<>
+    struct usart_mapping<0x00c8, 0x002c, 0> : base_usart_mapping<0, -1, -1> {};
+
+    template<>
+    struct usart_mapping<0x00c8, 0x002c, 2> : base_usart_mapping<-1, -1, 0> {};
+
+    template<>
+    struct usart_mapping<0x00d0, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
+
+    template<>
+    struct usart_mapping<0x00d0, 0x002c, 1> : base_usart_mapping<-1, 0, -1> {};
+
+    template<>
+    struct usart_mapping<0x00d0, 0x002c, 0> : base_usart_mapping<0, -1, -1> {};
+
+    template<>
+    struct usart_mapping<0x00d0, 0x002c, 2> : base_usart_mapping<-1, -1, 0> {};
+
+    template<>
+    struct usart_mapping<0x0130, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
+
+    template<>
+    struct usart_mapping<0x0130, 0x002c, 1> : base_usart_mapping<-1, 0, -1> {};
+
+    template<>
+    struct usart_mapping<0x0130, 0x002c, 0> : base_usart_mapping<0, -1, -1> {};
+
+    template<>
+    struct usart_mapping<0x0130, 0x002c, 2> : base_usart_mapping<-1, -1, 0> {};
 
     template<>
     struct pin_to_adc_channel<0x0078, 0x002f, 0> : integral_constant<int, 0> {};

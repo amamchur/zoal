@@ -17,30 +17,39 @@ namespace zoal { namespace utils {
         }
     };
 
-    struct false_type : integral_constant<bool, false> {};
+    struct false_type : integral_constant<bool, false> {
+    };
 
-    struct true_type : integral_constant<bool, true> {};
+    struct true_type : integral_constant<bool, true> {
+    };
 
     template<class T, class U>
-    struct is_same : false_type {};
+    struct is_same : false_type {
+    };
 
     template<class T>
-    struct is_same<T, T> : true_type {};
+    struct is_same<T, T> : true_type {
+    };
 
     template<class T>
-    struct is_pin : integral_constant<bool, T::port::address != 0 && T::offset != 0> {};
+    struct is_pin : integral_constant<bool, T::port::address != 0 && T::offset != 0> {
+    };
 
     template<class Pin, class Port>
-    struct belongs_to_port : is_same<typename Pin::port, Port> {};
+    struct belongs_to_port : is_same<typename Pin::port, Port> {
+    };
 
     template<typename T, typename... Rest>
-    struct has_duplicates : false_type {};
+    struct has_duplicates : false_type {
+    };
 
     template<typename T, typename First>
-    struct has_duplicates<T, First> : is_same<T, First> {};
+    struct has_duplicates<T, First> : is_same<T, First> {
+    };
 
     template<typename T, typename First, typename... Rest>
-    struct has_duplicates<T, First, Rest...> : integral_constant<bool, is_same<T, First>::value || has_duplicates<T, Rest...>::value> {};
+    struct has_duplicates<T, First, Rest...> : integral_constant<bool, is_same<T, First>::value || has_duplicates<T, Rest...>::value> {
+    };
 
     template<class T, class U>
     struct optional_type {
@@ -52,46 +61,46 @@ namespace zoal { namespace utils {
         using type = U;
     };
 
-    template <class First, class ...Rest>
+    template<class First, class ...Rest>
     struct type_list {
         static constexpr size_t count = sizeof...(Rest) + 1;
         using type = First;
         using next = type_list<Rest...>;
     };
 
-    template <class First>
+    template<class First>
     struct type_list<First> {
         static constexpr size_t count = 1;
         using type = First;
         using next = void;
     };
 
-    template <class T, T First, T ...Rest>
+    template<class T, T First, T ...Rest>
     struct value_list {
         static constexpr size_t count = sizeof...(Rest) + 1;
         static constexpr T value = First;
         using next = value_list<T, Rest...>;
     };
 
-    template <class T, T First>
+    template<class T, T First>
     struct value_list<T, First> {
         static constexpr size_t count = 1;
         static constexpr T value = First;
         using next = void;
     };
 
-    template <class List, size_t Index = 0>
+    template<class List, size_t Index = 0>
     struct list_iterator {
-        template <class F>
+        template<class F>
         static void for_each(F fn) {
             fn(Index, List::value);
             list_iterator<typename List::next, Index + 1>::for_each(fn);
         }
     };
 
-    template <size_t Index>
+    template<size_t Index>
     struct list_iterator<void, Index> {
-        template <class F>
+        template<class F>
         static void for_each(F fn) {
         }
     };
@@ -122,6 +131,25 @@ namespace zoal { namespace utils {
             *begin = obj(*begin);
         }
     }
+
+    template<uintptr_t Set, uint8_t Shift = 0>
+    struct write_only_mask {
+        static constexpr uint32_t mask = static_cast<uint32_t>(Set << Shift);
+
+        template<class T>
+        static inline void apply(T &value) {
+            value = Set < Shift;
+        }
+    };
+
+    template<uint8_t Shift>
+    struct write_only_mask<0, Shift> {
+        static constexpr uint32_t mask = 0;
+
+        template<class T>
+        static inline void apply(T &value) {
+        }
+    };
 
     template<uintptr_t Clear, uintptr_t Set, uint8_t Shift = 0>
     struct clear_and_set {
@@ -176,8 +204,14 @@ namespace zoal { namespace utils {
         }
     };
 
+    template<class A, class B, class ...Rest>
+    struct merge_clear_and_set : clear_and_set<
+            A::clear_mask | merge_clear_and_set<B, Rest...>::clear_mask,
+            A::set_mask | merge_clear_and_set<B, Rest...>::set_mask> {
+    };
+
     template<class A, class B>
-    struct merge_clear_and_set : clear_and_set<A::clear_mask | B::clear_mask, A::set_mask | B::set_mask>{
+    struct merge_clear_and_set<A, B> : clear_and_set<A::clear_mask | B::clear_mask, A::set_mask | B::set_mask> {
     };
 }}
 

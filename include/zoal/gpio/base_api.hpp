@@ -19,21 +19,21 @@ namespace zoal { namespace gpio {
     struct low_functor {
         template<class Port, uintptr_t Mask>
         static void apply() {
-            Port::low(static_cast<typename Port::register_type>(Mask));
+            Port::template low<static_cast<typename Port::register_type>(Mask)>();
         }
     };
 
     struct high_functor {
         template<class Port, uintptr_t Mask>
         static void apply() {
-            Port::high(static_cast<typename Port::register_type>(Mask));
+            Port::template high<static_cast<typename Port::register_type>(Mask)>();
         }
     };
 
     struct toggle_functor {
         template<class Port, uintptr_t Mask>
         static void apply() {
-            Port::toggle(static_cast<typename Port::register_type>(Mask));
+            Port::template toggle<static_cast<typename Port::register_type>(Mask)>();
         }
     };
 
@@ -115,6 +115,8 @@ namespace zoal { namespace gpio {
 
         static constexpr auto mask = filter::mask;
 
+        chain_action() = delete;
+
         static void apply() {
             functor_invoker<port, functor, next, mask>::invoke();
         }
@@ -126,6 +128,8 @@ namespace zoal { namespace gpio {
         using functor = Functor;
         using next = void;
         static constexpr auto mask = 0;
+
+        chain_action() = delete;
 
         static void apply() {
         }
@@ -148,6 +152,8 @@ namespace zoal { namespace gpio {
         using next = merge_actions<typename A::next, typename B::next>;
         static constexpr auto mask = A::mask | B::mask;
 
+        merge_actions() = delete;
+
         static void apply() {
             functor_invoker<port, functor, next, mask>::invoke();
         }
@@ -161,6 +167,8 @@ namespace zoal { namespace gpio {
 
         static constexpr auto mask = 0;
 
+        merge_actions() = delete;
+
         static void apply() {
         }
     };
@@ -173,6 +181,8 @@ namespace zoal { namespace gpio {
 
         static constexpr auto mask = 0;
 
+        merge_actions() = delete;
+
         static void apply() {
         }
     };
@@ -184,6 +194,8 @@ namespace zoal { namespace gpio {
         using functor = void;
 
         static constexpr auto mask = 0;
+
+        merge_actions() = delete;
 
         static void apply() {
         }
