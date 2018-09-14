@@ -24,10 +24,11 @@
 volatile uint32_t milliseconds = 0;
 
 using mcu = zoal::pcb::mcu;
-using ms_timer = typename mcu::timer_00;
+using timer = typename mcu::timer_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using irq_handler = typename counter::handler<mcu::frequency, 64, ms_timer>;
+using irq_handler = typename counter::handler<mcu::frequency, 64, timer>;
 using usart = mcu::usart_00<zoal::data::rx_tx_buffer<8, 8>>;
+using adc = mcu::adc_00;
 using logger = zoal::utils::terminal_logger<usart, zoal::utils::log_level::info>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
@@ -55,17 +56,15 @@ ISR(USART0_UDRE_vect) {
 }
 
 int main() {
-    check::check();
+    mcu::power<usart, timer, adc>::on();
 
-    usart::power_on();
     mcu::mux::usart<usart, mcu::pe_00, mcu::pe_01, mcu::pe_02>::on();
     mcu::cfg::usart<usart, 115200>::apply();
-    usart::enable();
+    mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
+    mcu::irq::timer<timer>::enable_overflow_interrupt();
 
-    ms_timer::power_on();
-    mcu::cfg::timer<ms_timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
-    ms_timer::enable();
-    mcu::irq::timer<ms_timer>::enable_overflow_interrupt();
+    mcu::enable<usart, timer, adc>::on();
+
     zoal::utils::interrupts::on();
 
     logger::info() << "Started ATmega2560";

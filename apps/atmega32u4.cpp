@@ -17,10 +17,10 @@ volatile uint32_t milliseconds = 0;
 
 using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using ms_timer = zoal::pcb::mcu::timer_00;
-using irq_handler = counter::handler<zoal::pcb::mcu::frequency, 64, ms_timer>;
+using timer = zoal::pcb::mcu::timer_00;
+using irq_handler = counter::handler<zoal::pcb::mcu::frequency, 64, timer>;
 using usart = mcu::usart_01<zoal::data::rx_tx_buffer<8, 8>>;
-
+using adc = mcu::adc_00;
 using logger = zoal::utils::plain_logger<usart, zoal::utils::log_level::trace>;
 using tools = zoal::utils::tool_set<zoal::pcb::mcu, counter, logger>;
 using delay = tools::delay;
@@ -29,31 +29,34 @@ using App = uno_lcd_shield<tools, zoal::pcb, mcu::adc_00>;
 using Keypad = App::shield::keypad;
 
 App app;
-uint16_t ButtonValues[App::shield::button_count] __attribute__((section(".eeprom"))) = {637, 411, 258, 101, 0};
+uint16_t lcd_buttons_balue[App::shield::button_count] __attribute__((section(".eeprom"))) = {637, 411, 258, 101, 0};
 
-void initializeHardware() {
-    usart::power_on();
+void initialize_hardware() {
+    mcu::power<usart, timer, adc>::on();
+
     mcu::mux::usart<usart, zoal::pcb::ard_d00, zoal::pcb::ard_d01, mcu::pd_05>::on();
     mcu::cfg::usart<usart, 115200>::apply();
-    usart::enable();
 
-    ms_timer::power_on();
-    mcu::cfg::timer<ms_timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
-    ms_timer::enable();
-    mcu::irq::timer<ms_timer>::enable_overflow_interrupt();
+    mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
+    mcu::irq::timer<timer>::enable_overflow_interrupt();
+
+    mcu::cfg::adc<adc>::apply();
+
+    mcu::enable<usart, timer, adc>::on();
+
     zoal::utils::interrupts::on();
 }
 
 int main() {
-    initializeHardware();
+    initialize_hardware();
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
     logger::clear();
     logger::info() << "----- Started -----";
 
-    eeprom_read_block(Keypad::values, ButtonValues, sizeof(Keypad::values));
+    eeprom_read_block(Keypad::values, lcd_buttons_balue, sizeof(Keypad::values));
     app.init();
-    eeprom_write_block(Keypad::values, ButtonValues, sizeof(Keypad::values));
+    eeprom_write_block(Keypad::values, lcd_buttons_balue, sizeof(Keypad::values));
 
     while (true) {
         app.run_once();

@@ -65,19 +65,20 @@ class Avr {
         return null;
     }
 
-    collectRegisters(module) {
+    collectRegisters(module, ignoreRegex) {
         let group = module['register-group'][0];
-        let map = {};
-
         let registers = group.register;
         let array = [];
         for (let j = 0; j < registers.length; j++) {
             let r = registers[j].$;
+            if (ignoreRegex && r.name.match(ignoreRegex)) {
+                continue;
+            }
+
             array.push({
                 avrName: r.name,
-                // zoalName: r.name.replace(/^(\w+)[A-L]$/, '$1x'),
-                address: parseInt(r.offset, 16)
-                // node : registers[j]
+                address: parseInt(r.offset, 16),
+                node: registers[j]
             });
         }
 
@@ -149,11 +150,10 @@ class Avr {
 
             let regex = new RegExp(t.$.name);
             let periph = Avr.getByInstanceName(root.devices[0].device[0].peripherals[0].module, regex)[0];
-            let array = periph.instance[0].signals[0].signal;
+            let signalNodes = (periph.instance[0].signals || [{}])[0].signal || [];
             let signals = [];
-
-            for (let j = 0; j < array.length; j++) {
-                let s = array[j];
+            for (let j = 0; j < signalNodes.length; j++) {
+                let s = signalNodes[j];
                 let g = s.$.group;
                 let pad = s.$.pad.toLowerCase();
                 let port = pad.replace(/p(\w)\d/, '$1');
@@ -210,11 +210,14 @@ class Avr {
             let address = Avr.registerOffset(u.register, /UCSR\dA/);
             let n = name.replace(/USART(\d+)/, '$1');
             let periph = Avr.getByName(root.devices[0].device[0].peripherals[0].module, /^USART/)[0];
-            let signals = periph.instance[0].signals[0].signal;
+            let signalNodes = (periph.instance[0].signals || [{}])[0].signal;
+            if (!signalNodes) {
+                continue;
+            }
 
             let array = [];
-            for (let j = 0; j < signals.length; j++) {
-                let signal = signals[j];
+            for (let j = 0; j < signalNodes.length; j++) {
+                let signal = signalNodes[j];
                 let pad = signal.$.pad.toLowerCase();
                 let port = pad.replace(/p(\w)\d/, '$1');
                 let offset = pad.replace(/p\w(\d)/, '$1');
@@ -242,14 +245,23 @@ class Avr {
 
     collectADCs(root) {
         let module = Avr.getByName(root.modules[0].module, /^ADC/)[0];
+        if (!module) {
+            this.mcu.adcs = [];
+            return;
+        }
+
         let periph = Avr.getByName(root.devices[0].device[0].peripherals[0].module, /^ADC/)[0];
-        let signals = periph.instance[0].signals[0].signal;
+        let signalNodes = (periph.instance[0].signals || [{}])[0].signal;
+        if (!signalNodes) {
+            return;
+        }
+
         let adc = module['register-group'][0];
         let address = Avr.registerOffset(adc.register, /^ADC$/);
 
         let array = [];
-        for (let i = 0; i < signals.length; i++) {
-            let signal = signals[i];
+        for (let i = 0; i < signalNodes.length; i++) {
+            let signal = signalNodes[i];
             let pad = signal.$.pad.toLowerCase();
             let port = pad.replace(/p(\w)\d/, '$1');
             let offset = pad.replace(/p\w(\d)/, '$1');
@@ -265,7 +277,8 @@ class Avr {
             name: 'adc_00',
             sn: '0',
             address: address,
-            signals: array
+            signals: array,
+            module: module
         }];
     }
 
@@ -284,6 +297,41 @@ class Avr {
         this.collectTimers(root, modules);
         this.collectUSARTs(root);
         this.collectADCs(root);
+    }
+
+    buildMemoryModel(name, regs, word) {
+        let result = [
+            `class ${name} {`,
+            `public:`,
+            `   using word = ${word};`,
+            ``
+        ];
+
+        let address = 0xFFFF;
+        let flags = [``];
+        for (let i = 0; i < regs.array.length; i++) {
+            let r = regs.array[i];
+            let offsetHex = Avr.toHex(r.offset, 2);
+            let name = r.avrName.replace(/\d/, 'x');
+            if (name.indexOf('x') === -1) {
+                name += 'x';
+            }
+            address = Math.min(r.address, address);
+            result.push(`static constexpr ptrdiff_t ${name} = ${offsetHex};`);
+
+            let bitFields = r.node.bitfield || [];
+            for (let j = 0; j < bitFields.length; j++) {
+                let bf = bitFields[j];
+                let bn = bf.$.name.replace(/\d/, 'x');
+                flags.push(`static constexpr uint8_t ${name}_${bn}=${bf.$.mask};`);
+            }
+        }
+
+        result = result.concat(flags);
+        result.push(`};`);
+        result.push(``);
+
+        return result;
     }
 
     buildPortList() {
@@ -326,6 +374,42 @@ class Avr {
             result.push(``);
         }
 
+        return result;
+    }
+
+    buildTimersMetadata() {
+        let result = [];
+        for (let i = 0; i < this.mcu.timers.length; i++) {
+            let t = this.mcu.timers[i];
+            for (let j = 0; j < t.signals.length; j++) {
+                let s = t.signals[j];
+                let timerHex = Avr.toHex(t.address, 4);
+                let portHex = Avr.toHex(s.port.address, 4);
+                result.push(``);
+                result.push(`template<>`);
+                result.push(`struct pin_to_pwm_channel<${timerHex}, ${portHex}, ${s.offset}, ${s.channel}> : integral_constant<bool, true> {};`);
+            }
+        }
+        return result;
+    }
+
+    buildADCsMetadata() {
+        let result = [];
+        let adc = this.mcu.adcs[0];
+        if (!adc) {
+            return [];
+        }
+
+        let signals = adc.signals;
+        for (let i = 0; i < signals.length; i++) {
+            let s = signals[i];
+            let adcHex = Avr.toHex(adc.address, 4);
+            let portHex = Avr.toHex(s.port.address, 4);
+
+            result.push(``);
+            result.push(`template<>`);
+            result.push(`struct pin_to_adc_channel<${adcHex}, ${portHex}, ${s.offset}> : integral_constant<int, ${s.channel}> {};`);
+        }
         return result;
     }
 

@@ -41,7 +41,7 @@ namespace zoal { namespace arch { namespace avr {
         }
 
         template<uint8_t Channel>
-        static word output_compare_value() {
+        static word compare_value() {
             static_assert(Channel < channels_count, "Channel index is out of range");
 
             zoal::utils::memory_segment<word, Address> memWord;
@@ -55,6 +55,23 @@ namespace zoal { namespace arch { namespace avr {
             }
 
             return 0;
+        }
+
+        template<uint8_t Channel>
+        static void compare_value(word value) {
+            static_assert(Channel < channels_count, "Channel index is out of range");
+
+            zoal::utils::memory_segment<word, Address> memWord;
+            switch (Channel) {
+            case 0:
+                memWord[self_type::OCRxA] = value;
+                break;
+            case 1:
+                memWord[self_type::OCRxB] = value;
+                break;
+            default:
+                break;
+            }
         }
     };
 }}}

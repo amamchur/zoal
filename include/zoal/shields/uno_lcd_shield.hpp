@@ -31,10 +31,10 @@ namespace zoal { namespace shields {
         >;
 
         template<class T, class U>
-        using Optional = zoal::utils::optional_type<T, U>;
+        using opt = zoal::utils::optional_type<T, U>;
 
-        using calibration_pin_a = typename Optional<typename Cfg::calibration_pin_a, typename Board::ard_d02>::type;
-        using calibration_pin_b = typename Optional<typename Cfg::calibration_pin_b, typename Board::ard_d03>::type;
+        using calibration_pin_a = typename opt<typename Cfg::calibration_pin_a, typename Board::ard_d02>::type;
+        using calibration_pin_b = typename opt<typename Cfg::calibration_pin_b, typename Board::ard_d03>::type;
         using logger = typename Tools::logger;
 
         using analog_pin = typename Board::ard_a00;

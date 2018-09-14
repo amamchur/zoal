@@ -3,23 +3,25 @@
 #ifndef ZOAL_MCU_SMT32F3XX_HPP
 #define ZOAL_MCU_SMT32F3XX_HPP
 
-#include "base_mcu.hpp"
-#include "metadata/stm32f303xDxE.hpp"
-#include "../gpio/pin.hpp"
-#include "../gpio/base_api.hpp"
-#include "../gpio/port_link.hpp"
-#include "../periph/pwm_connection.hpp"
-#include "../arch/cortex/stm32x/port.hpp"
-#include "../arch/cortex/stm32x/usart.hpp"
-#include "../arch/cortex/stm32f3/spi.hpp"
+#include "../arch/cortex/nested_vectored_interrupt_controller.hpp"
 #include "../arch/cortex/stm32f3/adc.hpp"
 #include "../arch/cortex/stm32f3/adc_common_regs.hpp"
 #include "../arch/cortex/stm32f3/general_purpose_timer.hpp"
-#include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
+#include "../arch/cortex/stm32f3/spi.hpp"
 #include "../arch/cortex/stm32x/bus_clock_control.hpp"
 #include "../arch/cortex/stm32x/cfg.hpp"
 #include "../arch/cortex/stm32x/mux.hpp"
-#include "../arch/cortex/nested_vectored_interrupt_controller.hpp"
+#include "../arch/cortex/stm32x/port.hpp"
+#include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
+#include "../arch/cortex/stm32x/usart.hpp"
+#include "../arch/enable.hpp"
+#include "../arch/power.hpp"
+#include "../gpio/base_api.hpp"
+#include "../gpio/pin.hpp"
+#include "../gpio/port_link.hpp"
+#include "../periph/pwm_connection.hpp"
+#include "base_mcu.hpp"
+#include "metadata/stm32f303xDxE.hpp"
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
@@ -47,21 +49,12 @@ namespace zoal { namespace mcu {
         using port_e = port<0x48001000, clock_ahb<0x000200000>>;
         using port_f = port<0x48001400, clock_ahb<0x000400000>>;
 
-        using timer2 = zoal::arch::stm32f3::general_purpose_timer<
-                0x40000000,
-                2,
-                clock_apb1<0x000000001>>;
-        using timer3 = zoal::arch::stm32f3::general_purpose_timer<
-                0x40000400,
-                3,
-                clock_apb1<0x000000002>>;
-        using timer4 = zoal::arch::stm32f3::general_purpose_timer<
-                0x40000800,
-                4,
-                clock_apb1<0x000000004>>;
+        using timer2 = zoal::arch::stm32f3::general_purpose_timer<0x40000000, 2, clock_apb1<0x000000001>>;
+        using timer3 = zoal::arch::stm32f3::general_purpose_timer<0x40000400, 3, clock_apb1<0x000000002>>;
+        using timer4 = zoal::arch::stm32f3::general_purpose_timer<0x40000800, 4, clock_apb1<0x000000004>>;
 
-//        using timer6 = zoal::arch::stm32f3::general_purpose_timer<0x40001000, 5, clock_apb1<0x000000010>>;
-//        using timer7 = zoal::arch::stm32f3::general_purpose_timer<0x40002000, 7, clock_apb1<0x000000020>>;
+        //        using timer6 = zoal::arch::stm32f3::general_purpose_timer<0x40001000, 5, clock_apb1<0x000000010>>;
+        //        using timer7 = zoal::arch::stm32f3::general_purpose_timer<0x40002000, 7, clock_apb1<0x000000020>>;
 
         using adc_common12 = zoal::arch::stm32f3::adc_common_regs<0x50000300u>;
         using adc_common34 = zoal::arch::stm32f3::adc_common_regs<0x50000700u>;
@@ -71,10 +64,10 @@ namespace zoal { namespace mcu {
 
         using enable_adc12 = clock_ahb<0x10000000u>;
         using enable_adc34 = clock_ahb<0x20000000u>;
-//        using adc12_pll_div6 = options_cfgr2<0x00000130, ~0x000001F0u>;
-//        using adc34_pll_div6 = options_cfgr2<0x00002600, ~0x00003E00u>;
-//        using adc12_options = ::zoal::arch::stm32x::clock_control_set<enable_adc12, adc12_pll_div6>;
-//        using adc34_options = ::zoal::arch::stm32x::clock_control_set<enable_adc34, adc34_pll_div6>;
+        //        using adc12_pll_div6 = options_cfgr2<0x00000130, ~0x000001F0u>;
+        //        using adc34_pll_div6 = options_cfgr2<0x00002600, ~0x00003E00u>;
+        //        using adc12_options = ::zoal::arch::stm32x::clock_control_set<enable_adc12, adc12_pll_div6>;
+        //        using adc34_options = ::zoal::arch::stm32x::clock_control_set<enable_adc34, adc34_pll_div6>;
 
         using adc_01 = adc<0x50000000u, 1, adc_common12, enable_adc12>;
         using adc_02 = adc<0x50000100u, 2, adc_common12, enable_adc12>;
@@ -203,6 +196,12 @@ namespace zoal { namespace mcu {
         using api = ::zoal::gpio::base_api<port_chain>;
         using mux = ::zoal::arch::stm32x::mux<api>;
         using cfg = ::zoal::arch::stm32x::cfg<api>;
+
+        template<class... Module>
+        using power = ::zoal::arch::power<Module...>;
+
+        template<class... Module>
+        using enable = ::zoal::arch::enable<Module...>;
     };
 }}
 

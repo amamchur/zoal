@@ -1,28 +1,22 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_A2D_Converter_HPP
 #define ZOAL_ARCH_ATMEL_AVR_A2D_Converter_HPP
 
-#include <stdint.h> /* NOLINT */
-#include "mcu_type.hpp"
-#include "adc_mem_model.hpp"
 #include "../../utils/memory_segment.hpp"
 #include "../bus.hpp"
+#include "mcu_type.hpp"
+
+#include <stdint.h> /* NOLINT */
 
 namespace zoal { namespace arch { namespace avr {
-    template<mcu_type Type, uintptr_t Address, uint8_t N>
-    class adc {
+    template<uintptr_t Address, uint8_t N, class... Mixin>
+    class adc : public Mixin... {
     public:
-        using model = adc_mem_model<Type>;
+        using self_type = adc<Address, N, Mixin...>;
 
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
         static constexpr uint8_t resolution = 10;
-
-        static constexpr uintptr_t ADCLx = model::ADCLx;
-        static constexpr uintptr_t ADCHx = model::ADCHx;
-        static constexpr uintptr_t ADCSRAx = model::ADCSRAx;
-        static constexpr uintptr_t ADCSRBx = model::ADCSRBx;
-        static constexpr uintptr_t ADMUXx = model::ADMUXx;
 
         adc() = delete;
 
@@ -33,36 +27,33 @@ namespace zoal { namespace arch { namespace avr {
         static void power_off() {}
 
         static void enable() {
-            mem[model::ADCSRAx] |= static_cast<uint8_t >(1u << 7u);
+            mem[self_type::ADCSRAx] |= static_cast<uint8_t>(1u << 7u);
         }
 
         static void disable() {
-            mem[model::ADCSRAx] &= ~static_cast<uint8_t >(1u << 7u);
+            mem[self_type::ADCSRAx] &= ~static_cast<uint8_t>(1u << 7u);
         }
 
         static void enable_interrupt() {
-            mem[model::ADCSRAx] |= 0x08;
+            mem[self_type::ADCSRAx] |= 0x08;
         }
 
         static void disable_interrupt() {
-            mem[model::ADCSRAx] &= ~0x08;
+            mem[self_type::ADCSRAx] &= ~0x08;
         }
 
         static void start() {
-            mem[model::ADCSRAx] |= 1 << 6;
+            mem[self_type::ADCSRAx] |= 1 << 6;
         }
 
         static void wait() {
-            while (mem[model::ADCSRAx] & (1 << 6));
+            while (mem[self_type::ADCSRAx] & (1 << 6)) {
+            }
         }
 
         static uint16_t value() {
-            uint8_t low = mem[model::ADCLx];
-            uint8_t high = mem[model::ADCHx];
-            uint16_t result = high;
-            result <<= 8;
-            result |= low;
-            return result;
+            zoal::utils::memory_segment<uint16_t, Address> m;
+            return m[self_type::ADCx];
         }
 
         static uint16_t read() {
@@ -70,12 +61,13 @@ namespace zoal { namespace arch { namespace avr {
             wait();
             return value();
         }
+
     private:
         static zoal::utils::memory_segment<uint8_t, Address> mem;
     };
 
-    template<mcu_type Type, uintptr_t Address, uint8_t N>
-    zoal::utils::memory_segment<uint8_t, Address> adc<Type, Address, N>::mem;
+    template<uintptr_t Address, uint8_t N, class... Mixin>
+    zoal::utils::memory_segment<uint8_t, Address> adc<Address, N, Mixin...>::mem;
 }}}
 
 #endif

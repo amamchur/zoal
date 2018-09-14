@@ -3,18 +3,20 @@
 #ifndef ZOAL_MCU_SMT32F0XX_HPP
 #define ZOAL_MCU_SMT32F0XX_HPP
 
-#include "base_mcu.hpp"
-#include "../gpio/pin.hpp"
-#include "../gpio/base_api.hpp"
-#include "../gpio/port_link.hpp"
-#include "../arch/cortex/stm32f1/port.hpp"
-#include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
 #include "../arch/cortex/stm32f1/adc.hpp"
+#include "../arch/cortex/stm32f1/port.hpp"
 #include "../arch/cortex/stm32f1/usart.hpp"
 #include "../arch/cortex/stm32x/bus_clock_control.hpp"
 #include "../arch/cortex/stm32x/mux.hpp"
+#include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
+#include "../arch/enable.hpp"
+#include "../arch/power.hpp"
+#include "../gpio/base_api.hpp"
+#include "../gpio/pin.hpp"
+#include "../gpio/port_link.hpp"
 #include "../utils/ms_counter.hpp"
 #include "../utils/tool_set.hpp"
+#include "base_mcu.hpp"
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
@@ -27,6 +29,7 @@ namespace zoal { namespace mcu {
 
         template<uint32_t Set, uint32_t Clear = ~Set>
         using clock_apb2 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::bus::cortex_apb2, Set, Clear>;
+
     public:
         template<uintptr_t Address, class Clock>
         using port = typename ::zoal::arch::stm32f1::port<Address, Clock>;
@@ -168,17 +171,23 @@ namespace zoal { namespace mcu {
         using pg14 = pin<port_g, 0xE>;
         using pg15 = pin<port_g, 0xF>;
 
-//        template<uintptr_t TxSize, uintptr_t RxSize>
-//        using usart1 = typename ::zoal::arch::stm32f1::usart<0x40013800u, TxSize, RxSize, clock_apb2<0x04000>, irq_ctrl<1, 0x20>, pa09, pa10>;
-//
-//        template<uintptr_t TxSize, uintptr_t RxSize>
-//        using usart2 = typename ::zoal::arch::stm32f1::usart<0x40004400u, TxSize, RxSize, clock_apb1<0x20000>, irq_ctrl<1, 0x40>, pa02, pa03>;
-//
-//        template<uintptr_t TxSize, uintptr_t RxSize>
-//        using usart3 = typename ::zoal::arch::stm32f1::usart<0x40004800u, TxSize, RxSize, clock_apb1<0x40000>, irq_ctrl<1, 0x80>, pb10, pa11>;
+        //        template<uintptr_t TxSize, uintptr_t RxSize>
+        //        using usart1 = typename ::zoal::arch::stm32f1::usart<0x40013800u, TxSize, RxSize, clock_apb2<0x04000>, irq_ctrl<1, 0x20>, pa09, pa10>;
+        //
+        //        template<uintptr_t TxSize, uintptr_t RxSize>
+        //        using usart2 = typename ::zoal::arch::stm32f1::usart<0x40004400u, TxSize, RxSize, clock_apb1<0x20000>, irq_ctrl<1, 0x40>, pa02, pa03>;
+        //
+        //        template<uintptr_t TxSize, uintptr_t RxSize>
+        //        using usart3 = typename ::zoal::arch::stm32f1::usart<0x40004800u, TxSize, RxSize, clock_apb1<0x40000>, irq_ctrl<1, 0x80>, pb10, pa11>;
 
         using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f, port_g>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;
+
+        template<class... Module>
+        using power = ::zoal::arch::power<Module...>;
+
+        template<class... Module>
+        using enable = ::zoal::arch::enable<Module...>;
     };
 }}
 

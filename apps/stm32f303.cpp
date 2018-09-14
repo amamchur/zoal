@@ -57,10 +57,12 @@ void initTimer() {
 }
 
 void init_usart() {
-    usart::power_on();
+    mcu::power<usart>::on();
+
     mcu::mux::usart<usart, mcu::pa10, mcu::pa09, mcu::pa08>::on();
     mcu::cfg::usart<usart, 57600>::apply();
-    usart::enable();
+
+    mcu::enable<usart>::on();
 
     NVIC_EnableIRQ(USART1_IRQn);
 }

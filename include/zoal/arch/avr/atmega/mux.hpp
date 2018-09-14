@@ -65,7 +65,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(Channel < 2, "Channel index if out of range");
             static_assert(pwm_channel_mapping<T, Pin, Channel>::value, "Unsupported PWM connection");
 
-            static constexpr auto mask = static_cast<uint8_t>(Channel == 0 ? (1u << 7u): (1u << 5u));
+            static constexpr auto mask = static_cast<uint8_t>(Channel == 0 ? (1u << 7u) : (1u << 5u));
             using TCCRxA_cfg_on = clear_and_set<0, mask>;
             using TCCRxA_cfg_off = clear_and_set<mask, 0>;
 

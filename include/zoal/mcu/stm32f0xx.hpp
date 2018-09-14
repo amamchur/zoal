@@ -3,14 +3,16 @@
 #ifndef ZOAL_MCU_SMT32F0XX_HPP
 #define ZOAL_MCU_SMT32F0XX_HPP
 
-#include "base_mcu.hpp"
-#include "../gpio/pin.hpp"
-#include "../gpio/base_api.hpp"
-#include "../gpio/port_link.hpp"
 #include "../arch/bus.hpp"
+#include "../arch/cortex/stm32x/bus_clock_control.hpp"
 #include "../arch/cortex/stm32x/port.hpp"
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
-#include "../arch/cortex/stm32x/bus_clock_control.hpp"
+#include "../arch/enable.hpp"
+#include "../arch/power.hpp"
+#include "../gpio/base_api.hpp"
+#include "../gpio/pin.hpp"
+#include "../gpio/port_link.hpp"
+#include "base_mcu.hpp"
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
@@ -138,6 +140,12 @@ namespace zoal { namespace mcu {
 
         using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f>::chain;
         using api = ::zoal::gpio::base_api<port_chain>;
+
+        template<class... Module>
+        using power = ::zoal::arch::power<Module...>;
+
+        template<class... Module>
+        using enable = ::zoal::arch::enable<Module...>;
     };
 }}
 

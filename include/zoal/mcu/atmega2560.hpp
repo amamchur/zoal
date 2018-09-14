@@ -14,6 +14,8 @@
 #include <zoal/arch/avr/atmega/timer8.hpp>
 #include <zoal/arch/avr/atmega/usart.hpp>
 #include <zoal/arch/avr/port.hpp>
+#include <zoal/arch/enable.hpp>
+#include <zoal/arch/power.hpp>
 #include <zoal/gpio/base_api.hpp>
 #include <zoal/gpio/pin.hpp>
 #include <zoal/gpio/port_link.hpp>
@@ -164,6 +166,12 @@ namespace zoal { namespace mcu {
         using mux = ::zoal::arch::avr::atmega::mux<api>;
         using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;
         using irq = ::zoal::arch::avr::atmega::irq;
+
+        template<class... Module>
+        using power = ::zoal::arch::power<Module...>;
+
+        template<class... Module>
+        using enable = ::zoal::arch::enable<Module...>;
     };
 }}
 

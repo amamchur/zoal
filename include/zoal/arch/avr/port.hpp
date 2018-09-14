@@ -43,9 +43,9 @@ namespace zoal { namespace arch { namespace avr {
 
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr uint8_t pin_mask = PinMask;
-        static constexpr uintptr_t PINx = 0x00;
-        static constexpr uintptr_t DDRx = 0x01;
-        static constexpr uintptr_t PORTx = 0x02;
+        static constexpr intptr_t PINx = 0x00;
+        static constexpr intptr_t DDRx = 0x01;
+        static constexpr intptr_t PORTx = 0x02;
 
         port() = delete;
 

@@ -1,46 +1,67 @@
 #ifndef ZOAL_ARCH_AVR_ATTINY_IRQ_HPP
 #define ZOAL_ARCH_AVR_ATTINY_IRQ_HPP
 
-#include "timer_interrupt_flag_register.hpp"
-#include "timer_interrupt_mask_register.hpp"
+#include <stdint.h>
 
 namespace zoal { namespace arch { namespace avr { namespace attiny {
     class irq {
-    private:
-//        using tifrs = avr::timer_interrupt_flags_vector<0x35>;
-//        using timrs = avr::timer_interrupt_mask_vector<0x6E>;
     public:
         template<class T>
         class timer {
         public:
             static void enable_overflow_interrupt() {
-//                timrs::template enable_overflow_interrupt<T::no>();
+                memory_segment<uint8_t, T::address> mem;
+                mem[T::TIMSKx] |= T::TIMSKx_TOIEx;
+                mem.happyInspection();
             }
 
             static void disable_overflow_interrupt() {
-//                timrs::template disable_overflow_interrupt<T::no>();
+                memory_segment<uint8_t, T::address> mem;
+                mem[T::TIMSKx] &= ~T::TIMSKx_TOIEx;
+                mem.happyInspection();
             }
 
             static void clear_overflow_interrupt_flag() {
-//                tifrs::template clear_counter_flag<T::no>();
+                memory_segment<uint8_t, T::address> mem;
+                mem[T::TIFRx] &= ~T::TIFRx_TOVx;
+                mem.happyInspection();
             }
 
             template<uint8_t Channel>
             static void enable_compare_match_interrupt() {
-//                static_assert(channel < channels_count, "Channel index is out of range");
-//                timrs::template enable_compare_match_interrupt<T::no, Channel>();
+                memory_segment<uint8_t, T::address> mem;
+                mem[T::TIMSKx] |= (Channel == 0 ? T::TIMSKx_OCIExA : T::TIMSKx_OCIExB);
+                mem.happyInspection();
             }
 
             template<uint8_t Channel>
             static void disable_compare_match_interrupt() {
-//                static_assert(channel < channels_count, "Channel index is out of range");
-//                timrs::template disable_compare_match_interrupt<T::no, Channel>();
+                memory_segment<uint8_t, T::address> mem;
+                mem[T::TIMSKx] &= ~(Channel == 0 ? T::TIMSKx_OCIExA : T::TIMSKx_OCIExB);
+                mem.happyInspection();
             }
 
             template<uint8_t Channel>
             static void clear_channel_interrupt_flag() {
-//                static_assert(channel < channels_count, "Channel index is out of range");
-//                tifrs::template clear_channel_flag<T::no, Channel>();
+                memory_segment<uint8_t, T::address> mem;
+                mem[T::TIFRx] &= ~(Channel == 0 ? T::TIFRx_OCFxA : T::TIFRx_OCFxB);
+                mem.happyInspection();
+            }
+        };
+
+        template<class A>
+        class adc {
+        public:
+            static void enable() {
+                memory_segment<uint8_t, A::address> mem;
+                mem[A::ADCSRAx] |= 0x08;
+                mem.happyInspection();
+            }
+
+            static void disable() {
+                memory_segment<uint8_t, A::address> mem;
+                mem[A::ADCSRAx] |= 0x08;
+                mem.happyInspection();
             }
         };
     };

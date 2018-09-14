@@ -8,6 +8,11 @@ class ATmega extends Avr {
             let hex = ATmega.toHex(t.address, 4);
             let m = t.module;
 
+            // let regs = this.collectRegisters(m, /GTCCR|TIFR\d|TIMSK\d|ASSR/);
+            // let word = t.type === 'timer16' ? 'uint16_t' : 'uint8_t';
+            // let memModelName = `${t.name}_mem_model`;
+            // result = result.concat(this.buildMemoryModel(memModelName, regs, word));
+
             if (t.type === 'timer16') {
                 result.push(`using ${t.name} = ::zoal::arch::avr::atmega::timer16<${hex}, ${t.sn}>;`);
             } else {
@@ -35,22 +40,6 @@ class ATmega extends Avr {
         let adc = this.mcu.adcs[0];
         let hex = ATmega.toHex(adc.address, 4);
         result.push(`using adc_00 = ::zoal::arch::avr::atmega::adc<${hex}, 0>;`);
-        return result;
-    }
-
-    buildTimersMetadata() {
-        let result = [];
-        for (let i = 0; i < this.mcu.timers.length; i++) {
-            let t = this.mcu.timers[i];
-            for (let j = 0; j < t.signals.length; j++) {
-                let s = t.signals[j];
-                let timerHex = ATmega.toHex(t.address, 4);
-                let portHex = ATmega.toHex(s.port.address, 4);
-                result.push(``);
-                result.push(`template<>`);
-                result.push(`struct pin_to_pwm_channel<${timerHex}, ${portHex}, ${s.offset}, ${s.channel}> : integral_constant<bool, true> {};`);
-            }
-        }
         return result;
     }
 
@@ -84,22 +73,6 @@ class ATmega extends Avr {
         return result;
     }
 
-    buildADCsMetadata() {
-        let result = [];
-        let adc = this.mcu.adcs[0];
-        let signals = adc.signals;
-        for (let i = 0; i < signals.length; i++) {
-            let s = signals[i];
-            let adcHex = ATmega.toHex(adc.address, 4);
-            let portHex = ATmega.toHex(s.port.address, 4);
-
-            result.push(``);
-            result.push(`template<>`);
-            result.push(`struct pin_to_adc_channel<${adcHex}, ${portHex}, ${s.offset}> : integral_constant<int, ${s.channel}> {};`);
-        }
-        return result;
-    }
-
     buildClass() {
         let name = this.device.$.name;
         let nameUpper = name.toUpperCase();
@@ -122,6 +95,8 @@ class ATmega extends Avr {
             `#include <zoal/arch/avr/port.hpp>`,
             `#include <zoal/arch/avr/atmega/timer16.hpp>`,
             `#include <zoal/arch/avr/atmega/timer8.hpp>`,
+            `#include <zoal/arch/power.hpp>`,
+            `#include <zoal/arch/enable.hpp>`,
             `#include <zoal/gpio/base_api.hpp>`,
             `#include <zoal/gpio/pin.hpp>`,
             `#include <zoal/gpio/port_link.hpp>`,
@@ -149,6 +124,12 @@ class ATmega extends Avr {
             `    using mux = ::zoal::arch::avr::atmega::mux<api>;`,
             `    using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;`,
             `    using irq = ::zoal::arch::avr::atmega::irq;`,
+            ``,
+            `    template<class ... Module>`,
+            `    using power = ::zoal::arch::power<Module...>;`,
+            ``,
+            `    template<class ... Module>`,
+            `    using enable = ::zoal::arch::enable<Module...>;`,
             `    };`,
             `}}`,
             ``,

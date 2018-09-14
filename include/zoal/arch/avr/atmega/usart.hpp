@@ -43,13 +43,13 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr auto address = Address;
         static constexpr uint8_t no = N;
 
-        static constexpr uintptr_t UCSRxA = 0;
-        static constexpr uintptr_t UCSRxB = 1;
-        static constexpr uintptr_t UCSRxC = 2;
-        static constexpr uintptr_t UCSRxD = 3; // ATmega32U4 only
-        static constexpr uintptr_t UBRRxL = 4;
-        static constexpr uintptr_t UBRRxH = 5;
-        static constexpr uintptr_t UDRx = 6;
+        static constexpr intptr_t UCSRxA = 0;
+        static constexpr intptr_t UCSRxB = 1;
+        static constexpr intptr_t UCSRxC = 2;
+        static constexpr intptr_t UCSRxD = 3; // ATmega32U4 only
+        static constexpr intptr_t UBRRxL = 4;
+        static constexpr intptr_t UBRRxH = 5;
+        static constexpr intptr_t UDRx = 6;
 
         static buffer_type buffer;
 
