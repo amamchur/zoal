@@ -1,10 +1,11 @@
-#ifndef ZOAL_MCU_METADATA_HPP
-#define ZOAL_MCU_METADATA_HPP
+#ifndef ZOAL_ARCH_AVR_ATMEGA_METADATA_HPP
+#define ZOAL_ARCH_AVR_ATMEGA_METADATA_HPP
 
 #include "../../../periph/adc_config.hpp"
 #include "../../../periph/timer_mode.hpp"
 #include "../../../periph/usart_config.hpp"
 #include "../../../utils/helpers.hpp"
+#include "../metadata.hpp"
 
 namespace zoal { namespace metadata {
     template<uint8_t Bits>
@@ -55,17 +56,6 @@ namespace zoal { namespace metadata {
         static constexpr uint8_t flags = 1 << 3;
     };
 
-    template<int Rx, int Tx, int Ck>
-    struct base_usart_mapping {
-        static constexpr int rx = Rx;
-        static constexpr int tx = Tx;
-        static constexpr int ck = Ck;
-    };
-
-    template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
-    struct usart_mapping : public base_usart_mapping<-1, -1, -1> {
-    };
-
     enum : uint8_t
     {
         WGMx0 = 0,
@@ -75,9 +65,6 @@ namespace zoal { namespace metadata {
         mode_clear_TCCRxA = 1u << WGMx0 | 1u << WGMx1,
         mode_clear_TCCRxB = 1u << WGMx2 | 1u << WGMx3
     };
-
-    template<::zoal::periph::timer_mode Mode>
-    struct timer_mode {};
 
     template<>
     struct timer_mode<::zoal::periph::timer_mode::up> {
@@ -89,11 +76,6 @@ namespace zoal { namespace metadata {
     struct timer_mode<::zoal::periph::timer_mode::up_down> {
         using TCCRxA = zoal::utils::clear_and_set<mode_clear_TCCRxA, 1u << WGMx0>;
         using TCCRxB = zoal::utils::clear_and_set<mode_clear_TCCRxB, 0x0>;
-    };
-
-    template<bool async, uintptr_t ClockDivider>
-    struct timer_clock_divider {
-        static_assert(ClockDivider <= 0, "Unsupported clock divider");
     };
 
     template<uintptr_t Set>
@@ -145,9 +127,6 @@ namespace zoal { namespace metadata {
 
     struct timer_clock_dividers : zoal::utils::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024> {};
 
-    template<zoal::periph::adc_ref Ref>
-    struct adc_ref {};
-
     template<>
     struct adc_ref<zoal::periph::adc_ref::internal> {
         using ADMUXx = zoal::utils::clear_and_set<0xC0, 0xC0>;
@@ -194,23 +173,6 @@ namespace zoal { namespace metadata {
     template<>
     struct adc_clock_divider<128> {
         using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x07>;
-    };
-
-    template<uintptr_t AdcAddress, uintptr_t PortAddress, uint8_t PinOffset>
-    struct pin_to_adc_channel {
-        static constexpr int channel = -1;
-    };
-
-    template<class Adc, class Pin>
-    struct adc_mapping : pin_to_adc_channel<Adc::address, Pin::port::address, Pin::offset> {
-    };
-
-    template<uintptr_t TimerAddress, uintptr_t PortAddress, uint8_t PinOffset, uint8_t Channel>
-    struct pin_to_pwm_channel : zoal::utils::integral_constant<bool, false> {
-    };
-
-    template<class Timer, class Pin, uint8_t Channel>
-    struct pwm_channel_mapping : pin_to_pwm_channel<Timer::address, Pin::port::address, Pin::offset, Channel> {
     };
 }}
 

@@ -34,23 +34,8 @@ class ATmega extends Avr {
         let result = [];
         let adc = this.mcu.adcs[0];
         let hex = ATmega.toHex(adc.address, 4);
-        result.push(`using adc_00 = ::zoal::arch::avr::adc<::zoal::arch::avr::mcu_type::atmega, ${hex}, 0>;`);
+        result.push(`using adc_00 = ::zoal::arch::avr::atmega::adc<${hex}, 0>;`);
         return result;
-    }
-
-    buildPortChain() {
-        let portsNames = [];
-        for (let i = 0; i < this.mcu.ports.length; i++) {
-            let port = this.mcu.ports[i];
-            portsNames.push(port.name);
-        }
-
-        return [
-            '',
-            'using port_chain = typename ::zoal::gpio::chain_builder<',
-            portsNames.join(',\n'),
-            '>::chain;'
-        ];
     }
 
     buildTimersMetadata() {
@@ -128,15 +113,15 @@ class ATmega extends Avr {
             `#define ZOAL_MCU_${nameUpper}_HPP`,
             ``,
             `#include <stdint.h>`,
-            `#include <zoal/arch/avr/adc.hpp>`,
+            `#include <zoal/arch/avr/atmega/adc.hpp>`,
             `#include <zoal/arch/avr/atmega/cfg.hpp>`,
             `#include <zoal/arch/avr/atmega/irq.hpp>`,
             `#include <zoal/arch/avr/atmega/metadata.hpp>`,
             `#include <zoal/arch/avr/atmega/mux.hpp>`,
             `#include <zoal/arch/avr/atmega/usart.hpp>`,
             `#include <zoal/arch/avr/port.hpp>`,
-            `#include <zoal/arch/avr/timer16.hpp>`,
-            `#include <zoal/arch/avr/timer8.hpp>`,
+            `#include <zoal/arch/avr/atmega/timer16.hpp>`,
+            `#include <zoal/arch/avr/atmega/timer8.hpp>`,
             `#include <zoal/gpio/base_api.hpp>`,
             `#include <zoal/gpio/pin.hpp>`,
             `#include <zoal/gpio/port_link.hpp>`,

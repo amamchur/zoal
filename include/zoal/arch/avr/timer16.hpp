@@ -5,17 +5,20 @@
 #include "timer.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<class Model, uintptr_t Address, uint8_t N>
-    class timer16 : public timer<Model, Address, N> {
+    template<uintptr_t Address, uint8_t N, class ...Mixin>
+    class timer16 : public timer<Address, N, Mixin...> {
     public:
         static constexpr bool async = false;
 
+        using self_type = timer<Address, N, Mixin...>;
+        using word = typename self_type::word;
+
         timer16() = delete;
 
-        static typename Model::word top_value() {
+        static word period() {
             zoal::utils::memory_segment<uint8_t, Address> m8;
-            auto wgm1 = m8[Model::TCCRxA] & 0x03;
-            auto wgm2 = m8[Model::TCCRxB] & 0x18;
+            auto wgm1 = m8[self_type::TCCRxA] & 0x03;
+            auto wgm2 = m8[self_type::TCCRxB] & 0x18;
             auto wgm = wgm2 >> 1 | wgm1;
 
             switch (wgm) {
@@ -34,25 +37,5 @@ namespace zoal { namespace arch { namespace avr {
         }
     };
 }}}
-
-namespace zoal { namespace arch { namespace avr { namespace atmega {
-    class timer16_model {
-    public:
-        using word = uint16_t;
-
-        static constexpr uintptr_t TCCRxA = 0;
-        static constexpr uintptr_t TCCRxB = 1;
-        static constexpr uintptr_t TCCRxC = 2;
-
-        static constexpr uintptr_t TCNTx = 4;
-        static constexpr uintptr_t ICRx = 6;
-        static constexpr uintptr_t OCRxA = 8;
-        static constexpr uintptr_t OCRxB = 10;
-    };
-
-    template<uintptr_t Address, uint8_t N>
-    using timer16 = ::zoal::arch::avr::timer16<timer16_model, Address, N>;
-
-}}}}
 
 #endif

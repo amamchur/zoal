@@ -7,24 +7,17 @@
 #include "../bus.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<class TimerModel, uintptr_t Address, uint8_t N>
-    class timer {
+    template<uintptr_t Address, uint8_t N, class ...Mixin>
+    class timer : public Mixin ... {
     public:
-        using self_type = timer<TimerModel, Address, N>;
-        using model = TimerModel;
-        using word = typename model::word;
+        using self_type = timer<Address, N, Mixin...>;
+        using word = typename self_type::word;
 
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
         static constexpr uint8_t channels_count = 2;
-        static constexpr uint8_t resolution = sizeof(word) * 8;
-
-        static constexpr uintptr_t TCCRxA = model::TCCRxA;
-        static constexpr uintptr_t TCCRxB = model::TCCRxB;
-        static constexpr uintptr_t TCNTx = model::TCNTx;
-        static constexpr uintptr_t OCRxA = model::OCRxA;
-        static constexpr uintptr_t OCRxB = model::OCRxB;
+        static constexpr uint8_t resolution = sizeof(self_type::word) * 8;
 
         timer() = delete;
 
@@ -38,13 +31,13 @@ namespace zoal { namespace arch { namespace avr {
 
         static void counter(word value) {
             zoal::utils::memory_segment<word, Address> memWord;
-            memWord[TCNTx] = value;
+            memWord[self_type::TCNTx] = value;
             memWord.happyInspection();
         }
 
         static word counter() {
             zoal::utils::memory_segment<word, Address> memWord;
-            return memWord[TCNTx];
+            return memWord[self_type::TCNTx];
         }
 
         template<uint8_t Channel>
@@ -54,9 +47,9 @@ namespace zoal { namespace arch { namespace avr {
             zoal::utils::memory_segment<word, Address> memWord;
             switch (Channel) {
             case 0:
-                return memWord[OCRxA];
+                return memWord[self_type::OCRxA];
             case 1:
-                return memWord[OCRxB];
+                return memWord[self_type::OCRxB];
             default:
                 break;
             }
@@ -65,5 +58,10 @@ namespace zoal { namespace arch { namespace avr {
         }
     };
 }}}
+
+namespace zoal { namespace metadata {
+    template<::zoal::periph::timer_mode Mode>
+    struct timer_mode;
+}}
 
 #endif

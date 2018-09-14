@@ -1,5 +1,5 @@
-#ifndef ZOAL_ARCH_AVR_CFG_HPP
-#define ZOAL_ARCH_AVR_CFG_HPP
+#ifndef ZOAL_ARCH_AVR_ATMEGA_CFG_HPP
+#define ZOAL_ARCH_AVR_ATMEGA_CFG_HPP
 
 #include "../../../periph/adc_config.hpp"
 #include "../../../periph/timer_mode.hpp"

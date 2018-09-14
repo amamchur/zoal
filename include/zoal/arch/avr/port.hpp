@@ -87,7 +87,7 @@ namespace zoal { namespace arch { namespace avr {
                     | cfg::PORTx::set_mask;
             static_assert(changes != 0, "Unsupported pin mode");
             cfg::DDRx::apply(mem[DDRx]);
-            cfg::PORTx::apply(mem[DDRx]);
+            cfg::PORTx::apply(mem[PORTx]);
         }
 
     private:

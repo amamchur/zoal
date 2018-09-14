@@ -1,15 +1,16 @@
 #include <avr/interrupt.h>
-
 #include <zoal/board/attiny13.hpp>
+#include <zoal/data/segment7.hpp>
 #include <zoal/gpio/software_spi.hpp>
-#include <zoal/utils/tool_set.hpp>
+#include <zoal/ic/max72xx.hpp>
+#include <zoal/utils/helpers.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/prescalers.hpp>
-#include <zoal/utils/helpers.hpp>
-#include <zoal/data/segment7.hpp>
-#include <zoal/ic/max72xx.hpp>
+#include <zoal/utils/tool_set.hpp>
+#include <zoal/mcu/attiny13a.hpp>
 
-enum : uint8_t {
+enum : uint8_t
+{
     update_adc = 0x01,
     update_ms = 0x02
 };
@@ -29,15 +30,7 @@ using sspi = zoal::gpio::tx_software_spi<mcu::pb3, mcu::pb2>;
 using max7219 = zoal::ic::max72xx<sspi, mcu::pb1>;
 
 int main() {
-    asm volatile("nop"            "\n");
-    asm volatile("nop"            "\n");
-    asm volatile("nop"            "\n");
-    mcu::api::high<mcu::pb0, mcu::pb1, mcu::pb2, mcu::pb3, mcu::pb4, mcu::pb5>::apply();
-    asm volatile("nop"            "\n");
-    mcu::api::low<mcu::pb0, mcu::pb1, mcu::pb2, mcu::pb3, mcu::pb4, mcu::pb5>::apply();
-    asm volatile("nop"            "\n");
-    mcu::api::toggle<mcu::pb0, mcu::pb1, mcu::pb2, mcu::pb3, mcu::pb4, mcu::pb5>::apply();
-    asm volatile("nop"            "\n");
+
 //
 //    ms_timer::mode<zoal::periph::timer_mode::fast_pwm_8bit>();
 //    ms_timer::select_clock_source<prescaler>();

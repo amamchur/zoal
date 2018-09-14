@@ -65,9 +65,42 @@ class Avr {
         return null;
     }
 
+    collectRegisters(module) {
+        let group = module['register-group'][0];
+        let map = {};
+
+        let registers = group.register;
+        let array = [];
+        for (let j = 0; j < registers.length; j++) {
+            let r = registers[j].$;
+            array.push({
+                avrName: r.name,
+                // zoalName: r.name.replace(/^(\w+)[A-L]$/, '$1x'),
+                address: parseInt(r.offset, 16)
+                // node : registers[j]
+            });
+        }
+
+        array.sort((a, b) => {
+            return a.address - b.address;
+        });
+
+        array[0].offset = 0;
+        for (let j = 1; j < array.length; j++) {
+            let r = array[j];
+            r.offset = r.address - array[0].address;
+        }
+
+        return {
+            name: group.$.name,
+            array: array
+        };
+    }
+
     collectPorts(modules) {
         let portModule = Avr.getModule(modules, /PORT/);
         let ports = portModule['register-group'];
+
         this.mcu.ports = [];
         this.mcu.portsMap = {};
         for (let i = 0; i < ports.length; i++) {
@@ -82,7 +115,8 @@ class Avr {
                 name: name,
                 address: address,
                 sn: shortName,
-                pinMask: mask
+                pinMask: mask,
+                node: port
             };
 
             this.mcu.ports.push(obj);
@@ -97,13 +131,13 @@ class Avr {
         this.mcu.timers = [];
         this.mcu.timersMap = {};
         for (let i = 0; i < timers_group.length; i++) {
-            let m = timers_group[i];
-            let g = m['register-group'];
-            for (let j = 0; j < g.length; j++) {
-                let t = g[j];
-                moduleMap[t.$.name] = m;
+            let module = timers_group[i];
+            let timer = module['register-group'];
+            for (let j = 0; j < timer.length; j++) {
+                let t = timer[j];
+                moduleMap[t.$.name] = module;
             }
-            timers = timers.concat(g);
+            timers = timers.concat(timer);
         }
 
         for (let i = 0; i < timers.length; i++) {
@@ -239,6 +273,12 @@ class Avr {
         let root = metadata['avr-tools-device-file'];
         let modules = root.modules[0].module;
 
+        this.mcu.modules = {};
+        for (let i = 0; i < modules.length; i++) {
+            let res = this.collectRegisters(modules[i]);
+            this.mcu.modules[res.name] = res;
+        }
+
         this.device = root.devices[0].device[0];
         this.collectPorts(modules);
         this.collectTimers(root, modules);
@@ -289,16 +329,41 @@ class Avr {
         return result;
     }
 
-    generate(outFile) {
-        const parser = new xml2js.Parser();
+    buildPortChain() {
+        let portsNames = [];
+        for (let i = 0; i < this.mcu.ports.length; i++) {
+            let port = this.mcu.ports[i];
+            portsNames.push(port.name);
+        }
 
-        fs.readFile(this.file, (err, data) => {
-            parser.parseString(data, (err, result) => {
-                this.collectData(result);
-                this.buildClass();
-                this.writeFile(outFile)
+        return [
+            '',
+            'using port_chain = typename ::zoal::gpio::chain_builder<',
+            portsNames.join(',\n'),
+            '>::chain;'
+        ];
+    }
+
+    generate() {
+        return new Promise((resolve, reject) => {
+            fs.readFile(this.file, (err, data) => {
+                if (err) {
+                    reject(err);
+                }
+
+                const parser = new xml2js.Parser();
+                parser.parseString(data, (err, result) => {
+                    try {
+                        this.collectData(result);
+                        this.buildClass();
+
+                        resolve();
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
             });
-        });
+        })
     }
 
     buildClass() {

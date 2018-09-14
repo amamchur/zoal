@@ -5,15 +5,15 @@
 #define ZOAL_MCU_ATMEGA2560_HPP
 
 #include <stdint.h>
-#include <zoal/arch/avr/adc.hpp>
+#include <zoal/arch/avr/atmega/adc.hpp>
 #include <zoal/arch/avr/atmega/cfg.hpp>
 #include <zoal/arch/avr/atmega/irq.hpp>
 #include <zoal/arch/avr/atmega/metadata.hpp>
 #include <zoal/arch/avr/atmega/mux.hpp>
+#include <zoal/arch/avr/atmega/timer16.hpp>
+#include <zoal/arch/avr/atmega/timer8.hpp>
 #include <zoal/arch/avr/atmega/usart.hpp>
 #include <zoal/arch/avr/port.hpp>
-#include <zoal/arch/avr/timer16.hpp>
-#include <zoal/arch/avr/timer8.hpp>
 #include <zoal/gpio/base_api.hpp>
 #include <zoal/gpio/pin.hpp>
 #include <zoal/gpio/port_link.hpp>
@@ -57,7 +57,7 @@ namespace zoal { namespace mcu {
         template<class Buffer>
         using usart_03 = typename ::zoal::arch::avr::usart<0x0130, 3, Buffer>;
 
-        using adc_00 = ::zoal::arch::avr::adc<::zoal::arch::avr::mcu_type::atmega, 0x0078, 0>;
+        using adc_00 = ::zoal::arch::avr::atmega::adc<0x0078, 0>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;

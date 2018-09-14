@@ -36,10 +36,10 @@ namespace zoal { namespace mcu {
         using timer16_model = zoal::arch::avr::timer16_model<Timer16Type>;
 
         template<uintptr_t Address, uint8_t N>
-        using timer8 = typename zoal::arch::avr::timer8<timer8_model, Address, N>;
+        using timer8 = typename zoal::arch::avr::timer8<Address, N, false, timer8_model>;
 
         template<uintptr_t Address, uint8_t N>
-        using timer16 = typename zoal::arch::avr::timer16<timer16_model, Address, N>;
+        using timer16 = typename zoal::arch::avr::timer16<Address, N, timer16_model>;
 
         using timer0 = timer8<0x50, 0>;
         using timer1 = timer16<0x44, 1>;

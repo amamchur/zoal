@@ -2,6 +2,7 @@
   <dictionary name="Andrii">
     <words>
       <w>atmega</w>
+      <w>attiny</w>
       <w>gpio</w>
       <w>prescale</w>
       <w>usart</w>
