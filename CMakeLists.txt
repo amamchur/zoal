@@ -31,6 +31,9 @@ target_compile_definitions(ATmega2560.elf PRIVATE F_CPU=16000000UL)
 add_mcu_executable(ATtiny13 attiny13 ${ZOAL_FILES} ${APPS_SRCS} apps/attiny13.cpp)
 target_compile_definitions(ATtiny13.elf PRIVATE F_CPU=9600000UL)
 
+add_mcu_executable(ATtiny85 attiny85 ${ZOAL_FILES} ${APPS_SRCS} apps/attiny85.cpp)
+target_compile_definitions(ATtiny85.elf PRIVATE F_CPU=9600000UL)
+
 add_mcu_executable(ATtiny2313 attiny2313 ${ZOAL_FILES} ${APPS_SRCS} apps/attiny2313.cpp)
 target_compile_definitions(ATtiny2313.elf PRIVATE F_CPU=16000000UL)
 

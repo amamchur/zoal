@@ -65,9 +65,14 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(Channel < 2, "Channel index if out of range");
             static_assert(pwm_channel_mapping<T, Pin, Channel>::value, "Unsupported PWM connection");
 
-            static constexpr auto mask = static_cast<uint8_t>(Channel == 0 ? (1u << 7u) : (1u << 5u));
-            using TCCRxA_cfg_on = clear_and_set<0, mask>;
-            using TCCRxA_cfg_off = clear_and_set<mask, 0>;
+            static constexpr auto pwm_mode = 1;
+            static constexpr auto mask_shift = Channel == 0 ? 7 : 5;
+            static constexpr auto clear_mask = Channel == 0 ? T::TCCRxA_COMxA : T::TCCRxA_COMxB;
+            static constexpr auto set_mask = static_cast<uint8_t>(pwm_mode << mask_shift);
+            static_assert((set_mask & clear_mask) == set_mask, "Ops, wrong metadata");
+
+            using TCCRxA_cfg_on = clear_and_set<clear_mask, set_mask>;
+            using TCCRxA_cfg_off = clear_and_set<clear_mask, 0>;
 
             static void on() {
                 memory_segment<uint8_t, T::address> mem;

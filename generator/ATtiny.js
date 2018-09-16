@@ -33,6 +33,7 @@ class ATtiny extends Avr {
         adc.address = address;
         let hex = Avr.toHex(address, 4);
         result.push(`using adc_00 = ::zoal::arch::avr::adc<${hex}, 0, ${adcName}_mem_model>;`);
+        result.push(``);
         return result;
     }
 
@@ -57,6 +58,8 @@ class ATtiny extends Avr {
                 let async = m.$.name.match(/ASYNC/i) != null;
                 result.push(`using ${t.name} = ::zoal::arch::avr::timer8<${hex}, ${t.sn}, ${async}, ${t.name}_mem_model>;`);
             }
+
+            result.push(``);
         }
         return result;
     }

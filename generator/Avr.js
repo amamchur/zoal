@@ -158,6 +158,7 @@ class Avr {
                 let pad = s.$.pad.toLowerCase();
                 let port = pad.replace(/p(\w)\d/, '$1');
                 let offset = pad.replace(/p\w(\d)/, '$1');
+                g = g.replace(/\d/, '');
                 if (g === 'OCA' || g === 'OCB') {
                     signals.push({
                         channel: g === 'OCA' ? 0 : 1,
@@ -265,6 +266,10 @@ class Avr {
             let pad = signal.$.pad.toLowerCase();
             let port = pad.replace(/p(\w)\d/, '$1');
             let offset = pad.replace(/p\w(\d)/, '$1');
+            if (signal.$.group !== 'ADC') {
+                continue;
+            }
+
             array.push({
                 channel: signal.$.index - 0,
                 pad: pad,

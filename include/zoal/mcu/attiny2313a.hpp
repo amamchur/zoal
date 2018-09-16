@@ -59,6 +59,7 @@ namespace zoal { namespace mcu {
         };
 
         using timer_00 = ::zoal::arch::avr::timer8<0x0050, 0, false, timer_00_mem_model>;
+
         class timer_01_mem_model {
         public:
             using word = uint16_t;
@@ -134,6 +135,18 @@ namespace zoal { namespace mcu {
 
 namespace zoal { namespace metadata {
     using zoal::utils::integral_constant;
+
+    template<>
+    struct pin_to_pwm_channel<0x0050, 0x0030, 5, 1> : integral_constant<bool, true> {};
+
+    template<>
+    struct pin_to_pwm_channel<0x0050, 0x0036, 2, 0> : integral_constant<bool, true> {};
+
+    template<>
+    struct pin_to_pwm_channel<0x0042, 0x0036, 4, 1> : integral_constant<bool, true> {};
+
+    template<>
+    struct pin_to_pwm_channel<0x0042, 0x0036, 3, 0> : integral_constant<bool, true> {};
 
 }}
 
