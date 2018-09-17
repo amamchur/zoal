@@ -52,7 +52,7 @@ namespace zoal { namespace arch { namespace avr {
         static void power_on() {}
 
         static void power_off() {
-            mode<::zoal::gpio::pin_mode::input_floating>(PinMask);
+            mode<::zoal::gpio::pin_mode::input_floating, PinMask>();
         }
 
         static register_type read() {

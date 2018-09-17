@@ -123,6 +123,15 @@ namespace zoal { namespace utils {
         }
     };
 
+    template<class Prefixer, class Suffixer>
+    class log_stream<void, Prefixer, Suffixer, false> {
+    public:
+        template<class T>
+        log_stream &operator<<(T) {
+            return *this;
+        }
+    };
+
     template<
             class Transport,
             log_level MinLevel = log_level::info,

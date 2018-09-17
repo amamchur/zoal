@@ -90,7 +90,7 @@ namespace zoal { namespace ic {
             auto cfg = static_cast<uint8_t>(Interface::BitMode == 8 ? 0x10 : 0);
             cfg |= on ? 0x04 : 0x00;
 
-            Interface::send(base_type::CmdFunctionSet | cfg, 0);
+            Interface::send(base_type::cmd_function_set | cfg, 0);
             delay::microseconds(37);
         }
 

@@ -18,7 +18,6 @@
 #include <zoal/shields/uno_lcd_shield.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
-#include <zoal/utils/prescalers.hpp>
 #include <zoal/utils/tool_set.hpp>
 
 volatile uint16_t milliseconds = 0;

@@ -5,7 +5,6 @@
 #include <zoal/mcu/attiny85.hpp>
 #include <zoal/utils/helpers.hpp>
 #include <zoal/utils/ms_counter.hpp>
-#include <zoal/utils/prescalers.hpp>
 #include <zoal/utils/tool_set.hpp>
 
 enum : uint8_t

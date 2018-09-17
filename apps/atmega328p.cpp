@@ -43,6 +43,7 @@ using app6 = ir_remove<zoal::pcb::ard_d10, tools, 25>;
 using app7 = tm1637<tools, zoal::pcb::ard_d10, zoal::pcb::ard_d11>;
 using check = compile_check<app0, app1, app2, app3, app6, app7>;
 
+using keypad = typename app3::shield::keypad;
 using lcd = typename app3::shield::lcd;
 
 app3 app;
@@ -66,9 +67,9 @@ void initialize_hardware() {
 }
 
 void initialize_application() {
-//    eeprom_read_block(Keypad::values, lcd_buttons_values, sizeof(Keypad::values));
+    eeprom_read_block(keypad::values, lcd_buttons_values, sizeof(keypad::values));
     app.init();
-//    eeprom_write_block(Keypad::values, lcd_buttons_values, sizeof(Keypad::values));
+    eeprom_write_block(keypad::values, lcd_buttons_values, sizeof(keypad::values));
 }
 
 int main() {

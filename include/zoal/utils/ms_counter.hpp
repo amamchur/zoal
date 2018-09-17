@@ -13,7 +13,7 @@ namespace zoal { namespace utils {
         using value_type = T;
         static constexpr volatile T *value_ptr = Pointer;
 
-        template<uint32_t Frequency, uint16_t prescale, class Timer>
+        template<uint32_t Frequency, uint16_t Prescale, class Timer>
         class handler {
         private:
             static uint16_t fraction_;
@@ -25,7 +25,7 @@ namespace zoal { namespace utils {
                 return (clocks * 1000L) / (Frequency / 1000L);
             }
 
-            static constexpr uint32_t us_per_overflow = clock_cycles_to_us(prescale * timer_overflow_value);
+            static constexpr uint32_t us_per_overflow = clock_cycles_to_us(Prescale * timer_overflow_value);
             static constexpr uint16_t us_inc = static_cast<const uint16_t>(us_per_overflow / 1000);
             static constexpr uint16_t fraction_inc = static_cast<const uint16_t>(us_per_overflow % 1000);
 
