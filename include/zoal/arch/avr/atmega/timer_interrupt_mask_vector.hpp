@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_VECTOR_HPP
 #define ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_VECTOR_HPP
 
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 
 #include <stdint.h> /* NOLINT */
 
@@ -51,11 +51,11 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, Address> mem;
+        static zoal::mem::segment<uint8_t, Address> mem;
     };
 
     template<uintptr_t Address>
-    zoal::utils::memory_segment<uint8_t, Address> timer_interrupt_mask_vector<Address>::mem;
+    zoal::mem::segment<uint8_t, Address> timer_interrupt_mask_vector<Address>::mem;
 }}}
 
 #endif

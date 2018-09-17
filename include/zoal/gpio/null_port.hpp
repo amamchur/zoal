@@ -8,8 +8,6 @@ namespace zoal { namespace gpio {
     public:
         using register_type = uint8_t;
 
-        null_port() = delete;
-
         static constexpr uintptr_t address = 0;
 
         static void power_on() {}

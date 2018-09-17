@@ -5,7 +5,7 @@
 #include "../../../io/stream_functor.hpp"
 #include "../../../utils/cooperation.hpp"
 #include "../../../utils/interrupts.hpp"
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 #include "../../../utils/nop.hpp"
 
 #include <stdint.h>
@@ -73,11 +73,11 @@ namespace zoal { namespace arch { namespace stm32x {
         }
 
     private:
-        static zoal::utils::memory_segment<uint32_t, Address> mem;
+        static zoal::mem::segment<uint32_t, Address> mem;
     };
 
     template<uintptr_t Address, uint8_t N, class Buffer, class... Mixin>
-    zoal::utils::memory_segment<uint32_t, Address> usart<Address, N, Buffer, Mixin...>::mem;
+    zoal::mem::segment<uint32_t, Address> usart<Address, N, Buffer, Mixin...>::mem;
 
     template<uintptr_t Address, uint8_t N, class Buffer, class... Mixin>
     typename usart<Address, N, Buffer, Mixin...>::buffer_type usart<Address, N, Buffer, Mixin...>::buffer;

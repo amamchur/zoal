@@ -12,11 +12,11 @@ namespace zoal { namespace utils {
     template<class T, const volatile T *Pointer>
     class base_volatile_value_reader<T, Pointer, true> {
     public:
-        base_volatile_value_reader() : enableInterrupts(false) {
+        base_volatile_value_reader() : enable_interrupts(false) {
         }
 
     private:
-        zoal::utils::interrupts enableInterrupts;
+        zoal::utils::interrupts enable_interrupts;
     };
 
     template<class T, const volatile T *Pointer>
@@ -27,10 +27,10 @@ namespace zoal { namespace utils {
     class need_blocking {
     public:
 #ifdef __CORTEX_M
-        static constexpr bool alignment = 4;
+        static constexpr auto alignment = 4;
         static constexpr size_t atomic_read_size = 4;
 #else
-        static constexpr bool alignment = 1;
+        static constexpr auto alignment = 1;
         static constexpr size_t atomic_read_size = 1;
 #endif
         static constexpr bool aligned = ((size_t) Pointer % alignment) == 0;

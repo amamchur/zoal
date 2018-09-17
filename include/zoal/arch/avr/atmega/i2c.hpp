@@ -6,7 +6,7 @@
 #include "../../../utils/interrupts.hpp"
 #include "../utils/cooperation.hpp"
 #include "../../../utils/nop.hpp"
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 #include "../../../periph/i2c_config.hpp"
 
 namespace zoal { namespace arch { namespace avr {
@@ -250,7 +250,7 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, Address> mem;
+        static zoal::mem::segment<uint8_t, Address> mem;
     };
 
     template<uintptr_t Address, uint8_t BufferSize, class I2CSDA, class I2CSCL>

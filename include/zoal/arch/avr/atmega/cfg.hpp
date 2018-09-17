@@ -1,11 +1,12 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_CFG_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_CFG_HPP
 
+#include "../../../mem/clear_and_set.hpp"
+#include "../../../mem/segment.hpp"
 #include "../../../periph/adc_config.hpp"
 #include "../../../periph/timer_mode.hpp"
 #include "../../../periph/usart_config.hpp"
 #include "../../../utils/helpers.hpp"
-#include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace metadata {
     template<uint8_t Bits>
@@ -31,6 +32,9 @@ namespace zoal { namespace metadata {
 }}
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
+    using zoal::mem::clear_and_set;
+    using zoal::mem::merge_clear_and_set;
+    using zoal::mem::segment;
     using zoal::metadata::adc_clock_divider;
     using zoal::metadata::adc_ref;
     using zoal::metadata::timer_clock_divider;
@@ -40,9 +44,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::metadata::usart_stop_bit_flags;
     using zoal::periph::usart_parity;
     using zoal::periph::usart_stop_bits;
-    using zoal::utils::clear_and_set;
-    using zoal::utils::memory_segment;
-    using zoal::utils::merge_clear_and_set;
 
     template<uint8_t Bits, usart_parity Parity, usart_stop_bits StopBits>
     struct usart_mode {
@@ -76,7 +77,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static void apply() {
                 U::disable();
 
-                memory_segment<uint8_t, U::address> mem;
+                segment<uint8_t, U::address> mem;
                 mem[U::UBRRxL] = UBRRxL_value;
                 mem[U::UBRRxH] = UBRRxH_value;
                 mem[U::UCSRxA] = UCSRxA_value;
@@ -99,7 +100,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static void apply() {
                 T::disable();
 
-                memory_segment<uint8_t, T::address> mem;
+                segment<uint8_t, T::address> mem;
                 TCCRxA_cfg::apply(mem[T::TCCRxA]);
                 TCCRxB_cfg::apply(mem[T::TCCRxB]);
             }
@@ -114,7 +115,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static void apply() {
                 A::disable();
 
-                memory_segment<uint8_t, A::address> mem;
+                segment<uint8_t, A::address> mem;
                 ADMUXx_cfg::apply(mem[A::ADMUXx]);
                 ADCSRAx_cfg::apply(mem[A::ADCSRAx]);
             }

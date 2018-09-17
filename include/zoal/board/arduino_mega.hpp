@@ -85,9 +85,6 @@ namespace zoal {
         using ard_a13 = typename mcu::pk_05;
         using ard_a14 = typename mcu::pk_06;
         using ard_a15 = typename mcu::pk_07;
-
-        using port_chain = typename mcu::port_chain;
-        using api = ::zoal::gpio::base_api<port_chain>;
     };
 
 #if defined(F_CPU)

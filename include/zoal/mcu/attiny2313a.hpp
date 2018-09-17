@@ -15,9 +15,9 @@
 #include <zoal/arch/avr/timer8.hpp>
 #include <zoal/arch/enable.hpp>
 #include <zoal/arch/power.hpp>
-#include <zoal/gpio/base_api.hpp>
+#include <zoal/ct/type_list.hpp>
+#include <zoal/gpio/api.hpp>
 #include <zoal/gpio/pin.hpp>
-#include <zoal/gpio/port_link.hpp>
 #include <zoal/mcu/base_mcu.hpp>
 
 namespace zoal { namespace mcu {
@@ -119,8 +119,8 @@ namespace zoal { namespace mcu {
         using pa_01 = pin<port_a, 1>;
         using pa_02 = pin<port_a, 2>;
 
-        using port_chain = typename ::zoal::gpio::chain_builder<port_b, port_d, port_a>::chain;
-        using api = ::zoal::gpio::base_api<port_chain>;
+        using ports = ::zoal::ct::type_list<port_b, port_d, port_a>;
+        using api = ::zoal::gpio::api<ports>;
         using mux = ::zoal::arch::avr::attiny::mux<api>;
         using cfg = ::zoal::arch::avr::attiny::cfg<api, Frequency>;
         using irq = ::zoal::arch::avr::attiny::irq;
@@ -134,7 +134,7 @@ namespace zoal { namespace mcu {
 }}
 
 namespace zoal { namespace metadata {
-    using zoal::utils::integral_constant;
+    using zoal::ct::integral_constant;
 
     template<>
     struct pin_to_pwm_channel<0x0050, 0x0030, 5, 1> : integral_constant<bool, true> {};

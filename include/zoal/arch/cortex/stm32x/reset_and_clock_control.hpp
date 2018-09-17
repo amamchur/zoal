@@ -2,7 +2,7 @@
 #define ZOAL_GPIO_STM32X_RESET_AND_CLOCK_CONTROLL_HPP
 
 #include "../../../arch/bus.hpp"
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 #include "bus_clock_control.hpp"
 
 #include <stdint.h>
@@ -34,11 +34,11 @@ namespace zoal { namespace arch { namespace stm32x {
         template<class RCController, zoal::arch::bus Bus, uint32_t SetMask, uint32_t ClearMask = ~SetMask>
         friend class ::zoal::arch::stm32x::bus_clock_control;
 
-        static zoal::utils::memory_segment<uint32_t, Address> mem;
+        static zoal::mem::segment<uint32_t, Address> mem;
     };
 
     template<uintptr_t Address>
-    zoal::utils::memory_segment<uint32_t, Address> reset_and_clock_control<Address>::mem;
+    zoal::mem::segment<uint32_t, Address> reset_and_clock_control<Address>::mem;
 }}}
 
 #endif

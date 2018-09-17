@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_A2D_Converter_HPP
 #define ZOAL_ARCH_ATMEL_AVR_A2D_Converter_HPP
 
-#include "../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 #include "../bus.hpp"
 #include "mcu_type.hpp"
 
@@ -52,7 +52,7 @@ namespace zoal { namespace arch { namespace avr {
         }
 
         static uint16_t value() {
-            zoal::utils::memory_segment<uint16_t, Address> m;
+            zoal::mem::segment<uint16_t, Address> m;
             return m[self_type::ADCx];
         }
 
@@ -63,11 +63,11 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, Address> mem;
+        static zoal::mem::segment<uint8_t, Address> mem;
     };
 
     template<uintptr_t Address, uint8_t N, class... Mixin>
-    zoal::utils::memory_segment<uint8_t, Address> adc<Address, N, Mixin...>::mem;
+    zoal::mem::segment<uint8_t, Address> adc<Address, N, Mixin...>::mem;
 }}}
 
 #endif

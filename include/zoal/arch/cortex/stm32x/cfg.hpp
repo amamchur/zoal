@@ -1,9 +1,10 @@
 #ifndef ZOAL_ARCH_STM32X_CFG_HPP
 #define ZOAL_ARCH_STM32X_CFG_HPP
 
+#include "../../../mem/clear_and_set.hpp"
+#include "../../../mem/segment.hpp"
 #include "../../../periph/usart_config.hpp"
 #include "../../../utils/helpers.hpp"
-#include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace metadata {
     template<uint8_t No>
@@ -23,14 +24,12 @@ namespace zoal { namespace arch { namespace stm32x {
     template<class Api>
     class cfg {
     public:
-        template<
-                class U,
-                uint32_t BaudRate,
-                uint8_t Bits = 8,
-                zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
-                zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1,
-                uint32_t Freq = zoal::metadata::stm32_default_usart_freq<U::no>::value
-        >
+        template<class U,
+                 uint32_t BaudRate,
+                 uint8_t Bits = 8,
+                 zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
+                 zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1,
+                 uint32_t Freq = zoal::metadata::stm32_default_usart_freq<U::no>::value>
         class usart {
         public:
             using dbc1 = zoal::metadata::stm32_data_bits_to_cr1<Bits>;
@@ -49,10 +48,10 @@ namespace zoal { namespace arch { namespace stm32x {
             static constexpr uint16_t bbr = (int_part << 4) + mantissa;
 
             static void apply() {
-                using namespace zoal::utils;
+                using namespace zoal::mem;
                 U::disable();
 
-                zoal::utils::memory_segment<uint32_t, U::address> mem;
+                segment<uint32_t, U::address> mem;
                 mem[U::USARTx_BRR] = bbr;
                 clear_and_set<c1_clear, c1_set, 0>::apply(mem[U::USARTx_CR1]);
                 clear_and_set<c2_clear, c2_set, 0>::apply(mem[U::USARTx_CR2]);

@@ -4,7 +4,7 @@
 #define ZOAL_GPIO_STM32F3_HARDWARE_SPI_HPP
 
 #include <stdint.h>
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace stm32f3 {
     enum SPI_FLAGS : uint16_t {
@@ -83,7 +83,7 @@ namespace zoal { namespace arch { namespace stm32f3 {
         }
 
     private:
-        static zoal::utils::memory_segment<uint32_t, Address> mem;
+        static zoal::mem::segment<uint32_t, Address> mem;
     };
 
     template<class Ctrl, uint8_t MSBF = 1, uint8_t Mode = 0>

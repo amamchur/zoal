@@ -2,7 +2,7 @@
 #define ZOAL_ARCH_STM32F3_A2DC_COMMON_REGS_HPP
 
 #include <stdint.h>
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace stm32f3 {
 
@@ -22,11 +22,11 @@ namespace zoal { namespace arch { namespace stm32f3 {
         }
 
     private:
-        static zoal::utils::memory_segment<uint32_t, Address> mem;
+        static zoal::mem::segment<uint32_t, Address> mem;
     };
 
     template<uintptr_t Address>
-    zoal::utils::memory_segment<uint32_t, Address> adc_common_regs<Address>::mem;
+    zoal::mem::segment<uint32_t, Address> adc_common_regs<Address>::mem;
 }}}
 
 #endif

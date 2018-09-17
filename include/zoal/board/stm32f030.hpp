@@ -2,7 +2,7 @@
 #define ZOAL_BOARD_HPP
 
 #include "../mcu/stm32f0xx.hpp"
-#include "../gpio/base_api.hpp"
+#include "zoal/gpio/api.hpp"
 
 namespace zoal {
     template<uint32_t Frequency>

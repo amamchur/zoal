@@ -5,7 +5,7 @@
 #include "../../../io/stream_functor.hpp"
 #include "../../../periph/usart_config.hpp"
 #include "../../../utils/interrupts.hpp"
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 #include "../../bus.hpp"
 
 namespace zoal { namespace arch { namespace avr {
@@ -107,14 +107,14 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, Address> mem;
+        static zoal::mem::segment<uint8_t, Address> mem;
     };
 
     template<uintptr_t Address, uint8_t N, class Buffer>
     typename usart<Address, N, Buffer>::buffer_type usart<Address, N, Buffer>::buffer;
 
     template<uintptr_t Address, uint8_t N, class Buffer>
-    zoal::utils::memory_segment<uint8_t, Address> usart<Address, N, Buffer>::mem;
+    zoal::mem::segment<uint8_t, Address> usart<Address, N, Buffer>::mem;
 }}}
 
 #endif

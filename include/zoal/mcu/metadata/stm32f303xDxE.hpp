@@ -39,23 +39,23 @@ namespace zoal { namespace metadata {
     };
 
     template<>
-    struct stm32_default_usart_freq<1> : zoal::utils::integral_constant<uint32_t, 72000000> {
+    struct stm32_default_usart_freq<1> : zoal::ct::integral_constant<uint32_t, 72000000> {
     };
 
     template<>
-    struct stm32_default_usart_freq<2> : zoal::utils::integral_constant<uint32_t, 36000000> {
+    struct stm32_default_usart_freq<2> : zoal::ct::integral_constant<uint32_t, 36000000> {
     };
 
     template<>
-    struct stm32_default_usart_freq<3> : zoal::utils::integral_constant<uint32_t, 36000000> {
+    struct stm32_default_usart_freq<3> : zoal::ct::integral_constant<uint32_t, 36000000> {
     };
 
     template<>
-    struct stm32_default_usart_freq<4> : zoal::utils::integral_constant<uint32_t, 36000000> {
+    struct stm32_default_usart_freq<4> : zoal::ct::integral_constant<uint32_t, 36000000> {
     };
 
     template<>
-    struct stm32_default_usart_freq<5> : zoal::utils::integral_constant<uint32_t, 36000000> {
+    struct stm32_default_usart_freq<5> : zoal::ct::integral_constant<uint32_t, 36000000> {
     };
 
 

@@ -2,7 +2,7 @@
 #define ZOAL_BOARD_HPP
 
 #include "../mcu/stm32f303xDxE.hpp"
-#include "../gpio/base_api.hpp"
+#include "zoal/gpio/api.hpp"
 
 namespace zoal { namespace board {
     using mcu = zoal::mcu::stm32f303xDxE<72000000>;
@@ -34,7 +34,7 @@ namespace zoal { namespace board {
     };
 
     using port_chain = aggregator_chain_builder::Type;
-    using api = ::zoal::gpio::base_api<port_chain>;
+    using api = ::zoal::gpio::api<port_chain>;
 }}
 
 #endif

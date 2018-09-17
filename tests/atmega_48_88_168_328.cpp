@@ -7,13 +7,13 @@
 #include "utils/mcu_memory.hpp"
 #include "utils/nop.hpp"
 
-#define ZOAL_UTILS_MEMORY_SEGMENT_HPP
+#define ZOAL_MEM_SEGMENT_HPP
 
 using mcu_memory = tests::utils::mcu_memory<tests::utils::ATmegaMemory>;
 namespace zoal {
     namespace utils {
         template<class RegType, uintptr_t base>
-        class memory_segment : public mcu_memory::memory_segment<RegType, base> {
+        class segment : public mcu_memory::memory_segment<RegType, base> {
         };
     }
 }

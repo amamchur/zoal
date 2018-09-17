@@ -2,7 +2,7 @@
 #define ZOAL_ARCH_STM32F1_A2D_Converter_HPP
 
 #include <stdint.h>
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace stm32f3 {
     template<uintptr_t Address, uint8_t N, class CommRegs, class Clock>
@@ -103,11 +103,11 @@ namespace zoal { namespace arch { namespace stm32f3 {
         }
 
     private:
-        static zoal::utils::memory_segment<uint32_t, Address> mem;
+        static zoal::mem::segment<uint32_t, Address> mem;
     };
 
     template<uintptr_t Address, uint8_t N, class CommRegs, class Clock>
-    zoal::utils::memory_segment<uint32_t, Address> adc<Address, N, CommRegs, Clock>::mem;
+    zoal::mem::segment<uint32_t, Address> adc<Address, N, CommRegs, Clock>::mem;
 }}}
 
 #endif

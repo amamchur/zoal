@@ -3,12 +3,14 @@
 #ifndef ZOAL_SHIELDS_UNO_LCD_SHIELD_HPP
 #define ZOAL_SHIELDS_UNO_LCD_SHIELD_HPP
 
-#include <stdint.h>
+#include "../ct/helpers.hpp"
 #include "../gpio/pin_mode.hpp"
 #include "../ic/hd44780.hpp"
 #include "../io/analog_keypad.hpp"
 #include "../utils/helpers.hpp"
 #include "../utils/nop.hpp"
+
+#include <stdint.h>
 
 namespace zoal { namespace shields {
     template<class PinA = void, class PinB = void>
@@ -22,16 +24,15 @@ namespace zoal { namespace shields {
     class uno_lcd_shield {
     public:
         using interface_type = zoal::ic::hd44780_interface_4bit<Tools,
-                typename Board::ard_d08,
-                typename Board::ard_d09,
-                typename Board::ard_d04,
-                typename Board::ard_d05,
-                typename Board::ard_d06,
-                typename Board::ard_d07
-        >;
+                                                                typename Board::ard_d08,
+                                                                typename Board::ard_d09,
+                                                                typename Board::ard_d04,
+                                                                typename Board::ard_d05,
+                                                                typename Board::ard_d06,
+                                                                typename Board::ard_d07>;
 
         template<class T, class U>
-        using opt = zoal::utils::optional_type<T, U>;
+        using opt = zoal::ct::optional_type<T, U>;
 
         using calibration_pin_a = typename opt<typename Cfg::calibration_pin_a, typename Board::ard_d02>::type;
         using calibration_pin_b = typename opt<typename Cfg::calibration_pin_b, typename Board::ard_d03>::type;
@@ -56,13 +57,8 @@ namespace zoal { namespace shields {
         static void calibrate(bool force) {
             using namespace zoal::gpio;
 
-            logger::trace()
-                    << "Buttons ADC Values: "
-                    << keypad::values[0] << " "
-                    << keypad::values[1] << " "
-                    << keypad::values[2] << " "
-                    << keypad::values[3] << " "
-                    << keypad::values[4] << " ";
+            logger::trace() << "Buttons ADC Values: " << keypad::values[0] << " " << keypad::values[1] << " "
+                            << keypad::values[2] << " " << keypad::values[3] << " " << keypad::values[4] << " ";
 
             calibration_pin_a::template mode<pin_mode::output>();
             calibration_pin_b::template mode<pin_mode::input_pull_up>();
@@ -90,13 +86,8 @@ namespace zoal { namespace shields {
             keypad::values[3] = calibrate_button("UP");
             keypad::values[4] = calibrate_button("RIGHT");
 
-            logger::trace()
-                    << "Calibrated: "
-                    << keypad::values[0] << " "
-                    << keypad::values[1] << " "
-                    << keypad::values[2] << " "
-                    << keypad::values[3] << " "
-                    << keypad::values[4] << " ";
+            logger::trace() << "Calibrated: " << keypad::values[0] << " " << keypad::values[1] << " "
+                            << keypad::values[2] << " " << keypad::values[3] << " " << keypad::values[4] << " ";
             lcd::clear();
         }
 
@@ -128,7 +119,7 @@ namespace zoal { namespace shields {
         template<class H>
         static void handle_keypad(H handler) {
             mcu::mux::template adc<adc, analog_pin>::on();
-            handle_keypad(handler, (int16_t) adc::read());
+            handle_keypad(handler, (int16_t)adc::read());
         }
 
         template<class H>

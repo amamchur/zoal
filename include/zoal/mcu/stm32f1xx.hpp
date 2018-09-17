@@ -11,9 +11,9 @@
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
 #include "../arch/enable.hpp"
 #include "../arch/power.hpp"
-#include "../gpio/base_api.hpp"
+#include "../ct/type_list.hpp"
+#include "zoal/gpio/api.hpp"
 #include "../gpio/pin.hpp"
-#include "../gpio/port_link.hpp"
 #include "../utils/ms_counter.hpp"
 #include "../utils/tool_set.hpp"
 #include "base_mcu.hpp"
@@ -180,8 +180,8 @@ namespace zoal { namespace mcu {
         //        template<uintptr_t TxSize, uintptr_t RxSize>
         //        using usart3 = typename ::zoal::arch::stm32f1::usart<0x40004800u, TxSize, RxSize, clock_apb1<0x40000>, irq_ctrl<1, 0x80>, pb10, pa11>;
 
-        using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f, port_g>::chain;
-        using api = ::zoal::gpio::base_api<port_chain>;
+        using ports = ::zoal::ct::type_list<port_a, port_b, port_c, port_d, port_e, port_f, port_g>;
+        using api = ::zoal::gpio::api<ports>;
 
         template<class... Module>
         using power = ::zoal::arch::power<Module...>;

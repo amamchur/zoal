@@ -1,36 +1,22 @@
 #ifndef ZOAL_ARCH_AVR_ATTINY_CFG_HPP
 #define ZOAL_ARCH_AVR_ATTINY_CFG_HPP
 
+#include "../../../mem/clear_and_set.hpp"
+#include "../../../mem/segment.hpp"
 #include "../../../periph/adc_config.hpp"
 #include "../../../periph/timer_mode.hpp"
 #include "../../../periph/usart_config.hpp"
 #include "../../../utils/helpers.hpp"
-#include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace metadata {
 }}
 
 namespace zoal { namespace arch { namespace avr { namespace attiny {
-//    using zoal::metadata::adc_clock_divider;
-//    using zoal::metadata::adc_ref;
-//    using zoal::metadata::timer_clock_divider;
-//    using zoal::metadata::timer_mode;
-//    using zoal::metadata::usart_data_bits_flags;
-//    using zoal::metadata::usart_parity_flags;
-//    using zoal::metadata::usart_stop_bit_flags;
+    using zoal::mem::clear_and_set;
+    using zoal::mem::merge_clear_and_set;
+    using zoal::mem::segment;
     using zoal::periph::usart_parity;
     using zoal::periph::usart_stop_bits;
-    using zoal::utils::clear_and_set;
-    using zoal::utils::memory_segment;
-    using zoal::utils::merge_clear_and_set;
-
-//    template<uint8_t Bits, usart_parity Parity, usart_stop_bits StopBits>
-//    struct usart_mode {
-//        using db_flags = usart_data_bits_flags<Bits>;
-//        using pt_flags = usart_parity_flags<Parity>;
-//        using sb_flags = usart_stop_bit_flags<StopBits>;
-//        static constexpr auto UCSRxC_value = db_flags::flags | pt_flags::flags | sb_flags::flags;
-//    };
 
     template<class Api, uint32_t Frequency>
     class cfg {

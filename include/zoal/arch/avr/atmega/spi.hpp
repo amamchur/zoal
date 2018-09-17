@@ -2,7 +2,7 @@
 #define ZOAL_ARCH_ATMEL_AVR_ATMEGA_HARDWARE_SPI_HPP
 
 #include "../../../gpio/pin_mode.hpp"
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
     template<class MOSI, class MISO, class SCLK, class SS>
@@ -27,7 +27,7 @@ namespace zoal { namespace arch { namespace avr {
         base_spi(const base_spi &) = delete;
 
         static uint8_t transfer_byte(uint8_t data) {
-            zoal::utils::memory_segment<uint8_t, 0x4C> m8;
+            zoal::mem::segment<uint8_t, 0x4C> m8;
             m8[SPDRx] = data;
 
             asm volatile("nop");
@@ -62,7 +62,7 @@ namespace zoal { namespace arch { namespace avr {
         }
 
         static void setup() {
-            zoal::utils::memory_segment<uint8_t, 0x4C> m8;
+            zoal::mem::segment<uint8_t, 0x4C> m8;
             m8[base_type::SPCRx] = static_cast<uint8_t>(1 << base_type::SPEx | 1 << base_type::MSTRx | Mode);
             m8[base_type::SPSRx] = 1 << base_type::SPI2Xx;
             m8.happyInspection();
@@ -75,7 +75,7 @@ namespace zoal { namespace arch { namespace avr {
         using base_type = base_spi<MOSI, MISO, SCLK, SS>;
 
         static void setup() {
-            zoal::utils::memory_segment<uint8_t, 0x4C> m8;
+            zoal::mem::segment<uint8_t, 0x4C> m8;
             m8[base_type::SPCRx] = static_cast<uint8_t>(1 << base_type::SPEx | 1 << base_type::MSTRx | 1 << base_type::DORDx | Mode);
             m8[base_type::SPSRx] = 1 << base_type::SPI2Xx;
             m8.happyInspection();

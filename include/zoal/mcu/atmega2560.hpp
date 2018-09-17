@@ -16,9 +16,9 @@
 #include <zoal/arch/avr/port.hpp>
 #include <zoal/arch/enable.hpp>
 #include <zoal/arch/power.hpp>
-#include <zoal/gpio/base_api.hpp>
+#include <zoal/ct/type_list.hpp>
+#include <zoal/gpio/api.hpp>
 #include <zoal/gpio/pin.hpp>
-#include <zoal/gpio/port_link.hpp>
 #include <zoal/mcu/base_mcu.hpp>
 
 namespace zoal { namespace mcu {
@@ -161,8 +161,9 @@ namespace zoal { namespace mcu {
         using pl_06 = pin<port_l, 6>;
         using pl_07 = pin<port_l, 7>;
 
-        using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f, port_g, port_h, port_j, port_k, port_l>::chain;
-        using api = ::zoal::gpio::base_api<port_chain>;
+        using ports = ::zoal::ct::
+            type_list<port_a, port_b, port_c, port_d, port_e, port_f, port_g, port_h, port_j, port_k, port_l>;
+        using api = ::zoal::gpio::api<ports>;
         using mux = ::zoal::arch::avr::atmega::mux<api>;
         using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;
         using irq = ::zoal::arch::avr::atmega::irq;
@@ -176,7 +177,7 @@ namespace zoal { namespace mcu {
 }}
 
 namespace zoal { namespace metadata {
-    using zoal::utils::integral_constant;
+    using zoal::ct::integral_constant;
 
     template<>
     struct pin_to_pwm_channel<0x0044, 0x0032, 5, 1> : integral_constant<bool, true> {};

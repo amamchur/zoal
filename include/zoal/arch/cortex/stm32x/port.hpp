@@ -2,8 +2,9 @@
 #define ZOAL_ARCH_STM32X_PORT_F0_F3_F4_HPP
 
 #include "../../../gpio/pin_mode.hpp"
+#include "../../../mem/clear_and_set.hpp"
+#include "../../../mem/segment.hpp"
 #include "../../../utils/helpers.hpp"
-#include "../../../utils/memory_segment.hpp"
 
 namespace zoal { namespace arch { namespace stm32x {
     template<::zoal::gpio::pin_mode PinMode>
@@ -46,85 +47,88 @@ namespace zoal { namespace arch { namespace stm32x {
 
     template<::zoal::gpio::pin_mode PinMode, uint32_t Mask>
     struct pin_mode_to_cnf_mode {
-        using reg_mask = pin_mode_to_reg_mask<PinMode>;
+        using rm = pin_mode_to_reg_mask<PinMode>;
 
         static constexpr auto speed_mask = 0x3; // 11: High speed
 
         template<uintptr_t V, uint8_t Shift = 0>
-        using spd_cas = struct ::zoal::utils::clear_and_set<V != 0 ? 0x03 : 0, V != 0 ? speed_mask : 0, Shift>;
-        using GPIOx_OSPEEDR = ::zoal::utils::merge_clear_and_set<spd_cas<(Mask & 1 << 0x0), 0>,
-                                                                 spd_cas<(Mask & 1 << 0x1), 2>,
-                                                                 spd_cas<(Mask & 1 << 0x2), 4>,
-                                                                 spd_cas<(Mask & 1 << 0x3), 6>,
-                                                                 spd_cas<(Mask & 1 << 0x4), 8>,
-                                                                 spd_cas<(Mask & 1 << 0x5), 10>,
-                                                                 spd_cas<(Mask & 1 << 0x6), 12>,
-                                                                 spd_cas<(Mask & 1 << 0x7), 14>,
-                                                                 spd_cas<(Mask & 1 << 0x8), 16>,
-                                                                 spd_cas<(Mask & 1 << 0x9), 18>,
-                                                                 spd_cas<(Mask & 1 << 0xA), 20>,
-                                                                 spd_cas<(Mask & 1 << 0xB), 22>,
-                                                                 spd_cas<(Mask & 1 << 0xC), 24>,
-                                                                 spd_cas<(Mask & 1 << 0xD), 26>,
-                                                                 spd_cas<(Mask & 1 << 0xE), 28>,
-                                                                 spd_cas<(Mask & 1 << 0xF), 30>>;
+        using spd_cas = struct ::zoal::mem::clear_and_set<V != 0 ? 0x03 : 0, V != 0 ? speed_mask : 0, Shift>;
+        using GPIOx_OSPEEDR = ::zoal::mem::merge_clear_and_set<spd_cas<(Mask & 1 << 0x0), 0>,
+                                                               spd_cas<(Mask & 1 << 0x1), 2>,
+                                                               spd_cas<(Mask & 1 << 0x2), 4>,
+                                                               spd_cas<(Mask & 1 << 0x3), 6>,
+                                                               spd_cas<(Mask & 1 << 0x4), 8>,
+                                                               spd_cas<(Mask & 1 << 0x5), 10>,
+                                                               spd_cas<(Mask & 1 << 0x6), 12>,
+                                                               spd_cas<(Mask & 1 << 0x7), 14>,
+                                                               spd_cas<(Mask & 1 << 0x8), 16>,
+                                                               spd_cas<(Mask & 1 << 0x9), 18>,
+                                                               spd_cas<(Mask & 1 << 0xA), 20>,
+                                                               spd_cas<(Mask & 1 << 0xB), 22>,
+                                                               spd_cas<(Mask & 1 << 0xC), 24>,
+                                                               spd_cas<(Mask & 1 << 0xD), 26>,
+                                                               spd_cas<(Mask & 1 << 0xE), 28>,
+                                                               spd_cas<(Mask & 1 << 0xF), 30>>;
 
         template<uintptr_t V, uint8_t Shift = 0>
-        using md_cas = struct ::zoal::utils::clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? reg_mask::GPIOx_MODER_mask : 0), Shift>;
-        using GPIOx_MODER = ::zoal::utils::merge_clear_and_set<md_cas<(Mask & 1 << 0x0), 0>,
-                                                               md_cas<(Mask & 1 << 0x1), 2>,
-                                                               md_cas<(Mask & 1 << 0x2), 4>,
-                                                               md_cas<(Mask & 1 << 0x3), 6>,
-                                                               md_cas<(Mask & 1 << 0x4), 8>,
-                                                               md_cas<(Mask & 1 << 0x5), 10>,
-                                                               md_cas<(Mask & 1 << 0x6), 12>,
-                                                               md_cas<(Mask & 1 << 0x7), 14>,
-                                                               md_cas<(Mask & 1 << 0x8), 16>,
-                                                               md_cas<(Mask & 1 << 0x9), 18>,
-                                                               md_cas<(Mask & 1 << 0xA), 20>,
-                                                               md_cas<(Mask & 1 << 0xB), 22>,
-                                                               md_cas<(Mask & 1 << 0xC), 24>,
-                                                               md_cas<(Mask & 1 << 0xD), 26>,
-                                                               md_cas<(Mask & 1 << 0xE), 28>,
-                                                               md_cas<(Mask & 1 << 0xF), 30>>;
+        using md_cas =
+            struct ::zoal::mem::clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_MODER_mask : 0), Shift>;
+        using GPIOx_MODER = ::zoal::mem::merge_clear_and_set<md_cas<(Mask & 1 << 0x0), 0>,
+                                                             md_cas<(Mask & 1 << 0x1), 2>,
+                                                             md_cas<(Mask & 1 << 0x2), 4>,
+                                                             md_cas<(Mask & 1 << 0x3), 6>,
+                                                             md_cas<(Mask & 1 << 0x4), 8>,
+                                                             md_cas<(Mask & 1 << 0x5), 10>,
+                                                             md_cas<(Mask & 1 << 0x6), 12>,
+                                                             md_cas<(Mask & 1 << 0x7), 14>,
+                                                             md_cas<(Mask & 1 << 0x8), 16>,
+                                                             md_cas<(Mask & 1 << 0x9), 18>,
+                                                             md_cas<(Mask & 1 << 0xA), 20>,
+                                                             md_cas<(Mask & 1 << 0xB), 22>,
+                                                             md_cas<(Mask & 1 << 0xC), 24>,
+                                                             md_cas<(Mask & 1 << 0xD), 26>,
+                                                             md_cas<(Mask & 1 << 0xE), 28>,
+                                                             md_cas<(Mask & 1 << 0xF), 30>>;
 
         template<uintptr_t V, uint8_t Shift = 0>
-        using tp_cas = struct ::zoal::utils::clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? reg_mask::GPIOx_OTYPER_mask : 0), Shift>;
-        using GPIOx_OTYPER = ::zoal::utils::merge_clear_and_set<tp_cas<(Mask & 1 << 0x0), 0>,
-                                                                tp_cas<(Mask & 1 << 0x1), 2>,
-                                                                tp_cas<(Mask & 1 << 0x2), 4>,
-                                                                tp_cas<(Mask & 1 << 0x3), 6>,
-                                                                tp_cas<(Mask & 1 << 0x4), 8>,
-                                                                tp_cas<(Mask & 1 << 0x5), 10>,
-                                                                tp_cas<(Mask & 1 << 0x6), 12>,
-                                                                tp_cas<(Mask & 1 << 0x7), 14>,
-                                                                tp_cas<(Mask & 1 << 0x8), 16>,
-                                                                tp_cas<(Mask & 1 << 0x9), 18>,
-                                                                tp_cas<(Mask & 1 << 0xA), 20>,
-                                                                tp_cas<(Mask & 1 << 0xB), 22>,
-                                                                tp_cas<(Mask & 1 << 0xC), 24>,
-                                                                tp_cas<(Mask & 1 << 0xD), 26>,
-                                                                tp_cas<(Mask & 1 << 0xE), 28>,
-                                                                tp_cas<(Mask & 1 << 0xF), 30>>;
+        using tp_cas =
+            struct ::zoal::mem::clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_OTYPER_mask : 0), Shift>;
+        using GPIOx_OTYPER = ::zoal::mem::merge_clear_and_set<tp_cas<(Mask & 1 << 0x0), 0>,
+                                                              tp_cas<(Mask & 1 << 0x1), 2>,
+                                                              tp_cas<(Mask & 1 << 0x2), 4>,
+                                                              tp_cas<(Mask & 1 << 0x3), 6>,
+                                                              tp_cas<(Mask & 1 << 0x4), 8>,
+                                                              tp_cas<(Mask & 1 << 0x5), 10>,
+                                                              tp_cas<(Mask & 1 << 0x6), 12>,
+                                                              tp_cas<(Mask & 1 << 0x7), 14>,
+                                                              tp_cas<(Mask & 1 << 0x8), 16>,
+                                                              tp_cas<(Mask & 1 << 0x9), 18>,
+                                                              tp_cas<(Mask & 1 << 0xA), 20>,
+                                                              tp_cas<(Mask & 1 << 0xB), 22>,
+                                                              tp_cas<(Mask & 1 << 0xC), 24>,
+                                                              tp_cas<(Mask & 1 << 0xD), 26>,
+                                                              tp_cas<(Mask & 1 << 0xE), 28>,
+                                                              tp_cas<(Mask & 1 << 0xF), 30>>;
 
         template<uintptr_t V, uint8_t Shift = 0>
-        using pud_cas = struct ::zoal::utils::clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? reg_mask::GPIOx_PUPDR_mask : 0), Shift>;
-        using GPIOx_PUPDR = ::zoal::utils::merge_clear_and_set<pud_cas<(Mask & 1 << 0x0), 0>,
-                                                               pud_cas<(Mask & 1 << 0x1), 2>,
-                                                               pud_cas<(Mask & 1 << 0x2), 4>,
-                                                               pud_cas<(Mask & 1 << 0x3), 6>,
-                                                               pud_cas<(Mask & 1 << 0x4), 8>,
-                                                               pud_cas<(Mask & 1 << 0x5), 10>,
-                                                               pud_cas<(Mask & 1 << 0x6), 12>,
-                                                               pud_cas<(Mask & 1 << 0x7), 14>,
-                                                               pud_cas<(Mask & 1 << 0x8), 16>,
-                                                               pud_cas<(Mask & 1 << 0x9), 18>,
-                                                               pud_cas<(Mask & 1 << 0xA), 20>,
-                                                               pud_cas<(Mask & 1 << 0xB), 22>,
-                                                               pud_cas<(Mask & 1 << 0xC), 24>,
-                                                               pud_cas<(Mask & 1 << 0xD), 26>,
-                                                               pud_cas<(Mask & 1 << 0xE), 28>,
-                                                               pud_cas<(Mask & 1 << 0xF), 30>>;
+        using pud_cas =
+            struct ::zoal::mem::clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_PUPDR_mask : 0), Shift>;
+        using GPIOx_PUPDR = ::zoal::mem::merge_clear_and_set<pud_cas<(Mask & 1 << 0x0), 0>,
+                                                             pud_cas<(Mask & 1 << 0x1), 2>,
+                                                             pud_cas<(Mask & 1 << 0x2), 4>,
+                                                             pud_cas<(Mask & 1 << 0x3), 6>,
+                                                             pud_cas<(Mask & 1 << 0x4), 8>,
+                                                             pud_cas<(Mask & 1 << 0x5), 10>,
+                                                             pud_cas<(Mask & 1 << 0x6), 12>,
+                                                             pud_cas<(Mask & 1 << 0x7), 14>,
+                                                             pud_cas<(Mask & 1 << 0x8), 16>,
+                                                             pud_cas<(Mask & 1 << 0x9), 18>,
+                                                             pud_cas<(Mask & 1 << 0xA), 20>,
+                                                             pud_cas<(Mask & 1 << 0xB), 22>,
+                                                             pud_cas<(Mask & 1 << 0xC), 24>,
+                                                             pud_cas<(Mask & 1 << 0xD), 26>,
+                                                             pud_cas<(Mask & 1 << 0xE), 28>,
+                                                             pud_cas<(Mask & 1 << 0xF), 30>>;
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask = 0xFFFF>
@@ -146,8 +150,6 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr uintptr_t GPIOx_AFRL = 0x20;
         static constexpr uintptr_t GPIOx_AFRH = 0x24;
         static constexpr uintptr_t GPIOx_BRR = 0x28;
-
-        port() = delete;
 
         static inline register_type read() {
             return mem[GPIOx_IDR];
@@ -177,7 +179,8 @@ namespace zoal { namespace arch { namespace stm32x {
         static inline void mode() {
             using cfg = pin_mode_to_cnf_mode<PinMode, Mask>;
             if (TimeStable) {
-                mem[GPIOx_OSPEEDR] = (mem[GPIOx_OSPEEDR] & ~cfg::GPIOx_OSPEEDR::clear_mask) | cfg::GPIOx_OSPEEDR::set_mask;
+                mem[GPIOx_OSPEEDR] =
+                    (mem[GPIOx_OSPEEDR] & ~cfg::GPIOx_OSPEEDR::clear_mask) | cfg::GPIOx_OSPEEDR::set_mask;
                 mem[GPIOx_OTYPER] = (mem[GPIOx_OTYPER] & ~cfg::GPIOx_OTYPER::clear_mask) | cfg::GPIOx_OTYPER::set_mask;
                 mem[GPIOx_MODER] = (mem[GPIOx_MODER] & ~cfg::GPIOx_MODER::clear_mask) | cfg::GPIOx_MODER::set_mask;
                 mem[GPIOx_PUPDR] = (mem[GPIOx_PUPDR] & ~cfg::GPIOx_PUPDR::clear_mask) | cfg::GPIOx_PUPDR::set_mask;
@@ -190,11 +193,11 @@ namespace zoal { namespace arch { namespace stm32x {
         }
 
     private:
-        static zoal::utils::memory_segment<uint32_t, Address> mem;
+        static zoal::mem::segment<uint32_t, Address> mem;
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask>
-    zoal::utils::memory_segment<uint32_t, Address> port<Address, Clock, PinMask>::mem;
+    zoal::mem::segment<uint32_t, Address> port<Address, Clock, PinMask>::mem;
 }}}
 
 #endif

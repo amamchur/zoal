@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "../../../periph/timer_mode.hpp"
 #include "../../../periph/timer_interrupt.hpp"
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace stm32f3 {
     static constexpr uintptr_t TIMx_CR1 = 0x00;
@@ -124,11 +124,11 @@ namespace zoal { namespace arch { namespace stm32f3 {
         template <class T, zoal::periph::timer_interrupt TimerInterrupt, int Channel>
         class timer_interrupt_control;
 
-        static zoal::utils::memory_segment<uint32_t, Address> mem;
+        static zoal::mem::segment<uint32_t, Address> mem;
     };
 
     template<uintptr_t Address, uint8_t N, class ... Mixins>
-    zoal::utils::memory_segment<uint32_t, Address> general_purpose_timer<Address, N, Mixins...>::mem;
+    zoal::mem::segment<uint32_t, Address> general_purpose_timer<Address, N, Mixins...>::mem;
 }}}
 
 #endif

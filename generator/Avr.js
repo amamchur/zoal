@@ -427,9 +427,9 @@ class Avr {
 
         return [
             '',
-            'using port_chain = typename ::zoal::gpio::chain_builder<',
+            'using ports = ::zoal::ct::type_list<',
             portsNames.join(',\n'),
-            '>::chain;'
+            '>;'
         ];
     }
 

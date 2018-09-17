@@ -1,6 +1,8 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_METADATA_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_METADATA_HPP
 
+#include "../../../mem/clear_and_set.hpp"
+#include "../../../mem/segment.hpp"
 #include "../../../periph/adc_config.hpp"
 #include "../../../periph/timer_mode.hpp"
 #include "../../../periph/usart_config.hpp"
@@ -56,8 +58,7 @@ namespace zoal { namespace metadata {
         static constexpr uint8_t flags = 1 << 3;
     };
 
-    enum : uint8_t
-    {
+    enum : uint8_t {
         WGMx0 = 0,
         WGMx1 = 1,
         WGMx2 = 3,
@@ -68,19 +69,19 @@ namespace zoal { namespace metadata {
 
     template<>
     struct timer_mode<::zoal::periph::timer_mode::up> {
-        using TCCRxA = zoal::utils::clear_and_set<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>;
-        using TCCRxB = zoal::utils::clear_and_set<mode_clear_TCCRxB, 0x0>;
+        using TCCRxA = zoal::mem::clear_and_set<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>;
+        using TCCRxB = zoal::mem::clear_and_set<mode_clear_TCCRxB, 0x0>;
     };
 
     template<>
     struct timer_mode<::zoal::periph::timer_mode::up_down> {
-        using TCCRxA = zoal::utils::clear_and_set<mode_clear_TCCRxA, 1u << WGMx0>;
-        using TCCRxB = zoal::utils::clear_and_set<mode_clear_TCCRxB, 0x0>;
+        using TCCRxA = zoal::mem::clear_and_set<mode_clear_TCCRxA, 1u << WGMx0>;
+        using TCCRxB = zoal::mem::clear_and_set<mode_clear_TCCRxB, 0x0>;
     };
 
     template<uintptr_t Set>
     struct tcd_cas {
-        using TCCRxB = zoal::utils::clear_and_set<0x7, Set>;
+        using TCCRxB = zoal::mem::clear_and_set<0x7, Set>;
     };
 
     template<>
@@ -125,16 +126,16 @@ namespace zoal { namespace metadata {
     template<>
     struct timer_clock_divider<true, 1024> : tcd_cas<0x7> {};
 
-    struct timer_clock_dividers : zoal::utils::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024> {};
+    struct timer_clock_dividers : zoal::ct::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024> {};
 
     template<>
     struct adc_ref<zoal::periph::adc_ref::internal> {
-        using ADMUXx = zoal::utils::clear_and_set<0xC0, 0xC0>;
+        using ADMUXx = zoal::mem::clear_and_set<0xC0, 0xC0>;
     };
 
     template<>
     struct adc_ref<zoal::periph::adc_ref::external> {
-        using ADMUXx = zoal::utils::clear_and_set<0xC0, 0x40>;
+        using ADMUXx = zoal::mem::clear_and_set<0xC0, 0x40>;
     };
 
     template<uintptr_t ClockDivider>
@@ -142,37 +143,37 @@ namespace zoal { namespace metadata {
 
     template<>
     struct adc_clock_divider<2> {
-        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x01>;
+        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x01>;
     };
 
     template<>
     struct adc_clock_divider<4> {
-        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x02>;
+        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x02>;
     };
 
     template<>
     struct adc_clock_divider<8> {
-        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x03>;
+        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x03>;
     };
 
     template<>
     struct adc_clock_divider<16> {
-        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x04>;
+        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x04>;
     };
 
     template<>
     struct adc_clock_divider<32> {
-        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x05>;
+        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x05>;
     };
 
     template<>
     struct adc_clock_divider<64> {
-        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x06>;
+        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x06>;
     };
 
     template<>
     struct adc_clock_divider<128> {
-        using ADCSRAx = zoal::utils::clear_and_set<0x07, 0x07>;
+        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x07>;
     };
 }}
 

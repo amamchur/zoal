@@ -2,7 +2,7 @@
 #define ZOAL_ARCH_AVR_ATMEGA_TIMER_INTERRUPT_FLAG_VECTOR_HPP
 
 #include <stdint.h>  /* NOLINT */
-#include "../../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
     template<uintptr_t Address>
@@ -34,11 +34,11 @@ namespace zoal { namespace arch { namespace avr {
         }
 
     private:
-        static zoal::utils::memory_segment<uint8_t, Address> mem;
+        static zoal::mem::segment<uint8_t, Address> mem;
     };
 
     template<uintptr_t Address>
-    zoal::utils::memory_segment<uint8_t, Address> timer_interrupt_flags_vector<Address>::mem;
+    zoal::mem::segment<uint8_t, Address> timer_interrupt_flags_vector<Address>::mem;
 }}}
 
 #endif

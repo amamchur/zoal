@@ -16,9 +16,9 @@
 #include "../arch/cortex/stm32x/usart.hpp"
 #include "../arch/enable.hpp"
 #include "../arch/power.hpp"
-#include "../gpio/base_api.hpp"
+#include "../ct/type_list.hpp"
+#include "zoal/gpio/api.hpp"
 #include "../gpio/pin.hpp"
-#include "../gpio/port_link.hpp"
 #include "../periph/pwm_connection.hpp"
 #include "base_mcu.hpp"
 #include "metadata/stm32f303xDxE.hpp"
@@ -192,8 +192,8 @@ namespace zoal { namespace mcu {
         using spi2 = spi<spi_controller<0x40003800, 1>>;
         using spi3 = spi<spi_controller<0x40003c00, 2>>;
 
-        using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f>::chain;
-        using api = ::zoal::gpio::base_api<port_chain>;
+        using ports = ::zoal::ct::type_list<port_a, port_b, port_c, port_d, port_e, port_f>;
+        using api = ::zoal::gpio::api<ports>;
         using mux = ::zoal::arch::stm32x::mux<api>;
         using cfg = ::zoal::arch::stm32x::cfg<api>;
 

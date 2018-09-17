@@ -9,9 +9,9 @@
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
 #include "../arch/enable.hpp"
 #include "../arch/power.hpp"
-#include "../gpio/base_api.hpp"
+#include "../ct/type_list.hpp"
+#include "zoal/gpio/api.hpp"
 #include "../gpio/pin.hpp"
-#include "../gpio/port_link.hpp"
 #include "base_mcu.hpp"
 
 namespace zoal { namespace mcu {
@@ -138,8 +138,8 @@ namespace zoal { namespace mcu {
         using pf_14 = pin<port_f, 0xE>;
         using pf_15 = pin<port_f, 0xF>;
 
-        using port_chain = typename ::zoal::gpio::chain_builder<port_a, port_b, port_c, port_d, port_e, port_f>::chain;
-        using api = ::zoal::gpio::base_api<port_chain>;
+        using ports = ::zoal::ct::type_list<port_a, port_b, port_c, port_d, port_e, port_f>;
+        using api = ::zoal::gpio::api<ports>;
 
         template<class... Module>
         using power = ::zoal::arch::power<Module...>;

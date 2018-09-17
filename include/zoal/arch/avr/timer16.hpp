@@ -16,7 +16,7 @@ namespace zoal { namespace arch { namespace avr {
         timer16() = delete;
 
         static word period() {
-            zoal::utils::memory_segment<uint8_t, Address> m8;
+            zoal::mem::segment<uint8_t, Address> m8;
             auto wgm1 = m8[self_type::TCCRxA] & 0x03;
             auto wgm2 = m8[self_type::TCCRxB] & 0x18;
             auto wgm = wgm2 >> 1 | wgm1;

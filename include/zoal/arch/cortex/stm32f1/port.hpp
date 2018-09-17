@@ -4,47 +4,48 @@
 #define ZOAL_ARCH_STM32F1_PORT_HPP
 
 #include "../../../gpio/pin_mode.hpp"
-#include "../../../utils/memory_segment.hpp"
+#include "../../../mem/clear_and_set.hpp"
+#include "../../../mem/segment.hpp"
+#include "../../../mem/write_only_mask.hpp"
 #include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace arch { namespace stm32f1 {
     template<::zoal::gpio::pin_mode PinMode, uint32_t Mask>
-    struct pin_mode_to_cnf_mode {
-    };
+    struct pin_mode_to_cnf_mode {};
 
     template<uint32_t Mask>
     struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::input_floating, Mask> {
         static constexpr uint32_t value = 0x4 | 0x0;
-        using GPIOx_BRR = ::zoal::utils::write_only_mask<0, 0>;
-        using GPIOx_BSRR = ::zoal::utils::write_only_mask<0, 0>;
+        using GPIOx_BRR = ::zoal::mem::write_only_mask<0, 0>;
+        using GPIOx_BSRR = ::zoal::mem::write_only_mask<0, 0>;
     };
 
     template<uint32_t Mask>
     struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::input_pull_down, Mask> {
         static constexpr uint32_t value = 0x8 | 0x0;
-        using GPIOx_BRR = ::zoal::utils::write_only_mask<Mask, 0>;
-        using GPIOx_BSRR = ::zoal::utils::write_only_mask<0, 0>;
+        using GPIOx_BRR = ::zoal::mem::write_only_mask<Mask, 0>;
+        using GPIOx_BSRR = ::zoal::mem::write_only_mask<0, 0>;
     };
 
     template<uint32_t Mask>
     struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::input_pull_up, Mask> {
         static constexpr uint32_t value = 0x8 | 0x0;
-        using GPIOx_BRR = ::zoal::utils::write_only_mask<0, 0>;
-        using GPIOx_BSRR = ::zoal::utils::write_only_mask<Mask, 0>;
+        using GPIOx_BRR = ::zoal::mem::write_only_mask<0, 0>;
+        using GPIOx_BSRR = ::zoal::mem::write_only_mask<Mask, 0>;
     };
 
     template<uint32_t Mask>
     struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::output_open_drain, Mask> {
         static constexpr uint32_t value = 0x4 | 0x3;
-        using GPIOx_BRR = ::zoal::utils::clear_and_set<0, 0>;
-        using GPIOx_BSRR = ::zoal::utils::clear_and_set<0, 0>;
+        using GPIOx_BRR = ::zoal::mem::clear_and_set<0, 0>;
+        using GPIOx_BSRR = ::zoal::mem::clear_and_set<0, 0>;
     };
 
     template<uint32_t Mask>
     struct pin_mode_to_cnf_mode<::zoal::gpio::pin_mode::output_push_pull, Mask> {
         static constexpr uint32_t value = 0x0 | 0x3;
-        using GPIOx_BRR = ::zoal::utils::write_only_mask<0, 0>;
-        using GPIOx_BSRR = ::zoal::utils::write_only_mask<0, 0>;
+        using GPIOx_BRR = ::zoal::mem::write_only_mask<0, 0>;
+        using GPIOx_BSRR = ::zoal::mem::write_only_mask<0, 0>;
     };
 
     template<::zoal::gpio::pin_mode PinMode, uint32_t Mask>
@@ -56,7 +57,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using GPIOx_BSRR = typename mode::GPIOx_BSRR;
 
         template<uintptr_t V, uint8_t Shift = 0>
-        using cr_cas = struct ::zoal::utils::clear_and_set<(V != 0 ? cnf_clear : 0), (V != 0 ? mode::value : 0), Shift>;
+        using cr_cas = struct ::zoal::mem::clear_and_set<(V != 0 ? cnf_clear : 0), (V != 0 ? mode::value : 0), Shift>;
 
         using crl_p00 = cr_cas<(Mask & 1 << 0x0), 0>;
         using crl_p01 = cr_cas<(Mask & 1 << 0x1), 4>;
@@ -76,24 +77,10 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using crh_p14 = cr_cas<(Mask & 1 << 0xE), 24>;
         using crh_p15 = cr_cas<(Mask & 1 << 0xF), 28>;
 
-        using GPIOx_CRL = ::zoal::utils::merge_clear_and_set<
-                crl_p00,
-                crl_p01,
-                crl_p02,
-                crl_p03,
-                crl_p04,
-                crl_p05,
-                crl_p06,
-                crl_p07>;
-        using GPIOx_CRH = ::zoal::utils::merge_clear_and_set<
-                crh_p08,
-                crh_p09,
-                crh_p10,
-                crh_p11,
-                crh_p12,
-                crh_p13,
-                crh_p14,
-                crh_p15>;
+        using GPIOx_CRL =
+            ::zoal::mem::merge_clear_and_set<crl_p00, crl_p01, crl_p02, crl_p03, crl_p04, crl_p05, crl_p06, crl_p07>;
+        using GPIOx_CRH =
+            ::zoal::mem::merge_clear_and_set<crh_p08, crh_p09, crh_p10, crh_p11, crh_p12, crh_p13, crh_p14, crh_p15>;
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask = 0xFFFF>
@@ -110,8 +97,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static constexpr uintptr_t GPIOx_BSRR = 0x10;
         static constexpr uintptr_t GPIOx_BRR = 0x14;
         static constexpr uintptr_t GPIOx_LCKR = 0x18;
-
-        port() = delete;
 
         static inline register_type read() {
             return mem[GPIOx_IDR];
@@ -156,11 +141,11 @@ namespace zoal { namespace arch { namespace stm32f1 {
         }
 
     private:
-        static zoal::utils::memory_segment<uint32_t, Address> mem;
+        static zoal::mem::segment<uint32_t, Address> mem;
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask>
-    zoal::utils::memory_segment<uint32_t, Address> port<Address, Clock, PinMask>::mem;
+    zoal::mem::segment<uint32_t, Address> port<Address, Clock, PinMask>::mem;
 }}}
 
 #endif

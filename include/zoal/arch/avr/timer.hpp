@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include "../../periph/timer_mode.hpp"
-#include "../../utils/memory_segment.hpp"
+#include "zoal/mem/segment.hpp"
 #include "../bus.hpp"
 
 namespace zoal { namespace arch { namespace avr {
@@ -30,13 +30,13 @@ namespace zoal { namespace arch { namespace avr {
         static void disable() {}
 
         static void counter(word value) {
-            zoal::utils::memory_segment<word, Address> memWord;
+            zoal::mem::segment<word, Address> memWord;
             memWord[self_type::TCNTx] = value;
             memWord.happyInspection();
         }
 
         static word counter() {
-            zoal::utils::memory_segment<word, Address> memWord;
+            zoal::mem::segment<word, Address> memWord;
             return memWord[self_type::TCNTx];
         }
 
@@ -44,7 +44,7 @@ namespace zoal { namespace arch { namespace avr {
         static word compare_value() {
             static_assert(Channel < channels_count, "Channel index is out of range");
 
-            zoal::utils::memory_segment<word, Address> memWord;
+            zoal::mem::segment<word, Address> memWord;
             switch (Channel) {
             case 0:
                 return memWord[self_type::OCRxA];
@@ -61,7 +61,7 @@ namespace zoal { namespace arch { namespace avr {
         static void compare_value(word value) {
             static_assert(Channel < channels_count, "Channel index is out of range");
 
-            zoal::utils::memory_segment<word, Address> memWord;
+            zoal::mem::segment<word, Address> memWord;
             switch (Channel) {
             case 0:
                 memWord[self_type::OCRxA] = value;
