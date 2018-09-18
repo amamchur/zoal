@@ -25,7 +25,7 @@ namespace zoal { namespace gpio {
 
         template<::zoal::gpio::pin_mode PinMode>
         static inline void mode() {
-            port::template mode<PinMode, mask>();
+            typename port::template mode<PinMode, mask>();
         }
 
         static inline uint8_t read() {
@@ -34,31 +34,31 @@ namespace zoal { namespace gpio {
 
         static inline void write(uint8_t value) {
             if (value) {
-                port::template high<mask>();
+                typename port::template high<mask>();
             } else {
-                port::template low<mask>();
+                typename port::template low<mask>();
             }
         }
 
         template<uint8_t Value>
         static inline void set() {
             if (Value) {
-                port::template high<mask>();
+                typename port::template high<mask>();
             } else {
-                port::template low<mask>();
+                typename  port::template low<mask>();
             }
         }
 
         static inline void low() {
-            port::template low<mask>();
+            typename port::template low<mask>();
         }
 
         static inline void high() {
-            port::template high<mask>();
+            typename port::template high<mask>();
         }
 
         static inline void toggle() {
-            port::template toggle<mask>();
+            typename port::template toggle<mask>();
         }
     };
 

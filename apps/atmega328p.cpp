@@ -69,28 +69,18 @@ void initialize_hardware() {
 
 void initialize_application() {
     eeprom_read_block(keypad::values, lcd_buttons_values, sizeof(keypad::values));
+    asm volatile("nop            \n");
+    asm volatile("nop            \n");
+    asm volatile("nop            \n");
     app3::gpio_cfg();
+    asm volatile("nop            \n");
+    asm volatile("nop            \n");
+    asm volatile("nop            \n");
     app.init();
     eeprom_write_block(keypad::values, lcd_buttons_values, sizeof(keypad::values));
 }
 
 int main() {
-//    asm volatile("nop            \n");
-//    asm volatile("nop            \n");
-//
-//    mcu::api::merge_actions<mcu::api::mode<zoal::gpio::pin_mode::input_floating, mcu::pd_00>,
-//                            mcu::api::mode<zoal::gpio::pin_mode::input_floating, mcu::pd_01>,
-//                            mcu::api::mode<zoal::gpio::pin_mode::input_floating, mcu::pd_02>,
-//                            mcu::api::low<mcu::pb_00>,
-//                            mcu::api::low<mcu::pd_00>,
-//                            mcu::api::high<mcu::pb_01>>();
-//
-//    asm volatile("nop            \n");
-//    asm volatile("nop            \n");
-//
-//    mcu::port_d::mode<zoal::gpio::pin_mode::input_floating, 0x07>();
-//    asm volatile("nop            \n");
-//    asm volatile("nop            \n");
     initialize_hardware();
 
 #pragma clang diagnostic push

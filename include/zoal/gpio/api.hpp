@@ -11,37 +11,22 @@ namespace zoal { namespace gpio {
     struct mode_functor {
         template<class Port, uintptr_t Mask>
         struct modifiers {
-            using list = typename Port::template md_cls<PinMode, Mask>::modifiers;
+            using list = typename Port::template mode<PinMode, Mask>::modifiers;
         };
-
-        template<class Port, uintptr_t Mask>
-        static void apply() {
-            Port::template mode<PinMode, static_cast<typename Port::register_type>(Mask)>();
-        }
     };
 
     struct low_functor {
         template<class Port, uintptr_t Mask>
         struct modifiers {
-            using list = typename Port::template low_cls<Mask>::modifiers;
+            using list = typename Port::template low<Mask>::modifiers;
         };
-
-        template<class Port, uintptr_t Mask>
-        static void apply() {
-            Port::template low<static_cast<typename Port::register_type>(Mask)>();
-        }
     };
 
     struct high_functor {
         template<class Port, uintptr_t Mask>
         struct modifiers {
-            using list = typename Port::template high_cls<Mask>::modifiers;
+            using list = typename Port::template high<Mask>::modifiers;
         };
-
-        template<class Port, uintptr_t Mask>
-        static void apply() {
-            Port::template high<static_cast<typename Port::register_type>(Mask)>();
-        }
     };
 
     struct power_on_functor {
@@ -126,28 +111,10 @@ namespace zoal { namespace gpio {
         }
     };
 
-    template<class Link, class Functor, class... Pins>
-    struct port_action {
-        using self_type = port_action<Link, Functor, Pins...>;
-        using port = typename Link::type;
-        using functor = Functor;
-        using next = typename port_action<typename Link::next, Functor, Pins...>::self_type;
-        using usage = port_usage<port, Pins...>;
-
-        static constexpr auto mask = usage::mask;
-
-        using modifiers = typename Functor::template modifiers<port, mask>::list;
-
-        port_action() = delete;
-
-        static void apply() {
-            functor_invoker<port, functor, next, mask>::invoke();
+    template<class Port, class Functor>
+    struct functor_invoker<Port, Functor, void, 0> {
+        static void invoke() {
         }
-    };
-
-    template<class Functor, class... Pins>
-    struct port_action<void, Functor, Pins...> {
-        using self_type = void;
     };
 
     template<class Action>
@@ -168,6 +135,32 @@ namespace zoal { namespace gpio {
         apply_port_actions() = delete;
 
         static void apply() {}
+    };
+
+    template<class Link, class Functor, class... Pins>
+    struct port_action {
+        using self_type = port_action<Link, Functor, Pins...>;
+        using port = typename Link::type;
+        using functor = Functor;
+        using next = typename port_action<typename Link::next, Functor, Pins...>::self_type;
+        using usage = port_usage<port, Pins...>;
+
+        static constexpr auto mask = usage::mask;
+
+        using modifiers = typename Functor::template modifiers<port, mask>::list;
+
+        port_action() {
+            apply_port_actions<self_type>::apply();
+        }
+
+        static void apply() {
+            functor_invoker<port, functor, next, mask>::invoke();
+        }
+    };
+
+    template<class Functor, class... Pins>
+    struct port_action<void, Functor, Pins...> {
+        using self_type = void;
     };
 
     template<class A, class B>

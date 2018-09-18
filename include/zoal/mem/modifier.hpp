@@ -9,25 +9,50 @@
 #include <stdint.h>
 
 namespace zoal { namespace mem {
-    template<intptr_t Offset, class T, T Clear, T Set>
+    template<intptr_t Offset, class T, T Clear, T Set, bool WriteOnly = false>
     struct modifier {
         using mem_type = T;
         static constexpr intptr_t offset = Offset;
         static constexpr uint32_t clear_mask = Clear;
         static constexpr uint32_t set_mask = Set;
+        static constexpr auto write_only = WriteOnly;
+
+        template<class A>
+        static void apply(A &a) {
+            clear_and_set<clear_mask, set_mask>::apply(a);
+        }
+    };
+
+    template<intptr_t Offset, class T, T Clear, T Set>
+    struct modifier<Offset, T, Clear, Set, true> {
+        using mem_type = T;
+        static constexpr intptr_t offset = Offset;
+        static constexpr uint32_t clear_mask = Clear;
+        static constexpr uint32_t set_mask = Set;
+        static constexpr auto write_only = true;
+
+        template<class A>
+        static void apply(A &a) {
+            if (set_mask != static_cast<T>(0)) {
+                a = set_mask;
+            }
+        }
     };
 
     template<class ListA, class ListB>
     struct merge_modifiers_data {
         using a = typename ListA::type;
         using b = typename ListB::type;
+
         static_assert(a::offset == b::offset, "does not match");
+        static_assert(a::write_only == b::write_only, "does not match");
 
         using self_type = merge_modifiers_data<ListA, ListB>;
         using type = modifier<a::offset,
                               typename a::mem_type,
                               (a::clear_mask | b::clear_mask),
-                              (a::set_mask & ~b::clear_mask) | b::set_mask>;
+                              (a::set_mask & ~b::clear_mask) | b::set_mask,
+                              a::write_only>;
         using next = typename merge_modifiers_data<typename ListA::next, typename ListB::next>::self_type;
     };
 
@@ -54,10 +79,9 @@ namespace zoal { namespace mem {
         using segment = zoal::mem::segment<mem_type, Address>;
 
         template<class T>
-        void operator()() {
-            using cas = zoal::mem::clear_and_set<T::clear_mask, T::set_mask>;
+        void operator()() const {
             segment mem;
-            cas::apply(mem[T::offset]);
+            T::template apply(mem[T::offset]);
         }
 
         apply_modifiers() {

@@ -3,6 +3,7 @@
 
 #include "../../../gpio/pin_mode.hpp"
 #include "../../../mem/clear_and_set.hpp"
+#include "../../../mem/modifier.hpp"
 #include "../../../mem/segment.hpp"
 #include "../../../utils/helpers.hpp"
 
@@ -71,8 +72,8 @@ namespace zoal { namespace arch { namespace stm32x {
                                                                spd_cas<(Mask & 1 << 0xF), 30>>;
 
         template<uintptr_t V, uint8_t Shift = 0>
-        using md_cas =
-            struct ::zoal::mem::clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_MODER_mask : 0), Shift>;
+        using md_cas = struct ::zoal::mem::
+            clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_MODER_mask : 0), Shift>;
         using GPIOx_MODER = ::zoal::mem::merge_clear_and_set<md_cas<(Mask & 1 << 0x0), 0>,
                                                              md_cas<(Mask & 1 << 0x1), 2>,
                                                              md_cas<(Mask & 1 << 0x2), 4>,
@@ -91,8 +92,8 @@ namespace zoal { namespace arch { namespace stm32x {
                                                              md_cas<(Mask & 1 << 0xF), 30>>;
 
         template<uintptr_t V, uint8_t Shift = 0>
-        using tp_cas =
-            struct ::zoal::mem::clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_OTYPER_mask : 0), Shift>;
+        using tp_cas = struct ::zoal::mem::
+            clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_OTYPER_mask : 0), Shift>;
         using GPIOx_OTYPER = ::zoal::mem::merge_clear_and_set<tp_cas<(Mask & 1 << 0x0), 0>,
                                                               tp_cas<(Mask & 1 << 0x1), 2>,
                                                               tp_cas<(Mask & 1 << 0x2), 4>,
@@ -111,8 +112,8 @@ namespace zoal { namespace arch { namespace stm32x {
                                                               tp_cas<(Mask & 1 << 0xF), 30>>;
 
         template<uintptr_t V, uint8_t Shift = 0>
-        using pud_cas =
-            struct ::zoal::mem::clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_PUPDR_mask : 0), Shift>;
+        using pud_cas = struct ::zoal::mem::
+            clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_PUPDR_mask : 0), Shift>;
         using GPIOx_PUPDR = ::zoal::mem::merge_clear_and_set<pud_cas<(Mask & 1 << 0x0), 0>,
                                                              pud_cas<(Mask & 1 << 0x1), 2>,
                                                              pud_cas<(Mask & 1 << 0x2), 4>,
@@ -136,6 +137,9 @@ namespace zoal { namespace arch { namespace stm32x {
     public:
         using register_type = uint32_t;
 
+        template<intptr_t Offset, register_type Clear, register_type Set, bool WriteOnly = false>
+        using modifier = zoal::mem::modifier<Offset, register_type, Clear, Set, WriteOnly>;
+
         static constexpr uintptr_t address = Address;
         static constexpr uint32_t pin_mask = PinMask;
 
@@ -156,13 +160,13 @@ namespace zoal { namespace arch { namespace stm32x {
         }
 
         template<register_type Mask>
-        static inline void low() {
+        static inline void low_() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
             mem[GPIOx_BRR] = Mask;
         }
 
         template<register_type Mask>
-        static inline void high() {
+        static inline void high_() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
             mem[GPIOx_BSRR] = Mask;
         }
@@ -175,22 +179,49 @@ namespace zoal { namespace arch { namespace stm32x {
             mem[GPIOx_BSRR] = ~data & Mask;
         }
 
-        template<::zoal::gpio::pin_mode PinMode, register_type Mask, bool TimeStable = false>
-        static inline void mode() {
+        template<::zoal::gpio::pin_mode PinMode, register_type Mask>
+        struct mode {
             using cfg = pin_mode_to_cnf_mode<PinMode, Mask>;
-            if (TimeStable) {
-                mem[GPIOx_OSPEEDR] =
-                    (mem[GPIOx_OSPEEDR] & ~cfg::GPIOx_OSPEEDR::clear_mask) | cfg::GPIOx_OSPEEDR::set_mask;
-                mem[GPIOx_OTYPER] = (mem[GPIOx_OTYPER] & ~cfg::GPIOx_OTYPER::clear_mask) | cfg::GPIOx_OTYPER::set_mask;
-                mem[GPIOx_MODER] = (mem[GPIOx_MODER] & ~cfg::GPIOx_MODER::clear_mask) | cfg::GPIOx_MODER::set_mask;
-                mem[GPIOx_PUPDR] = (mem[GPIOx_PUPDR] & ~cfg::GPIOx_PUPDR::clear_mask) | cfg::GPIOx_PUPDR::set_mask;
-            } else {
-                cfg::GPIOx_OSPEEDR::apply(mem[GPIOx_OSPEEDR]);
-                cfg::GPIOx_OTYPER::apply(mem[GPIOx_OTYPER]);
-                cfg::GPIOx_MODER::apply(mem[GPIOx_MODER]);
-                cfg::GPIOx_PUPDR::apply(mem[GPIOx_PUPDR]);
+            using modifiers = zoal::ct::type_list<
+                modifier<GPIOx_OSPEEDR, cfg::GPIOx_OSPEEDR::clear_mask, cfg::GPIOx_OSPEEDR::set_mask>,
+                modifier<GPIOx_OTYPER, cfg::GPIOx_OTYPER::clear_mask, cfg::GPIOx_OTYPER::set_mask>,
+                modifier<GPIOx_MODER, cfg::GPIOx_MODER::clear_mask, cfg::GPIOx_MODER::set_mask>,
+                modifier<GPIOx_PUPDR, cfg::GPIOx_PUPDR::clear_mask, cfg::GPIOx_PUPDR::set_mask>,
+                modifier<GPIOx_BSRR, 0, 0, true>,
+                modifier<GPIOx_BRR, 0, 0, true>>;
+
+            mode() {
+                zoal::mem::apply_modifiers<address, modifiers>();
             }
-        }
+        };
+
+        template<register_type Mask>
+        struct low {
+            using modifiers = zoal::ct::type_list<modifier<GPIOx_OSPEEDR, 0, 0>,
+                                                  modifier<GPIOx_OTYPER, 0, 0>,
+                                                  modifier<GPIOx_MODER, 0, 0>,
+                                                  modifier<GPIOx_PUPDR, 0, 0>,
+                                                  modifier<GPIOx_BSRR, 0, 0, true>,
+                                                  modifier<GPIOx_BRR, 0, Mask, true>>;
+
+            low() {
+                zoal::mem::apply_modifiers<address, modifiers>();
+            }
+        };
+
+        template<register_type Mask>
+        struct high {
+            using modifiers = zoal::ct::type_list<modifier<GPIOx_OSPEEDR, 0, 0>,
+                                                  modifier<GPIOx_OTYPER, 0, 0>,
+                                                  modifier<GPIOx_MODER, 0, 0>,
+                                                  modifier<GPIOx_PUPDR, 0, 0>,
+                                                  modifier<GPIOx_BSRR, 0, Mask, true>,
+                                                  modifier<GPIOx_BRR, 0, 0, true>>;
+
+            high() {
+                zoal::mem::apply_modifiers<address, modifiers>();
+            }
+        };
 
     private:
         static zoal::mem::segment<uint32_t, Address> mem;

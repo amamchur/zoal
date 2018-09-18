@@ -1,6 +1,8 @@
 #ifndef ZOAL_CT_TYPE_LIST_HPP
 #define ZOAL_CT_TYPE_LIST_HPP
 
+#include <stddef.h>
+
 namespace zoal { namespace ct {
     template<class First, class... Rest>
     struct type_list {
@@ -19,7 +21,7 @@ namespace zoal { namespace ct {
     template<class List>
     struct type_list_iterator {
         template<class F>
-        static void for_each(F fn) {
+        static void for_each(const F &fn) {
             fn.template operator()<typename List::type>();
             type_list_iterator<typename List::next>::for_each(fn);
         }

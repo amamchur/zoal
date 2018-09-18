@@ -62,50 +62,39 @@ namespace zoal { namespace arch { namespace avr {
         }
 
         template<register_type Mask>
-        static void low() {
-            static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            mem[PORTx] &= ~Mask;
-        }
-
-        template<register_type Mask>
-        static void high() {
-            static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            mem[PORTx] |= Mask;
-        }
-
-        template<register_type Mask>
         static void toggle() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
             mem[PORTx] ^= Mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
-        static void mode() {
-            static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            using cfg = pin_mode_cfg<PinMode, Mask & pin_mask>;
-            constexpr auto changes = cfg::DDRx::clear_mask | cfg::DDRx::set_mask | cfg::PORTx::clear_mask |
-                                     cfg::PORTx::set_mask;
-            static_assert(changes != 0, "Unsupported pin mode");
-            cfg::DDRx::apply(mem[DDRx]);
-            cfg::PORTx::apply(mem[PORTx]);
-        }
-
-        template<::zoal::gpio::pin_mode PinMode, register_type Mask>
-        struct md_cls {
+        struct mode {
             using cfg = pin_mode_cfg<PinMode, Mask & pin_mask>;
 
             using modifiers = zoal::ct::type_list<modifier<DDRx, cfg::DDRx::clear_mask, cfg::DDRx::set_mask>,
                                                   modifier<PORTx, cfg::PORTx::clear_mask, cfg::PORTx::set_mask>>;
+
+            mode() {
+                zoal::mem::apply_modifiers<address, modifiers>();
+            }
         };
 
         template<register_type Mask>
-        struct low_cls {
+        struct low {
             using modifiers = zoal::ct::type_list<modifier<DDRx, 0, 0>, modifier<PORTx, Mask, 0>>;
+
+            low() {
+                zoal::mem::apply_modifiers<address, modifiers>();
+            }
         };
 
         template<register_type Mask>
-        struct high_cls {
+        struct high {
             using modifiers = zoal::ct::type_list<modifier<DDRx, 0, 0>, modifier<PORTx, 0, Mask>>;
+
+            high() {
+                zoal::mem::apply_modifiers<address, modifiers>();
+            }
         };
 
     private:

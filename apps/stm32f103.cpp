@@ -11,30 +11,6 @@ using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using tools = zoal::utils::tool_set<mcu, counter>;
 using delay = tools::delay;
 
-int main__() {
-    using namespace zoal::gpio;
-
-    using a = mcu::api::low<mcu::pa00>;
-    using b = mcu::api::low<mcu::pa01>;
-    using c = mcu::api::low<mcu::pa00, mcu::pa01>;
-    using m = merge_actions<b, c>;
-    m::apply();
-
-    //    b::apply();
-    c::apply();
-    //    mcu::api::mode<pin_mode::output,
-    //            mcu::pa00,
-    //            mcu::pa01,
-    //            mcu::pa02,
-    //            mcu::pa03,
-    //            mcu::pa04,
-    //            mcu::pa05,
-    //            mcu::pa06,
-    //            mcu::pb07
-    //    >::apply();
-    return 0;
-}
-
 int main() {
     using namespace zoal::gpio;
 

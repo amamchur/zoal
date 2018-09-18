@@ -18,17 +18,35 @@ using delay = tools::delay;
 int main() {
     using namespace zoal::gpio;
 
-    SysTick_Config(SystemCoreClock / 1000);
-    mcu::pa_04::port::power_on();
-    mcu::pa_04::mode<pin_mode::output>();
+    asm volatile("nop            \n");
+    asm volatile("nop            \n");
+    asm volatile("nop            \n");
 
-    while (true) {
-        mcu::pa_04::low();
-        ::delay::ms(500);
+    //    mcu::api::low<mcu::pa_00, mcu::pa_01>();
 
-        mcu::pa_04::high();
-        ::delay::ms(500);
-    }
+    mcu::api::merge_actions<mcu::api::low<mcu::pa_00>,
+                            mcu::api::low<mcu::pa_01>,
+                            mcu::api::low<mcu::pa_02>,
+                            mcu::api::high<mcu::pa_00>,
+                            mcu::api::high<mcu::pa_01>,
+                            mcu::api::high<mcu::pa_02>
+                            >();
+
+    asm volatile("nop            \n");
+    asm volatile("nop            \n");
+    asm volatile("nop            \n"); 
+
+    //    SysTick_Config(SystemCoreClock / 1000);
+    //    mcu::pa_04::port::power_on();
+    //    mcu::pa_04::mode<pin_mode::output>();
+    //
+    //    while (true) {
+    //        mcu::pa_04::low();
+    //        ::delay::ms(500);
+    //
+    //        mcu::pa_04::high();
+    //        ::delay::ms(500);
+    //    }
 
     return 0;
 }

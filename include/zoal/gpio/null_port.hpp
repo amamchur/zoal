@@ -23,16 +23,16 @@ namespace zoal { namespace gpio {
         }
 
         template<register_type>
-        static inline void low() {}
-
-        template<register_type>
-        static inline void high() {}
-
-        template<register_type>
         static inline void toggle() {}
 
         template<::zoal::gpio::pin_mode, register_type>
-        static inline void mode() {}
+        class mode {};
+
+        template<register_type>
+        class low {};
+
+        template<register_type>
+        class high {};
     };
 }}
 

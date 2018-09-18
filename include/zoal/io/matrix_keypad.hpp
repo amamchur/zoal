@@ -44,23 +44,23 @@ namespace zoal { namespace io {
             using namespace zoal::gpio;
 
             // Configure all pins to high impedance state
-            API::template mode<pin_mode::input_floating,
-                               r00,
-                               r01,
-                               r02,
-                               r03,
-                               r04,
-                               r05,
-                               r06,
-                               r07,
-                               r08,
-                               r09,
-                               r10,
-                               r11,
-                               r12,
-                               r13,
-                               r14,
-                               r15>::apply();
+            typename API::template mode<pin_mode::input_floating,
+                                        r00,
+                                        r01,
+                                        r02,
+                                        r03,
+                                        r04,
+                                        r05,
+                                        r06,
+                                        r07,
+                                        r08,
+                                        r09,
+                                        r10,
+                                        r11,
+                                        r12,
+                                        r13,
+                                        r14,
+                                        r15>();
 
             switch (row) {
             case 0x0:
@@ -140,23 +140,23 @@ namespace zoal { namespace io {
         static void begin() {
             using namespace zoal::gpio;
 
-            api::template mode<pin_mode::input_pull_up,
-                               c00,
-                               c01,
-                               c02,
-                               c03,
-                               c04,
-                               c05,
-                               c06,
-                               c07,
-                               c08,
-                               c09,
-                               c10,
-                               c11,
-                               c12,
-                               c13,
-                               c14,
-                               c15>::apply();
+            typename api::template mode<pin_mode::input_pull_up,
+                                        c00,
+                                        c01,
+                                        c02,
+                                        c03,
+                                        c04,
+                                        c05,
+                                        c06,
+                                        c07,
+                                        c08,
+                                        c09,
+                                        c10,
+                                        c11,
+                                        c12,
+                                        c13,
+                                        c14,
+                                        c15>();
         }
 
         static uint8_t read_column(uint8_t column) {
