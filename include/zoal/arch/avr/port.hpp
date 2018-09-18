@@ -1,10 +1,11 @@
 #ifndef ZOAL_ARCH_AVR_PORT_HPP
 #define ZOAL_ARCH_AVR_PORT_HPP
 
+#include "../../ct/type_list.hpp"
 #include "../../gpio/pin_mode.hpp"
 #include "../../mem/clear_and_set.hpp"
+#include "../../mem/modifier.hpp"
 #include "../../mem/segment.hpp"
-#include "../../utils/helpers.hpp"
 #include "../bus.hpp"
 
 #include <stdint.h> /* NOLINT */
@@ -39,6 +40,9 @@ namespace zoal { namespace arch { namespace avr {
     public:
         using self_type = port<Address, PinMask>;
         using register_type = uint8_t;
+
+        template<intptr_t Offset, register_type Clear, register_type Set>
+        using modifier = zoal::mem::modifier<Offset, register_type, Clear, Set>;
 
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr auto address = Address;
@@ -85,6 +89,24 @@ namespace zoal { namespace arch { namespace avr {
             cfg::DDRx::apply(mem[DDRx]);
             cfg::PORTx::apply(mem[PORTx]);
         }
+
+        template<::zoal::gpio::pin_mode PinMode, register_type Mask>
+        struct md_cls {
+            using cfg = pin_mode_cfg<PinMode, Mask & pin_mask>;
+
+            using modifiers = zoal::ct::type_list<modifier<DDRx, cfg::DDRx::clear_mask, cfg::DDRx::set_mask>,
+                                                  modifier<PORTx, cfg::PORTx::clear_mask, cfg::PORTx::set_mask>>;
+        };
+
+        template<register_type Mask>
+        struct low_cls {
+            using modifiers = zoal::ct::type_list<modifier<DDRx, 0, 0>, modifier<PORTx, Mask, 0>>;
+        };
+
+        template<register_type Mask>
+        struct high_cls {
+            using modifiers = zoal::ct::type_list<modifier<DDRx, 0, 0>, modifier<PORTx, 0, Mask>>;
+        };
 
     private:
         static zoal::mem::segment<uint8_t, Address> mem;

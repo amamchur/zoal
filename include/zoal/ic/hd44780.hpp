@@ -19,6 +19,16 @@ namespace zoal { namespace ic {
         using tools = Tools;
         using api = typename tools::api;
         using delay = typename tools::delay;
+        using gpio_cfg = typename api::template merge_actions<
+            typename api::template mode<zoal::gpio::pin_mode::output_push_pull,
+                                        RegisterSelect,
+                                        Enable,
+                                        DataBus4,
+                                        DataBus5,
+                                        DataBus6,
+                                        DataBus7>,
+            typename api::template low<RegisterSelect, Enable, DataBus6, DataBus7>,
+            typename api::template high<DataBus4, DataBus5>>;
 
         static constexpr uint8_t bit_mode = 4;
 
@@ -26,15 +36,6 @@ namespace zoal { namespace ic {
             using namespace zoal::gpio;
 
             api::template power_on<RegisterSelect, Enable, DataBus4, DataBus5, DataBus6, DataBus7>::apply();
-            api::template mode<pin_mode::output_push_pull,
-                               RegisterSelect,
-                               Enable,
-                               DataBus4,
-                               DataBus5,
-                               DataBus6,
-                               DataBus7>::apply();
-            api::template low<RegisterSelect, Enable, DataBus6, DataBus7>::apply();
-            api::template high<DataBus4, DataBus5>::apply();
 
             pulse_enable();
             delay::ms(5);
@@ -89,25 +90,25 @@ namespace zoal { namespace ic {
         using tools = Tools;
         using api = typename tools::api;
         using delay = typename tools::delay;
+        using gpio_cfg = typename api::template merge_actions<
+                typename api::template mode<zoal::gpio::pin_mode::output_push_pull,
+                        RegisterSelect,
+                        Enable,
+                        DataBus0,
+                        DataBus1,
+                        DataBus2,
+                        DataBus3,
+                        DataBus4,
+                        DataBus5,
+                        DataBus6,
+                        DataBus7>,
+                typename api::template low<RegisterSelect, Enable, DataBus6, DataBus7>,
+                typename api::template high<DataBus4, DataBus5>>;
 
         static constexpr uint8_t bit_mode = 8;
 
         static void init() {
             using namespace zoal::gpio;
-
-            api::template mode<pin_mode::output_push_pull,
-                               RegisterSelect,
-                               Enable,
-                               DataBus0,
-                               DataBus1,
-                               DataBus2,
-                               DataBus3,
-                               DataBus4,
-                               DataBus5,
-                               DataBus6,
-                               DataBus7>::apply();
-            api::template low<DataBus7, DataBus6, RegisterSelect, Enable>::apply();
-            api::template high<DataBus5, DataBus4>::apply();
 
             pulse_enable();
             delay::template us<5>();
@@ -174,6 +175,7 @@ namespace zoal { namespace ic {
         using iface = Interface;
         using address_selector = AddressSelector;
         using delay = typename iface::tools::delay;
+        using gpio_cfg = typename iface::gpio_cfg;
 
         enum : uint8_t {
             cmd_clear_display = 0x01,

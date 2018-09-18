@@ -15,6 +15,21 @@ namespace zoal { namespace ct {
         using type = First;
         using next = void;
     };
+
+    template<class List>
+    struct type_list_iterator {
+        template<class F>
+        static void for_each(F fn) {
+            fn.template operator()<typename List::type>();
+            type_list_iterator<typename List::next>::for_each(fn);
+        }
+    };
+
+    template<>
+    struct type_list_iterator<void> {
+        template<class F>
+        static void for_each(F fn) {}
+    };
 }}
 
 #endif

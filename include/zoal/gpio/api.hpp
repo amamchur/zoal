@@ -1,15 +1,19 @@
-#pragma once
-
-#ifndef ZOAL_GPIO_BASE_API_HPP
-#define ZOAL_GPIO_BASE_API_HPP
+#ifndef ZOAL_GPIO_API_HPP
+#define ZOAL_GPIO_API_HPP
 
 #include "../ct/check.hpp"
-#include "../utils/helpers.hpp"
+#include "../ct/type_list.hpp"
+#include "../mem/modifier.hpp"
 #include "pin.hpp"
 
 namespace zoal { namespace gpio {
     template<zoal::gpio::pin_mode PinMode>
     struct mode_functor {
+        template<class Port, uintptr_t Mask>
+        struct modifiers {
+            using list = typename Port::template md_cls<PinMode, Mask>::modifiers;
+        };
+
         template<class Port, uintptr_t Mask>
         static void apply() {
             Port::template mode<PinMode, static_cast<typename Port::register_type>(Mask)>();
@@ -18,6 +22,11 @@ namespace zoal { namespace gpio {
 
     struct low_functor {
         template<class Port, uintptr_t Mask>
+        struct modifiers {
+            using list = typename Port::template low_cls<Mask>::modifiers;
+        };
+
+        template<class Port, uintptr_t Mask>
         static void apply() {
             Port::template low<static_cast<typename Port::register_type>(Mask)>();
         }
@@ -25,19 +34,22 @@ namespace zoal { namespace gpio {
 
     struct high_functor {
         template<class Port, uintptr_t Mask>
+        struct modifiers {
+            using list = typename Port::template high_cls<Mask>::modifiers;
+        };
+
+        template<class Port, uintptr_t Mask>
         static void apply() {
             Port::template high<static_cast<typename Port::register_type>(Mask)>();
         }
     };
 
-    struct toggle_functor {
-        template<class Port, uintptr_t Mask>
-        static void apply() {
-            Port::template toggle<static_cast<typename Port::register_type>(Mask)>();
-        }
-    };
-
     struct power_on_functor {
+        template<class Port, uintptr_t Mask>
+        struct modifiers {
+            using list = void;
+        };
+
         template<class Port, uintptr_t Mask>
         static void apply() {
             Port::power_on();
@@ -46,6 +58,11 @@ namespace zoal { namespace gpio {
 
     struct power_off_functor {
     public:
+        template<class Port, uintptr_t Mask>
+        struct modifiers {
+            using list = void;
+        };
+
         template<class Port, uintptr_t Mask>
         static void apply() {
             Port::power_off();
@@ -111,12 +128,15 @@ namespace zoal { namespace gpio {
 
     template<class Link, class Functor, class... Pins>
     struct port_action {
+        using self_type = port_action<Link, Functor, Pins...>;
         using port = typename Link::type;
         using functor = Functor;
-        using next = port_action<typename Link::next, Functor, Pins...>;
+        using next = typename port_action<typename Link::next, Functor, Pins...>::self_type;
         using usage = port_usage<port, Pins...>;
 
         static constexpr auto mask = usage::mask;
+
+        using modifiers = typename Functor::template modifiers<port, mask>::list;
 
         port_action() = delete;
 
@@ -127,78 +147,109 @@ namespace zoal { namespace gpio {
 
     template<class Functor, class... Pins>
     struct port_action<void, Functor, Pins...> {
-        using port = null_port;
-        using functor = Functor;
-        using next = void;
-        static constexpr auto mask = 0;
+        using self_type = void;
+    };
 
-        port_action() = delete;
+    template<class Action>
+    struct apply_port_actions {
+        apply_port_actions() = delete;
+
+        static void apply() {
+            using port = typename Action::port;
+            using mds = typename Action::modifiers;
+            zoal::mem::apply_modifiers<port::address, mds>();
+
+            apply_port_actions<typename Action::next>::apply();
+        }
+    };
+
+    template<>
+    struct apply_port_actions<void> {
+        apply_port_actions() = delete;
 
         static void apply() {}
     };
 
     template<class A, class B>
-    struct merge_actions {
-        static_assert(zoal::ct::is_same<typename A::functor, typename B::functor>::value,
-                      "Actions have different functor");
-
-        static_assert(zoal::ct::is_same<typename A::port, typename B::port>::value, "Port list does not match");
-
+    struct merge_ports_actions_lists {
         using port = typename A::port;
-        using functor = typename A::functor;
-        using next = merge_actions<typename A::next, typename B::next>;
-        static constexpr auto mask = A::mask | B::mask;
+        using self_type = merge_ports_actions_lists<A, B>;
+        using am = typename A::modifiers;
+        using bm = typename B::modifiers;
+        using modifiers = typename zoal::mem::merge_modifiers<am, bm>::result;
+        using next = typename merge_ports_actions_lists<typename A::next, typename B::next>::self_type;
 
-        merge_actions() = delete;
-
-        static void apply() {
-            functor_invoker<port, functor, next, mask>::invoke();
+        merge_ports_actions_lists() {
+            apply_port_actions<self_type>::apply();
         }
     };
 
     template<>
-    struct merge_actions<void, void> {
-        using port = null_port;
-        using next = void;
-        using functor = void;
+    struct merge_ports_actions_lists<void, void> {
+        using self_type = void;
+    };
 
-        static constexpr auto mask = 0;
-
-        merge_actions() = delete;
-
-        static void apply() {}
+    template<class A, class B>
+    struct pre_merge {
+        using a = typename A::type;
+        using b = typename B::type;
+        using result = merge_ports_actions_lists<a, b>;
     };
 
     template<class A>
-    struct merge_actions<A, void> {
-        using port = null_port;
-        using next = void;
-        using functor = void;
-
-        static constexpr auto mask = 0;
-
-        merge_actions() = delete;
-
-        static void apply() {}
+    struct pre_merge<A, void> {
+        using a = typename A::type;
+        using result = typename A::type;
     };
 
-    template<class B>
-    struct merge_actions<void, B> {
-        using port = null_port;
-        using next = void;
-        using functor = void;
+    template<class A, class B>
+    struct post_merge {
+        using result = merge_ports_actions_lists<A, B>;
+    };
 
-        static constexpr auto mask = 0;
+    template<class A>
+    struct post_merge<A, void> {
+        using result = A;
+    };
 
-        merge_actions() = delete;
+    template<class Link>
+    struct merge_ports_actions_test {
+        using tmp = typename pre_merge<Link, typename Link::next>::result;
+        using next = typename merge_ports_actions_test<typename Link::next>::result;
+        using result = typename post_merge<tmp, next>::result;
+    };
 
-        static void apply() {}
+    template<>
+    struct merge_ports_actions_test<void> {
+        using result = void;
+    };
+
+    template<class ListA, class ListB, class... Lists>
+    struct merge_ports_actions {
+        using tmp = merge_ports_actions_lists<ListA, ListB>;
+        using result = typename merge_ports_actions<tmp, Lists...>::result;
+    };
+
+    template<class ListA, class ListB>
+    struct merge_ports_actions<ListA, ListB> {
+        using result = merge_ports_actions_lists<ListA, ListB>;
     };
 
     template<class Ports>
     struct api {
         using ports = Ports;
         using register_type = typename ports::type::register_type;
+
+        template<class... Actions>
+        class merge_actions {
+        public:
+            using list = zoal::ct::type_list<Actions...>;
+            using result = typename merge_ports_actions_test<list>::result;
+
+            merge_actions() {
+                apply_port_actions<result>::apply();
+            }
+        };
 
         template<class... Pins>
         using power_on = port_action<ports, power_on_functor, Pins...>;
@@ -211,9 +262,6 @@ namespace zoal { namespace gpio {
 
         template<class... Pins>
         using high = port_action<ports, high_functor, Pins...>;
-
-        template<class... Pins>
-        using toggle = port_action<ports, toggle_functor, Pins...>;
 
         template<zoal::gpio::pin_mode PinMode, class... Pins>
         using mode = port_action<ports, mode_functor<PinMode>, Pins...>;

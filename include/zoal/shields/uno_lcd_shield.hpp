@@ -49,6 +49,13 @@ namespace zoal { namespace shields {
 
         using keypad = zoal::io::analog_keypad<Tools, button_count>;
 
+        using tools = Tools;
+        using api = typename tools::api;
+        using gpio_cfg = typename api::template merge_actions<
+            typename lcd::gpio_cfg::result,
+            typename api::template mode<zoal::gpio::pin_mode::output, calibration_pin_a>,
+            typename api::template mode<zoal::gpio::pin_mode::input_pull_up, calibration_pin_b>>;
+
         static void init() {
             keypad::init();
             lcd::init();
@@ -59,9 +66,6 @@ namespace zoal { namespace shields {
 
             logger::trace() << "Buttons ADC Values: " << keypad::values[0] << " " << keypad::values[1] << " "
                             << keypad::values[2] << " " << keypad::values[3] << " " << keypad::values[4] << " ";
-
-            calibration_pin_a::template mode<pin_mode::output>();
-            calibration_pin_b::template mode<pin_mode::input_pull_up>();
 
             uint16_t value = 0;
             for (int i = 0; i < 4; i++) {
