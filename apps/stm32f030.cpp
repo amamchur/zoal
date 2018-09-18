@@ -24,17 +24,16 @@ int main() {
 
     //    mcu::api::low<mcu::pa_00, mcu::pa_01>();
 
-    mcu::api::merge_actions<mcu::api::low<mcu::pa_00>,
-                            mcu::api::low<mcu::pa_01>,
-                            mcu::api::low<mcu::pa_02>,
-                            mcu::api::high<mcu::pa_00>,
-                            mcu::api::high<mcu::pa_01>,
-                            mcu::api::high<mcu::pa_02>
-                            >();
+    mcu::api::merge<mcu::api::low<mcu::pa_00>,
+                    mcu::api::low<mcu::pa_01>,
+                    mcu::api::low<mcu::pa_02>,
+                    mcu::api::high<mcu::pa_00>,
+                    mcu::api::high<mcu::pa_01>,
+                    mcu::api::high<mcu::pa_02>>();
 
     asm volatile("nop            \n");
     asm volatile("nop            \n");
-    asm volatile("nop            \n"); 
+    asm volatile("nop            \n");
 
     //    SysTick_Config(SystemCoreClock / 1000);
     //    mcu::pa_04::port::power_on();

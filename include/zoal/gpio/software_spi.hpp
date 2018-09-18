@@ -1,11 +1,10 @@
-#pragma once
-
 #ifndef ZOAL_GPIO_SOFTWARE_SPI_HPP
 #define ZOAL_GPIO_SOFTWARE_SPI_HPP
 
-#include <stdint.h>
-#include "pin_mode.hpp"
 #include "../utils/nop.hpp"
+#include "pin_mode.hpp"
+
+#include <stdint.h>
 
 namespace zoal { namespace gpio {
     template<class Mosi, class Clock, uint8_t Polarity, uint64_t NoOps>

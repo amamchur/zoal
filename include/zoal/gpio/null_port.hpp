@@ -3,6 +3,8 @@
 
 #include "pin_mode.hpp"
 
+#include <stdint.h>
+
 namespace zoal { namespace gpio {
     class null_port {
     public:

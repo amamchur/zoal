@@ -19,10 +19,6 @@ namespace zoal { namespace gpio {
         static constexpr uint8_t offset = Offset;
         static constexpr typename port::register_type mask = not_pin ? 0 : 1u << Offset;
 
-        uint8_t value;
-
-        explicit pin(uint8_t &&v = 0) : value(static_cast<uint8_t>(v & 1u)) {}
-
         template<::zoal::gpio::pin_mode PinMode>
         static inline void mode() {
             typename port::template mode<PinMode, mask>();
@@ -68,8 +64,6 @@ namespace zoal { namespace gpio {
     template<class Pin>
     class active_drain : public Pin {
     public:
-        explicit active_drain(uint8_t &&v = 1) : Pin(v & 1u) {}
-
         static inline void on() {
             Pin::template mode<pin_mode::output>();
             Pin::low();
@@ -83,8 +77,6 @@ namespace zoal { namespace gpio {
     template<class Pin>
     class active_high : public Pin {
     public:
-        explicit active_high(uint8_t &&v = 0) : Pin(v & 1u) {}
-
         static inline void on() {
             Pin::template mode<pin_mode::output>();
             Pin::high();
@@ -99,8 +91,6 @@ namespace zoal { namespace gpio {
     template<class Pin>
     class active_low : public Pin {
     public:
-        explicit active_low(uint8_t &&v = 0) : Pin(v & 1u) {}
-
         static inline void on() {
             Pin::template mode<pin_mode::output>();
             Pin::low();

@@ -234,12 +234,12 @@ namespace zoal { namespace gpio {
         using register_type = typename ports::type::register_type;
 
         template<class... Actions>
-        class merge_actions {
+        class merge {
         public:
             using list = zoal::ct::type_list<Actions...>;
             using result = typename merge_ports_actions_test<list>::result;
 
-            merge_actions() {
+            merge() {
                 apply_port_actions<result>::apply();
             }
         };

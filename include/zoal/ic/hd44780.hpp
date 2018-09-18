@@ -19,7 +19,7 @@ namespace zoal { namespace ic {
         using tools = Tools;
         using api = typename tools::api;
         using delay = typename tools::delay;
-        using gpio_cfg = typename api::template merge_actions<
+        using gpio_cfg = typename api::template merge<
             typename api::template mode<zoal::gpio::pin_mode::output_push_pull,
                                         RegisterSelect,
                                         Enable,

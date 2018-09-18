@@ -51,7 +51,7 @@ namespace zoal { namespace shields {
 
         using tools = Tools;
         using api = typename tools::api;
-        using gpio_cfg = typename api::template merge_actions<
+        using gpio_cfg = typename api::template merge<
             typename lcd::gpio_cfg::result,
             typename api::template mode<zoal::gpio::pin_mode::output, calibration_pin_a>,
             typename api::template mode<zoal::gpio::pin_mode::input_pull_up, calibration_pin_b>>;
