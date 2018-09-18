@@ -37,10 +37,46 @@ using app3 = uno_lcd_shield<tools, zoal::pcb, mcu::adc_00>;
 //using app5 = max72xx<tools, mcu::mosi0, mcu::sclk0, zoal::pcb::ard_d10>;
 using app6 = ir_remove<zoal::pcb::ard_d10, tools, 25>;
 using app7 = tm1637<tools, zoal::pcb::ard_d10, zoal::pcb::ard_d11>;
-using app8 = keypad<keypad_type::keypad_5x4, tools>;
+using app8 = keypad<tools, keypad_type::keypad_4x4>;
 using check = compile_check<app0, app1, app2, app3, app6, app7, app8>;
 
 app8 app;
+
+void initialize_hardware() {
+    mcu::power<usart, timer, adc>::on();
+
+    mcu::mux::usart<usart, mcu::pe_00, mcu::pe_01, mcu::pe_02>::on();
+    mcu::cfg::usart<usart, 115200>::apply();
+
+    mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
+    mcu::irq::timer<timer>::enable_overflow_interrupt();
+
+    mcu::cfg::adc<adc>::apply();
+
+    mcu::enable<usart, timer, adc>::on();
+
+    zoal::utils::interrupts::on();
+}
+
+int main() {
+    using zoal::gpio::pin_mode;
+
+    initialize_hardware();
+
+    logger::info() << "Started ATmega2560";
+
+    app8::gpio_cfg();
+    app.init();
+    app.run();
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
+    while (true) {
+        app.run_once();
+    }
+    return 0;
+#pragma clang diagnostic pop
+}
 
 ISR(TIMER0_OVF_vect) {
     irq_handler::increment();
@@ -52,29 +88,4 @@ ISR(USART0_RX_vect) {
 
 ISR(USART0_UDRE_vect) {
     usart::handle_tx_irq();
-}
-
-int main() {
-    mcu::power<usart, timer, adc>::on();
-
-    mcu::mux::usart<usart, mcu::pe_00, mcu::pe_01, mcu::pe_02>::on();
-    mcu::cfg::usart<usart, 115200>::apply();
-    mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
-    mcu::irq::timer<timer>::enable_overflow_interrupt();
-
-    mcu::enable<usart, timer, adc>::on();
-
-    zoal::utils::interrupts::on();
-
-    logger::info() << "Started ATmega2560";
-
-    app.init();
-    app.run();
-
-    //#pragma clang diagnostic push
-    //#pragma clang diagnostic ignored "-Wmissing-noreturn"
-    //    while (true) {
-    //    }
-    return 0;
-    //#pragma clang diagnostic pop
 }

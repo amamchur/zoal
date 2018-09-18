@@ -19,26 +19,15 @@ enum class keypad_type {
 };
 
 template<keypad_type type>
-class keypad_builder {
+struct keypad_layout {
 };
 
 template<>
-struct keypad_builder<keypad_type::keypad_5x4> {
-    typedef zoal::io::keypad_row_selector<
-            zoal::pcb::ard_d35,
-            zoal::pcb::ard_d37,
-            zoal::pcb::ard_d39,
-            zoal::pcb::ard_d41,
-            zoal::pcb::ard_d43> row_selector;
-    typedef zoal::io::keypad_column_reader<
-            zoal::pcb::ard_d51,
-            zoal::pcb::ard_d49,
-            zoal::pcb::ard_d47,
-            zoal::pcb::ard_d45> column_reader;
-    static char layout[5][4];
+struct keypad_layout<keypad_type::keypad_5x4> {
+    static char map[5][4];
 };
 
-char keypad_builder<keypad_type::keypad_5x4>::layout[5][4] = {
+char keypad_layout<keypad_type::keypad_5x4>::map[5][4] = {
         {'f', 'F', '#', '*'},
         {'1', '2', '3', '^'},
         {'4', '5', '6', 'v'},
@@ -47,21 +36,11 @@ char keypad_builder<keypad_type::keypad_5x4>::layout[5][4] = {
 };
 
 template<>
-struct keypad_builder<keypad_type::keypad_4x4> {
-    typedef zoal::io::keypad_row_selector<
-            zoal::pcb::ard_d51,
-            zoal::pcb::ard_d49,
-            zoal::pcb::ard_d47,
-            zoal::pcb::ard_d45> row_selector;
-    typedef zoal::io::keypad_column_reader<
-            zoal::pcb::ard_d43,
-            zoal::pcb::ard_d41,
-            zoal::pcb::ard_d39,
-            zoal::pcb::ard_d37> column_reader;
-    static char layout[4][4];
+struct keypad_layout<keypad_type::keypad_4x4> {
+    static char map[4][4];
 };
 
-char keypad_builder<keypad_type::keypad_4x4>::layout[4][4] = {
+char keypad_layout<keypad_type::keypad_4x4>::map[4][4] = {
         {'1', '2', '3', 'A'},
         {'4', '5', '6', 'B'},
         {'7', '8', '9', 'C'},
@@ -69,20 +48,11 @@ char keypad_builder<keypad_type::keypad_4x4>::layout[4][4] = {
 };
 
 template<>
-struct keypad_builder<keypad_type::keypad_4x3> {
-    typedef zoal::io::keypad_row_selector<
-            zoal::pcb::ard_d51,
-            zoal::pcb::ard_d49,
-            zoal::pcb::ard_d47,
-            zoal::pcb::ard_d45> row_selector;
-    typedef zoal::io::keypad_column_reader<
-            zoal::pcb::ard_d43,
-            zoal::pcb::ard_d41,
-            zoal::pcb::ard_d39> column_reader;
-    static char layout[4][3];
+struct keypad_layout<keypad_type::keypad_4x3> {
+    static char map[4][3];
 };
 
-char keypad_builder<keypad_type::keypad_4x3>::layout[4][3] = {
+char keypad_layout<keypad_type::keypad_4x3>::map[4][3] = {
         {'1', '2', '3'},
         {'4', '5', '6'},
         {'7', '8', '9'},
@@ -90,49 +60,100 @@ char keypad_builder<keypad_type::keypad_4x3>::layout[4][3] = {
 };
 
 template<>
-struct keypad_builder<keypad_type::keypad_1x4> {
-    typedef zoal::io::keypad_row_selector<zoal::pcb::ard_d33> row_selector;
-    typedef zoal::io::keypad_column_reader<
+struct keypad_layout<keypad_type::keypad_1x4> {
+    static char map[1][4];
+};
+
+char keypad_layout<keypad_type::keypad_1x4>::map[1][4] = {
+        {'2', '1', '4', '3'},
+};
+
+
+template<class Tools, keypad_type type>
+struct keypad_builder {
+};
+
+template<class Tools>
+struct keypad_builder<Tools, keypad_type::keypad_5x4> {
+    typedef zoal::io::keypad_row_selector<Tools,
+            zoal::pcb::ard_d35,
+            zoal::pcb::ard_d37,
+            zoal::pcb::ard_d39,
+            zoal::pcb::ard_d41,
+            zoal::pcb::ard_d43> row_selector;
+    typedef zoal::io::keypad_column_reader<Tools,
+            zoal::pcb::ard_d51,
+            zoal::pcb::ard_d49,
+            zoal::pcb::ard_d47,
+            zoal::pcb::ard_d45> column_reader;
+};
+
+template<class Tools>
+struct keypad_builder<Tools, keypad_type::keypad_4x4> {
+    typedef zoal::io::keypad_row_selector<Tools,
+            zoal::pcb::ard_d51,
+            zoal::pcb::ard_d49,
+            zoal::pcb::ard_d47,
+            zoal::pcb::ard_d45> row_selector;
+    typedef zoal::io::keypad_column_reader<Tools,
+            zoal::pcb::ard_d43,
+            zoal::pcb::ard_d41,
+            zoal::pcb::ard_d39,
+            zoal::pcb::ard_d37> column_reader;
+};
+
+template<class Tools>
+struct keypad_builder<Tools, keypad_type::keypad_4x3> {
+    typedef zoal::io::keypad_row_selector<Tools,
+            zoal::pcb::ard_d51,
+            zoal::pcb::ard_d49,
+            zoal::pcb::ard_d47,
+            zoal::pcb::ard_d45> row_selector;
+    typedef zoal::io::keypad_column_reader<Tools,
+            zoal::pcb::ard_d43,
+            zoal::pcb::ard_d41,
+            zoal::pcb::ard_d39> column_reader;
+};
+
+template<class Tools>
+struct keypad_builder<Tools, keypad_type::keypad_1x4> {
+    typedef zoal::io::keypad_row_selector<Tools, zoal::pcb::ard_d33> row_selector;
+    typedef zoal::io::keypad_column_reader<Tools,
             zoal::pcb::ard_d31,
             zoal::pcb::ard_d29,
             zoal::pcb::ard_d27,
             zoal::pcb::ard_d25> column_reader;
-    static char layout[1][4];
 };
 
-char keypad_builder<keypad_type::keypad_1x4>::layout[1][4] = {
-        {'2', '1', '4', '3'},
-};
-
-template<keypad_type Type, class Tools>
+template<class Tools, keypad_type Type>
 class keypad {
 public:
-    using self_type = keypad<Type, Tools>;
-    using builder = keypad_builder<Type>;
+    using self_type = keypad<Tools, Type>;
+    using builder = keypad_builder<Tools, Type>;
+    using layout = keypad_layout<Type>;
     using row_selector = typename builder::row_selector;
     using column_reader = typename builder::column_reader;
     using logger = typename Tools::logger;
     using counter = typename Tools::counter;
     using matrix_keypad = zoal::io::matrix_keypad<Tools, row_selector, column_reader, keypad_config>;
+    using gpio_cfg = typename matrix_keypad::gpio_cfg;
 
     void init() {
-        matrix_keypad::begin();
+        matrix_keypad::init();
     }
 
-    void keypadHandler(uint8_t button, zoal::io::button_event e) {
+    void keypadHandler(size_t row, size_t column, zoal::io::button_event e) {
         using namespace zoal::io;
 
         if (e != button_event::press) {
             return;
         }
 
-        auto row = button >> 4;
-        auto column = button & 0xF;
         auto time = counter::now();
         logger::info()
                 << time
                 << " "
-                << builder::layout[row][column];
+                << layout::map[row][column];
     }
 
 #pragma clang diagnostic push

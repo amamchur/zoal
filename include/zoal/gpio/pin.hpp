@@ -3,14 +3,14 @@
 #ifndef ZOAL_GPIO_PIN_HPP
 #define ZOAL_GPIO_PIN_HPP
 
-#include <stdint.h> /* NOLINT */
-
-#include "pin_mode.hpp"
 #include "null_port.hpp"
+#include "pin_mode.hpp"
+
+#include <stdint.h> /* NOLINT */
 
 namespace zoal { namespace gpio {
 
-    template<class Port, uint8_t Offset, class ... Mixin>
+    template<class Port, uint8_t Offset, class... Mixin>
     class pin : public Mixin... {
     public:
         using port = Port;
@@ -41,7 +41,7 @@ namespace zoal { namespace gpio {
             if (Value) {
                 typename port::template high<mask>();
             } else {
-                typename  port::template low<mask>();
+                typename port::template low<mask>();
             }
         }
 
@@ -54,12 +54,11 @@ namespace zoal { namespace gpio {
         }
 
         static inline void toggle() {
-            typename port::template toggle<mask>();
+            port::template toggle<mask>();
         }
     };
 
-    class null_pin : public pin<null_port, 0> {
-    };
+    class null_pin : public pin<null_port, 0> {};
 
     template<class Pin>
     class active_drain : public Pin {

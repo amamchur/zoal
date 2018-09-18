@@ -32,6 +32,21 @@ namespace zoal { namespace ct {
         template<class F>
         static void for_each(F fn) {}
     };
+
+    template<class List, size_t Index = 0>
+    struct type_list_index_iterator {
+        template<class F>
+        static void for_each(const F &fn) {
+            fn.template operator()<typename List::type>(Index);
+            type_list_index_iterator<typename List::next, Index + 1>::for_each(fn);
+        }
+    };
+
+    template<size_t Index>
+    struct type_list_index_iterator<void, Index> {
+        template<class F>
+        static void for_each(F fn) {}
+    };
 }}
 
 #endif

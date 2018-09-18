@@ -2,6 +2,7 @@
 #define ZOAL_IO_MATRIX_KEYPAD_HPP
 
 #include "../ct/helpers.hpp"
+#include "../ct/type_list.hpp"
 #include "../gpio/pin.hpp"
 #include "../gpio/pin_mode.hpp"
 #include "../utils/helpers.hpp"
@@ -11,189 +12,72 @@
 #include <string.h>
 
 namespace zoal { namespace io {
-    template<class r00,
-             class r01 = ::zoal::gpio::null_pin,
-             class r02 = ::zoal::gpio::null_pin,
-             class r03 = ::zoal::gpio::null_pin,
-             class r04 = ::zoal::gpio::null_pin,
-             class r05 = ::zoal::gpio::null_pin,
-             class r06 = ::zoal::gpio::null_pin,
-             class r07 = ::zoal::gpio::null_pin,
-             class r08 = ::zoal::gpio::null_pin,
-             class r09 = ::zoal::gpio::null_pin,
-             class r10 = ::zoal::gpio::null_pin,
-             class r11 = ::zoal::gpio::null_pin,
-             class r12 = ::zoal::gpio::null_pin,
-             class r13 = ::zoal::gpio::null_pin,
-             class r14 = ::zoal::gpio::null_pin,
-             class r15 = ::zoal::gpio::null_pin>
+    template<class Tools, class... Rows>
     class keypad_row_selector {
     public:
-        static constexpr auto rows = zoal::ct::
-            pin_count<r00, r01, r02, r03, r04, r05, r06, r07, r08, r09, r10, r11, r12, r13, r14, r15>::value;
+        using tools = Tools;
+        using api = typename tools::api;
+        using high_impedance = typename api::template mode<zoal::gpio::pin_mode::input_floating, Rows...>;
+        using pins = zoal::ct::type_list<Rows...>;
 
-        template<class RowPin>
-        static inline void to_ground() {
-            using namespace zoal::gpio;
-            RowPin::template mode<pin_mode::output_push_pull>();
-            RowPin::low();
-        }
+        static constexpr auto rows = pins::count;
 
-        template<class API>
-        static void select_row(uint8_t row) {
-            using namespace zoal::gpio;
+        class to_ground {
+        public:
+            explicit to_ground(size_t index)
+                : index(index) {}
 
-            // Configure all pins to high impedance state
-            typename API::template mode<pin_mode::input_floating,
-                                        r00,
-                                        r01,
-                                        r02,
-                                        r03,
-                                        r04,
-                                        r05,
-                                        r06,
-                                        r07,
-                                        r08,
-                                        r09,
-                                        r10,
-                                        r11,
-                                        r12,
-                                        r13,
-                                        r14,
-                                        r15>();
-
-            switch (row) {
-            case 0x0:
-                to_ground<r00>();
-                break;
-            case 0x1:
-                to_ground<r01>();
-                break;
-            case 0x2:
-                to_ground<r02>();
-                break;
-            case 0x3:
-                to_ground<r03>();
-                break;
-            case 0x4:
-                to_ground<r04>();
-                break;
-            case 0x5:
-                to_ground<r05>();
-                break;
-            case 0x6:
-                to_ground<r06>();
-                break;
-            case 0x7:
-                to_ground<r07>();
-                break;
-            case 0x8:
-                to_ground<r08>();
-                break;
-            case 0x9:
-                to_ground<r09>();
-                break;
-            case 0xA:
-                to_ground<r10>();
-                break;
-            case 0xB:
-                to_ground<r11>();
-                break;
-            case 0xC:
-                to_ground<r12>();
-                break;
-            case 0xD:
-                to_ground<r13>();
-                break;
-            case 0xE:
-                to_ground<r14>();
-                break;
-            default:
-                to_ground<r15>();
-                break;
+            template<class T>
+            void operator()(size_t idx) const {
+                using namespace zoal::gpio;
+                if (idx == index) {
+                    T::template mode<pin_mode::output_push_pull>();
+                    T::low();
+                }
             }
+
+        private:
+            size_t index;
+        };
+
+        static void select_row(size_t row) {
+            high_impedance();
+            zoal::ct::type_list_index_iterator<pins>::for_each(to_ground(row));
         }
     };
 
-    template<class c00,
-             class c01 = ::zoal::gpio::null_pin,
-             class c02 = ::zoal::gpio::null_pin,
-             class c03 = ::zoal::gpio::null_pin,
-             class c04 = ::zoal::gpio::null_pin,
-             class c05 = ::zoal::gpio::null_pin,
-             class c06 = ::zoal::gpio::null_pin,
-             class c07 = ::zoal::gpio::null_pin,
-             class c08 = ::zoal::gpio::null_pin,
-             class c09 = ::zoal::gpio::null_pin,
-             class c10 = ::zoal::gpio::null_pin,
-             class c11 = ::zoal::gpio::null_pin,
-             class c12 = ::zoal::gpio::null_pin,
-             class c13 = ::zoal::gpio::null_pin,
-             class c14 = ::zoal::gpio::null_pin,
-             class c15 = ::zoal::gpio::null_pin>
+    template<class Tools, class... Columns>
     class keypad_column_reader {
     public:
-        static constexpr auto columns = zoal::ct::
-            pin_count<c00, c01, c02, c03, c04, c05, c06, c07, c08, c09, c10, c11, c12, c13, c14, c15>::value;
+        using tools = Tools;
+        using api = typename tools::api;
 
-        template<class api>
-        static void begin() {
-            using namespace zoal::gpio;
+        using pins = zoal::ct::type_list<Columns...>;
+        using gpio_cfg = typename api::template mode<zoal::gpio::pin_mode::input_pull_up, Columns...>;
 
-            typename api::template mode<pin_mode::input_pull_up,
-                                        c00,
-                                        c01,
-                                        c02,
-                                        c03,
-                                        c04,
-                                        c05,
-                                        c06,
-                                        c07,
-                                        c08,
-                                        c09,
-                                        c10,
-                                        c11,
-                                        c12,
-                                        c13,
-                                        c14,
-                                        c15>();
-        }
+        static constexpr auto columns = pins::count;
 
-        static uint8_t read_column(uint8_t column) {
-            switch (column) {
-            case 0x0:
-                return c00::read();
-            case 0x1:
-                return c01::read();
-            case 0x2:
-                return c02::read();
-            case 0x3:
-                return c03::read();
-            case 0x4:
-                return c04::read();
-            case 0x5:
-                return c05::read();
-            case 0x6:
-                return c06::read();
-            case 0x7:
-                return c07::read();
-            case 0x8:
-                return c08::read();
-            case 0x9:
-                return c09::read();
-            case 0xA:
-                return c10::read();
-            case 0xB:
-                return c11::read();
-            case 0xC:
-                return c12::read();
-            case 0xD:
-                return c13::read();
-            case 0xE:
-                return c14::read();
-            default:
-                return c15::read();
+        class pin_value {
+        public:
+            explicit pin_value(size_t index)
+                : index(index) {}
+
+            template<class T>
+            void operator()(size_t idx) const {
+                using namespace zoal::gpio;
+                if (idx == index) {
+                    value = T::read();
+                }
             }
+
+            mutable uint8_t value{0};
+            size_t index;
+        };
+
+        static uint8_t read_column(size_t column) {
+            pin_value pv(column);
+            zoal::ct::type_list_index_iterator<pins>::for_each(pv);
+            return pv.value;
         }
     };
 
@@ -215,14 +99,14 @@ namespace zoal { namespace io {
         using delay = typename Tools::delay;
         using counter = typename Tools::counter;
         using counter_type = typename counter::value_type;
+        using gpio_cfg = typename ColumnReader::gpio_cfg;
 
         static constexpr uint8_t rows = RowSelector::rows;
         static constexpr uint8_t columns = ColumnReader::columns;
 
         matrix_keypad() = delete;
 
-        static void begin() {
-            ColumnReader::template begin<api>();
+        static void init() {
             memset(states, 0, sizeof(states));
         }
 
@@ -233,33 +117,32 @@ namespace zoal { namespace io {
             counter_type dt = now - prevTime;
             uint8_t allEvents = 0;
 
-            for (uint8_t i = 0; i < rows; i++) {
-                RowSelector::template select_row<api>(i);
+            for (size_t r = 0; r < rows; r++) {
+                RowSelector::select_row(r);
                 delay::template us<Config::read_delay_us>();
 
-                for (uint8_t j = 0; j < columns; j++) {
-                    uint8_t v = 1 - ColumnReader::read_column(j);
-                    uint8_t state = machine.handle_button(dt, states[i][j], v);
+                for (size_t c = 0; c < columns; c++) {
+                    uint8_t v = 1 - ColumnReader::read_column(c);
+                    uint8_t state = machine.handle_button(dt, states[r][c], v);
 
                     uint8_t events = state & button_state_trigger;
                     allEvents |= events;
 
                     if (events) {
-                        uint8_t button = i << 4 | j;
                         if ((events & button_state_trigger_down) != 0) {
-                            handler(button, button_event::down);
+                            handler(r, c, button_event::down);
                         }
 
                         if ((events & button_state_trigger_press) != 0) {
-                            handler(button, button_event::press);
+                            handler(r, c, button_event::press);
                         }
 
                         if ((events & button_state_trigger_up) != 0) {
-                            handler(button, button_event::up);
+                            handler(r, c, button_event::up);
                         }
                     }
 
-                    states[i][j] = state & ~button_state_trigger;
+                    states[r][c] = state & ~button_state_trigger;
                 }
             }
 
@@ -270,7 +153,7 @@ namespace zoal { namespace io {
 
         template<class T, class M>
         static void handle(T *obj, M m) {
-            handle(zoal::utils::method_invoker<T, uint8_t, button_event>(obj, m));
+            handle(zoal::utils::method_invoker<T, size_t, size_t, button_event>(obj, m));
         }
 
     protected:
@@ -282,9 +165,9 @@ namespace zoal { namespace io {
     typename matrix_keypad<Tools, RowSelector, ColumnReader, Config, Machine>::counter_type
         matrix_keypad<Tools, RowSelector, ColumnReader, Config, Machine>::prevTime = 0;
 
-    template<class tools, class row_selector, class column_reader, class config, class machine>
-    uint8_t matrix_keypad<tools, row_selector, column_reader, config, machine>::states[row_selector::rows]
-                                                                                      [column_reader::columns];
+    template<class tools, class RowSelector, class ColumnReader, class Config, class Machine>
+    uint8_t matrix_keypad<tools, RowSelector, ColumnReader, Config, Machine>::states[RowSelector::rows]
+                                                                                    [ColumnReader::columns];
 }}
 
 #endif
