@@ -17,14 +17,13 @@ namespace zoal { namespace ct {
     struct belongs_to_port : is_same<typename Pin::port, Port> {};
 
     template<typename T, typename... Rest>
-    struct has_duplicates : false_type {};
+    struct has_same : false_type {};
 
-    template<typename T, typename First>
-    struct has_duplicates<T, First> : is_same<T, First> {};
+    template<typename T, typename U>
+    struct has_same<T, U> : is_same<T, U> {};
 
-    template<typename T, typename First, typename... Rest>
-    struct has_duplicates<T, First, Rest...>
-        : integral_constant<bool, is_same<T, First>::value || has_duplicates<T, Rest...>::value> {};
+    template<typename T, typename U, typename... O>
+    struct has_same<T, U, O...> : integral_constant<bool, is_same<T, U>::value || has_same<T, O...>::value> {};
 }}
 
 #endif

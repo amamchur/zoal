@@ -10,8 +10,9 @@ namespace zoal { namespace shields {
 	template<class Board, class Tools, void (*ButtonCallback)(uint8_t, ::zoal::io::button_event) = nullptr>
 	class uno_multi_functional_shield_buttons {
 	protected:
+		using tools = Tools;
 		using self = uno_multi_functional_shield_buttons<Board, Tools, ButtonCallback>;
-		using Counter = typename Tools::Counter;
+		using counter = typename tools::counter;
 
 		void init_buttons() {
 			button1.begin();
@@ -37,9 +38,9 @@ namespace zoal { namespace shields {
 			ButtonCallback(2, event);
 		}
 
-		::zoal::io::button_ext<typename Board::BA01, Counter> button1;
-		::zoal::io::button_ext<typename Board::BA02, Counter> button2;
-		::zoal::io::button_ext<typename Board::BA03, Counter> button3;
+		::zoal::io::button_ext<typename Board::BA01, counter> button1;
+		::zoal::io::button_ext<typename Board::BA02, counter> button2;
+		::zoal::io::button_ext<typename Board::BA03, counter> button3;
 	};
 
 	template<class Board, class Tools>

@@ -5,7 +5,7 @@
 #include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
-    template<class MOSI, class MISO, class SCLK, class SS>
+    template<uintptr_t Address>
     class base_spi {
     public:
         enum : uint8_t {
@@ -15,8 +15,6 @@ namespace zoal { namespace arch { namespace avr {
             DORDx = 5,
             SPI2Xx = 0,
         };
-
-        using self_type = base_spi<MISO, MISO, SCLK, SS>;
 
         static constexpr uintptr_t SPCRx = 0;
         static constexpr uintptr_t SPSRx = 1;
@@ -34,63 +32,6 @@ namespace zoal { namespace arch { namespace avr {
 
             while (!(m8[SPSRx] & (1u << SPIFx)));
             return m8[SPDRx];
-        }
-
-        static void begin() {
-            using namespace zoal::gpio;
-            MOSI::template mode<pin_mode::output>();
-            SCLK::template mode<pin_mode::output>();
-            SS::template mode<pin_mode::output>();
-            SS::high();
-        }
-    };
-
-    template<class MOSI, class MISO, class SCLK, class SS, uint8_t Mode>
-    class msbf_spi : public base_spi<MOSI, MISO, SCLK, SS> {
-    public:
-        using base_type = base_spi<MOSI, MISO, SCLK, SS>;
-
-        template<class T>
-        static T transfer(T data) {
-            T result = 0;
-            uint8_t i = sizeof(T) * 8;
-            do {
-                i -= 8;
-                result |= base_type::transfer_byte((data >> i) & 0xFF) << i;
-            } while (i != 0);
-            return result;
-        }
-
-        static void setup() {
-            zoal::mem::segment<uint8_t, 0x4C> m8;
-            m8[base_type::SPCRx] = static_cast<uint8_t>(1 << base_type::SPEx | 1 << base_type::MSTRx | Mode);
-            m8[base_type::SPSRx] = 1 << base_type::SPI2Xx;
-            m8.happyInspection();
-        }
-    };
-
-    template<class MOSI, class MISO, class SCLK, class SS, uint8_t Mode>
-    class lsbf_spi : public base_spi<MOSI, MISO, SCLK, SS> {
-    public:
-        using base_type = base_spi<MOSI, MISO, SCLK, SS>;
-
-        static void setup() {
-            zoal::mem::segment<uint8_t, 0x4C> m8;
-            m8[base_type::SPCRx] = static_cast<uint8_t>(1 << base_type::SPEx | 1 << base_type::MSTRx | 1 << base_type::DORDx | Mode);
-            m8[base_type::SPSRx] = 1 << base_type::SPI2Xx;
-            m8.happyInspection();
-        }
-
-        template<class T>
-        static T transfer(T data) {
-            T result = 0;
-            uint8_t i = 0;
-            uint8_t j = sizeof(T) * 8;
-            do {
-                i += 8;
-                result = base_type::transfer_byte((data >> i) & 0xFF) << i;
-            } while (i != j);
-            return result;
         }
     };
 }}}

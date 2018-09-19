@@ -5,16 +5,16 @@
 #include "../gpio/shift_out.hpp"
 
 namespace zoal { namespace ic {
-    template<class Tools, class SerialDataInput, class StorageRegisterClock, class ShiftRegisterClock>
+    template<class Tools, class SerialDataInput, class ShiftRegisterClock, class StorageRegisterClock>
     class ic74hc595 {
     public:
         using tools = Tools;
         using api = typename tools::api;
-        using self_type = ic74hc595<Tools, SerialDataInput, StorageRegisterClock, ShiftRegisterClock>;
+        using self_type = ic74hc595<Tools, SerialDataInput, ShiftRegisterClock, StorageRegisterClock>;
         using gpio_cfg = typename api::template mode<zoal::gpio::pin_mode::output_push_pull,
                                                      SerialDataInput,
-                                                     StorageRegisterClock,
-                                                     ShiftRegisterClock>;
+                                                     ShiftRegisterClock,
+                                                     StorageRegisterClock>;
 
         class transaction {
         public:

@@ -139,7 +139,6 @@ public:
     using gpio_cfg = typename matrix_keypad::gpio_cfg;
 
     void init() {
-        matrix_keypad::init();
     }
 
     void keypadHandler(size_t row, size_t column, zoal::io::button_event e) {

@@ -58,14 +58,14 @@ int main() {
             update_flags = 0;
 
             matrix.clear();
-            auto end = zoal::utils::to_exponents(adc_value, &matrix.data[0][0], 10);
+            auto end = zoal::utils::split_number(adc_value, &matrix.data[0][0], 10);
             if (end == &matrix.data[0][0]) {
                 end++;
             }
 
             zoal::utils::apply(zoal::data::segment7::gfed_hex, &matrix.data[0][0], end);
 
-            end = zoal::utils::to_exponents(adc_value >> 2, &matrix.data[0][4], 10);
+            end = zoal::utils::split_number(adc_value >> 2, &matrix.data[0][4], 10);
             if (end == &matrix.data[0][4]) {
                 end++;
             }

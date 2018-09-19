@@ -23,6 +23,11 @@ namespace zoal { namespace shields {
     template<class Tools, class Board, class Adc, class Cfg = uno_lcd_shield_config<>>
     class uno_lcd_shield {
     public:
+        using tools = Tools;
+        using mcu = typename Board::mcu;
+        using api = typename tools::api;
+        using logger = typename Tools::logger;
+
         using interface_type = zoal::ic::hd44780_interface_4bit<Tools,
                                                                 typename Board::ard_d08,
                                                                 typename Board::ard_d09,
@@ -30,34 +35,25 @@ namespace zoal { namespace shields {
                                                                 typename Board::ard_d05,
                                                                 typename Board::ard_d06,
                                                                 typename Board::ard_d07>;
-
-        template<class T, class U>
-        using opt = zoal::ct::optional_type<T, U>;
-
-        using calibration_pin_a = typename opt<typename Cfg::calibration_pin_a, typename Board::ard_d02>::type;
-        using calibration_pin_b = typename opt<typename Cfg::calibration_pin_b, typename Board::ard_d03>::type;
-        using logger = typename Tools::logger;
-
-        using analog_pin = typename Board::ard_a00;
-        using mcu = typename Board::mcu;
-        using adc = Adc;
-
         using address_selector = zoal::ic::hd44780_address_selector<16, 2>;
         using lcd = zoal::ic::hd44780<interface_type, address_selector>;
 
-        static constexpr uint8_t button_count = 5;
+        template<class T, class U>
+        using opt = zoal::ct::optional_type<T, U>;
+        using calibration_pin_a = typename opt<typename Cfg::calibration_pin_a, typename Board::ard_d02>::type;
+        using calibration_pin_b = typename opt<typename Cfg::calibration_pin_b, typename Board::ard_d03>::type;
 
+        static constexpr uint8_t button_count = 5;
+        using analog_pin = typename Board::ard_a00;
+        using adc = Adc;
         using keypad = zoal::io::analog_keypad<Tools, button_count>;
 
-        using tools = Tools;
-        using api = typename tools::api;
         using gpio_cfg = typename api::template merge<
             typename lcd::gpio_cfg::result,
             typename api::template mode<zoal::gpio::pin_mode::output, calibration_pin_a>,
             typename api::template mode<zoal::gpio::pin_mode::input_pull_up, calibration_pin_b>>;
 
         static void init() {
-            keypad::init();
             lcd::init();
         }
 

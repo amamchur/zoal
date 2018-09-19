@@ -6,6 +6,7 @@
 #include <zoal/gpio/pin_mode.hpp>
 #include <zoal/ic/ic74hc595.hpp>
 #include <zoal/io/button.hpp>
+#include <zoal/utils/helpers.hpp>
 
 template<class Tools, class Board>
 class multi_function_shield {
@@ -16,10 +17,10 @@ public:
     using delay = typename tools::delay;
     using counter = typename tools::counter;
 
-    using serial_data_input = typename Board::ard_d08;
-    using storage_register_clock = typename Board::ard_d04;
-    using shift_register_clock = typename Board::ard_d07;
-    using display_type = zoal::ic::ic74hc595<Tools, serial_data_input, storage_register_clock, shift_register_clock>;
+    using data_input = typename Board::ard_d08;
+    using shift_clock = typename Board::ard_d07;
+    using storage_clock = typename Board::ard_d04;
+    using display_type = zoal::ic::ic74hc595<Tools, data_input, shift_clock, storage_clock>;
 
     using button1_type = zoal::io::button_ext<tools, typename Board::ard_a01>;
     using button2_type = zoal::io::button_ext<tools, typename Board::ard_a02>;
@@ -65,6 +66,23 @@ public:
             auto d = static_cast<uint8_t>(v & 0x0F);
             segments[i] = ~zoal::data::segment7::abcd_hex(d);
             v >>= 4;
+        }
+    }
+
+    void dec_to_segments(uint16_t value) {
+        uint8_t buffer[5] = {0};
+        auto r = zoal::utils::split_number(value, buffer, 10);
+        if (r == buffer) {
+            r++;
+        }
+
+        auto l = buffer;
+        for (int i = 3; i >= 0; i--) {
+            if (l < r) {
+                segments[i] = ~zoal::data::segment7::abcd_hex(*l++);
+            } else {
+                segments[i] = 0xff;
+            }
         }
     }
 
