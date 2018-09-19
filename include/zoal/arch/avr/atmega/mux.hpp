@@ -1,6 +1,7 @@
 #ifndef ZOAL_ARCH_AVR_MUX_HPP
 #define ZOAL_ARCH_AVR_MUX_HPP
 
+#include "../../../ct/check.hpp"
 #include "../../../gpio/pin.hpp"
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/segment.hpp"
@@ -10,6 +11,9 @@ namespace zoal { namespace metadata {
     template<uintptr_t UsartAddress, uint32_t PortAddress, uint8_t PinOffset>
     struct usart_mapping;
 
+    template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
+    struct spi_mapping;
+
     template<class Adc, class Pin>
     struct adc_mapping;
 
@@ -18,13 +22,24 @@ namespace zoal { namespace metadata {
 }}
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
+    using zoal::gpio::pin_mode;
     using zoal::mem::clear_and_set;
     using zoal::metadata::adc_mapping;
     using zoal::metadata::pwm_channel_mapping;
+    using zoal::metadata::spi_mapping;
     using zoal::metadata::usart_mapping;
 
-    template<class Api>
+    template<class I>
     class mux {
+    private:
+        using api = I;
+
+        template<zoal::gpio::pin_mode Mode, class... T>
+        using mode = typename api::template mode<Mode, T...>;
+
+        template<class... T>
+        using merge = typename api::template merge<T...>;
+
     public:
         template<class U, class Rx, class Tx, class Ck = zoal::gpio::null_pin>
         class usart {
@@ -83,6 +98,28 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static void off() {
                 segment<uint8_t, T::address> mem;
                 TCCRxA_cfg_off::apply(mem[T::TCCRxA]);
+            }
+        };
+
+        template<class S, class Mosi, class Miso, class Clock, class SlaveSelect>
+        class spi {
+        public:
+            using mosi = spi_mapping<S::address, Mosi::port::address, Mosi::offset>;
+            using miso = spi_mapping<S::address, Miso::port::address, Miso::offset>;
+            using clock = spi_mapping<S::address, Clock::port::address, Clock::offset>;
+            using ss = spi_mapping<S::address, SlaveSelect::port::address, SlaveSelect::offset>;
+
+            static_assert(mosi::mosi >= 0, "Specified MOSI pin could not be connected to SPI");
+            static_assert(miso::miso >= 0, "Specified MISO pin could not be connected to SPI");
+            static_assert(clock::clock >= 0, "Specified CLK pin could not be connected to SPI");
+            static_assert(ss::slave_select >= 0, "Specified SS pin could not be connected to SPI");
+
+            static void on() {
+                merge<mode<pin_mode::output, Mosi, Clock, SlaveSelect>, mode<pin_mode::input, Miso>>();
+            }
+
+            static void off() {
+                mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>();
             }
         };
     };

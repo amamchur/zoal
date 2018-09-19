@@ -189,6 +189,40 @@ class Avr {
         });
     }
 
+    collectSPIs(root) {
+        let array = Avr.getByName(root.modules[0].module, /^SPI/);
+        let spis = [];
+        this.mcu.spis = [];
+
+        for (let i = 0; i < array.length; i++) {
+            let m = array[i];
+            let name = m.$.name;
+            let group = m['register-group'][0];
+            let address = Avr.registerOffset(group.register, /^SPCR/);
+            let periph = Avr.getByName(root.devices[0].device[0].peripherals[0].module, /^SPI/)[0];
+            let signalNodes = (periph.instance[0].signals || [{}])[0].signal || [];
+            let signals = [];
+            for (let j = 0; j < signalNodes.length; j++) {
+                let signal = signalNodes[j];
+                let pad = signal.$.pad.toLowerCase();
+                let port = pad.replace(/p(\w)\d/, '$1');
+                let offset = pad.replace(/p\w(\d)/, '$1');
+                signals.push({
+                    group: signal.$.group,
+                    pad: pad,
+                    port: this.mcu.portsMap[port],
+                    offset: offset - 0
+                });
+            }
+
+            this.mcu.spis.push({
+                name: 'spi_00',
+                address: address,
+                signals: signals
+            });
+        }
+    }
+
     collectUSARTs(root) {
         let array = Avr.getByName(root.modules[0].module, /^USART$/);
         let moduleMap = {};
@@ -301,6 +335,7 @@ class Avr {
         this.collectPorts(modules);
         this.collectTimers(root, modules);
         this.collectUSARTs(root);
+        this.collectSPIs(root);
         this.collectADCs(root);
     }
 

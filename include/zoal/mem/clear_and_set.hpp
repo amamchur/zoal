@@ -37,7 +37,7 @@ namespace zoal { namespace mem {
 
     template<uintptr_t Set, uint8_t Shift>
     struct clear_and_set<Set, Set, Shift> {
-        static constexpr uint32_t clear_mask = 0;
+        static constexpr uint32_t clear_mask = Set << Shift;
         static constexpr uint32_t set_mask = static_cast<uint32_t>(static_cast<uint64_t>(Set) << Shift);
 
         template<class T>

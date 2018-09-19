@@ -7,7 +7,7 @@
 #include "templates/tm1637.hpp"
 #include "templates/uno_lcd_shield.hpp"
 
-#include <zoal/gpio/software_spi.hpp>
+#include <zoal/periph/software_spi.hpp>
 #include <zoal/ic/max72xx.hpp>
 #include <zoal/io/analog_keypad.hpp>
 #include <zoal/io/button.hpp>

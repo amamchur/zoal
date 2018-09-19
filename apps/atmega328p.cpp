@@ -8,10 +8,11 @@
 #include "templates/uno_lcd_shield.hpp"
 
 #include <avr/eeprom.h>
+#include <zoal/arch/avr/atmega/spi.hpp>
 #include <zoal/arch/avr/port.hpp>
 #include <zoal/board/arduino_uno.hpp>
 #include <zoal/data/rx_tx_buffer.hpp>
-#include <zoal/gpio/software_spi.hpp>
+#include <zoal/periph/software_spi.hpp>
 #include <zoal/ic/max72xx.hpp>
 #include <zoal/io/analog_keypad.hpp>
 #include <zoal/io/button.hpp>
@@ -32,6 +33,7 @@ using timer = mcu::timer_00;
 using irq_handler = counter::handler<mcu::frequency, 64, timer>;
 using usart = mcu::usart_00<zoal::data::rx_tx_buffer<8, 8>>;
 using adc = mcu::adc_00;
+using spi = mcu::spi_00;
 using logger = zoal::utils::terminal_logger<usart, zoal::utils::log_level::trace>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using delay = tools::delay;
@@ -69,13 +71,7 @@ void initialize_hardware() {
 
 void initialize_application() {
     eeprom_read_block(keypad::values, lcd_buttons_values, sizeof(keypad::values));
-    asm volatile("nop            \n");
-    asm volatile("nop            \n");
-    asm volatile("nop            \n");
     app3::gpio_cfg();
-    asm volatile("nop            \n");
-    asm volatile("nop            \n");
-    asm volatile("nop            \n");
     app.init();
     eeprom_write_block(keypad::values, lcd_buttons_values, sizeof(keypad::values));
 }
@@ -86,10 +82,38 @@ int main() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
-    initialize_application();
+    //    initialize_application();
 
+#if 1
+    mcu::cfg::spi<spi, 2>::apply();
+    mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::on();
+    mcu::enable<spi>::on();
+
+    using max = zoal::ic::max72xx<spi, zoal::pcb::ard_d08>;
+#else
+
+    using sw_spi = zoal::gpio::tx_software_spi<zoal::pcb::ard_d11, zoal::pcb::ard_d13>::msbf0;
+    sw_spi::init();
+    using max = zoal::ic::max72xx<sw_spi, zoal::pcb::ard_d08>;
+#endif
+
+    using matrix_type = zoal::ic::max72xx_data<1>;
+    matrix_type matrix;
+
+    max::init(matrix_type::devices);
+
+    uint32_t value = 0;
     while (true) {
-        app.run_once();
+        matrix.clear();
+        auto end = zoal::utils::split_number(value, &matrix.data[0][0], 10);
+        if (end == &matrix.data[0][0]) {
+            end++;
+        }
+
+        zoal::utils::apply(zoal::data::segment7::gfed_hex, &matrix.data[0][0], end);
+        max::display(matrix);
+//        delay::ms<100>();
+        value++;
     }
     return 0;
 #pragma clang diagnostic pop

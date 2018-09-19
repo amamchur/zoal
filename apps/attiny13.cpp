@@ -1,6 +1,6 @@
 #include <avr/interrupt.h>
 #include <zoal/data/segment7.hpp>
-#include <zoal/gpio/software_spi.hpp>
+#include <zoal/periph/software_spi.hpp>
 #include <zoal/ic/max72xx.hpp>
 #include <zoal/mcu/attiny13a.hpp>
 #include <zoal/utils/helpers.hpp>

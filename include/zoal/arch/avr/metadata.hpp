@@ -16,8 +16,19 @@ namespace zoal { namespace metadata {
         static constexpr int ck = Ck;
     };
 
+    template<int Mosi, int Miso, int Clock, int SlaveSelect>
+    struct base_spi_mapping {
+        static constexpr int mosi = Mosi;
+        static constexpr int miso = Miso;
+        static constexpr int clock = Clock;
+        static constexpr int slave_select = SlaveSelect;
+    };
+
     template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
-    struct usart_mapping : public base_usart_mapping<-1, -1, -1> {};
+    struct usart_mapping : base_usart_mapping<-1, -1, -1> {};
+
+    template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
+    struct spi_mapping : base_spi_mapping<-1, -1, -1, -1> {};
 
     template<::zoal::periph::timer_mode Mode>
     struct timer_mode {};

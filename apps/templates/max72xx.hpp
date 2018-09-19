@@ -4,7 +4,7 @@
 #define APPS_MAX72XX_APP_HPP
 
 #include <zoal/gpio/pin_mode.hpp>
-#include <zoal/gpio/software_spi.hpp>
+#include <zoal/periph/software_spi.hpp>
 #include <zoal/ic/max72xx.hpp>
 
 const uint64_t images[] = {

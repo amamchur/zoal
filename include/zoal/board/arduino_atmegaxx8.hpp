@@ -1,7 +1,6 @@
 #ifndef ZOAL_BOARD_ARDUINO_ATMAGEXX8_HPP
 #define ZOAL_BOARD_ARDUINO_ATMAGEXX8_HPP
 
-#include "../periph/pwm_connection.hpp"
 #include "../mcu/atmega328p.hpp"
 
 namespace zoal { namespace board {

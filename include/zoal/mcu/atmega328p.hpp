@@ -10,6 +10,7 @@
 #include <zoal/arch/avr/atmega/irq.hpp>
 #include <zoal/arch/avr/atmega/metadata.hpp>
 #include <zoal/arch/avr/atmega/mux.hpp>
+#include <zoal/arch/avr/atmega/spi.hpp>
 #include <zoal/arch/avr/atmega/timer16.hpp>
 #include <zoal/arch/avr/atmega/timer8.hpp>
 #include <zoal/arch/avr/atmega/usart.hpp>
@@ -36,8 +37,10 @@ namespace zoal { namespace mcu {
         using timer_01 = ::zoal::arch::avr::atmega::timer16<0x0080, 1>;
         using timer_02 = ::zoal::arch::avr::atmega::timer8<0x00B0, 2, true>;
 
+        using spi_00 = ::zoal::arch::avr::atmega::spi<0x004C, 0>;
+
         template<class Buffer>
-        using usart_00 = typename ::zoal::arch::avr::usart<0x00C0, 0, Buffer>;
+        using usart_00 = typename ::zoal::arch::avr::atmega::usart<0x00C0, 0, Buffer>;
 
         using adc_00 = ::zoal::arch::avr::atmega::adc<0x0078, 0>;
 
@@ -116,6 +119,18 @@ namespace zoal { namespace metadata {
 
     template<>
     struct usart_mapping<0x00C0, 0x0029, 4> : base_usart_mapping<-1, -1, 0> {};
+
+    template<>
+    struct spi_mapping<0x004C, 0x0023, 2> : base_spi_mapping<-1, -1, -1, 0> {};
+
+    template<>
+    struct spi_mapping<0x004C, 0x0023, 3> : base_spi_mapping<0, -1, -1, -1> {};
+
+    template<>
+    struct spi_mapping<0x004C, 0x0023, 4> : base_spi_mapping<-1, 0, -1, -1> {};
+
+    template<>
+    struct spi_mapping<0x004C, 0x0023, 5> : base_spi_mapping<-1, -1, 0, -1> {};
 
     template<>
     struct pin_to_adc_channel<0x0078, 0x0026, 0> : integral_constant<int, 0> {};

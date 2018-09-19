@@ -8,7 +8,7 @@
 #include "zoal/mem/segment.hpp"
 #include "../../bus.hpp"
 
-namespace zoal { namespace arch { namespace avr {
+namespace zoal { namespace arch { namespace avr { namespace atmega {
     template<uintptr_t Address, uint8_t N, class Buffer>
     class usart {
     private:
@@ -115,6 +115,6 @@ namespace zoal { namespace arch { namespace avr {
 
     template<uintptr_t Address, uint8_t N, class Buffer>
     zoal::mem::segment<uint8_t, Address> usart<Address, N, Buffer>::mem;
-}}}
+}}}}
 
 #endif

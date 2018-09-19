@@ -30,7 +30,7 @@ class ATmega extends Avr {
             let hex = ATmega.toHex(u.address, 4);
             result.push(``);
             result.push(`template<class Buffer>`);
-            result.push(`using ${u.name} = typename ::zoal::arch::avr::usart<${hex}, ${u.sn}, Buffer>;`);
+            result.push(`using ${u.name} = typename ::zoal::arch::avr::atmega::usart<${hex}, ${u.sn}, Buffer>;`);
         }
         return result;
     }
@@ -40,6 +40,16 @@ class ATmega extends Avr {
         let adc = this.mcu.adcs[0];
         let hex = ATmega.toHex(adc.address, 4);
         result.push(`using adc_00 = ::zoal::arch::avr::atmega::adc<${hex}, 0>;`);
+        return result;
+    }
+
+    buildSPIs() {
+        let result = [];
+        for (let i = 0; i < this.mcu.spis.length; i++) {
+            let spi = this.mcu.spis[i];
+            let hex = ATmega.toHex(spi.address, 4);
+            result.push(`using spi_00 = ::zoal::arch::avr::atmega::spi<${hex}, ${i}>;`);
+        }
         return result;
     }
 
@@ -73,6 +83,35 @@ class ATmega extends Avr {
         return result;
     }
 
+    buildSPIsMetadata() {
+        let result = [];
+        for (let i = 0; i < this.mcu.spis.length; i++) {
+            let spi = this.mcu.spis[i];
+            let address = ATmega.toHex(spi.address, 4);
+            let signals = spi.signals;
+
+            for (let j = 0; j < signals.length; j++) {
+                let s = signals[j];
+                if (!s.group.match(/MISO|MOSI|SCK|SS/)) {
+                    continue
+                }
+
+                let portHex = ATmega.toHex(s.port.address, 4);
+                let miso = s.group === 'MISO' ? 0 : -1;
+                let mosi = s.group === 'MOSI' ? 0 : -1;
+                let clock = s.group === 'SCK' ? 0 : -1;
+                let ss = s.group === 'SS' ? 0 : -1;
+
+                result.push(``);
+                result.push(`template<>`);
+                result.push(`struct spi_mapping<${address}, ${portHex}, ${s.offset}> : base_spi_mapping<${mosi}, ${miso}, ${clock}, ${ss}> {`);
+                result.push(`};`);
+            }
+        }
+
+        return result;
+    }
+
     buildClass() {
         let name = this.device.$.name;
         let nameUpper = name.toUpperCase();
@@ -89,6 +128,7 @@ class ATmega extends Avr {
             `#include <zoal/arch/avr/atmega/adc.hpp>`,
             `#include <zoal/arch/avr/atmega/cfg.hpp>`,
             `#include <zoal/arch/avr/atmega/irq.hpp>`,
+            `#include <zoal/arch/avr/atmega/spi.hpp>`,
             `#include <zoal/arch/avr/atmega/metadata.hpp>`,
             `#include <zoal/arch/avr/atmega/mux.hpp>`,
             `#include <zoal/arch/avr/atmega/usart.hpp>`,
@@ -112,6 +152,8 @@ class ATmega extends Avr {
             this.buildPortList().join('\n'),
             ``,
             this.buildTimerList().join('\n'),
+            ``,
+            this.buildSPIs().join('\n'),
             ``,
             this.buildUSARTList().join('\n'),
             ``,
@@ -139,6 +181,8 @@ class ATmega extends Avr {
             this.buildTimersMetadata().join('\n'),
             '',
             this.buildUSARTSsMetadata().join('\n'),
+            '',
+            this.buildSPIsMetadata().join('\n'),
             '',
             this.buildADCsMetadata().join('\n'),
             `}}`,

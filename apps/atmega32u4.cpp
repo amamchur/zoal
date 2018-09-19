@@ -4,7 +4,7 @@
 #include <avr/eeprom.h>
 #include <zoal/board/arduino_leonardo.hpp>
 #include <zoal/data/rx_tx_buffer.hpp>
-#include <zoal/gpio/software_spi.hpp>
+#include <zoal/periph/software_spi.hpp>
 #include <zoal/ic/max72xx.hpp>
 #include <zoal/io/analog_keypad.hpp>
 #include <zoal/io/button.hpp>

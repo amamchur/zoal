@@ -261,7 +261,7 @@ namespace zoal { namespace ic {
     template<class SPI, class CS>
     class max72xx {
     public:
-        using spi = typename SPI::msbf0;
+        using spi = SPI;
         enum Command : uint16_t {
             noop = 0x0000,
             data_row0 = 0x0100,
@@ -322,8 +322,12 @@ namespace zoal { namespace ic {
             }
 
             transaction &operator<<(const repeat &n) {
+                const auto h = n.cmd >> 0x8;
+                const auto l = n.cmd & 0x0F;
+
                 for (uint16_t i = 0; i < n.times; i++) {
-                    spi::transfer(n.cmd);
+                    spi::transfer_byte(h);
+                    spi::transfer_byte(l);
                 }
                 return *this;
             }
@@ -352,9 +356,12 @@ namespace zoal { namespace ic {
             for (int row = 0; row < 8; row++) {
                 CS::low();
                 auto cmd = row + 1;
+                auto h = cmd >> 0x8;
+                auto l = cmd & 0x0F;
                 for (ptrdiff_t device = Devices - 1; device >= 0; device--) {
-                    spi::transfer(cmd);
-                    spi::transfer(matrix.data[device][row]);
+                    spi::transfer_byte(h);
+                    spi::transfer_byte(l);
+                    spi::transfer_byte(matrix.data[device][row]);
                 }
                 CS::high();
             }
