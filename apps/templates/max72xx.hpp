@@ -79,7 +79,7 @@ public:
     static constexpr uint8_t DeviceCount = 1;
 
     using self_type = max72xx<Tools, MOSI, SCLK, CS>;
-    using sspi = zoal::gpio::tx_software_spi<MOSI, SCLK>;
+    using sspi = zoal::periph::tx_software_spi<MOSI, SCLK>;
     using max7219 = zoal::ic::max72xx<typename Tools::mcu::spi0, CS>;
     using repeat = typename max7219::repeat;
     using method_scheduler = typename Tools::template method_scheduler<self_type, 8>;

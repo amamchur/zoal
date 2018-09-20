@@ -33,7 +33,6 @@ using timer = mcu::timer_00;
 using irq_handler = counter::handler<mcu::frequency, 64, timer>;
 using usart = mcu::usart_00<zoal::data::rx_tx_buffer<8, 8>>;
 using adc = mcu::adc_00;
-using spi = mcu::spi_00;
 using logger = zoal::utils::terminal_logger<usart, zoal::utils::log_level::trace>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using delay = tools::delay;
@@ -85,15 +84,16 @@ int main() {
     //    initialize_application();
 
 #if 1
+    using spi = mcu::spi_00;
     mcu::cfg::spi<spi, 2>::apply();
     mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::on();
     mcu::enable<spi>::on();
 
     using max = zoal::ic::max72xx<spi, zoal::pcb::ard_d08>;
 #else
+    using sw_spi = zoal::periph::tx_software_spi<zoal::pcb::ard_d11, zoal::pcb::ard_d13>;
+    sw_spi::enable();
 
-    using sw_spi = zoal::gpio::tx_software_spi<zoal::pcb::ard_d11, zoal::pcb::ard_d13>::msbf0;
-    sw_spi::init();
     using max = zoal::ic::max72xx<sw_spi, zoal::pcb::ard_d08>;
 #endif
 
@@ -105,7 +105,7 @@ int main() {
     uint32_t value = 0;
     while (true) {
         matrix.clear();
-        auto end = zoal::utils::split_number(value, &matrix.data[0][0], 10);
+        auto end = zoal::utils::radix<16>::split(value, &matrix.data[0][0]);
         if (end == &matrix.data[0][0]) {
             end++;
         }

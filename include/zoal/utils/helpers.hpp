@@ -4,14 +4,57 @@
 #include <stddef.h>
 
 namespace zoal { namespace utils {
-    template<class T, class U>
-    U split_number(T value, U pos, size_t radix) {
-        for (; value > 0; value /= radix, ++pos) {
-            auto v = value % radix;
-            *pos = v;
+    template<size_t Radix>
+    class radix {
+    public:
+        template<class T, class U>
+        static U split(T value, U pos) {
+            for (; value > 0; value /= Radix, ++pos) {
+                auto v = value % Radix;
+                *pos = v;
+            }
+            return pos;
         }
-        return pos;
-    }
+    };
+
+    template<>
+    class radix<16> {
+    public:
+        template<class T, class U>
+        static U split(T value, U pos) {
+            for (; value > 0; value >>= 4, ++pos) {
+                auto v = value & 0x0F;
+                *pos = v;
+            }
+            return pos;
+        }
+    };
+
+    template<>
+    class radix<8> {
+    public:
+        template<class T, class U>
+        static U split(T value, U pos) {
+            for (; value > 0; value >>= 2, ++pos) {
+                auto v = value & 0x03;
+                *pos = v;
+            }
+            return pos;
+        }
+    };
+
+    template<>
+    class radix<2> {
+    public:
+        template<class T, class U>
+        static U split(T value, U pos) {
+            for (; value > 0; value >>= 1, ++pos) {
+                auto v = value & 0x01;
+                *pos = v;
+            }
+            return pos;
+        }
+    };
 
     template<class T, class U>
     void apply(T obj, U begin, U end) {

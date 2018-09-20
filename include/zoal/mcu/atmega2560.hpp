@@ -164,6 +164,24 @@ namespace zoal { namespace mcu {
         using pl_06 = pin<port_l, 6>;
         using pl_07 = pin<port_l, 7>;
 
+        // Pin aliases
+        using ss_00 = pb_00;
+        using mosi_00 = pb_02;
+        using miso_00 = pb_03;
+        using sck_00 = pb_01;
+        using txd_00 = pe_01;
+        using rxd_00 = pe_00;
+        using xck_00 = pe_02;
+        using txd_01 = pe_01;
+        using rxd_01 = pe_00;
+        using xck_01 = pe_02;
+        using txd_02 = pe_01;
+        using rxd_02 = pe_00;
+        using xck_02 = pe_02;
+        using txd_03 = pe_01;
+        using rxd_03 = pe_00;
+        using xck_03 = pe_02;
+
         using ports = ::zoal::ct::
             type_list<port_a, port_b, port_c, port_d, port_e, port_f, port_g, port_h, port_j, port_k, port_l>;
         using api = ::zoal::gpio::api<ports>;

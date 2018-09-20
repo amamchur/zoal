@@ -3,9 +3,9 @@
 
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/segment.hpp"
-#include "../../../periph/adc_config.hpp"
+#include "zoal/periph/adc.hpp"
 #include "../../../periph/timer_mode.hpp"
-#include "../../../periph/usart_config.hpp"
+#include "zoal/periph/usart.hpp"
 #include "../../../utils/helpers.hpp"
 #include "../metadata.hpp"
 

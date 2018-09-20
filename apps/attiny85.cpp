@@ -26,7 +26,7 @@ using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
 using adc = mcu::adc_00;
 using ms_handler = counter::handler<mcu::frequency, 64, timer>;
-using sspi = zoal::gpio::tx_software_spi<mcu::pb_03, mcu::pb_02>;
+using sspi = zoal::periph::tx_software_spi<mcu::pb_03, mcu::pb_02>;
 using max7219 = zoal::ic::max72xx<sspi, mcu::pb_01>;
 
 int main() {
@@ -42,7 +42,7 @@ int main() {
 
     zoal::utils::interrupts::on();
 
-    max7219::spi::init();
+    max7219::spi::enable();
     max7219::init(matrix_type::devices);
     max7219::send(matrix_type::devices, max7219::intensity0);
 
@@ -58,14 +58,14 @@ int main() {
             update_flags = 0;
 
             matrix.clear();
-            auto end = zoal::utils::split_number(adc_value, &matrix.data[0][0], 10);
+            auto end = zoal::utils::radix<10>::split(adc_value, &matrix.data[0][0]);
             if (end == &matrix.data[0][0]) {
                 end++;
             }
 
             zoal::utils::apply(zoal::data::segment7::gfed_hex, &matrix.data[0][0], end);
 
-            end = zoal::utils::split_number(adc_value >> 2, &matrix.data[0][4], 10);
+            end = zoal::utils::radix<10>::split(adc_value >> 2, &matrix.data[0][4]);
             if (end == &matrix.data[0][4]) {
                 end++;
             }

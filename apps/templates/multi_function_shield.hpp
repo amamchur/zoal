@@ -71,7 +71,7 @@ public:
 
     void dec_to_segments(uint16_t value) {
         uint8_t buffer[5] = {0};
-        auto r = zoal::utils::split_number(value, buffer, 10);
+        auto r = zoal::utils::radix<10>::split(value, buffer);
         if (r == buffer) {
             r++;
         }

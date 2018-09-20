@@ -3,11 +3,11 @@
 
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/segment.hpp"
-#include "../../../periph/adc_config.hpp"
-#include "../../../periph/spi_mode.hpp"
+#include "zoal/periph/adc.hpp"
 #include "../../../periph/timer_mode.hpp"
-#include "../../../periph/usart_config.hpp"
+#include "zoal/periph/usart.hpp"
 #include "../../../utils/helpers.hpp"
+#include "zoal/periph/spi.hpp"
 
 namespace zoal { namespace metadata {
     template<uint8_t Bits>
@@ -44,14 +44,13 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::metadata::usart_parity_flags;
     using zoal::metadata::usart_stop_bit_flags;
     using zoal::periph::bit_order;
+    using zoal::periph::spi_cpol_cpha;
     using zoal::periph::spi_mode;
-    using zoal::periph::spi_phase;
-    using zoal::periph::spi_polarity;
     using zoal::periph::usart_parity;
     using zoal::periph::usart_stop_bits;
 
     template<uint8_t Bits, usart_parity Parity, usart_stop_bits StopBits>
-    struct usart_mode {
+    struct usart_mode_cfg {
         using db_flags = usart_data_bits_flags<Bits>;
         using pt_flags = usart_parity_flags<Parity>;
         using sb_flags = usart_stop_bit_flags<StopBits>;
@@ -59,105 +58,105 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     };
 
     template<bit_order Order>
-    struct spi_bit_order {
+    struct spi_bit_order_cfg {
         using SPCRx = clear_and_set<0, 0>;
     };
 
     template<>
-    struct spi_bit_order<bit_order::msbf> {
+    struct spi_bit_order_cfg<bit_order::msbf> {
         using SPCRx = clear_and_set<1, 0, 5>;
     };
 
     template<>
-    struct spi_bit_order<bit_order::lsbf> {
+    struct spi_bit_order_cfg<bit_order::lsbf> {
         using SPCRx = clear_and_set<1, 1, 5>;
     };
 
     template<uintptr_t D>
-    struct spi_clock_divider {
+    struct spi_clock_divider_cfg {
         using SPCRx = clear_and_set<0, 0>;
         using SPSRx = clear_and_set<0, 0>;
     };
 
     template<>
-    struct spi_clock_divider<2> {
+    struct spi_clock_divider_cfg<2> {
         using SPCRx = clear_and_set<0x03, 0x00>;
         using SPSRx = clear_and_set<0x01, 0x01>;
     };
 
     template<>
-    struct spi_clock_divider<4> {
+    struct spi_clock_divider_cfg<4> {
         using SPCRx = clear_and_set<0x03, 0x00>;
         using SPSRx = clear_and_set<0x01, 0x00>;
     };
 
     template<>
-    struct spi_clock_divider<8> {
+    struct spi_clock_divider_cfg<8> {
         using SPCRx = clear_and_set<0x03, 0x01>;
         using SPSRx = clear_and_set<0x01, 0x01>;
     };
 
     template<>
-    struct spi_clock_divider<16> {
+    struct spi_clock_divider_cfg<16> {
         using SPCRx = clear_and_set<0x03, 0x01>;
         using SPSRx = clear_and_set<0x01, 0x00>;
     };
 
     template<>
-    struct spi_clock_divider<32> {
+    struct spi_clock_divider_cfg<32> {
         using SPCRx = clear_and_set<0x03, 0x02>;
         using SPSRx = clear_and_set<0x01, 0x01>;
     };
 
     template<>
-    struct spi_clock_divider<64> {
+    struct spi_clock_divider_cfg<64> {
         using SPCRx = clear_and_set<0x03, 0x02>;
         using SPSRx = clear_and_set<0x01, 0x00>;
     };
 
     template<>
-    struct spi_clock_divider<128> {
+    struct spi_clock_divider_cfg<128> {
         using SPCRx = clear_and_set<0x03, 0x03>;
         using SPSRx = clear_and_set<0x01, 0x00>;
     };
 
-    template<spi_polarity Polarity, spi_phase Phase>
-    struct spi_cpol_cpha {
+    template<spi_cpol_cpha PolPha>
+    struct spi_cpol_cpha_cfg {
         using SPCRx = clear_and_set<0x00, 0x00>;
     };
 
     template<>
-    struct spi_cpol_cpha<spi_polarity::low, spi_phase::low> {
+    struct spi_cpol_cpha_cfg<spi_cpol_cpha::mode_0> {
         using SPCRx = clear_and_set<0x03, 0x00, 2>;
     };
 
     template<>
-    struct spi_cpol_cpha<spi_polarity::low, spi_phase::high> {
+    struct spi_cpol_cpha_cfg<spi_cpol_cpha::mode_1> {
         using SPCRx = clear_and_set<0x03, 0x01, 2>;
     };
 
     template<>
-    struct spi_cpol_cpha<spi_polarity::high, spi_phase::low> {
+    struct spi_cpol_cpha_cfg<spi_cpol_cpha::mode_2> {
         using SPCRx = clear_and_set<0x03, 0x02, 2>;
     };
 
     template<>
-    struct spi_cpol_cpha<spi_polarity::high, spi_phase::high> {
+    struct spi_cpol_cpha_cfg<spi_cpol_cpha::mode_3> {
         using SPCRx = clear_and_set<0x03, 0x03, 2>;
     };
 
     template<spi_mode Mode>
-    struct spi_md {
+    struct spi_mode_cfg {
         using SPCRx = clear_and_set<0x00, 0x00>;
     };
 
     template<>
-    struct spi_md<spi_mode::master> {
+    struct spi_mode_cfg<spi_mode::master> {
         using SPCRx = clear_and_set<0x01, 0x01, 4>;
     };
 
     template<>
-    struct spi_md<spi_mode::slave> {
+    struct spi_mode_cfg<spi_mode::slave> {
         using SPCRx = clear_and_set<0x01, 0x00, 4>;
     };
 
@@ -189,7 +188,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 mem[U::UBRRxL] = UBRRxL_value;
                 mem[U::UBRRxH] = UBRRxH_value;
                 mem[U::UCSRxA] = UCSRxA_value;
-                mem[U::UCSRxC] = usart_mode<Bits, Parity, StopBits>::UCSRxC_value;
+                mem[U::UCSRxC] = usart_mode_cfg<Bits, Parity, StopBits>::UCSRxC_value;
                 mem.happyInspection();
             }
         };
@@ -232,15 +231,14 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         template<class S,
                  uintptr_t ClockDivider = 2,
                  bit_order Order = bit_order::msbf,
-                 spi_polarity Polarity = spi_polarity::low,
-                 spi_phase Phase = spi_phase::low,
+                 spi_cpol_cpha PolPha = spi_cpol_cpha::mode_0,
                  spi_mode Mode = spi_mode::master>
         class spi {
         public:
-            using clock_divider = spi_clock_divider<ClockDivider>;
-            using order = spi_bit_order<Order>;
-            using cpol_cpha = spi_cpol_cpha<Polarity, Phase>;
-            using mode = spi_md<Mode>;
+            using clock_divider = spi_clock_divider_cfg<ClockDivider>;
+            using order = spi_bit_order_cfg<Order>;
+            using cpol_cpha = spi_cpol_cpha_cfg<PolPha>;
+            using mode = spi_mode_cfg<Mode>;
 
             static_assert(clock_divider::SPCRx::clear_mask != 0, "Unsupported SPI clock divider");
             static_assert(clock_divider::SPSRx::clear_mask != 0, "Unsupported SPI clock divider");

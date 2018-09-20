@@ -3,7 +3,7 @@
 
 #include "../../../data/ring_buffer.hpp"
 #include "../../../io/stream_functor.hpp"
-#include "../../../periph/usart_config.hpp"
+#include "zoal/periph/usart.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "zoal/mem/segment.hpp"
 #include "../../bus.hpp"

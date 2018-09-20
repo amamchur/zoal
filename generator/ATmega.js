@@ -112,6 +112,48 @@ class ATmega extends Avr {
         return result;
     }
 
+    buildPinAliases() {
+        let result = ['// Pin aliases'];
+        for (let i = 0; i < this.mcu.spis.length; i++) {
+            let spi = this.mcu.spis[i];
+            let signals = spi.signals;
+            let moduleSuffix = '_' + ("00" + i.toString(10)).substr(-2);
+
+            for (let j = 0; j < signals.length; j++) {
+                let s = signals[j];
+                if (!s.group.match(/MISO|MOSI|SCK|SS/)) {
+                    continue
+                }
+
+                let name = s.group.toLowerCase() + moduleSuffix;
+                let portName = s.port.name;
+                let prefix = portName.replace(/port_(.)/, "p$1");
+                let suffix = ("00" + s.offset.toString(16)).substr(-2);
+                let pinName = `${prefix}_${suffix}`;
+
+                result.push(`using ${name} = ${pinName};`);
+            }
+        }
+
+        for (let i = 0; i < this.mcu.usarts.length; i++) {
+            let usart = this.mcu.usarts[i];
+            let signals = usart.signals;
+            let moduleSuffix = '_' + ("00" + i.toString(10)).substr(-2);
+            for (let j = 0; j < signals.length; j++) {
+                let s = signals[j];
+                let name = s.group.toLowerCase() + moduleSuffix;
+                let portName = s.port.name;
+                let prefix = portName.replace(/port_(.)/, "p$1");
+                let suffix = ("00" + s.offset.toString(10)).substr(-2);
+                let pinName = `${prefix}_${suffix}`;
+
+                result.push(`using ${name} = ${pinName};`);
+            }
+        }
+
+        return result;
+    }
+
     buildClass() {
         let name = this.device.$.name;
         let nameUpper = name.toUpperCase();
@@ -160,6 +202,8 @@ class ATmega extends Avr {
             this.buildADCList().join('\n'),
             ``,
             this.buildPinList().join('\n'),
+            ``,
+            this.buildPinAliases().join('\n'),
             ``,
             this.buildPortChain().join('\n'),
             `    using api = ::zoal::gpio::api<ports>;`,

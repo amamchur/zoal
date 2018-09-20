@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "../../gpio/pin.hpp"
 #include "../../utils/helpers.hpp"
-#include "../../periph/usart_config.hpp"
+#include "zoal/periph/usart.hpp"
 
 namespace zoal { namespace metadata {
     template<int Tx, int Rx, int Ck>

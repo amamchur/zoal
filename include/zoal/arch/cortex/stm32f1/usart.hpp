@@ -5,7 +5,7 @@
 
 #include "../../../io/stream_functor.hpp"
 #include "../../../data/ring_buffer.hpp"
-#include "../../../periph/usart_config.hpp"
+#include "zoal/periph/usart.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../../utils/nop.hpp"
 #include "../../../gpio/pin_mode.hpp"
