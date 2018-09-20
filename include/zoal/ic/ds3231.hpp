@@ -75,7 +75,7 @@ namespace zoal { namespace ic {
         float temperature() {
             uint8_t msb = data[reg_address::temp_msb];
             uint8_t lsb = data[reg_address::temp_lsb];
-            return (float) msb + ((lsb >> 6u) * 0.25f);
+            return (float)msb + ((lsb >> 6u) * 0.25f);
         }
 
         uint8_t operator[](reg_address addr) const {
@@ -90,8 +90,8 @@ namespace zoal { namespace ic {
             I2C::wait();
             auto &stream = I2C::stream()
                     .write(Address)
-                    .value(reg_address::seconds);
-            for (uint8_t i = 0; i < reg_address::temp_lsb; i++) {
+                    .value(static_cast<uint8_t >(reg_address::seconds));
+            for (uint8_t i = 0; i < static_cast<uint8_t >(reg_address::temp_lsb); i++) {
                 stream.value(data[i]);
             }
 
@@ -111,7 +111,7 @@ namespace zoal { namespace ic {
         }
 
         static void i2c_data_updated(void *token) {
-            auto *cls = (self_type *) token;
+            auto *cls = (self_type *)token;
             cls->ready = true;
         }
 
@@ -121,7 +121,7 @@ namespace zoal { namespace ic {
         }
 
         static void i2c_data_fetched(void *token) {
-            auto *cls = (self_type *) token;
+            auto *cls = (self_type *)token;
             auto &stream = I2C::stream();
 
             for (uint8_t i = 0; i < data_size; i++) {

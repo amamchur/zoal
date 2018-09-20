@@ -14,6 +14,9 @@ namespace zoal { namespace metadata {
     template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
     struct spi_mapping;
 
+    template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
+    struct i2c_mapping;
+
     template<class Adc, class Pin>
     struct adc_mapping;
 
@@ -25,14 +28,15 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::gpio::pin_mode;
     using zoal::mem::clear_and_set;
     using zoal::metadata::adc_mapping;
+    using zoal::metadata::i2c_mapping;
     using zoal::metadata::pwm_channel_mapping;
     using zoal::metadata::spi_mapping;
     using zoal::metadata::usart_mapping;
 
-    template<class I>
+    template<class Api>
     class mux {
     private:
-        using api = I;
+        using api = Api;
 
         template<zoal::gpio::pin_mode Mode, class... T>
         using mode = typename api::template mode<Mode, T...>;
@@ -120,6 +124,28 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
             static void off() {
                 mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>();
+            }
+        };
+
+        template<class I, class SerialDataLine, class SerialClockLine>
+        class i2c {
+        public:
+            using sda = i2c_mapping<I::address, SerialDataLine::port::address, SerialDataLine::offset>;
+            using scl = i2c_mapping<I::address, SerialClockLine::port::address, SerialClockLine::offset>;
+
+            static_assert(sda::sda >= 0, "Specified SDA pin could not be connected to I2C");
+            static_assert(scl::scl >= 0, "Specified SCL pin could not be connected to I2C");
+
+            static void on() {
+                SerialDataLine::template mode<pin_mode::output_push_pull>();
+                SerialClockLine::template mode<pin_mode::output_push_pull>();
+                SerialDataLine::high();
+                SerialClockLine::high();
+            }
+
+            static void off() {
+                SerialDataLine::template mode<pin_mode::input_floating>();
+                SerialClockLine::template mode<pin_mode::input_floating>();
             }
         };
     };

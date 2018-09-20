@@ -24,11 +24,20 @@ namespace zoal { namespace metadata {
         static constexpr int slave_select = SlaveSelect;
     };
 
+    template<int SerialDataLine, int SerialClockLine>
+    struct base_i2c_mapping {
+        static constexpr int sda = SerialDataLine;
+        static constexpr int scl = SerialClockLine;
+    };
+
     template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
     struct usart_mapping : base_usart_mapping<-1, -1, -1> {};
 
     template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
     struct spi_mapping : base_spi_mapping<-1, -1, -1, -1> {};
+
+    template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
+    struct i2c_mapping : base_i2c_mapping<-1, -1> {};
 
     template<::zoal::periph::timer_mode Mode>
     struct timer_mode {};

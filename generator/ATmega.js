@@ -53,6 +53,18 @@ class ATmega extends Avr {
         return result;
     }
 
+    buildI2Cs() {
+        let result = [];
+        for (let i = 0; i < this.mcu.i2cs.length; i++) {
+            let spi = this.mcu.i2cs[i];
+            let hex = ATmega.toHex(spi.address, 4);
+            result.push(``);
+            result.push(`template<uint8_t BufferSize>`);
+            result.push(`using i2c_00 = ::zoal::arch::avr::atmega::i2c<${hex}, ${i}, BufferSize>;`);
+        }
+        return result;
+    }
+
     buildUSARTSsMetadata() {
         let result = [];
         for (let i = 0; i < this.mcu.usarts.length; i++) {
@@ -105,6 +117,34 @@ class ATmega extends Avr {
                 result.push(``);
                 result.push(`template<>`);
                 result.push(`struct spi_mapping<${address}, ${portHex}, ${s.offset}> : base_spi_mapping<${mosi}, ${miso}, ${clock}, ${ss}> {`);
+                result.push(`};`);
+            }
+        }
+
+        return result;
+    }
+
+
+    buildI2CsMetadata() {
+        let result = [];
+        for (let i = 0; i < this.mcu.i2cs.length; i++) {
+            let spi = this.mcu.i2cs[i];
+            let address = ATmega.toHex(spi.address, 4);
+            let signals = spi.signals;
+
+            for (let j = 0; j < signals.length; j++) {
+                let s = signals[j];
+                if (!s.group.match(/SDA|SCL/)) {
+                    continue
+                }
+
+                let portHex = ATmega.toHex(s.port.address, 4);
+                let sda = s.group === 'SDA' ? 0 : -1;
+                let scl = s.group === 'SCL' ? 0 : -1;
+
+                result.push(``);
+                result.push(`template<>`);
+                result.push(`struct i2c_mapping<${address}, ${portHex}, ${s.offset}> : base_i2c_mapping<${sda}, ${scl}> {`);
                 result.push(`};`);
             }
         }
@@ -171,6 +211,7 @@ class ATmega extends Avr {
             `#include <zoal/arch/avr/atmega/cfg.hpp>`,
             `#include <zoal/arch/avr/atmega/irq.hpp>`,
             `#include <zoal/arch/avr/atmega/spi.hpp>`,
+            `#include <zoal/arch/avr/atmega/i2c.hpp>`,
             `#include <zoal/arch/avr/atmega/metadata.hpp>`,
             `#include <zoal/arch/avr/atmega/mux.hpp>`,
             `#include <zoal/arch/avr/atmega/usart.hpp>`,
@@ -188,6 +229,8 @@ class ATmega extends Avr {
             `    template<uint32_t Frequency>`,
             `    class ${nameLower} : public base_mcu<Frequency, 1> {`,
             `    public:`,
+            // `    using self_type = ${nameLower}<Frequency>;`,
+            // ``,
             `    template<uintptr_t Address, uint8_t PinMask>`,
             `    using port = typename ::zoal::arch::avr::port<Address, PinMask>;`,
             `    `,
@@ -196,6 +239,8 @@ class ATmega extends Avr {
             this.buildTimerList().join('\n'),
             ``,
             this.buildSPIs().join('\n'),
+            ``,
+            this.buildI2Cs().join('\n'),
             ``,
             this.buildUSARTList().join('\n'),
             ``,
@@ -227,6 +272,8 @@ class ATmega extends Avr {
             this.buildUSARTSsMetadata().join('\n'),
             '',
             this.buildSPIsMetadata().join('\n'),
+            '',
+            this.buildI2CsMetadata().join('\n'),
             '',
             this.buildADCsMetadata().join('\n'),
             `}}`,

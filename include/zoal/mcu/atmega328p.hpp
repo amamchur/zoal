@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <zoal/arch/avr/atmega/adc.hpp>
 #include <zoal/arch/avr/atmega/cfg.hpp>
+#include <zoal/arch/avr/atmega/i2c.hpp>
 #include <zoal/arch/avr/atmega/irq.hpp>
 #include <zoal/arch/avr/atmega/metadata.hpp>
 #include <zoal/arch/avr/atmega/mux.hpp>
@@ -38,6 +39,9 @@ namespace zoal { namespace mcu {
         using timer_02 = ::zoal::arch::avr::atmega::timer8<0x00B0, 2, true>;
 
         using spi_00 = ::zoal::arch::avr::atmega::spi<0x004C, 0>;
+
+        template<uint8_t BufferSize>
+        using i2c_00 = ::zoal::arch::avr::atmega::i2c<0x00B8, 0, BufferSize>;
 
         template<class Buffer>
         using usart_00 = typename ::zoal::arch::avr::atmega::usart<0x00C0, 0, Buffer>;
@@ -74,13 +78,13 @@ namespace zoal { namespace mcu {
         using pd_07 = pin<port_d, 7>;
 
         // Pin aliases
-        using ss = pb_02;
-        using mosi = pb_03;
-        using miso = pb_04;
-        using sck = pb_05;
-        using txd = pd_01;
-        using rxd = pd_00;
-        using xck = pd_04;
+        using ss_00 = pb_02;
+        using mosi_00 = pb_03;
+        using miso_00 = pb_04;
+        using sck_00 = pb_05;
+        using txd_00 = pd_01;
+        using rxd_00 = pd_00;
+        using xck_00 = pd_04;
 
         using ports = ::zoal::ct::type_list<port_b, port_c, port_d>;
         using api = ::zoal::gpio::api<ports>;
@@ -140,6 +144,12 @@ namespace zoal { namespace metadata {
 
     template<>
     struct spi_mapping<0x004C, 0x0023, 5> : base_spi_mapping<-1, -1, 0, -1> {};
+
+    template<>
+    struct i2c_mapping<0x00B8, 0x0026, 4> : base_i2c_mapping<0, -1> {};
+
+    template<>
+    struct i2c_mapping<0x00B8, 0x0026, 5> : base_i2c_mapping<-1, 0> {};
 
     template<>
     struct pin_to_adc_channel<0x0078, 0x0026, 0> : integral_constant<int, 0> {};

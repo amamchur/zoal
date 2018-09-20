@@ -260,6 +260,21 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 SPSRx::apply(mem[S::SPSRx]);
             }
         };
+
+        template<class I, uint32_t Freq = 400000>
+        class i2c {
+        public:
+            static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)Frequency / (double)Freq) - 16.0) / 2.0);
+            static void apply() {
+                I::disable();
+
+                segment<uint8_t, I::address> mem;
+                mem[I::TWBRx] = TWBRx_value;
+
+//                mem[TWSRx] &= ~(1 << TWPS0x | 1 << TWPS1x);
+//                mem[TWBRx] = ((Config::freq / Config::i2c_freq) - 16) / 2;
+            }
+        };
     };
 }}}}
 

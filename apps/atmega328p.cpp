@@ -1,7 +1,9 @@
 #include "templates/blink.hpp"
 #include "templates/compile_check.hpp"
+#include "templates/ds3231.hpp"
 #include "templates/ir_remove.hpp"
 #include "templates/max72xx.hpp"
+#include "templates/max72xx_segment.hpp"
 #include "templates/multi_function_shield.hpp"
 #include "templates/neo_pixel.hpp"
 #include "templates/tm1637.hpp"
@@ -12,13 +14,9 @@
 #include <zoal/arch/avr/port.hpp>
 #include <zoal/board/arduino_uno.hpp>
 #include <zoal/data/rx_tx_buffer.hpp>
-#include <zoal/periph/software_spi.hpp>
-#include <zoal/ic/max72xx.hpp>
-#include <zoal/io/analog_keypad.hpp>
-#include <zoal/io/button.hpp>
 #include <zoal/io/input_stream.hpp>
 #include <zoal/io/ir_remote_receiver.hpp>
-#include <zoal/io/rotary_encoder.hpp>
+#include <zoal/periph/software_spi.hpp>
 #include <zoal/shields/uno_lcd_shield.hpp>
 #include <zoal/utils/helpers.hpp>
 #include <zoal/utils/logger.hpp>
@@ -75,45 +73,29 @@ void initialize_application() {
     eeprom_write_block(keypad::values, lcd_buttons_values, sizeof(keypad::values));
 }
 
+using i2c = mcu::i2c_00<32>;
+using rtc_type = zoal::ic::ds3231<i2c>;
+rtc_type rtc;
+
 int main() {
     initialize_hardware();
+
+    mcu::power<i2c>::on();
+    mcu::cfg::i2c<i2c>::apply();
+    mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::on();
+    mcu::enable<i2c>::on();
+
+    logger::info() << "Start!!!";
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
-    //    initialize_application();
+    ::ds3231<tools, i2c> a;
+    a.init();
 
-#if 1
-    using spi = mcu::spi_00;
-    mcu::cfg::spi<spi, 2>::apply();
-    mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::on();
-    mcu::enable<spi>::on();
-
-    using max = zoal::ic::max72xx<spi, zoal::pcb::ard_d08>;
-#else
-    using sw_spi = zoal::periph::tx_software_spi<zoal::pcb::ard_d11, zoal::pcb::ard_d13>;
-    sw_spi::enable();
-
-    using max = zoal::ic::max72xx<sw_spi, zoal::pcb::ard_d08>;
-#endif
-
-    using matrix_type = zoal::ic::max72xx_data<1>;
-    matrix_type matrix;
-
-    max::init(matrix_type::devices);
-
-    uint32_t value = 0;
     while (true) {
-        matrix.clear();
-        auto end = zoal::utils::radix<16>::split(value, &matrix.data[0][0]);
-        if (end == &matrix.data[0][0]) {
-            end++;
-        }
-
-        zoal::utils::apply(zoal::data::segment7::gfed_hex, &matrix.data[0][0], end);
-        max::display(matrix);
-//        delay::ms<100>();
-        value++;
+        a.run_once();
+        delay::ms<1000>();
     }
     return 0;
 #pragma clang diagnostic pop
@@ -129,4 +111,8 @@ ISR(USART_RX_vect) {
 
 ISR(USART_UDRE_vect) {
     usart::handle_tx_irq();
+}
+
+ISR(TWI_vect) {
+    i2c::handle_irq();
 }
