@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_VECTOR_HPP
 #define ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_VECTOR_HPP
 
-#include "zoal/mem/segment.hpp"
+#include "../../../mem/segment.hpp"
 
 #include <stdint.h> /* NOLINT */
 

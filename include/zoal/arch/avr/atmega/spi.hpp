@@ -2,7 +2,7 @@
 #define ZOAL_ARCH_ATMEL_AVR_ATMEGA_HARDWARE_SPI_HPP
 
 #include "../../../gpio/pin_mode.hpp"
-#include "zoal/mem/segment.hpp"
+#include "../../../mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
     template<uintptr_t Address, uint8_t N>
@@ -33,7 +33,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
         static uint8_t transfer_byte(uint8_t data) {
             mem[SPDRx] = data;
-            while (!(mem[SPSRx] & 0x80)); // SPIFx
+            while (!(mem[SPSRx] & 0x80))
+                ; // SPIFx
             return mem[SPDRx];
         }
 

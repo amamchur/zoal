@@ -3,12 +3,12 @@
 #ifndef ZOAL_ARCH_STM32F1_USART_HPP
 #define ZOAL_ARCH_STM32F1_USART_HPP
 
-#include "../../../io/stream_functor.hpp"
 #include "../../../data/ring_buffer.hpp"
-#include "zoal/periph/usart.hpp"
+#include "../../../gpio/pin_mode.hpp"
+#include "../../../io/stream_functor.hpp"
+#include "../../../periph/usart.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../../utils/nop.hpp"
-#include "../../../gpio/pin_mode.hpp"
 
 namespace zoal { namespace arch { namespace stm32f1 {
     void waitUSART() {
@@ -51,7 +51,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static const uint16_t CR1_UE = 0x2000;
 
         constexpr static inline Class *instance() {
-            return (Class *) Address;
+            return (Class *)Address;
         }
 
         template<class Config>
@@ -73,7 +73,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
             usartDiv *= 16;
 
             auto usart = instance();
-            usart->BRR = (usartInt << 4) + (uint16_t) usartDiv;
+            usart->BRR = (usartInt << 4) + (uint16_t)usartDiv;
             usart->CR1 = CR1_RXNEIE | CR1_UE | CR1_RE | CR1_TE;
         }
 
@@ -93,7 +93,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
         template<class F>
         static void read(::zoal::io::input_stream_functor<F> &fn) {
-            while (static_cast<F &>(fn)(rx.dequeue(true)));
+            while (static_cast<F &>(fn)(rx.dequeue(true)))
+                ;
         }
 
         static void handleIrq() {
@@ -108,7 +109,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
             if (usart->SR & SR_RXNE) {
                 usart->SR &= ~SR_RXNE;
-                rx.enqueue((uint8_t) usart->DR);
+                rx.enqueue((uint8_t)usart->DR);
             }
         }
     };

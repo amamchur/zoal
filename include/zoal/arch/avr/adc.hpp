@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_A2D_Converter_HPP
 #define ZOAL_ARCH_ATMEL_AVR_A2D_Converter_HPP
 
-#include "zoal/mem/segment.hpp"
+#include "../../mem/segment.hpp"
 #include "../bus.hpp"
 #include "mcu_type.hpp"
 

@@ -1,8 +1,9 @@
 #ifndef ZOAL_ARCH_STM32F3_A2DC_COMMON_REGS_HPP
 #define ZOAL_ARCH_STM32F3_A2DC_COMMON_REGS_HPP
 
+#include "../../../mem/segment.hpp"
+
 #include <stdint.h>
-#include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace stm32f3 {
 

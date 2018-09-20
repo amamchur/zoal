@@ -1,10 +1,10 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_I2C_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_I2C_HPP
 
+#include "../../../mem/segment.hpp"
 #include "../../../periph/i2c_config.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../../utils/nop.hpp"
-#include "zoal/mem/segment.hpp"
 
 #include <stdint.h> /* NOLINT */
 
@@ -147,8 +147,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
         template<class Config>
         static void begin() {
-//            I2CSDA::high();
-//            I2CSCL::high();
+            //            I2CSDA::high();
+            //            I2CSCL::high();
 
             mem[TWSRx] &= ~(1 << TWPS0x | 1 << TWPS1x);
             mem[TWBRx] = ((Config::freq / Config::i2c_freq) - 16) / 2;
@@ -183,7 +183,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         }
 
         static void wait() {
-            while (busy || (mem[TWCRx] & 1 << TWSTOx));
+            while (busy || (mem[TWCRx] & 1 << TWSTOx))
+                ;
         }
 
         static constexpr uint8_t START = 1 << TWINTx | 1 << TWEAx | 1 << TWENx | 1 << TWIEx | 1 << TWSTAx;

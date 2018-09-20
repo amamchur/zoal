@@ -3,7 +3,7 @@
 
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/segment.hpp"
-#include "zoal/periph/usart.hpp"
+#include "../../../periph/usart.hpp"
 #include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace metadata {

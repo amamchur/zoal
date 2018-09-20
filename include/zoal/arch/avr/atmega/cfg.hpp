@@ -3,11 +3,11 @@
 
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/segment.hpp"
-#include "zoal/periph/adc.hpp"
+#include "../../../periph/adc.hpp"
+#include "../../../periph/spi.hpp"
 #include "../../../periph/timer_mode.hpp"
-#include "zoal/periph/usart.hpp"
+#include "../../../periph/usart.hpp"
 #include "../../../utils/helpers.hpp"
-#include "zoal/periph/spi.hpp"
 
 namespace zoal { namespace metadata {
     template<uint8_t Bits>
@@ -264,15 +264,16 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         template<class I, uint32_t Freq = 400000>
         class i2c {
         public:
-            static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)Frequency / (double)Freq) - 16.0) / 2.0);
+            static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)Frequency / (double)Freq) - 16.0) /
+                                                                        2.0);
             static void apply() {
                 I::disable();
 
                 segment<uint8_t, I::address> mem;
                 mem[I::TWBRx] = TWBRx_value;
 
-//                mem[TWSRx] &= ~(1 << TWPS0x | 1 << TWPS1x);
-//                mem[TWBRx] = ((Config::freq / Config::i2c_freq) - 16) / 2;
+                //                mem[TWSRx] &= ~(1 << TWPS0x | 1 << TWPS1x);
+                //                mem[TWBRx] = ((Config::freq / Config::i2c_freq) - 16) / 2;
             }
         };
     };

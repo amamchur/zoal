@@ -1,8 +1,8 @@
 #ifndef ZOAL_BOARD_HPP
 #define ZOAL_BOARD_HPP
 
+#include "../gpio/api.hpp"
 #include "../mcu/stm32f0xx.hpp"
-#include "zoal/gpio/api.hpp"
 
 namespace zoal {
     template<uint32_t Frequency>

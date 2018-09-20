@@ -3,29 +3,18 @@
 
 #include "../../../data/ring_buffer.hpp"
 #include "../../../io/stream_functor.hpp"
-#include "zoal/periph/usart.hpp"
+#include "../../../mem/segment.hpp"
+#include "../../../periph/usart.hpp"
 #include "../../../utils/interrupts.hpp"
-#include "zoal/mem/segment.hpp"
 #include "../../bus.hpp"
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
     template<uintptr_t Address, uint8_t N, class Buffer>
     class usart {
     private:
-        enum UCSRxA_Flags : uint8_t
-        {
-            RXCx = 7,
-            TXCx = 6,
-            UDREx = 5,
-            FEx = 4,
-            DORx = 3,
-            UPEx = 2,
-            U2Xx = 1,
-            MPCMx = 0
-        };
+        enum UCSRxA_Flags : uint8_t { RXCx = 7, TXCx = 6, UDREx = 5, FEx = 4, DORx = 3, UPEx = 2, U2Xx = 1, MPCMx = 0 };
 
-        enum UCSRxB_Flags : uint8_t
-        {
+        enum UCSRxB_Flags : uint8_t {
             RXCIEx = 7,
             TXCIEx = 6,
             UDRIEx = 5,

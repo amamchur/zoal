@@ -3,45 +3,46 @@
 #ifndef ZOAL_GPIO_STM32F3_HARDWARE_SPI_HPP
 #define ZOAL_GPIO_STM32F3_HARDWARE_SPI_HPP
 
+#include "../../../mem/segment.hpp"
+
 #include <stdint.h>
-#include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace stm32f3 {
     enum SPI_FLAGS : uint16_t {
-        CR1_CPHA = 0x0001,          /*!< Clock Phase */
-        CR1_CPOL = 0x0002,          /*!< Clock Polarity */
-        CR1_MSTR = 0x0004,          /*!< Master Selection */
-        CR1_BR = 0x0038,            /*!< BR[2:0] bits (Baud Rate Control) */
-        CR1_BR_0 = 0x0008,          /*!< Bit 0 */
-        CR1_BR_1 = 0x0010,          /*!< Bit 1 */
-        CR1_BR_2 = 0x0020,          /*!< Bit 2 */
-        CR1_SPE = 0x0040,           /*!< SPI Enable */
-        CR1_LSBFIRST = 0x0080,      /*!< Frame Format */
-        CR1_SSI = 0x0100,           /*!< Internal slave select */
-        CR1_SSM = 0x0200,           /*!< Software slave management */
-        CR1_RXONLY = 0x0400,        /*!< Receive only */
-        CR1_CRCL = 0x0800,          /*!< CRC Length */
-        CR1_CRCNEXT = 0x1000,       /*!< Transmit CRC next */
-        CR1_CRCEN = 0x2000,         /*!< Hardware CRC calculation enable */
-        CR1_BIDIOE = 0x4000,        /*!< Output enable in bidirectional mode */
-        CR1_BIDIMODE = 0x8000,      /*!< Bidirectional data mode enable */
+        CR1_CPHA = 0x0001, /*!< Clock Phase */
+        CR1_CPOL = 0x0002, /*!< Clock Polarity */
+        CR1_MSTR = 0x0004, /*!< Master Selection */
+        CR1_BR = 0x0038, /*!< BR[2:0] bits (Baud Rate Control) */
+        CR1_BR_0 = 0x0008, /*!< Bit 0 */
+        CR1_BR_1 = 0x0010, /*!< Bit 1 */
+        CR1_BR_2 = 0x0020, /*!< Bit 2 */
+        CR1_SPE = 0x0040, /*!< SPI Enable */
+        CR1_LSBFIRST = 0x0080, /*!< Frame Format */
+        CR1_SSI = 0x0100, /*!< Internal slave select */
+        CR1_SSM = 0x0200, /*!< Software slave management */
+        CR1_RXONLY = 0x0400, /*!< Receive only */
+        CR1_CRCL = 0x0800, /*!< CRC Length */
+        CR1_CRCNEXT = 0x1000, /*!< Transmit CRC next */
+        CR1_CRCEN = 0x2000, /*!< Hardware CRC calculation enable */
+        CR1_BIDIOE = 0x4000, /*!< Output enable in bidirectional mode */
+        CR1_BIDIMODE = 0x8000, /*!< Bidirectional data mode enable */
 
-        CR2_RXDMAEN = 0x0001,       /*!< Rx Buffer DMA Enable */
-        CR2_TXDMAEN = 0x0002,       /*!< Tx Buffer DMA Enable */
-        CR2_SSOE = 0x0004,          /*!< SS Output Enable */
-        CR2_NSSP = 0x0008,          /*!< NSS pulse management Enable */
-        CR2_FRF = 0x0010,           /*!< Frame Format Enable */
-        CR2_ERRIE = 0x0020,         /*!< Error Interrupt Enable */
-        CR2_RXNEIE = 0x0040,        /*!< RX buffer Not Empty Interrupt Enable */
-        CR2_TXEIE = 0x0080,         /*!< Tx buffer Empty Interrupt Enable */
-        CR2_DS = 0x0F00,            /*!< DS[3:0] Data Size */
-        CR2_DS_0 = 0x0100,          /*!< Bit 0 */
-        CR2_DS_1 = 0x0200,          /*!< Bit 1 */
-        CR2_DS_2 = 0x0400,          /*!< Bit 2 */
-        CR2_DS_3 = 0x0800,          /*!< Bit 3 */
-        CR2_FRXTH = 0x1000,         /*!< FIFO reception Threshold */
-        CR2_LDMARX = 0x2000,        /*!< Last DMA transfer for reception */
-        CR2_LDMATX = 0x4000,        /*!< Last DMA transfer for transmission */
+        CR2_RXDMAEN = 0x0001, /*!< Rx Buffer DMA Enable */
+        CR2_TXDMAEN = 0x0002, /*!< Tx Buffer DMA Enable */
+        CR2_SSOE = 0x0004, /*!< SS Output Enable */
+        CR2_NSSP = 0x0008, /*!< NSS pulse management Enable */
+        CR2_FRF = 0x0010, /*!< Frame Format Enable */
+        CR2_ERRIE = 0x0020, /*!< Error Interrupt Enable */
+        CR2_RXNEIE = 0x0040, /*!< RX buffer Not Empty Interrupt Enable */
+        CR2_TXEIE = 0x0080, /*!< Tx buffer Empty Interrupt Enable */
+        CR2_DS = 0x0F00, /*!< DS[3:0] Data Size */
+        CR2_DS_0 = 0x0100, /*!< Bit 0 */
+        CR2_DS_1 = 0x0200, /*!< Bit 1 */
+        CR2_DS_2 = 0x0400, /*!< Bit 2 */
+        CR2_DS_3 = 0x0800, /*!< Bit 3 */
+        CR2_FRXTH = 0x1000, /*!< FIFO reception Threshold */
+        CR2_LDMARX = 0x2000, /*!< Last DMA transfer for reception */
+        CR2_LDMATX = 0x4000, /*!< Last DMA transfer for transmission */
     };
 
     template<uintptr_t Address, class RCController, uint32_t RCCMask>
@@ -68,7 +69,8 @@ namespace zoal { namespace arch { namespace stm32f3 {
 
             mem[SPIx_DR] = data;
 
-            while ((mem[SPIx_SR] & TxRxBusyMask) != TxEmptyAndRxNotEmptyAndNotBusy);
+            while ((mem[SPIx_SR] & TxRxBusyMask) != TxEmptyAndRxNotEmptyAndNotBusy)
+                ;
             return mem[SPIx_DR];
         }
 

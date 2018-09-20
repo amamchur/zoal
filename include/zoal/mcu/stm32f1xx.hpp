@@ -12,7 +12,7 @@
 #include "../arch/enable.hpp"
 #include "../arch/power.hpp"
 #include "../ct/type_list.hpp"
-#include "zoal/gpio/api.hpp"
+#include "../gpio/api.hpp"
 #include "../gpio/pin.hpp"
 #include "../utils/ms_counter.hpp"
 #include "../utils/tool_set.hpp"

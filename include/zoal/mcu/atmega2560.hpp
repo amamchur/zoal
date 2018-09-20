@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <zoal/arch/avr/atmega/adc.hpp>
 #include <zoal/arch/avr/atmega/cfg.hpp>
+#include <zoal/arch/avr/atmega/i2c.hpp>
 #include <zoal/arch/avr/atmega/irq.hpp>
 #include <zoal/arch/avr/atmega/metadata.hpp>
 #include <zoal/arch/avr/atmega/mux.hpp>
@@ -49,6 +50,9 @@ namespace zoal { namespace mcu {
         using timer_05 = ::zoal::arch::avr::atmega::timer16<0x0120, 5>;
 
         using spi_00 = ::zoal::arch::avr::atmega::spi<0x004C, 0>;
+
+        template<uint8_t BufferSize>
+        using i2c_00 = ::zoal::arch::avr::atmega::i2c<0x00B8, 0, BufferSize>;
 
         template<class Buffer>
         using usart_00 = typename ::zoal::arch::avr::atmega::usart<0x00C0, 0, Buffer>;
@@ -292,6 +296,12 @@ namespace zoal { namespace metadata {
 
     template<>
     struct spi_mapping<0x004C, 0x0023, 1> : base_spi_mapping<-1, -1, 0, -1> {};
+
+    template<>
+    struct i2c_mapping<0x00B8, 0x0029, 1> : base_i2c_mapping<0, -1> {};
+
+    template<>
+    struct i2c_mapping<0x00B8, 0x0029, 0> : base_i2c_mapping<-1, 0> {};
 
     template<>
     struct pin_to_adc_channel<0x0078, 0x002F, 0> : integral_constant<int, 0> {};

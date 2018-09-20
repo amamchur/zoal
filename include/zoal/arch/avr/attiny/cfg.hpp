@@ -3,9 +3,9 @@
 
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/segment.hpp"
-#include "zoal/periph/adc.hpp"
+#include "../../../periph/adc.hpp"
 #include "../../../periph/timer_mode.hpp"
-#include "zoal/periph/usart.hpp"
+#include "../../../periph/usart.hpp"
 #include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace metadata {

@@ -1,17 +1,16 @@
 #ifndef ZOAL_ARCH_STM32F1_A2D_Converter_HPP
 #define ZOAL_ARCH_STM32F1_A2D_Converter_HPP
 
+#include "../../../mem/segment.hpp"
+
 #include <stdint.h>
-#include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace stm32f3 {
     template<uintptr_t Address, uint8_t N, class CommRegs, class Clock>
     class adc : public Clock {
     private:
-        enum A2DC_Flags : uint32_t {
-            Enable = 0x00000001,
-            StartRegularConversion = 0x00000004
-        };
+        enum A2DC_Flags : uint32_t { Enable = 0x00000001, StartRegularConversion = 0x00000004 };
+
     public:
         static constexpr uintptr_t ADCx_ISR = 0x00;
         static constexpr uintptr_t ADCx_IER = 0x04;
@@ -69,7 +68,7 @@ namespace zoal { namespace arch { namespace stm32f3 {
             } else {
                 auto vSMPR1 = mem[ADCx_SMPR1];
                 vSMPR1 &= ~(0x38 << (3 * (Config::channel - 1)));
-                vSMPR1 |= (uint32_t) 0x03 << (3 * Config::channel);
+                vSMPR1 |= (uint32_t)0x03 << (3 * Config::channel);
                 mem[ADCx_SMPR1] = vSMPR1;
             }
         }
@@ -79,7 +78,8 @@ namespace zoal { namespace arch { namespace stm32f3 {
         }
 
         static inline void wait() {
-            while ((mem[ADCx_ISR] & (1 << 2)) == 0);
+            while ((mem[ADCx_ISR] & (1 << 2)) == 0)
+                ;
         }
 
         static uint16_t value() {
@@ -99,7 +99,8 @@ namespace zoal { namespace arch { namespace stm32f3 {
             mem[ADCx_SQR1] = 0x00000000; // Reset to defaults
             mem[ADCx_CR] |= Enable;
 
-            while ((mem[ADCx_ISR] & 0x0001) == 0);
+            while ((mem[ADCx_ISR] & 0x0001) == 0)
+                ;
         }
 
     private:

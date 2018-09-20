@@ -3,9 +3,9 @@
 
 #include "../../../data/ring_buffer.hpp"
 #include "../../../io/stream_functor.hpp"
+#include "../../../mem/segment.hpp"
 #include "../../../utils/cooperation.hpp"
 #include "../../../utils/interrupts.hpp"
-#include "zoal/mem/segment.hpp"
 #include "../../../utils/nop.hpp"
 
 #include <stdint.h>

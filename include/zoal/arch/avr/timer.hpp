@@ -1,14 +1,15 @@
 #ifndef ZOAL_GPIO_ATMEL_AVR_TIMER_HPP
 #define ZOAL_GPIO_ATMEL_AVR_TIMER_HPP
 
-#include <stdint.h>
+#include "../../mem/segment.hpp"
 #include "../../periph/timer_mode.hpp"
-#include "zoal/mem/segment.hpp"
 #include "../bus.hpp"
 
+#include <stdint.h>
+
 namespace zoal { namespace arch { namespace avr {
-    template<uintptr_t Address, uint8_t N, class ...Mixin>
-    class timer : public Mixin ... {
+    template<uintptr_t Address, uint8_t N, class... Mixin>
+    class timer : public Mixin... {
     public:
         using self_type = timer<Address, N, Mixin...>;
         using word = typename self_type::word;

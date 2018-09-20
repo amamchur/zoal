@@ -3,8 +3,9 @@
 #ifndef ZOAL_ARCH_STM32F1_NESTED_VECTORED_INTERRUPT_CONTROLLER_HPP
 #define ZOAL_ARCH_STM32F1_NESTED_VECTORED_INTERRUPT_CONTROLLER_HPP
 
+#include "../../mem/segment.hpp"
+
 #include <stdint.h>
-#include "zoal/mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace stm32f1 {
 
@@ -20,14 +21,14 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static constexpr uintptr_t IPR_address = Address + 0x300;
         static constexpr uintptr_t STIR_address = Address + 0xE00;
 
-        template <uintptr_t index>
+        template<uintptr_t index>
         static inline void enable_interrupt() {
             zoal::mem::segment<uint32_t, ISER_address> mem;
             mem[index >> 5] = 1u << (index & 0x1Fu);
             mem.happyInspection();
         }
 
-        template <uintptr_t index>
+        template<uintptr_t index>
         static inline void disable_interrupt() {
             zoal::mem::segment<uint32_t, ICER_address> mem;
             mem[index >> 5] = 1u << (index & 0x1Fu);

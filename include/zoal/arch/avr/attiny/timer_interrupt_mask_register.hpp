@@ -2,7 +2,7 @@
 #define ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_REGISTER_HPP
 
 #include <stdint.h>  /* NOLINT */
-#include "zoal/mem/segment.hpp"
+#include "..mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
     template<uintptr_t Address, uint8_t toieMask, uint8_t ocieaMask, uint8_t ociebMask>
