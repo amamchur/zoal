@@ -4,7 +4,7 @@
 #define ZOAL_MCU_SMT32F0XX_HPP
 
 #include "../arch/bus.hpp"
-#include "../arch/cortex/stm32x/bus_clock_control.hpp"
+#include "zoal/arch/cortex/stm32x/bus_clock.hpp"
 #include "../arch/cortex/stm32x/port.hpp"
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
 #include "../arch/enable.hpp"
@@ -20,8 +20,8 @@ namespace zoal { namespace mcu {
     public:
         using rcc = typename ::zoal::arch::stm32x::reset_and_clock_control<>;
 
-        template<uint32_t Set, uint32_t Clear = ~Set>
-        using options_ahbenr = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::bus::cortex_ahb, Set, Clear>;
+        template<uint32_t Set>
+        using clock_ahb = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_ahb, Set>;
 
         template<uintptr_t Address, class Clock>
         using port = typename ::zoal::arch::stm32x::port<Address, Clock>;
@@ -29,12 +29,12 @@ namespace zoal { namespace mcu {
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;
 
-        using port_a = port<0x48000000, options_ahbenr<0x000020000>>;
-        using port_b = port<0x48000400, options_ahbenr<0x000040000>>;
-        using port_c = port<0x48000800, options_ahbenr<0x000080000>>;
-        using port_d = port<0x48000C00, options_ahbenr<0x000100000>>;
-        using port_e = port<0x48001000, options_ahbenr<0x000200000>>;
-        using port_f = port<0x48001400, options_ahbenr<0x000400000>>;
+        using port_a = port<0x48000000, clock_ahb<0x000020000>>;
+        using port_b = port<0x48000400, clock_ahb<0x000040000>>;
+        using port_c = port<0x48000800, clock_ahb<0x000080000>>;
+        using port_d = port<0x48000C00, clock_ahb<0x000100000>>;
+        using port_e = port<0x48001000, clock_ahb<0x000200000>>;
+        using port_f = port<0x48001400, clock_ahb<0x000400000>>;
 
         using pa_00 = pin<port_a, 0x0>;
         using pa_01 = pin<port_a, 0x1>;

@@ -3,7 +3,7 @@
 
 #include "../../../arch/bus.hpp"
 #include "../../../mem/segment.hpp"
-#include "bus_clock_control.hpp"
+#include "bus_clock.hpp"
 
 #include <stdint.h>
 
@@ -27,18 +27,7 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr uintptr_t RCCx_CSR = 0x024;
         static constexpr uintptr_t RCCx_AHBRSTR = 0x028;
         static constexpr uintptr_t RCCx_CFGR2 = 0x02C;
-
-        reset_and_clock_control() = delete;
-
-    private:
-        template<class RCController, zoal::arch::bus Bus, uint32_t SetMask, uint32_t ClearMask = ~SetMask>
-        friend class ::zoal::arch::stm32x::bus_clock_control;
-
-        static zoal::mem::segment<uint32_t, Address> mem;
     };
-
-    template<uintptr_t Address>
-    zoal::mem::segment<uint32_t, Address> reset_and_clock_control<Address>::mem;
 }}}
 
 #endif

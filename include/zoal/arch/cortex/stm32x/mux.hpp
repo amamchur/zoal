@@ -10,23 +10,26 @@
 #include <stdint.h>
 
 namespace zoal { namespace metadata {
-    template<uint8_t Usart, uint32_t Port, uint8_t PinOffset>
+    template<uintptr_t Usart, uintptr_t Port, uint8_t PinOffset>
     struct stm32_usart_af_mapping;
 }}
 
 namespace zoal { namespace arch { namespace stm32x {
-    template<class Api>
+    template<class Microcontroller>
     class mux {
     public:
+        using mcu = Microcontroller;
+        using api = typename mcu::api;
+
         template<class U,
                  class PinRX = zoal::gpio::null_pin,
                  class PinTX = zoal::gpio::null_pin,
                  class PinCK = zoal::gpio::null_pin>
         class usart {
         public:
-            using rx_af = zoal::metadata::stm32_usart_af_mapping<U::no, PinRX::port::address, PinRX::offset>;
-            using tx_af = zoal::metadata::stm32_usart_af_mapping<U::no, PinTX::port::address, PinTX::offset>;
-            using ck_af = zoal::metadata::stm32_usart_af_mapping<U::no, PinCK::port::address, PinCK::offset>;
+            using rx_af = zoal::metadata::stm32_usart_af_mapping<U::address, PinRX::port::address, PinRX::offset>;
+            using tx_af = zoal::metadata::stm32_usart_af_mapping<U::address, PinTX::port::address, PinTX::offset>;
+            using ck_af = zoal::metadata::stm32_usart_af_mapping<U::address, PinCK::port::address, PinCK::offset>;
 
             static_assert(rx_af::rx >= 0, "Unsupported RX pin mapping");
             static_assert(tx_af::tx >= 0, "Unsupported TX pin mapping");
@@ -34,7 +37,7 @@ namespace zoal { namespace arch { namespace stm32x {
 
             static inline void on() {
                 using namespace zoal::ct;
-                Api::template power_on<PinTX, PinRX, PinCK>::apply();
+                api::template power_on<PinTX, PinRX, PinCK>::apply();
 
                 if (is_pin<PinTX>::value) {
                     stm32_alternate_function<typename PinTX::port, PinTX::offset, tx_af::tx>();

@@ -3,16 +3,9 @@ const xml2js = require('xml2js');
 let exec = require('child_process').exec;
 let path = require('path');
 
-class Avr {
-    constructor(file) {
-        this.file = file;
-        this.buffer = '';
-        this.mcu = {};
-    }
+const BaseGenerator = require('./BaseGenerator');
 
-    static toHex(value, padding) {
-        return '0x' + ("00000000" + value.toString(16)).substr(-padding).toUpperCase();
-    }
+class Avr extends BaseGenerator {
 
     static getModule(modules, regex) {
         let result = null;
@@ -436,7 +429,7 @@ class Avr {
             while ((1 << offset) < mask) {
                 let exists = (mask & (1 << offset));
                 if (exists) {
-                    let suffix = ("00" + offset.toString(16)).substr(-2);
+                    let suffix = ("00" + offset.toString(10)).substr(-2);
                     let pos = offset.toString(16);
                     let pinName = `${prefix}_${suffix}`;
                     result.push(`using ${pinName} = pin<${port.name}, ${pos}>;`);

@@ -1,10 +1,11 @@
 const program = require('commander');
 const ATmega = require('./generator/ATmega');
 const ATtiny = require('./generator/ATtiny');
+const STM32 = require('./generator/STM32');
 
 program
     .version('0.0.0')
-    .option('-f, --family [family]', 'MCU family', /^(atmega|attiny)$/)
+    .option('-f, --family [family]', 'MCU family', /^(atmega|attiny|stm32)$/)
     .option('-m, --metadata [metadata]', 'MCU metadata file')
     .option('-o, --out [out]', 'Output file')
     .parse(process.argv);
@@ -17,6 +18,10 @@ if (program.family === 'atmega') {
 
 if (program.family === 'attiny') {
     generator = new ATtiny(program.metadata);
+}
+
+if (program.family === 'stm32') {
+    generator = new STM32(program.metadata);
 }
 
 generator.generate()

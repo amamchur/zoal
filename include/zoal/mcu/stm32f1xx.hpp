@@ -6,7 +6,7 @@
 #include "../arch/cortex/stm32f1/adc.hpp"
 #include "../arch/cortex/stm32f1/port.hpp"
 #include "../arch/cortex/stm32f1/usart.hpp"
-#include "../arch/cortex/stm32x/bus_clock_control.hpp"
+#include "zoal/arch/cortex/stm32x/bus_clock.hpp"
 #include "../arch/cortex/stm32x/mux.hpp"
 #include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
 #include "../arch/enable.hpp"
@@ -24,11 +24,11 @@ namespace zoal { namespace mcu {
     private:
         using rcc = typename ::zoal::arch::stm32x::reset_and_clock_control<>;
 
-        template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_apb1 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::bus::cortex_apb1, Set, Clear>;
+        template<uint32_t Set>
+        using clock_apb1 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_apb1, Set>;
 
-        template<uint32_t Set, uint32_t Clear = ~Set>
-        using clock_apb2 = ::zoal::arch::stm32x::bus_clock_control<rcc, zoal::arch::bus::cortex_apb2, Set, Clear>;
+        template<uint32_t Set>
+        using clock_apb2 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_apb2, Set>;
 
     public:
         template<uintptr_t Address, class Clock>

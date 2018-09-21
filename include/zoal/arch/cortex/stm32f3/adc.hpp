@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 namespace zoal { namespace arch { namespace stm32f3 {
-    template<uintptr_t Address, uint8_t N, class CommRegs, class Clock>
+    template<uintptr_t Address, uint8_t N, class Clock>
     class adc : public Clock {
     private:
         enum A2DC_Flags : uint32_t { Enable = 0x00000001, StartRegularConversion = 0x00000004 };
@@ -93,22 +93,22 @@ namespace zoal { namespace arch { namespace stm32f3 {
         }
 
         static void setup() {
-            CommRegs::reset();
-
-            mem[ADCx_CFGR] = 0x00002000; // Single conversion mode
-            mem[ADCx_SQR1] = 0x00000000; // Reset to defaults
-            mem[ADCx_CR] |= Enable;
-
-            while ((mem[ADCx_ISR] & 0x0001) == 0)
-                ;
+//            CommRegs::reset();
+//
+//            mem[ADCx_CFGR] = 0x00002000; // Single conversion mode
+//            mem[ADCx_SQR1] = 0x00000000; // Reset to defaults
+//            mem[ADCx_CR] |= Enable;
+//
+//            while ((mem[ADCx_ISR] & 0x0001) == 0)
+//                ;
         }
 
     private:
         static zoal::mem::segment<uint32_t, Address> mem;
     };
 
-    template<uintptr_t Address, uint8_t N, class CommRegs, class Clock>
-    zoal::mem::segment<uint32_t, Address> adc<Address, N, CommRegs, Clock>::mem;
+    template<uintptr_t Address, uint8_t N, class Clock>
+    zoal::mem::segment<uint32_t, Address> adc<Address, N, Clock>::mem;
 }}}
 
 #endif

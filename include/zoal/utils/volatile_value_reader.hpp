@@ -26,14 +26,14 @@ namespace zoal { namespace utils {
     template<class T, const volatile T *Pointer>
     class need_blocking {
     public:
-#ifdef __CORTEX_M
-        static constexpr auto alignment = 4;
-        static constexpr size_t atomic_read_size = 4;
-#else
+#if defined(__AVR_ARCH__)
         static constexpr auto alignment = 1;
         static constexpr size_t atomic_read_size = 1;
+#else
+        static constexpr auto alignment = 4;
+        static constexpr size_t atomic_read_size = 4;
 #endif
-        static constexpr bool aligned = ((size_t) Pointer % alignment) == 0;
+        static constexpr bool aligned = ((uintptr_t)Pointer % alignment) == 0;
         static constexpr bool value = sizeof(T) > atomic_read_size;
     };
 

@@ -65,7 +65,7 @@ set(STM32F10X_OPTS
 file(GLOB_RECURSE STM32F30X_SRC
         "lib/stm32f30x/CMSIS/core/*.*"
         "lib/stm32f30x/StdPeriph_Driver/src/*.*"
-        "lib/stm32f30x/startup/startup_stm32.s"
+#        "lib/stm32f30x/startup/startup_stm32.s"
         "lib/stm32f30x/src/syscalls.c"
         "lib/stm32f30x/src/system_stm32f30x.c")
 set(STM32F30X_INC

@@ -21,6 +21,11 @@ namespace zoal { namespace mem {
         static void apply(A &a) {
             clear_and_set<clear_mask, set_mask>::apply(a);
         }
+
+        template<class A>
+        static void clear(A &a) {
+            clear_and_set<clear_mask, 0>::apply(a);
+        }
     };
 
     template<intptr_t Offset, class T, T Clear, T Set>
@@ -72,20 +77,29 @@ namespace zoal { namespace mem {
         using result = merge_modifiers_data<ListA, ListB>;
     };
 
-    template<uintptr_t Address, class Modifier>
+    template<uintptr_t Address, class ModifiersTypeList>
     struct apply_modifiers {
-        using self_type = apply_modifiers<Address, Modifier>;
-        using mem_type = typename Modifier::type::mem_type;
-        using segment = zoal::mem::segment<mem_type, Address>;
-
         template<class T>
         void operator()() const {
-            segment mem;
+            zoal::mem::segment<typename T::mem_type, Address> mem;
             T::template apply(mem[T::offset]);
         }
 
         apply_modifiers() {
-            zoal::ct::type_list_iterator<Modifier>::for_each(*this);
+            zoal::ct::type_list_iterator<ModifiersTypeList>::for_each(*this);
+        }
+    };
+
+    template<uintptr_t Address, class ModifiersTypeList>
+    struct clear_modifiers {
+        template<class T>
+        void operator()() const {
+            zoal::mem::segment<typename T::mem_type, Address> mem;
+            T::template clear(mem[T::offset]);
+        }
+
+        clear_modifiers() {
+            zoal::ct::type_list_iterator<ModifiersTypeList>::for_each(*this);
         }
     };
 }}

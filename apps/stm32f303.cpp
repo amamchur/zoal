@@ -1,3 +1,5 @@
+#include <zoal/mcu/stm32f303re.hpp>
+
 #include "stm32f30x.h"
 #include "templates/compile_check.hpp"
 #include "templates/ir_remove.hpp"
@@ -6,23 +8,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <zoal/arch/cortex/semihosting_transport.hpp>
-#include <zoal/arch/cortex/stm32f3/adc.hpp>
-#include <zoal/arch/cortex/stm32x/bus_clock_control.hpp>
 #include <zoal/board/nucleo_f303re.hpp>
 #include <zoal/data/rx_tx_buffer.hpp>
 #include <zoal/ic/ws2812.hpp>
 #include <zoal/io/output_stream.hpp>
-#include <zoal/mcu/stm32f1xx.hpp>
 #include <zoal/shields/uno_lcd_shield.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 
 volatile uint32_t milliseconds_counter = 0;
 
-using mcu = zoal::pcb::mcu;
-using usart = mcu::usart1<zoal::data::rx_tx_buffer<8, 8>>;
-using logger = zoal::utils::terminal_logger<usart, zoal::utils::log_level::trace>;
+//using mcu = zoal::pcb::mcu;
+using mcu = zoal::mcu::stm32f303_rd_re<>;
+using usart_01 = mcu::usart_01<zoal::data::rx_tx_buffer<8, 8>>;
+using usart_02 = mcu::usart_02<zoal::data::rx_tx_buffer<8, 8>>;
+using usart_03 = mcu::usart_03<zoal::data::rx_tx_buffer<8, 8>>;
+using logger = zoal::utils::terminal_logger<usart_01, zoal::utils::log_level::trace>;
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using delay = typename tools::delay;
@@ -49,20 +50,26 @@ void initTimer() {
     zoal::pcb::build_in_led::port::power_on();
     zoal::pcb::build_in_led::mode<zoal::gpio::pin_mode::output>();
 
-    mcu::timer2::power_on();
-    mcu::timer2::prescaler<7200>();
-    mcu::timer2::period<5000>();
-    mcu::timer2::enable_interrupt<zoal::periph::timer_interrupt::overflow>();
-    mcu::timer2::enable();
+    mcu::timer_02::power_on();
+    mcu::timer_02::prescaler<7200>();
+    mcu::timer_02::period<5000>();
+    mcu::timer_02::enable_interrupt<zoal::periph::timer_interrupt::overflow>();
+    mcu::timer_02::enable();
 }
 
 void init_usart() {
-    mcu::power<usart>::on();
+    mcu::power<usart_01>::on();
 
-    mcu::mux::usart<usart, mcu::pa10, mcu::pa09, mcu::pa08>::on();
-    mcu::cfg::usart<usart, 57600>::apply();
+    mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09, mcu::pa_08>::on();
+    mcu::cfg::usart<usart_01, 115200>::apply();
 
-    mcu::enable<usart>::on();
+    //    mcu::mux::usart<usart_02, mcu::pa_10, mcu::pa_09, mcu::pa_08>::on();
+    //    mcu::cfg::usart<usart_02, 115200>::apply();
+
+    //    mcu::mux::usart<usart_03, mcu::pa_10, mcu::pa_09, mcu::pa_08>::on();
+    //    mcu::cfg::usart<usart_03, 115200>::apply();
+
+    mcu::enable<usart_01>::on();
 
     NVIC_EnableIRQ(USART1_IRQn);
 }
@@ -73,29 +80,16 @@ int main() {
 
     init_usart();
 
-    //    initTimer();
-    //
-    //    TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-    //    NVIC_EnableIRQ(TIM2_IRQn);
-    //
     logger::clear();
     logger::info() << "----- Started!!! -----";
-    logger::trace() << "logger::trace";
-    logger::debug() << "logger::debug";
-    logger::info() << "logger::info";
-    logger::warn() << "logger::warn";
-    logger::error() << "logger::error";
-
-    using uc = mcu::cfg::usart<usart, 57600>;
-#define CR1_CLEAR_MASK ((uint32_t)(USART_CR1_M | USART_CR1_PCE | USART_CR1_PS | USART_CR1_TE | USART_CR1_RE))
-    logger::info() << "CR1_CLEAR_MASK: 0x" << zoal::io::hex << CR1_CLEAR_MASK;
-    logger::info() << "c1_clear: 0x" << zoal::io::hex << uc::c1_clear;
-    logger::info() << "c1_set: 0x" << zoal::io::hex << uc::c1_set;
+    logger::trace() << zoal::io::hex << "USART1: 0x" << (uintptr_t)(USART1);
+    logger::trace() << zoal::io::hex << "USART2: 0x" << (uintptr_t)(USART2);
+    logger::trace() << zoal::io::hex << "USART3: 0x" << (uintptr_t)(USART3);
 
     int counter = 0;
     while (1) {
         logger::info() << "counter: " << counter++;
-        delay::ms(1000);
+        delay::ms(3000);
     }
 
     return 0;
@@ -103,31 +97,18 @@ int main() {
 
 #pragma GCC diagnostic pop
 
-#if 0
-
-extern "C" void USART1_EXTI25_IRQHandler(void) {
-    if (USART1_writeidx - USART1_readidx == 0) {
-        USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
-        return;
-    }
-    USART_SendData(USART1,
-                   USART1_ringbuf[(USART1_readidx++) & (RINGBUF_SIZE - 1)]);
+extern "C" void USART1_IRQHandler(void) {
+    usart_01::handleIrq();
 }
 
-#else
-
-extern "C" void USART1_EXTI25_IRQHandler(void) {
-    usart::handleIrq();
+extern "C" void USART2_IRQHandler(void) {
+    usart_02::handleIrq();
 }
 
-#endif
+extern "C" void USART3_IRQHandler(void) {
+    usart_03::handleIrq();
+}
 
 extern "C" void SysTick_Handler() {
     milliseconds_counter++;
 }
-
-//extern "C" void TIM2_IRQHandler() {
-//    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-//
-//    zoal::pcb::build_in_led::toggle();
-//}

@@ -44,8 +44,11 @@ target_compile_definitions(STM32F103.elf PRIVATE -DUSE_STDPERIPH_DRIVER -DSTM32F
 add_mcu_executable(STM32F030 STM32F030F4Px ${ZOAL_FILES} apps/stm32f030.cpp)
 target_compile_definitions(STM32F030.elf PRIVATE -DUSE_STDPERIPH_DRIVER -DSTM32F031)
 
-add_mcu_executable(STM32F303 STM32F303RETx ${ZOAL_FILES} apps/stm32f303.cpp)
-target_compile_definitions(STM32F303.elf PRIVATE -DUSE_STDPERIPH_DRIVER -DSTM32F303 -DSTM32F303xE)
+add_mcu_executable(STM32F303RE STM32F303RETx ${ZOAL_FILES}
+        apps/stm32f303.cpp
+        lib/startup_stm32f303xe.s
+        )
+target_compile_definitions(STM32F303RE.elf PRIVATE -DUSE_STDPERIPH_DRIVER -DSTM32F303 -DSTM32F303xE)
 
 #add_mcu_executable(STM32L432 STM32L432KCUx ${ZOAL_FILES} apps/STM32L432.cpp)
 #target_compile_definitions(STM32L432.elf PRIVATE -DSTM32L4 -DUSE_HAL_DRIVER -DSTM32L432xx)

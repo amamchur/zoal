@@ -4,6 +4,8 @@
       <w>atmega</w>
       <w>attiny</w>
       <w>gpio</w>
+      <w>microcontroller</w>
+      <w>nucleo</w>
       <w>prescale</w>
       <w>usart</w>
       <w>zoal</w>
