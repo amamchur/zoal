@@ -21,9 +21,9 @@ namespace zoal { namespace arch { namespace stm32x {
         using api = typename mcu::api;
 
         template<class U,
-                 class PinRX = zoal::gpio::null_pin,
-                 class PinTX = zoal::gpio::null_pin,
-                 class PinCK = zoal::gpio::null_pin>
+                class PinRX = zoal::gpio::null_pin,
+                class PinTX = zoal::gpio::null_pin,
+                class PinCK = zoal::gpio::null_pin>
         class usart {
         public:
             using rx_af = zoal::metadata::stm32_usart_af_mapping<U::address, PinRX::port::address, PinRX::offset>;
@@ -56,14 +56,12 @@ namespace zoal { namespace arch { namespace stm32x {
         private:
             template<class Port, uint8_t Pin, uint8_t af>
             static inline void stm32_alternate_function() {
-                using namespace zoal::mem;
-
-                *accessor<Port::GPIOx_OSPEEDR>::p |= (0x3 << (Pin * 2)); // 50MHz
-                *accessor<Port::GPIOx_OTYPER>::p &= ~(0x1 << Pin); // Output push-pull
-                clear_and_set<0x3, 0x2, Pin * 2>::apply(*accessor<Port::GPIOx_MODER>::p);
+                *Port::template accessor<Port::GPIOx_OSPEEDR>::p |= (0x3 << (Pin * 2)); // 50MHz
+                *Port::template accessor<Port::GPIOx_OTYPER>::p &= ~(0x1 << Pin); // Output push-pull
+                zoal::mem::clear_and_set<0x3, 0x2, Pin * 2>::apply(*Port::template accessor<Port::GPIOx_MODER>::p);
 
                 constexpr auto index = Pin < 8 ? Port::GPIOx_AFRL : Port::GPIOx_AFRH;
-                clear_and_set<0xF, af, (Pin & 0x7) << 2>::apply(*accessor<index>::p);
+                zoal::mem::clear_and_set<0xF, af, (Pin & 0x7) << 2>::apply(*Port::template accessor<index>::p);
             }
         };
     };
