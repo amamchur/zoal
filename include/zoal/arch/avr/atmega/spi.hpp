@@ -2,12 +2,15 @@
 #define ZOAL_ARCH_ATMEL_AVR_ATMEGA_HARDWARE_SPI_HPP
 
 #include "../../../gpio/pin_mode.hpp"
-#include "../../../mem/segment.hpp"
+#include "../../../mem/accessor.hpp"
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
     template<uintptr_t Address, uint8_t N>
     class spi {
     public:
+        template<uintptr_t Offset>
+        using accessor = zoal::mem::accessor<uint8_t, Address, Offset>;
+
         static constexpr auto address = Address;
         static constexpr uint8_t no = N;
 
@@ -24,27 +27,19 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static void power_off() {}
 
         static void enable() {
-            mem[SPCRx] |= 0x40; // SPE0
+            *accessor<SPCRx>::p |= 0x40; // SPE0
         }
 
         static void disable() {
-            mem[SPCRx] &= ~0x40; // SPE0
+            *accessor<SPCRx>::p &= ~0x40; // SPE0
         }
 
         static uint8_t transfer_byte(uint8_t data) {
-            mem[SPDRx] = data;
-            while (!(mem[SPSRx] & 0x80))
-                ; // SPIFx
-            return mem[SPDRx];
+            *accessor<SPDRx>::p = data;
+            while (!(*accessor<SPSRx>::p & 0x80)) continue; // SPIFx
+            return *accessor<SPDRx>::p;
         }
-
-    private:
-        static zoal::mem::segment<uint8_t, Address> mem;
     };
-
-    template<uintptr_t Address, uint8_t N>
-    zoal::mem::segment<uint8_t, Address> spi<Address, N>::mem;
-
 }}}}
 
 #endif

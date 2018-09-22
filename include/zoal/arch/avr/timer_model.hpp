@@ -5,7 +5,6 @@
 #include <stdint.h> /* NOLINT */
 #include "mcu_type.hpp"
 #include "../../periph/timer_mode.hpp"
-#include "..mem/segment.hpp"
 
 namespace zoal { namespace arch { namespace avr {
     template<mcu_type Type>

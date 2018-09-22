@@ -2,7 +2,6 @@
 #define ZOAL_ARCH_AVR_ATTINY_CFG_HPP
 
 #include "../../../mem/clear_and_set.hpp"
-#include "../../../mem/segment.hpp"
 #include "../../../periph/adc.hpp"
 #include "../../../periph/timer_mode.hpp"
 #include "../../../periph/usart.hpp"
@@ -14,7 +13,6 @@ namespace zoal { namespace metadata {
 namespace zoal { namespace arch { namespace avr { namespace attiny {
     using zoal::mem::clear_and_set;
     using zoal::mem::merge_clear_and_set;
-    using zoal::mem::segment;
     using zoal::periph::usart_parity;
     using zoal::periph::usart_stop_bits;
 

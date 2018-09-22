@@ -39,7 +39,7 @@ const familyMap = {
             '#include <zoal/gpio/api.hpp>'
         ],
         portDeclaration: [
-            `template<uintptr_t Address, class Clock, uint8_t PinMask>`,
+            `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
             `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
             ``
         ],
@@ -282,7 +282,7 @@ class STM32 extends BaseGenerator {
         for (let i = 0; i < this.mcu.ports.length; i++) {
             let port = this.mcu.ports[i];
             let hex = STM32.toHex(port.address, 8);
-            let mask = STM32.toHex(port.pinMask, 2);
+            let mask = STM32.toHex(port.pinMask, 4);
             result.push(`using ${port.name} = port<${hex}, ${port.clock}, ${mask}>;`);
         }
 

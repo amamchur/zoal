@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 namespace zoal { namespace data {
-	template <class T, uintptr_t Size, void (*yield)()>
+	template <class T, size_t Size, void (*yield)()>
 	class ring_buffer {
 	public:
 		ring_buffer()

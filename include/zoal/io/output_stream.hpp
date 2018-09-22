@@ -22,8 +22,7 @@ namespace zoal { namespace io {
 
         output_stream &operator<<(const char *str) {
             string_functor sf(str);
-            Transport::write(sf);
-            return *this;
+            return *this << sf;
         }
 
         output_stream &operator<<(unsigned long value) {
@@ -32,16 +31,15 @@ namespace zoal { namespace io {
             ptr = formatNumber(ptr, value);
             auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
             buffer_functor bf(ptr, length);
-            Transport::write(bf);
-            return *this;
+            return *this << bf;
         }
 
         output_stream &operator<<(unsigned int value) {
-            return *this << (unsigned long) value;
+            return *this << (unsigned long)value;
         }
 
         output_stream &operator<<(unsigned short value) {
-            return *this << (unsigned long) value;
+            return *this << (unsigned long)value;
         }
 
         output_stream &operator<<(long value) {
@@ -57,16 +55,15 @@ namespace zoal { namespace io {
 
             auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
             buffer_functor bf(ptr, length);
-            Transport::write(bf);
-            return *this;
+            return *this << bf;
         }
 
         output_stream &operator<<(int value) {
-            return *this << (long) value;
+            return *this << (long)value;
         }
 
         output_stream &operator<<(short value) {
-            return *this << (long) value;
+            return *this << (long)value;
         }
 
         output_stream &operator<<(double value) {
@@ -104,7 +101,7 @@ namespace zoal { namespace io {
         }
 
         output_stream &operator<<(float value) {
-            return *this << (double) value;
+            return *this << (double)value;
         }
 
         template<uint8_t Value>
@@ -129,9 +126,12 @@ namespace zoal { namespace io {
             return *this;
         }
 
-        template<class T>
-        output_stream &operator<<(T t) {
-            Transport::write(t);
+        template<class F>
+        output_stream &operator<<(::zoal::io::output_stream_functor<F> &fn) {
+            uint8_t data = 0;
+            while (static_cast<F &>(fn)(data)) {
+                Transport::write_byte(data);
+            }
             return *this;
         }
 

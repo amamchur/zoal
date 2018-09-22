@@ -1,8 +1,8 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_CFG_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_CFG_HPP
 
+#include "../../../mem/accessor.hpp"
 #include "../../../mem/clear_and_set.hpp"
-#include "../../../mem/segment.hpp"
 #include "../../../periph/adc.hpp"
 #include "../../../periph/spi.hpp"
 #include "../../../periph/timer_mode.hpp"
@@ -35,7 +35,6 @@ namespace zoal { namespace metadata {
 namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::mem::clear_and_set;
     using zoal::mem::merge_clear_and_set;
-    using zoal::mem::segment;
     using zoal::metadata::adc_clock_divider;
     using zoal::metadata::adc_ref;
     using zoal::metadata::timer_clock_divider;
@@ -181,15 +180,16 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static constexpr uint8_t UBRRxL_value = static_cast<uint8_t>(value & 0xFFu);
             static constexpr uint8_t UBRRxH_value = static_cast<uint8_t>(value >> 0x8u);
 
+            template<uintptr_t Offset>
+            using accessor = zoal::mem::accessor<uint8_t, U::address, Offset>;
+
             static void apply() {
                 U::disable();
 
-                segment<uint8_t, U::address> mem;
-                mem[U::UBRRxL] = UBRRxL_value;
-                mem[U::UBRRxH] = UBRRxH_value;
-                mem[U::UCSRxA] = UCSRxA_value;
-                mem[U::UCSRxC] = usart_mode_cfg<Bits, Parity, StopBits>::UCSRxC_value;
-                mem.happyInspection();
+                *accessor<U::UBRRxL>::p = UBRRxL_value;
+                *accessor<U::UBRRxH>::p = UBRRxH_value;
+                *accessor<U::UCSRxA>::p = UCSRxA_value;
+                *accessor<U::UCSRxC>::p = usart_mode_cfg<Bits, Parity, StopBits>::UCSRxC_value;
             }
         };
 
@@ -204,12 +204,14 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using TCCRxA_cfg = typename timer_mode<Mode>::TCCRxA;
             using TCCRxB_cfg = merge_clear_and_set<typename timer_mode_cfg::TCCRxB, typename clock_divider_cfg::TCCRxB>;
 
+            template<uintptr_t Offset>
+            using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
+
             static void apply() {
                 T::disable();
 
-                segment<uint8_t, T::address> mem;
-                TCCRxA_cfg::apply(mem[T::TCCRxA]);
-                TCCRxB_cfg::apply(mem[T::TCCRxB]);
+                TCCRxA_cfg::apply(*accessor<T::TCCRxA>::p);
+                TCCRxB_cfg::apply(*accessor<T::TCCRxB>::p);
             }
         };
 
@@ -219,12 +221,14 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using ADCSRAx_cfg = typename adc_clock_divider<ClockDivider>::ADCSRAx;
             using ADMUXx_cfg = typename adc_ref<Ref>::ADMUXx;
 
+            template<uintptr_t Offset>
+            using accessor = zoal::mem::accessor<uint8_t, A::address, Offset>;
+
             static void apply() {
                 A::disable();
 
-                segment<uint8_t, A::address> mem;
-                ADMUXx_cfg::apply(mem[A::ADMUXx]);
-                ADCSRAx_cfg::apply(mem[A::ADCSRAx]);
+                ADMUXx_cfg::apply(*accessor<A::ADMUXx>::p);
+                ADCSRAx_cfg::apply(*accessor<A::ADCSRAx>::p);
             }
         };
 
@@ -252,12 +256,14 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                                               typename mode::SPCRx>;
             using SPSRx = typename clock_divider::SPSRx;
 
+            template<uintptr_t Offset>
+            using accessor = zoal::mem::accessor<uint8_t, S::address, Offset>;
+
             static void apply() {
                 S::disable();
 
-                segment<uint8_t, S::address> mem;
-                SPCRx::apply(mem[S::SPCRx]);
-                SPSRx::apply(mem[S::SPSRx]);
+                SPCRx::apply(*accessor<S::SPCRx>::p);
+                SPSRx::apply(*accessor<S::SPSRx>::p);
             }
         };
 
@@ -266,14 +272,17 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         public:
             static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)Frequency / (double)Freq) - 16.0) /
                                                                         2.0);
+
+            template<uintptr_t Offset>
+            using accessor = zoal::mem::accessor<uint8_t, I::address, Offset>;
+
             static void apply() {
                 I::disable();
 
-                segment<uint8_t, I::address> mem;
-                mem[I::TWBRx] = TWBRx_value;
+                *accessor<I::TWBRx>::p = TWBRx_value;
 
-                //                mem[TWSRx] &= ~(1 << TWPS0x | 1 << TWPS1x);
-                //                mem[TWBRx] = ((Config::freq / Config::i2c_freq) - 16) / 2;
+                //                *accessor<TWSRx>::p &= ~(1 << TWPS0x | 1 << TWPS1x);
+                //                *accessor<TWBRx>::p = ((Config::freq / Config::i2c_freq) - 16) / 2;
             }
         };
     };

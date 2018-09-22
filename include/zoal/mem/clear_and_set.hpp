@@ -1,6 +1,8 @@
 #ifndef ZOAL_MEM_CLEAR_AND_SET_HPP
 #define ZOAL_MEM_CLEAR_AND_SET_HPP
 
+#include "../utils/defs.hpp"
+
 #include <stdint.h>
 
 namespace zoal { namespace mem {
@@ -10,7 +12,7 @@ namespace zoal { namespace mem {
         static constexpr uint32_t set_mask = static_cast<uint32_t>(static_cast<uint64_t>(Set) << Shift);
 
         template<class T>
-        static inline void apply(T &value) {
+        ZOAL_INLINE_MF static void apply(T &value) {
             value = (value & ~clear_mask) | set_mask;
         }
     };
@@ -21,7 +23,7 @@ namespace zoal { namespace mem {
         static constexpr uint32_t set_mask = 0;
 
         template<class T>
-        static inline void apply(T &) {}
+        ZOAL_INLINE_MF static void apply(T &) {}
     };
 
     template<uintptr_t Clear, uint8_t Shift>
@@ -30,7 +32,7 @@ namespace zoal { namespace mem {
         static constexpr uint32_t set_mask = 0;
 
         template<class T>
-        static inline void apply(T &value) {
+        ZOAL_INLINE_MF static void apply(T &value) {
             value &= ~clear_mask;
         }
     };
@@ -41,7 +43,7 @@ namespace zoal { namespace mem {
         static constexpr uint32_t set_mask = static_cast<uint32_t>(static_cast<uint64_t>(Set) << Shift);
 
         template<class T>
-        static inline void apply(T &value) {
+        ZOAL_INLINE_MF static void apply(T &value) {
             value |= set_mask;
         }
     };
@@ -52,7 +54,7 @@ namespace zoal { namespace mem {
         static constexpr uint32_t set_mask = static_cast<uint32_t>(static_cast<uint64_t>(Set) << Shift);
 
         template<class T>
-        static inline void apply(T &value) {
+        ZOAL_INLINE_MF static void apply(T &value) {
             value |= set_mask;
         }
     };

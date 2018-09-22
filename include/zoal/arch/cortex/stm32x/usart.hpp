@@ -19,6 +19,8 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr uintptr_t address = Address;
 
         static constexpr uint32_t USARTx_ISR_bit_TXE = 1 << 7; // Bit 7 TXE: Transmit data register empty
+        static constexpr uint32_t USARTx_ISR_bit_RXNE = 1 << 5;
+        static constexpr uint32_t USARTx_CR1_bit_RXNEIE = 1 << 5; // Bit 5 RXNE: Read data register not empty
         static constexpr uint32_t USARTx_CR1_bit_TXEIE = 1 << 7; // Bit 7 TXEIE: interrupt enable
         static constexpr uint32_t USARTx_CR1_bit_UE = 1 << 0; // Bit 0 UE: USART enable
 
@@ -46,21 +48,64 @@ namespace zoal { namespace arch { namespace stm32x {
             mem[USARTx_CR1] &= ~USARTx_CR1_bit_UE;
         }
 
+        static void enable_tx() {
+            mem[USARTx_CR1] |= USARTx_CR1_bit_TXEIE;
+        }
+
+        static void disable_tx() {
+            mem[USARTx_CR1] &= ~USARTx_CR1_bit_TXEIE;
+        }
+
+        static void enable_rx() {
+            mem[USARTx_CR1] |= USARTx_CR1_bit_RXNEIE;
+        }
+
+        static void disable_rx() {
+            mem[USARTx_CR1] &= ~USARTx_CR1_bit_RXNEIE;
+        }
+
         static void write_byte(uint8_t data) {
             zoal::utils::interrupts ni(false);
             buffer.tx.enqueue(data, true);
             mem[USARTx_CR1] |= USARTx_CR1_bit_TXEIE;
         }
 
-        template<class F>
-        static void write(::zoal::io::output_stream_functor<F> &fn) {
-            uint8_t data = 0;
-            while (static_cast<F &>(fn)(data)) {
-                write_byte(data);
+        static inline void flush() {}
+
+        template <class H>
+        static void rx_handler() {
+            auto rx_enabled = mem[USARTx_CR1] & USARTx_CR1_bit_RXNEIE;
+            if (!rx_enabled) {
+                return;
             }
+
+            auto rx_not_empty = mem[USARTx_ISR] & USARTx_ISR_bit_RXNE;
+            if (!rx_not_empty) {
+                return;
+            }
+
+            H::put(mem[USARTx_RDR]);
         }
 
-        static inline void flush() {}
+        template <class H>
+        static void tx_handler() {
+            if (H::empty()) {
+                disable_tx();
+                return;
+            }
+
+            auto tx_enabled = mem[USARTx_CR1] & USARTx_CR1_bit_TXEIE;
+            if (!tx_enabled) {
+                return;
+            }
+
+            auto tx_empty = mem[USARTx_ISR] & USARTx_ISR_bit_TXE;
+            if (!tx_empty) {
+                return;
+            }
+
+            mem[USARTx_TDR] = H::get();
+        }
 
         static void handleIrq() {
             if ((mem[USARTx_ISR] & USARTx_ISR_bit_TXE) != 0) {

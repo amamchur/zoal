@@ -1,6 +1,7 @@
 #ifndef ZOAL_GPIO_NULL_PORT_HPP
 #define ZOAL_GPIO_NULL_PORT_HPP
 
+#include "../utils/defs.hpp"
 #include "pin_mode.hpp"
 
 #include <stdint.h>
@@ -12,20 +13,20 @@ namespace zoal { namespace gpio {
 
         static constexpr uintptr_t address = 0;
 
-        static void power_on() {}
+        ZOAL_INLINE_IO static void power_on() {}
 
-        static void power_off() {}
+        ZOAL_INLINE_IO static void power_off() {}
 
-        static inline void enable() {}
+        ZOAL_INLINE_IO static void enable() {}
 
-        static inline void disable() {}
+        ZOAL_INLINE_IO static void disable() {}
 
-        static inline register_type read() {
+        ZOAL_INLINE_IO static register_type read() {
             return 0;
         }
 
         template<register_type>
-        static inline void toggle() {}
+        ZOAL_INLINE_IO static void toggle() {}
 
         template<::zoal::gpio::pin_mode, register_type>
         class mode {};

@@ -13,12 +13,14 @@ namespace zoal { namespace arch { namespace avr {
         using self_type = timer<Address, N, Mixin...>;
         using word = typename self_type::word;
 
+        template<uintptr_t Offset>
+        using accessor = zoal::mem::accessor<word, Address, Offset>;
+
         timer16() = delete;
 
         static word period() {
-            zoal::mem::segment<uint8_t, Address> m8;
-            auto wgm1 = m8[self_type::TCCRxA] & 0x03;
-            auto wgm2 = m8[self_type::TCCRxB] & 0x18;
+            auto wgm1 = *accessor<self_type::TCCRxA>::p & 0x03;
+            auto wgm2 = *accessor<self_type::TCCRxB>::p & 0x18;
             auto wgm = wgm2 >> 1 | wgm1;
 
             switch (wgm) {

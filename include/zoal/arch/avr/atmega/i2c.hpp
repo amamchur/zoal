@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_I2C_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_I2C_HPP
 
-#include "../../../mem/segment.hpp"
+#include "../../../mem/accessor.hpp"
 #include "../../../periph/i2c_config.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../../utils/nop.hpp"
@@ -112,6 +112,9 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr uint8_t TWIEx = 0;
 
     public:
+        template<uintptr_t Offset>
+        using accessor = zoal::mem::accessor<uint8_t, Address, Offset>;
+
         static constexpr auto address = Address;
         static constexpr uint8_t no = N;
 
@@ -138,11 +141,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static void power_off() {}
 
         static void enable() {
-            mem[TWCRx] = 1 << TWENx | 1 << TWIEx | 1 << TWEAx;
+            *accessor<TWCRx>::p = 1 << TWENx | 1 << TWIEx | 1 << TWEAx;
         }
 
         static void disable() {
-            mem[TWCRx] &= ~(1 << TWENx | 1 << TWIEx | 1 << TWEAx);
+            *accessor<TWCRx>::p &= ~(1 << TWENx | 1 << TWIEx | 1 << TWEAx);
         }
 
         template<class Config>
@@ -150,8 +153,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             //            I2CSDA::high();
             //            I2CSCL::high();
 
-            mem[TWSRx] &= ~(1 << TWPS0x | 1 << TWPS1x);
-            mem[TWBRx] = ((Config::freq / Config::i2c_freq) - 16) / 2;
+            *accessor<TWSRx>::p &= ~(1 << TWPS0x | 1 << TWPS1x);
+            *accessor<TWBRx>::p = ((Config::freq / Config::i2c_freq) - 16) / 2;
         }
 
         static i2c_stream &stream(void *extBuffer = nullptr) {
@@ -165,7 +168,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             token = t;
 
             busy = 1;
-            mem[TWCRx] = START;
+            *accessor<TWCRx>::p = START;
 
             if (cb == nullptr) {
                 wait();
@@ -183,7 +186,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         }
 
         static void wait() {
-            while (busy || (mem[TWCRx] & 1 << TWSTOx))
+            while (busy || (*accessor<TWCRx>::p & 1 << TWSTOx))
                 ;
         }
 
@@ -193,56 +196,53 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr uint8_t STOP = 1 << TWENx | 1 << TWIEx | 1 << TWEAx | 1 << TWINTx | 1 << TWSTOx;
 
         static void handle_irq() {
-            auto status = static_cast<uint8_t>(mem[TWSRx] & 0xF8);
+            auto status = static_cast<uint8_t>(*accessor<TWSRx>::p & 0xF8);
             switch (status) {
             case I2C_BUS_ERROR:
-                mem[TWCRx] = STOP;
+                *accessor<TWCRx>::p = STOP;
                 transmission_complete(1);
                 break;
             case I2C_START:
             case I2C_REP_START:
-                mem[TWDRx] = stream_.address();
-                mem[TWCRx] = ACK;
+                *accessor<TWDRx>::p = stream_.address();
+                *accessor<TWCRx>::p = ACK;
                 break;
             case I2C_MT_SLA_ACK:
             case I2C_MT_DATA_ACK:
                 if (stream_.next()) {
-                    mem[TWDRx] = stream_.dequeue();
-                    mem[TWCRx] = ACK;
+                    *accessor<TWDRx>::p = stream_.dequeue();
+                    *accessor<TWCRx>::p = ACK;
                 } else {
-                    mem[TWCRx] = STOP;
+                    *accessor<TWCRx>::p = STOP;
                     transmission_complete(0);
                 }
                 break;
             case I2C_MT_ARB_LOST:
-                mem[TWCRx] = ACK;
+                *accessor<TWCRx>::p = ACK;
                 transmission_complete(2);
                 break;
             case I2C_MR_SLA_ACK:
-                mem[TWCRx] = stream_.next() ? ACK : NACK;
+                *accessor<TWCRx>::p = stream_.next() ? ACK : NACK;
                 break;
             case I2C_MR_DATA_ACK:
-                stream_.enqueue(mem[TWDRx]);
+                stream_.enqueue(*accessor<TWDRx>::p);
                 if (stream_.next()) {
-                    mem[TWCRx] = ACK;
+                    *accessor<TWCRx>::p = ACK;
                 } else {
-                    mem[TWCRx] = NACK;
+                    *accessor<TWCRx>::p = NACK;
                 }
                 break;
             case I2C_MT_SLA_NACK:
             case I2C_MT_DATA_NACK:
             case I2C_MR_SLA_NACK:
             case I2C_MR_DATA_NACK:
-                mem[TWCRx] = STOP;
+                *accessor<TWCRx>::p = STOP;
                 transmission_complete(0);
                 break;
             default:
                 break;
             }
         }
-
-    private:
-        static zoal::mem::segment<uint8_t, Address> mem;
     };
 
     template<uintptr_t Address, uint8_t N, uint8_t BufferSize>

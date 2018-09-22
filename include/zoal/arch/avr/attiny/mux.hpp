@@ -3,7 +3,7 @@
 
 #include "../../../gpio/pin.hpp"
 #include "../../../mem/clear_and_set.hpp"
-#include "../../../mem/segment.hpp"
+#include "../../../mem/accessor.hpp"
 #include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace metadata {
@@ -51,10 +51,12 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
 
             static_assert(channel >= 0, "Specified pin could not be connected to ADC");
 
+            template<uintptr_t Offset>
+            using accessor = zoal::mem::accessor<uint8_t, A::address, Offset>;
+
             static void on() {
-                segment<uint8_t, A::address> mem;
-                clear_and_set<0x0F, mux_set_mask>::apply(mem[A::ADMUXx]);
-                clear_and_set<(1 << 3), mux5>::apply(mem[A::ADCSRBx]);
+                clear_and_set<0x0F, mux_set_mask>::apply(*accessor<A::ADMUXx>::p);
+                clear_and_set<(1 << 3), mux5>::apply(*accessor<A::ADCSRBx>::p);
             }
 
             static void off() {}
@@ -70,14 +72,15 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             using TCCRxA_cfg_on = clear_and_set<0, mask>;
             using TCCRxA_cfg_off = clear_and_set<mask, 0>;
 
+            template<uintptr_t Offset>
+            using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
+
             static void on() {
-                segment<uint8_t, T::address> mem;
-                TCCRxA_cfg_on::apply(mem[T::TCCRxA]);
+                TCCRxA_cfg_on::apply(*accessor<T::TCCRxA>::p);
             }
 
             static void off() {
-                segment<uint8_t, T::address> mem;
-                TCCRxA_cfg_off::apply(mem[T::TCCRxA]);
+                TCCRxA_cfg_off::apply(*accessor<T::TCCRxA>::p);
             }
         };
     };

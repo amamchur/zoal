@@ -44,14 +44,14 @@ namespace zoal { namespace mcu {
         template<uintptr_t Address, uint8_t N, class Clock>
         using adc = typename ::zoal::arch::stm32f3::adc<Address, N, Clock>;
 
-        template<uintptr_t Address, class Clock, uint8_t PinMask>
+        template<uintptr_t Address, class Clock, uint32_t PinMask>
         using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;
 
-        using port_a = port<0x48000000, clock_ahb<0x00020000>, 0xFF>;
-        using port_b = port<0x48000400, clock_ahb<0x00040000>, 0xFF>;
-        using port_c = port<0x48000800, clock_ahb<0x00080000>, 0xFF>;
-        using port_d = port<0x48000C00, clock_ahb<0x00100000>, 0x04>;
-        using port_f = port<0x48001400, clock_ahb<0x00400000>, 0x03>;
+        using port_a = port<0x48000000, clock_ahb<0x00020000>, 0xFFFF>;
+        using port_b = port<0x48000400, clock_ahb<0x00040000>, 0xFFFF>;
+        using port_c = port<0x48000800, clock_ahb<0x00080000>, 0xFFFF>;
+        using port_d = port<0x48000C00, clock_ahb<0x00100000>, 0x0004>;
+        using port_f = port<0x48001400, clock_ahb<0x00400000>, 0x0003>;
 
         using adc_01 = adc<0x50000000, 1, clock_ahb<0x10000000>>;
         using adc_02 = adc<0x50000100, 2, clock_ahb<0x10000000>>;

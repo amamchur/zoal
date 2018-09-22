@@ -2,6 +2,37 @@
 #define ZOAL_HELPERS_HPP
 
 namespace zoal { namespace ct {
+    template<bool condition, class T, class U>
+    struct conditional_type {
+
+    };
+
+    template<class T, class U>
+    struct conditional_type<true, T, U> {
+        using type = T;
+    };
+
+    template<class T, class U>
+    struct conditional_type<false, T, U> {
+        using type = U;
+    };
+
+
+    template<bool condition, class T, T A, T B>
+    struct conditional_value {
+
+    };
+
+    template<class T, T A, T B>
+    struct conditional_value<true, T, A, B> {
+        static constexpr auto value = A;
+    };
+
+    template<class T, T A, T B>
+    struct conditional_value<false, T, A, B> {
+        static constexpr auto value = B;
+    };
+
     template<class T, class U>
     struct optional_type {
         using type = T;

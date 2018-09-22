@@ -17,9 +17,9 @@ namespace zoal { namespace utils {
     class prefix_placer {
     public:
         template<class T>
-        void place_preffix() {
+        void place_preffix(T &t) {
             Prefixer p;
-            T::write(p);
+            t << p;
         }
     };
 
@@ -38,10 +38,10 @@ namespace zoal { namespace utils {
         }
 
         template<class T>
-        void place_suffix() {
+        void place_suffix(T &t) {
             if (enabled) {
                 Suffixer p;
-                T::write(p);
+                t << p;
             }
         }
 
@@ -72,7 +72,7 @@ namespace zoal { namespace utils {
     class log_stream : public prefix_placer<Prefixer>, suffix_placer<Suffixer> {
     public:
         log_stream() {
-            this->template place_preffix<Transport>();
+            this->template place_preffix<>(*this);
         }
 
         log_stream(const log_stream &log) noexcept {
@@ -84,7 +84,7 @@ namespace zoal { namespace utils {
 
         ~log_stream() {
             if (flush) {
-                this->template place_suffix<Transport>();
+                this->template place_suffix<>(*this);
                 Transport::flush();
             }
         }

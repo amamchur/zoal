@@ -37,7 +37,6 @@ namespace zoal { namespace arch { namespace stm32x {
 
             static inline void on() {
                 using namespace zoal::ct;
-                api::template power_on<PinTX, PinRX, PinCK>::apply();
 
                 if (is_pin<PinTX>::value) {
                     stm32_alternate_function<typename PinTX::port, PinTX::offset, tx_af::tx>();

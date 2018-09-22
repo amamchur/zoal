@@ -15,14 +15,14 @@ int main() {
     using namespace zoal::gpio;
 
     SysTick_Config(SystemCoreClock / 1000);
-    mcu::api::power_on<mcu::pc13>::apply();
-    mcu::pc13::mode<zoal::gpio::pin_mode::output>();
+    mcu::api::power_on<mcu::pc_13>();
+    mcu::pc_13::mode<zoal::gpio::pin_mode::output>();
 
     while (true) {
-        mcu::pc13::low();
+        mcu::pc_13::low();
         ::delay::ms(100);
 
-        mcu::pc13::high();
+        mcu::pc_13::high();
         ::delay::ms(100);
     }
 

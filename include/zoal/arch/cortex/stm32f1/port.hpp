@@ -91,15 +91,35 @@ namespace zoal { namespace arch { namespace stm32f1 {
         }
 
         template<register_type Mask>
+        static void low() {
+            static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
+            mem[GPIOx_BRR] = Mask;
+        }
+
+        template<register_type Mask>
+        static void high() {
+            static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
+            mem[GPIOx_BSRR] = Mask;
+        }
+
+        template<register_type Mask>
         static void toggle() {
-            static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
+            static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
             auto data = mem[GPIOx_ODR];
             mem[GPIOx_BRR] = data & Mask;
             mem[GPIOx_BSRR] = ~data & Mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
-        struct mode {
+        static inline void mode() {
+            using namespace zoal::gpio;
+            using md = pin_mode_cfg<PinMode, Mask>;
+            mem[GPIOx_CRL] = (mem[GPIOx_CRL] & ~md::GPIOx_CRL::clear_mask) | md::GPIOx_CRL::set_mask;
+            mem[GPIOx_CRH] = (mem[GPIOx_CRH] & ~md::GPIOx_CRH::clear_mask) | md::GPIOx_CRH::set_mask;
+        }
+
+        template<::zoal::gpio::pin_mode PinMode, register_type Mask>
+        struct mode_modifiers {
             using cfg = pin_mode_cfg<PinMode, Mask>;
             using modifiers = zoal::ct::type_list<
                 modifier<GPIOx_CRL, cfg::GPIOx_CRL::clear_mask, cfg::GPIOx_CRL::set_mask>,
@@ -107,13 +127,13 @@ namespace zoal { namespace arch { namespace stm32f1 {
                 modifier<GPIOx_BRR, 0, 0, true>,
                 modifier<GPIOx_BSRR, 0, 0, true>>;
 
-            mode() {
+            mode_modifiers() {
                 zoal::mem::apply_modifiers<address, modifiers>();
             }
         };
 
         template<register_type Mask>
-        struct low {
+        struct low_modifiers {
             static_assert((Mask & pin_mask) == Mask, "Incorrect pin mask");
 
             using modifiers = zoal::ct::type_list<modifier<GPIOx_CRL, 0, 0>,
@@ -121,20 +141,20 @@ namespace zoal { namespace arch { namespace stm32f1 {
                                                   modifier<GPIOx_BRR, 0, Mask, true>,
                                                   modifier<GPIOx_BSRR, 0, 0, true>>;
 
-            low() {
+            low_modifiers() {
                 zoal::mem::apply_modifiers<address, modifiers>();
             }
         };
 
         template<register_type Mask>
-        struct high {
+        struct high_modifiers {
             static_assert((Mask & pin_mask) == Mask, "Incorrect pin mask");
             using modifiers = zoal::ct::type_list<modifier<GPIOx_CRL, 0, 0>,
                                                   modifier<GPIOx_CRH, 0, 0>,
                                                   modifier<GPIOx_BRR, 0, 0, true>,
                                                   modifier<GPIOx_BSRR, 0, Mask, true>>;
 
-            high() {
+            high_modifiers() {
                 zoal::mem::apply_modifiers<address, modifiers>();
             }
         };

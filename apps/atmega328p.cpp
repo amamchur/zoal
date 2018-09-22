@@ -29,9 +29,9 @@ using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
 using irq_handler = counter::handler<mcu::frequency, 64, timer>;
-using usart_01 = mcu::usart_00<zoal::data::rx_tx_buffer<8, 8>>;
+using usart = mcu::usart_00<zoal::data::rx_tx_buffer<8, 8>>;
 using adc = mcu::adc_00;
-using logger = zoal::utils::terminal_logger<usart_01, zoal::utils::log_level::trace>;
+using logger = zoal::utils::terminal_logger<usart, zoal::utils::log_level::trace>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using delay = tools::delay;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
@@ -46,22 +46,26 @@ using check = compile_check<app0, app1, app2, app3, app6, app7>;
 using keypad = typename app3::shield::keypad;
 using lcd = typename app3::shield::lcd;
 
+//using i2c = mcu::i2c_00<32>;
+//using rtc_type = zoal::ic::ds3231<i2c>;
+//rtc_type rtc;
+
 app3 app;
 
 uint16_t lcd_buttons_values[app3::shield::button_count] __attribute__((section(".eeprom"))) = {637, 411, 258, 101, 0};
 
 void initialize_hardware() {
-    mcu::power<usart_01, timer, adc>::on();
+    mcu::power<usart, timer, adc>::on();
 
-    mcu::mux::usart<usart_01, mcu::pd_00, mcu::pd_01, mcu::pd_04>::on();
-    mcu::cfg::usart<usart_01, 115200>::apply();
+    mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::on();
+    mcu::cfg::usart<usart, 115200>::apply();
 
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
     mcu::irq::timer<timer>::enable_overflow_interrupt();
 
     mcu::cfg::adc<adc>::apply();
 
-    mcu::enable<usart_01, timer, adc>::on();
+    mcu::enable<usart, timer, adc>::on();
 
     zoal::utils::interrupts::on();
 }
@@ -73,29 +77,17 @@ void initialize_application() {
     eeprom_write_block(keypad::values, lcd_buttons_values, sizeof(keypad::values));
 }
 
-using i2c = mcu::i2c_00<32>;
-using rtc_type = zoal::ic::ds3231<i2c>;
-rtc_type rtc;
-
 int main() {
     initialize_hardware();
-
-    mcu::power<i2c>::on();
-    mcu::cfg::i2c<i2c>::apply();
-    mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::on();
-    mcu::enable<i2c>::on();
-
-    logger::info() << "Start!!!";
+    initialize_application();
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
-    ::ds3231<tools, i2c> a;
-    a.init();
+    logger::info() << "----- Started!! ------";
 
     while (true) {
-        a.run_once();
-        delay::ms<1000>();
+        app.run_once();
     }
     return 0;
 #pragma clang diagnostic pop
@@ -106,13 +98,13 @@ ISR(TIMER0_OVF_vect) {
 }
 
 ISR(USART_RX_vect) {
-    usart_01::handle_rx_irq();
+    usart::handle_rx_irq();
 }
 
 ISR(USART_UDRE_vect) {
-    usart_01::handle_tx_irq();
+    usart::handle_tx_irq();
 }
 
-ISR(TWI_vect) {
-    i2c::handle_irq();
-}
+//ISR(TWI_vect) {
+//    i2c::handle_irq();
+//}

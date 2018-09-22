@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_A2D_Converter_HPP
 #define ZOAL_ARCH_ATMEL_AVR_A2D_Converter_HPP
 
-#include "../../mem/segment.hpp"
+#include "../../mem/accessor.hpp"
 #include "../bus.hpp"
 #include "mcu_type.hpp"
 
@@ -11,6 +11,9 @@ namespace zoal { namespace arch { namespace avr {
     template<uintptr_t Address, uint8_t N, class... Mixin>
     class adc : public Mixin... {
     public:
+        template<uintptr_t Offset>
+        using accessor = zoal::mem::accessor<uint8_t, Address, Offset>;
+
         using self_type = adc<Address, N, Mixin...>;
 
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
@@ -27,33 +30,31 @@ namespace zoal { namespace arch { namespace avr {
         static void power_off() {}
 
         static void enable() {
-            mem[self_type::ADCSRAx] |= static_cast<uint8_t>(1u << 7u);
+            *accessor<self_type::ADCSRAx>::p |= static_cast<uint8_t>(1u << 7u);
         }
 
         static void disable() {
-            mem[self_type::ADCSRAx] &= ~static_cast<uint8_t>(1u << 7u);
+            *accessor<self_type::ADCSRAx>::p &= ~static_cast<uint8_t>(1u << 7u);
         }
 
         static void enable_interrupt() {
-            mem[self_type::ADCSRAx] |= 0x08;
+            *accessor<self_type::ADCSRAx>::p |= 0x08;
         }
 
         static void disable_interrupt() {
-            mem[self_type::ADCSRAx] &= ~0x08;
+            *accessor<self_type::ADCSRAx>::p &= ~0x08;
         }
 
         static void start() {
-            mem[self_type::ADCSRAx] |= 1 << 6;
+            *accessor<self_type::ADCSRAx>::p |= 1 << 6;
         }
 
         static void wait() {
-            while (mem[self_type::ADCSRAx] & (1 << 6)) {
-            }
+            while (*accessor<self_type::ADCSRAx>::p & (1 << 6)) continue;
         }
 
         static uint16_t value() {
-            zoal::mem::segment<uint16_t, Address> m;
-            return m[self_type::ADCx];
+            return *zoal::mem::accessor<uint16_t, Address, self_type::ADCx>::p;
         }
 
         static uint16_t read() {
@@ -61,13 +62,7 @@ namespace zoal { namespace arch { namespace avr {
             wait();
             return value();
         }
-
-    private:
-        static zoal::mem::segment<uint8_t, Address> mem;
     };
-
-    template<uintptr_t Address, uint8_t N, class... Mixin>
-    zoal::mem::segment<uint8_t, Address> adc<Address, N, Mixin...>::mem;
 }}}
 
 #endif

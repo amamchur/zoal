@@ -3,6 +3,7 @@
 #ifndef ZOAL_GPIO_PIN_HPP
 #define ZOAL_GPIO_PIN_HPP
 
+#include "../utils/defs.hpp"
 #include "null_port.hpp"
 #include "pin_mode.hpp"
 
@@ -20,40 +21,40 @@ namespace zoal { namespace gpio {
         static constexpr typename port::register_type mask = not_pin ? 0 : 1u << Offset;
 
         template<::zoal::gpio::pin_mode PinMode>
-        static inline void mode() {
-            typename port::template mode<PinMode, mask>();
+        ZOAL_INLINE_IO static void mode() {
+            port::template mode<PinMode, mask>();
         }
 
-        static inline uint8_t read() {
+        ZOAL_INLINE_IO static uint8_t read() {
             return (port::read() >> offset) & 1u;
         }
 
-        static inline void write(uint8_t value) {
+        ZOAL_INLINE_IO static void write(uint8_t value) {
             if (value) {
-                typename port::template high<mask>();
+                port::template high<mask>();
             } else {
-                typename port::template low<mask>();
+                port::template low<mask>();
             }
         }
 
         template<uint8_t Value>
-        static inline void set() {
+        ZOAL_INLINE_IO static void set() {
             if (Value) {
-                typename port::template high<mask>();
+                port::template high<mask>();
             } else {
-                typename port::template low<mask>();
+                port::template low<mask>();
             }
         }
 
-        static inline void low() {
-            typename port::template low<mask>();
+        ZOAL_INLINE_IO static void low() {
+            port::template low<mask>();
         }
 
-        static inline void high() {
-            typename port::template high<mask>();
+        ZOAL_INLINE_IO static void high() {
+            port::template high<mask>();
         }
 
-        static inline void toggle() {
+        ZOAL_INLINE_IO static void toggle() {
             port::template toggle<mask>();
         }
     };
@@ -63,12 +64,12 @@ namespace zoal { namespace gpio {
     template<class Pin>
     class active_drain : public Pin {
     public:
-        static inline void on() {
+        ZOAL_INLINE_IO static void on() {
             Pin::template mode<pin_mode::output>();
             Pin::low();
         }
 
-        static inline void off() {
+        ZOAL_INLINE_IO static void off() {
             Pin::template mode<pin_mode::input_floating>();
         }
     };
@@ -76,12 +77,12 @@ namespace zoal { namespace gpio {
     template<class Pin>
     class active_high : public Pin {
     public:
-        static inline void on() {
+        ZOAL_INLINE_IO static void on() {
             Pin::template mode<pin_mode::output>();
             Pin::high();
         }
 
-        static inline void off() {
+        ZOAL_INLINE_IO static void off() {
             Pin::low();
             Pin::template mode<pin_mode::output>();
         }
@@ -90,12 +91,12 @@ namespace zoal { namespace gpio {
     template<class Pin>
     class active_low : public Pin {
     public:
-        static inline void on() {
+        ZOAL_INLINE_IO static void on() {
             Pin::template mode<pin_mode::output>();
             Pin::low();
         }
 
-        static inline void off() {
+        ZOAL_INLINE_IO static void off() {
             Pin::template mode<pin_mode::output>();
             Pin::high();
         }

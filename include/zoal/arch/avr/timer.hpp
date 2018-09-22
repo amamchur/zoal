@@ -1,7 +1,7 @@
 #ifndef ZOAL_GPIO_ATMEL_AVR_TIMER_HPP
 #define ZOAL_GPIO_ATMEL_AVR_TIMER_HPP
 
-#include "../../mem/segment.hpp"
+#include "../../mem/accessor.hpp"
 #include "../../periph/timer_mode.hpp"
 #include "../bus.hpp"
 
@@ -13,6 +13,9 @@ namespace zoal { namespace arch { namespace avr {
     public:
         using self_type = timer<Address, N, Mixin...>;
         using word = typename self_type::word;
+
+        template<uintptr_t Offset>
+        using accessor = zoal::mem::accessor<word, Address, Offset>;
 
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr uintptr_t address = Address;
@@ -31,26 +34,22 @@ namespace zoal { namespace arch { namespace avr {
         static void disable() {}
 
         static void counter(word value) {
-            zoal::mem::segment<word, Address> memWord;
-            memWord[self_type::TCNTx] = value;
-            memWord.happyInspection();
+            *accessor<self_type::TCNTx>::p = value;
         }
 
         static word counter() {
-            zoal::mem::segment<word, Address> memWord;
-            return memWord[self_type::TCNTx];
+            return *accessor<self_type::TCNTx>::p;
         }
 
         template<uint8_t Channel>
         static word compare_value() {
             static_assert(Channel < channels_count, "Channel index is out of range");
 
-            zoal::mem::segment<word, Address> memWord;
             switch (Channel) {
             case 0:
-                return memWord[self_type::OCRxA];
+                return *accessor<self_type::OCRxA>::p;
             case 1:
-                return memWord[self_type::OCRxB];
+                return *accessor<self_type::OCRxB>::p;
             default:
                 break;
             }
@@ -62,13 +61,12 @@ namespace zoal { namespace arch { namespace avr {
         static void compare_value(word value) {
             static_assert(Channel < channels_count, "Channel index is out of range");
 
-            zoal::mem::segment<word, Address> memWord;
             switch (Channel) {
             case 0:
-                memWord[self_type::OCRxA] = value;
+                *accessor<self_type::OCRxA>::p = value;
                 break;
             case 1:
-                memWord[self_type::OCRxB] = value;
+                *accessor<self_type::OCRxB>::p = value;
                 break;
             default:
                 break;

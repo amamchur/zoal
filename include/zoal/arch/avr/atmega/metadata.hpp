@@ -2,7 +2,6 @@
 #define ZOAL_ARCH_AVR_ATMEGA_METADATA_HPP
 
 #include "../../../mem/clear_and_set.hpp"
-#include "../../../mem/segment.hpp"
 #include "../../../periph/adc.hpp"
 #include "../../../periph/timer_mode.hpp"
 #include "../../../periph/usart.hpp"

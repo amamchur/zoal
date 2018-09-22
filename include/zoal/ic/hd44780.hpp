@@ -35,8 +35,6 @@ namespace zoal { namespace ic {
         static void init() {
             using namespace zoal::gpio;
 
-            api::template power_on<RegisterSelect, Enable, DataBus4, DataBus5, DataBus6, DataBus7>::apply();
-
             pulse_enable();
             delay::ms(5);
 
