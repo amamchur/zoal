@@ -1,12 +1,11 @@
-#pragma once
 
 #ifndef ZOAL_ARCH_STM32F1_PORT_HPP
 #define ZOAL_ARCH_STM32F1_PORT_HPP
 
 #include "../../../gpio/pin_mode.hpp"
+#include "../../../mem/accessor.hpp"
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/modifier.hpp"
-#include "../../../mem/segment.hpp"
 #include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace arch { namespace stm32f1 {
@@ -64,8 +63,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using p14 = cr_cas<(Mask & 1 << 0xE), 24>;
         using p15 = cr_cas<(Mask & 1 << 0xF), 28>;
 
-        using GPIOx_CRL = ::zoal::mem::merge_clear_and_set<p00, p01, p02, p03, p04, p05, p06, p07>;
-        using GPIOx_CRH = ::zoal::mem::merge_clear_and_set<p08, p09, p10, p11, p12, p13, p14, p15>;
+        using GPIOx_CRL = typename ::zoal::mem::merge_clear_and_set<p00, p01, p02, p03, p04, p05, p06, p07>::result;
+        using GPIOx_CRH = typename ::zoal::mem::merge_clear_and_set<p08, p09, p10, p11, p12, p13, p14, p15>::result;
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask = 0xFFFF>
@@ -74,6 +73,9 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using register_type = uint32_t;
         static constexpr uintptr_t address = Address;
         static constexpr uint32_t pin_mask = PinMask;
+
+        template<uintptr_t Offset>
+        using accessor = zoal::mem::accessor<register_type, Address, Offset>;
 
         static constexpr uintptr_t GPIOx_CRL = 0x00;
         static constexpr uintptr_t GPIOx_CRH = 0x04;
@@ -87,35 +89,35 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using modifier = zoal::mem::modifier<Offset, register_type, Clear, Set, WriteOnly>;
 
         static inline register_type read() {
-            return mem[GPIOx_IDR];
+            return *accessor<GPIOx_IDR>::p;
         }
 
         template<register_type Mask>
         static void low() {
             static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
-            mem[GPIOx_BRR] = Mask;
+            *accessor<GPIOx_BRR>::p = Mask;
         }
 
         template<register_type Mask>
         static void high() {
             static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
-            mem[GPIOx_BSRR] = Mask;
+            *accessor<GPIOx_BSRR>::p = Mask;
         }
 
         template<register_type Mask>
         static void toggle() {
             static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
-            auto data = mem[GPIOx_ODR];
-            mem[GPIOx_BRR] = data & Mask;
-            mem[GPIOx_BSRR] = ~data & Mask;
+            auto data = *accessor<GPIOx_ODR>::p;
+            *accessor<GPIOx_BRR>::p = data & Mask;
+            *accessor<GPIOx_BSRR>::p = ~data & Mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
         static inline void mode() {
             using namespace zoal::gpio;
             using md = pin_mode_cfg<PinMode, Mask>;
-            mem[GPIOx_CRL] = (mem[GPIOx_CRL] & ~md::GPIOx_CRL::clear_mask) | md::GPIOx_CRL::set_mask;
-            mem[GPIOx_CRH] = (mem[GPIOx_CRH] & ~md::GPIOx_CRH::clear_mask) | md::GPIOx_CRH::set_mask;
+            *accessor<GPIOx_CRL>::p = (*accessor<GPIOx_CRL>::p & ~md::GPIOx_CRL::clear_mask) | md::GPIOx_CRL::set_mask;
+            *accessor<GPIOx_CRH>::p = (*accessor<GPIOx_CRH>::p & ~md::GPIOx_CRH::clear_mask) | md::GPIOx_CRH::set_mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
@@ -128,7 +130,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
                 modifier<GPIOx_BSRR, 0, 0, true>>;
 
             mode_modifiers() {
-                zoal::mem::apply_modifiers<address, modifiers>();
+                using fm = typename zoal::mem::filter_modifiers<modifiers>::result;
+                zoal::mem::apply_modifiers<address, fm>();
             }
         };
 
@@ -142,7 +145,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
                                                   modifier<GPIOx_BSRR, 0, 0, true>>;
 
             low_modifiers() {
-                zoal::mem::apply_modifiers<address, modifiers>();
+                using fm = typename zoal::mem::filter_modifiers<modifiers>::result;
+                zoal::mem::apply_modifiers<address, fm>();
             }
         };
 
@@ -155,16 +159,11 @@ namespace zoal { namespace arch { namespace stm32f1 {
                                                   modifier<GPIOx_BSRR, 0, Mask, true>>;
 
             high_modifiers() {
-                zoal::mem::apply_modifiers<address, modifiers>();
+                using fm = typename zoal::mem::filter_modifiers<modifiers>::result;
+                zoal::mem::apply_modifiers<address, fm>();
             }
         };
-
-    private:
-        static zoal::mem::segment<uint32_t, Address> mem;
     };
-
-    template<uintptr_t Address, class Clock, uint32_t PinMask>
-    zoal::mem::segment<uint32_t, Address> port<Address, Clock, PinMask>::mem;
 }}}
 
 #endif

@@ -4,7 +4,6 @@
 #include "../../../arch/bus.hpp"
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/modifier.hpp"
-#include "../../../mem/segment.hpp"
 
 #include <stdint.h>
 

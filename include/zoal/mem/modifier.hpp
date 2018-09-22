@@ -1,10 +1,10 @@
 #ifndef ZOAL_MEM_MODIFIER_HPP
 #define ZOAL_MEM_MODIFIER_HPP
 
-#include "../ct/type_list.hpp"
 #include "../ct/helpers.hpp"
+#include "../ct/type_list.hpp"
+#include "../mem/accessor.hpp"
 #include "../mem/clear_and_set.hpp"
-#include "../mem/segment.hpp"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -46,10 +46,10 @@ namespace zoal { namespace mem {
 
         using self_type = merge_modifiers_data<ListA, ListB>;
         using type = modifier<a::offset,
-                typename a::mem_type,
-                (a::clear_mask | b::clear_mask),
-                (a::set_mask & ~b::clear_mask) | b::set_mask,
-                a::write_only>;
+                              typename a::mem_type,
+                              (a::clear_mask | b::clear_mask),
+                              (a::set_mask & ~b::clear_mask) | b::set_mask,
+                              a::write_only>;
         using next = typename merge_modifiers_data<typename ListA::next, typename ListB::next>::self_type;
     };
 
@@ -101,15 +101,14 @@ namespace zoal { namespace mem {
         using current = typename ModifiersTypeList::type;
 
         ZOAL_INLINE_MF apply_modifiers() {
-            zoal::mem::segment<typename current::mem_type, Address> mem;
-            current::template apply(mem[current::offset]);
+            using acc = zoal::mem::accessor<typename current::mem_type, Address, current::offset>;
+            current::template apply(*acc::p);
             next();
         }
     };
 
     template<uintptr_t Address>
-    struct apply_modifiers<Address, void> {
-    };
+    struct apply_modifiers<Address, void> {};
 
     template<uintptr_t Address, class ModifiersTypeList>
     struct clear_modifiers {
@@ -118,14 +117,13 @@ namespace zoal { namespace mem {
         using modifier = typename modifiers::type;
 
         ZOAL_INLINE_MF clear_modifiers() {
-            zoal::mem::segment<typename modifier::mem_type, Address> mem;
-            modifier::template clear(mem[modifier::offset]);
+            using acc = zoal::mem::accessor<typename modifier::mem_type, Address, modifier::offset>;
+            modifier::template clear(*acc::p);
         }
     };
 
     template<uintptr_t Address>
-    struct clear_modifiers<Address, void> {
-    };
+    struct clear_modifiers<Address, void> {};
 }}
 
 #endif

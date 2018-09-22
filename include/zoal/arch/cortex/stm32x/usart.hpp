@@ -3,7 +3,7 @@
 
 #include "../../../data/ring_buffer.hpp"
 #include "../../../io/stream_functor.hpp"
-#include "../../../mem/segment.hpp"
+#include "../../../mem/accessor.hpp"
 #include "../../../utils/cooperation.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../../utils/nop.hpp"
@@ -15,6 +15,9 @@ namespace zoal { namespace arch { namespace stm32x {
     class usart : public Mixin... {
     public:
         using buffer_type = Buffer;
+
+        template<uintptr_t Offset>
+        using accessor = zoal::mem::accessor<uint32_t, Address, Offset>;
 
         static constexpr uintptr_t address = Address;
 
@@ -41,88 +44,82 @@ namespace zoal { namespace arch { namespace stm32x {
         static buffer_type buffer;
 
         static void enable() {
-            mem[USARTx_CR1] |= USARTx_CR1_bit_UE;
+            *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_UE;
         }
 
         static void disable() {
-            mem[USARTx_CR1] &= ~USARTx_CR1_bit_UE;
+            *accessor<USARTx_CR1>::p &= ~USARTx_CR1_bit_UE;
         }
 
         static void enable_tx() {
-            mem[USARTx_CR1] |= USARTx_CR1_bit_TXEIE;
+            *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_TXEIE;
         }
 
         static void disable_tx() {
-            mem[USARTx_CR1] &= ~USARTx_CR1_bit_TXEIE;
+            *accessor<USARTx_CR1>::p &= ~USARTx_CR1_bit_TXEIE;
         }
 
         static void enable_rx() {
-            mem[USARTx_CR1] |= USARTx_CR1_bit_RXNEIE;
+            *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_RXNEIE;
         }
 
         static void disable_rx() {
-            mem[USARTx_CR1] &= ~USARTx_CR1_bit_RXNEIE;
+            *accessor<USARTx_CR1>::p &= ~USARTx_CR1_bit_RXNEIE;
         }
 
         static void write_byte(uint8_t data) {
             zoal::utils::interrupts ni(false);
             buffer.tx.enqueue(data, true);
-            mem[USARTx_CR1] |= USARTx_CR1_bit_TXEIE;
+            *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_TXEIE;
         }
 
         static inline void flush() {}
 
-        template <class H>
+        template<class H>
         static void rx_handler() {
-            auto rx_enabled = mem[USARTx_CR1] & USARTx_CR1_bit_RXNEIE;
+            auto rx_enabled = *accessor<USARTx_CR1>::p & USARTx_CR1_bit_RXNEIE;
             if (!rx_enabled) {
                 return;
             }
 
-            auto rx_not_empty = mem[USARTx_ISR] & USARTx_ISR_bit_RXNE;
+            auto rx_not_empty = *accessor<USARTx_ISR>::p & USARTx_ISR_bit_RXNE;
             if (!rx_not_empty) {
                 return;
             }
 
-            H::put(mem[USARTx_RDR]);
+            H::put(*accessor<USARTx_RDR>::p);
         }
 
-        template <class H>
+        template<class H>
         static void tx_handler() {
             if (H::empty()) {
                 disable_tx();
                 return;
             }
 
-            auto tx_enabled = mem[USARTx_CR1] & USARTx_CR1_bit_TXEIE;
+            auto tx_enabled = *accessor<USARTx_CR1>::p & USARTx_CR1_bit_TXEIE;
             if (!tx_enabled) {
                 return;
             }
 
-            auto tx_empty = mem[USARTx_ISR] & USARTx_ISR_bit_TXE;
+            auto tx_empty = *accessor<USARTx_ISR>::p & USARTx_ISR_bit_TXE;
             if (!tx_empty) {
                 return;
             }
 
-            mem[USARTx_TDR] = H::get();
+            *accessor<USARTx_TDR>::p = H::get();
         }
 
         static void handleIrq() {
-            if ((mem[USARTx_ISR] & USARTx_ISR_bit_TXE) != 0) {
+            if ((*accessor<USARTx_ISR>::p & USARTx_ISR_bit_TXE) != 0) {
                 if (buffer.tx.empty()) {
-                    mem[USARTx_CR1] &= ~USARTx_CR1_bit_TXEIE;
+                    *accessor<USARTx_CR1>::p &= ~USARTx_CR1_bit_TXEIE;
                 } else {
-                    mem[USARTx_TDR] = buffer.tx.dequeue();
+                    *accessor<USARTx_TDR>::p = buffer.tx.dequeue();
                 }
             }
         }
-
-    private:
-        static zoal::mem::segment<uint32_t, Address> mem;
     };
-
-    template<uintptr_t Address, uint8_t N, class Buffer, class... Mixin>
-    zoal::mem::segment<uint32_t, Address> usart<Address, N, Buffer, Mixin...>::mem;
 
     template<uintptr_t Address, uint8_t N, class Buffer, class... Mixin>
     typename usart<Address, N, Buffer, Mixin...>::buffer_type usart<Address, N, Buffer, Mixin...>::buffer;

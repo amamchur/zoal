@@ -202,7 +202,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using timer_mode_cfg = timer_mode<Mode>;
             using clock_divider_cfg = timer_clock_divider<async, ClockDivider>;
             using TCCRxA_cfg = typename timer_mode<Mode>::TCCRxA;
-            using TCCRxB_cfg = merge_clear_and_set<typename timer_mode_cfg::TCCRxB, typename clock_divider_cfg::TCCRxB>;
+            using TCCRxB_cfg = typename merge_clear_and_set<typename timer_mode_cfg::TCCRxB,
+                                                            typename clock_divider_cfg::TCCRxB>::result;
 
             template<uintptr_t Offset>
             using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
@@ -250,10 +251,10 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(mode::SPCRx::clear_mask != 0, "Unsupported SPI mode");
             static_assert(order::SPCRx::clear_mask != 0, "Unsupported SPI bit order");
 
-            using SPCRx = merge_clear_and_set<typename order::SPCRx,
-                                              typename clock_divider::SPCRx,
-                                              typename cpol_cpha::SPCRx,
-                                              typename mode::SPCRx>;
+            using SPCRx = typename merge_clear_and_set<typename order::SPCRx,
+                                                       typename clock_divider::SPCRx,
+                                                       typename cpol_cpha::SPCRx,
+                                                       typename mode::SPCRx>::results;
             using SPSRx = typename clock_divider::SPSRx;
 
             template<uintptr_t Offset>

@@ -3,7 +3,6 @@
 
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/modifier.hpp"
-#include "../../../mem/segment.hpp"
 #include "../../../periph/usart.hpp"
 #include "../../../utils/helpers.hpp"
 #include "../../bus.hpp"
@@ -25,7 +24,6 @@ namespace zoal { namespace metadata {
 namespace zoal { namespace arch { namespace stm32x {
     using zoal::mem::clear_and_set;
     using zoal::mem::modifier;
-    using zoal::mem::segment;
 
     template<class Microcontroller>
     class cfg {
@@ -62,15 +60,17 @@ namespace zoal { namespace arch { namespace stm32x {
             using USARTx_CR3 = modifier<U::USARTx_CR3, uint32_t, 0x300, 0>;
             using USARTx_BRR = modifier<U::USARTx_BRR, uint32_t, 0, bbr, true>;
 
+            template<uintptr_t Offset>
+            using accessor = zoal::mem::accessor<uint32_t, U::address, Offset>;
+
             static void apply() {
                 U::disable();
 
-                segment<uint32_t, U::address> mem;
-                mem[U::USARTx_BRR] = bbr;
-                USARTx_CR1::apply(mem[U::USARTx_CR1]);
-                USARTx_CR2::apply(mem[U::USARTx_CR2]);
-                USARTx_CR3::apply(mem[U::USARTx_CR3]);
-                USARTx_BRR::apply(mem[U::USARTx_BRR]);
+                *accessor<U::USARTx_BRR>::p = bbr;
+                USARTx_CR1::apply(*accessor<U::USARTx_CR1>::p);
+                USARTx_CR2::apply(*accessor<U::USARTx_CR2>::p);
+                USARTx_CR3::apply(*accessor<U::USARTx_CR3>::p);
+                USARTx_BRR::apply(*accessor<U::USARTx_BRR>::p);
             }
         };
     };

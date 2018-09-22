@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_STM32F3_GENERAL_PURPOSE_TIMER_HPP
 #define ZOAL_ARCH_STM32F3_GENERAL_PURPOSE_TIMER_HPP
 
-#include "../../../mem/segment.hpp"
+#include "../../../mem/accessor.hpp"
 #include "../../../periph/timer_interrupt.hpp"
 #include "../../../periph/timer_mode.hpp"
 
@@ -33,48 +33,51 @@ namespace zoal { namespace arch { namespace stm32f3 {
         using self_type = general_purpose_timer<Address, N, Mixin...>;
         using word = uint16_t;
 
+        template<uintptr_t Offset>
+        using accessor = zoal::mem::accessor<uint32_t, Address, Offset>;
+
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
         static constexpr uint8_t resolution = sizeof(word) * 8;
 
         static inline void enable() {
-            mem[TIMx_CR1] |= 1; // TIM_CR1_CEN
+            *accessor<TIMx_CR1>::p |= 1; // TIM_CR1_CEN
         }
 
         static inline void disable() {
-            mem[TIMx_CR1] &= static_cast<uint32_t>(1);
+            *accessor<TIMx_CR1>::p &= static_cast<uint32_t>(1);
         }
 
         static inline void counter(word value) {
-            mem[TIMx_CNT] = value;
+            *accessor<TIMx_CNT>::p = value;
         }
 
-        static inline word counter() {
-            return mem[TIMx_CNT];
+        static inline uint32_t counter() {
+            return *accessor<TIMx_CNT>::p;
         }
 
         template<zoal::periph::timer_interrupt TimerInterrupt>
         static inline void enable_interrupt() {}
 
         static inline void enable_overflow_interrupt() {
-            mem[TIMx_DIER] |= 1;
+            *accessor<TIMx_DIER>::p |= 1;
         }
 
         static inline void disable_overflow_interrupt() {
-            mem[TIMx_DIER] &= static_cast<uint32_t>(1);
+            *accessor<TIMx_DIER>::p &= static_cast<uint32_t>(1);
         }
 
         template<uint32_t Division>
         static inline void clock_division() {
             switch (Division) {
             case 1:
-                mem[TIMx_CR1] = (mem[TIMx_CR1] & ~static_cast<uint32_t>(0x300));
+                *accessor<TIMx_CR1>::p = (*accessor<TIMx_CR1>::p & ~static_cast<uint32_t>(0x300));
                 break;
             case 2:
-                mem[TIMx_CR1] = (mem[TIMx_CR1] & ~static_cast<uint32_t>(0x300)) | 0x100;
+                *accessor<TIMx_CR1>::p = (*accessor<TIMx_CR1>::p & ~static_cast<uint32_t>(0x300)) | 0x100;
                 break;
             case 4:
-                mem[TIMx_CR1] = (mem[TIMx_CR1] & ~static_cast<uint32_t>(0x300)) | 0x200;
+                *accessor<TIMx_CR1>::p = (*accessor<TIMx_CR1>::p & ~static_cast<uint32_t>(0x300)) | 0x200;
                 break;
             default:
                 break;
@@ -83,12 +86,12 @@ namespace zoal { namespace arch { namespace stm32f3 {
 
         template<uint32_t Period>
         static inline void period() {
-            mem[TIMx_ARR] = Period;
+            *accessor<TIMx_ARR>::p = Period;
         }
 
         template<uint32_t Prescaler>
         static inline void prescaler() {
-            mem[TIMx_PSC] = Prescaler;
+            *accessor<TIMx_PSC>::p = Prescaler;
         }
 
         template<zoal::periph::timer_mode TimerMode>
@@ -96,19 +99,19 @@ namespace zoal { namespace arch { namespace stm32f3 {
             //            switch (TimerMode) {
             //            case zoal::periph::timer_mode::fast_pwm_8bit:
             //            case zoal::periph::timer_mode::phase_correct_8bit:
-            //                mem[TIMx_ARR] = 0xFF;
+            //                *accessor<TIMx_ARR>::p = 0xFF;
             //                break;
             //            case zoal::periph::timer_mode::fast_pwm_9bit:
             //            case zoal::periph::timer_mode::phase_correct_9bit:
-            //                mem[TIMx_ARR] = 0x1FF;
+            //                *accessor<TIMx_ARR>::p = 0x1FF;
             //                break;
             //            case zoal::periph::timer_mode::fast_pwm_10bit:
             //            case zoal::periph::timer_mode::phase_correct_10bit:
-            //                mem[TIMx_ARR] = 0x3FF;
+            //                *accessor<TIMx_ARR>::p = 0x3FF;
             //                break;
             //            case zoal::periph::timer_mode::fast_pwm_16bit:
             //            case zoal::periph::timer_mode::phase_correct_16bit:
-            //                mem[TIMx_ARR] = 0xFFFF;
+            //                *accessor<TIMx_ARR>::p = 0xFFFF;
             //                break;
             //            default:
             //                break;
@@ -117,18 +120,13 @@ namespace zoal { namespace arch { namespace stm32f3 {
 
         template<class ClockSource>
         static inline void select_clock_source() {
-            mem[TIMx_PSC] = ClockSource::asas;
+            *accessor<TIMx_PSC>::p = ClockSource::asas;
         }
 
     private:
         template<class T, zoal::periph::timer_interrupt TimerInterrupt, int Channel>
         class timer_interrupt_control;
-
-        static zoal::mem::segment<uint32_t, Address> mem;
     };
-
-    template<uintptr_t Address, uint8_t N, class... Mixins>
-    zoal::mem::segment<uint32_t, Address> general_purpose_timer<Address, N, Mixins...>::mem;
 }}}
 
 #endif

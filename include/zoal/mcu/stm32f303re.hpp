@@ -5,7 +5,6 @@
 #define ZOAL_MCU_STM32F303_RD_RE_HPP
 
 #include <stdint.h>
-#include <zoal/arch/cortex/nested_vectored_interrupt_controller.hpp>
 #include <zoal/arch/cortex/stm32f3/adc.hpp>
 #include <zoal/arch/cortex/stm32f3/adc_common_regs.hpp>
 #include <zoal/arch/cortex/stm32f3/general_purpose_timer.hpp>
@@ -29,7 +28,6 @@ namespace zoal { namespace mcu {
         static constexpr auto frequency = hse * pll;
 
         using self_type = stm32f303_rd_re<hse, pll>;
-        using nvic = ::zoal::arch::stm32f1::nested_vectored_interrupt_controller<>;
         using rcc = ::zoal::arch::stm32x::reset_and_clock_control<>;
 
         template<uint32_t Mask>

@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_STM32F1_A2D_Converter_HPP
 #define ZOAL_ARCH_STM32F1_A2D_Converter_HPP
 
-#include "../../../mem/segment.hpp"
+#include "../../../mem/accessor.hpp"
 
 #include <stdint.h>
 
@@ -12,6 +12,9 @@ namespace zoal { namespace arch { namespace stm32f3 {
         enum A2DC_Flags : uint32_t { Enable = 0x00000001, StartRegularConversion = 0x00000004 };
 
     public:
+        template<uintptr_t Offset>
+        using accessor = zoal::mem::accessor<uint32_t, Address, Offset>;
+
         static constexpr uintptr_t ADCx_ISR = 0x00;
         static constexpr uintptr_t ADCx_IER = 0x04;
         static constexpr uintptr_t ADCx_CR = 0x08;
@@ -46,44 +49,43 @@ namespace zoal { namespace arch { namespace stm32f3 {
         static constexpr uint8_t resolution = 12;
 
         static void enable() {
-            mem[ADCx_CR] |= Enable;
+            *accessor<ADCx_CR>::p |= Enable;
         }
 
         static void disable() {
-            mem[ADCx_CR] &= ~Enable;
+            *accessor<ADCx_CR>::p &= ~Enable;
         }
 
         template<class Config>
         static void connect() {
-            auto vSQR1 = mem[ADCx_SQR1];
+            auto vSQR1 = *accessor<ADCx_SQR1>::p;
             vSQR1 &= ~(0x1F << 6);
             vSQR1 |= Config::channel << 6;
-            mem[ADCx_SQR1] = vSQR1;
+            *accessor<ADCx_SQR1>::p = vSQR1;
 
             if (Config::channel > 9) {
-                auto vSMPR2 = mem[ADCx_SMPR1];
+                auto vSMPR2 = *accessor<ADCx_SMPR1>::p;
                 vSMPR2 &= ~static_cast<uint32_t>(0x07u << (0x03u * (Config::channel - 10)));
                 vSMPR2 |= static_cast<uint32_t>(0x03u << (0x03u * Config::channel));
-                mem[ADCx_SMPR2] = vSMPR2;
+                *accessor<ADCx_SMPR2>::p = vSMPR2;
             } else {
-                auto vSMPR1 = mem[ADCx_SMPR1];
+                auto vSMPR1 = *accessor<ADCx_SMPR1>::p;
                 vSMPR1 &= ~(0x38 << (3 * (Config::channel - 1)));
                 vSMPR1 |= (uint32_t)0x03 << (3 * Config::channel);
-                mem[ADCx_SMPR1] = vSMPR1;
+                *accessor<ADCx_SMPR1>::p = vSMPR1;
             }
         }
 
         static inline void start() {
-            mem[ADCx_CR] |= Enable | StartRegularConversion;
+            *accessor<ADCx_CR>::p |= Enable | StartRegularConversion;
         }
 
         static inline void wait() {
-            while ((mem[ADCx_ISR] & (1 << 2)) == 0)
-                ;
+            while ((*accessor<ADCx_ISR>::p & (1 << 2)) == 0) continue;
         }
 
         static uint16_t value() {
-            return mem[ADCx_DR];
+            return static_cast<uint16_t>(*accessor<ADCx_DR>::p);
         }
 
         static uint16_t read() {
@@ -93,22 +95,16 @@ namespace zoal { namespace arch { namespace stm32f3 {
         }
 
         static void setup() {
-//            CommRegs::reset();
-//
-//            mem[ADCx_CFGR] = 0x00002000; // Single conversion mode
-//            mem[ADCx_SQR1] = 0x00000000; // Reset to defaults
-//            mem[ADCx_CR] |= Enable;
-//
-//            while ((mem[ADCx_ISR] & 0x0001) == 0)
-//                ;
+            //            CommRegs::reset();
+            //
+            //            *accessor<ADCx_CFGR>::p = 0x00002000; // Single conversion mode
+            //            *accessor<ADCx_SQR1>::p = 0x00000000; // Reset to defaults
+            //            *accessor<ADCx_CR>::p |= Enable;
+            //
+            //            while ((*accessor<ADCx_ISR>::p & 0x0001) == 0)
+            //                ;
         }
-
-    private:
-        static zoal::mem::segment<uint32_t, Address> mem;
     };
-
-    template<uintptr_t Address, uint8_t N, class Clock>
-    zoal::mem::segment<uint32_t, Address> adc<Address, N, Clock>::mem;
 }}}
 
 #endif

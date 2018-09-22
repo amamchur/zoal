@@ -5,7 +5,6 @@
 #include "../../../mem/accessor.hpp"
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/modifier.hpp"
-#include "../../../mem/segment.hpp"
 #include "../../../utils/defs.hpp"
 #include "../../../utils/helpers.hpp"
 
@@ -57,7 +56,7 @@ namespace zoal { namespace arch { namespace stm32x {
 
         template<uintptr_t V, uint8_t Shift = 0>
         using spd_cas = struct ::zoal::mem::clear_and_set<V != 0 ? 0x03 : 0, V != 0 ? speed_mask : 0, Shift>;
-        using GPIOx_OSPEEDR = ::zoal::mem::merge_clear_and_set<spd_cas<(Mask & 1 << 0x0), 0>,
+        using GPIOx_OSPEEDR = typename ::zoal::mem::merge_clear_and_set<spd_cas<(Mask & 1 << 0x0), 0>,
                 spd_cas<(Mask & 1 << 0x1), 2>,
                 spd_cas<(Mask & 1 << 0x2), 4>,
                 spd_cas<(Mask & 1 << 0x3), 6>,
@@ -72,12 +71,12 @@ namespace zoal { namespace arch { namespace stm32x {
                 spd_cas<(Mask & 1 << 0xC), 24>,
                 spd_cas<(Mask & 1 << 0xD), 26>,
                 spd_cas<(Mask & 1 << 0xE), 28>,
-                spd_cas<(Mask & 1 << 0xF), 30>>;
+                spd_cas<(Mask & 1 << 0xF), 30>>::result;
 
         template<uintptr_t V, uint8_t Shift = 0>
         using md_cas = struct ::zoal::mem::
         clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_MODER_mask : 0), Shift>;
-        using GPIOx_MODER = ::zoal::mem::merge_clear_and_set<md_cas<(Mask & 1 << 0x0), 0>,
+        using GPIOx_MODER = typename ::zoal::mem::merge_clear_and_set<md_cas<(Mask & 1 << 0x0), 0>,
                 md_cas<(Mask & 1 << 0x1), 2>,
                 md_cas<(Mask & 1 << 0x2), 4>,
                 md_cas<(Mask & 1 << 0x3), 6>,
@@ -92,12 +91,12 @@ namespace zoal { namespace arch { namespace stm32x {
                 md_cas<(Mask & 1 << 0xC), 24>,
                 md_cas<(Mask & 1 << 0xD), 26>,
                 md_cas<(Mask & 1 << 0xE), 28>,
-                md_cas<(Mask & 1 << 0xF), 30>>;
+                md_cas<(Mask & 1 << 0xF), 30>>::result;;
 
         template<uintptr_t V, uint8_t Shift = 0>
         using tp_cas = struct ::zoal::mem::
         clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_OTYPER_mask : 0), Shift>;
-        using GPIOx_OTYPER = ::zoal::mem::merge_clear_and_set<tp_cas<(Mask & 1 << 0x0), 0>,
+        using GPIOx_OTYPER = typename ::zoal::mem::merge_clear_and_set<tp_cas<(Mask & 1 << 0x0), 0>,
                 tp_cas<(Mask & 1 << 0x1), 2>,
                 tp_cas<(Mask & 1 << 0x2), 4>,
                 tp_cas<(Mask & 1 << 0x3), 6>,
@@ -112,12 +111,12 @@ namespace zoal { namespace arch { namespace stm32x {
                 tp_cas<(Mask & 1 << 0xC), 24>,
                 tp_cas<(Mask & 1 << 0xD), 26>,
                 tp_cas<(Mask & 1 << 0xE), 28>,
-                tp_cas<(Mask & 1 << 0xF), 30>>;
+                tp_cas<(Mask & 1 << 0xF), 30>>::result;;
 
         template<uintptr_t V, uint8_t Shift = 0>
         using pud_cas = struct ::zoal::mem::
         clear_and_set<(V != 0 ? 0x03 : 0), (V != 0 ? rm::GPIOx_PUPDR_mask : 0), Shift>;
-        using GPIOx_PUPDR = ::zoal::mem::merge_clear_and_set<pud_cas<(Mask & 1 << 0x0), 0>,
+        using GPIOx_PUPDR = typename ::zoal::mem::merge_clear_and_set<pud_cas<(Mask & 1 << 0x0), 0>,
                 pud_cas<(Mask & 1 << 0x1), 2>,
                 pud_cas<(Mask & 1 << 0x2), 4>,
                 pud_cas<(Mask & 1 << 0x3), 6>,
@@ -132,7 +131,7 @@ namespace zoal { namespace arch { namespace stm32x {
                 pud_cas<(Mask & 1 << 0xC), 24>,
                 pud_cas<(Mask & 1 << 0xD), 26>,
                 pud_cas<(Mask & 1 << 0xE), 28>,
-                pud_cas<(Mask & 1 << 0xF), 30>>;
+                pud_cas<(Mask & 1 << 0xF), 30>>::result;;
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask = 0xFFFF>
@@ -180,7 +179,7 @@ namespace zoal { namespace arch { namespace stm32x {
         template<register_type Mask>
         ZOAL_INLINE_IO static void toggle() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            auto data = *accessor<GPIOx_ODR>::p;
+            register_type data = *accessor<GPIOx_ODR>::p;
             *accessor<GPIOx_BRR>::p = data & Mask;
             *accessor<GPIOx_BSRR>::p = ~data & Mask;
         }
@@ -208,7 +207,8 @@ namespace zoal { namespace arch { namespace stm32x {
                     modifier<GPIOx_BRR, 0, 0, true>>;
 
             ZOAL_INLINE_MF mode_modifiers() {
-                zoal::mem::apply_modifiers<address, modifiers>();
+                using fm = typename zoal::mem::filter_modifiers<modifiers>::result;
+                zoal::mem::apply_modifiers<address, fm>();
             }
         };
 
@@ -222,7 +222,8 @@ namespace zoal { namespace arch { namespace stm32x {
                     modifier<GPIOx_BRR, 0, Mask, true>>;
 
             ZOAL_INLINE_MF low_modifiers() {
-                zoal::mem::apply_modifiers<address, modifiers>();
+                using fm = typename zoal::mem::filter_modifiers<modifiers>::result;
+                zoal::mem::apply_modifiers<address, fm>();
             }
         };
 
@@ -236,16 +237,11 @@ namespace zoal { namespace arch { namespace stm32x {
                     modifier<GPIOx_BRR, 0, 0, true>>;
 
             ZOAL_INLINE_MF high_modifiers() {
-                zoal::mem::apply_modifiers<address, modifiers>();
+                using fm = typename zoal::mem::filter_modifiers<modifiers>::result;
+                zoal::mem::apply_modifiers<address, fm>();
             }
         };
-
-    private:
-        static zoal::mem::segment<uint32_t, Address> mem;
     };
-
-    template<uintptr_t Address, class Clock, uint32_t PinMask>
-    zoal::mem::segment<uint32_t, Address> port<Address, Clock, PinMask>::mem;
 }}}
 
 #endif

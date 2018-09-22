@@ -2,6 +2,7 @@
 #define ZOAL_MEM_CLEAR_AND_SET_HPP
 
 #include "../utils/defs.hpp"
+#include "accessor.hpp"
 
 #include <stdint.h>
 
@@ -15,6 +16,12 @@ namespace zoal { namespace mem {
         ZOAL_INLINE_MF static void apply(T &value) {
             value = (value & ~clear_mask) | set_mask;
         }
+
+        template<uintptr_t Address, class T>
+        ZOAL_INLINE_MF static void apply() {
+            using ma = zoal::mem::accessor<T, Address, 0>;
+            *ma::p = (*ma::p & ~clear_mask) | set_mask;
+        }
     };
 
     template<uint8_t Shift>
@@ -24,6 +31,9 @@ namespace zoal { namespace mem {
 
         template<class T>
         ZOAL_INLINE_MF static void apply(T &) {}
+
+        template<uintptr_t Address, class T>
+        ZOAL_INLINE_MF static void apply() {}
     };
 
     template<uintptr_t Clear, uint8_t Shift>
@@ -34,6 +44,12 @@ namespace zoal { namespace mem {
         template<class T>
         ZOAL_INLINE_MF static void apply(T &value) {
             value &= ~clear_mask;
+        }
+
+        template<uintptr_t Address, class T>
+        ZOAL_INLINE_MF static void apply() {
+            using ma = zoal::mem::accessor<T, Address, 0>;
+            *ma::p &= ~clear_mask;
         }
     };
 
@@ -46,6 +62,12 @@ namespace zoal { namespace mem {
         ZOAL_INLINE_MF static void apply(T &value) {
             value |= set_mask;
         }
+
+        template<uintptr_t Address, class T>
+        ZOAL_INLINE_MF static void apply() {
+            using ma = zoal::mem::accessor<T, Address, 0>;
+            *ma::p |= set_mask;
+        }
     };
 
     template<uintptr_t Set, uint8_t Shift>
@@ -57,14 +79,24 @@ namespace zoal { namespace mem {
         ZOAL_INLINE_MF static void apply(T &value) {
             value |= set_mask;
         }
+
+        template<uintptr_t Address, class T>
+        ZOAL_INLINE_MF static void apply() {
+            using ma = zoal::mem::accessor<T, Address, 0>;
+            *ma::p |= set_mask;
+        }
     };
 
     template<class A, class B, class... Rest>
-    struct merge_clear_and_set : clear_and_set<A::clear_mask | merge_clear_and_set<B, Rest...>::clear_mask,
-                                               A::set_mask | merge_clear_and_set<B, Rest...>::set_mask> {};
+    struct merge_clear_and_set {
+        using next = typename merge_clear_and_set<B, Rest...>::result;
+        using result = clear_and_set<A::clear_mask | next::clear_mask, A::set_mask | next::set_mask>;
+    };
 
     template<class A, class B>
-    struct merge_clear_and_set<A, B> : clear_and_set<A::clear_mask | B::clear_mask, A::set_mask | B::set_mask> {};
+    struct merge_clear_and_set<A, B> {
+        using result = clear_and_set<A::clear_mask | B::clear_mask, A::set_mask | B::set_mask>;
+    };
 }}
 
 #endif

@@ -4,7 +4,6 @@
 #include "../../../ct/check.hpp"
 #include "../../../gpio/pin.hpp"
 #include "../../../mem/clear_and_set.hpp"
-#include "../../../mem/segment.hpp"
 #include "../../../utils/helpers.hpp"
 
 #include <stdint.h>
@@ -35,6 +34,9 @@ namespace zoal { namespace arch { namespace stm32x {
             static_assert(tx_af::tx >= 0, "Unsupported TX pin mapping");
             static_assert(ck_af::ck >= 0, "Unsupported CK pin mapping");
 
+            template<uintptr_t Offset>
+            using accessor = zoal::mem::accessor<uint32_t, U::address, Offset>;
+
             static inline void on() {
                 using namespace zoal::ct;
 
@@ -56,13 +58,12 @@ namespace zoal { namespace arch { namespace stm32x {
             static inline void stm32_alternate_function() {
                 using namespace zoal::mem;
 
-                segment<uint32_t, Port::address> mem;
-                mem[Port::GPIOx_OSPEEDR] |= (0x3 << (Pin * 2)); // 50MHz
-                mem[Port::GPIOx_OTYPER] &= ~(0x1 << Pin); // Output push-pull
-                clear_and_set<0x3, 0x2, Pin * 2>::apply(mem[Port::GPIOx_MODER]);
+                *accessor<Port::GPIOx_OSPEEDR>::p |= (0x3 << (Pin * 2)); // 50MHz
+                *accessor<Port::GPIOx_OTYPER>::p &= ~(0x1 << Pin); // Output push-pull
+                clear_and_set<0x3, 0x2, Pin * 2>::apply(*accessor<Port::GPIOx_MODER>::p);
 
                 constexpr auto index = Pin < 8 ? Port::GPIOx_AFRL : Port::GPIOx_AFRH;
-                clear_and_set<0xF, af, (Pin & 0x7) << 2>::apply(mem[index]);
+                clear_and_set<0xF, af, (Pin & 0x7) << 2>::apply(*accessor<index>::p);
             }
         };
     };

@@ -2,7 +2,6 @@
 #define ZOAL_GPIO_STM32X_RESET_AND_CLOCK_CONTROLL_HPP
 
 #include "../../../arch/bus.hpp"
-#include "../../../mem/segment.hpp"
 #include "bus_clock.hpp"
 
 #include <stdint.h>

@@ -1,9 +1,7 @@
-#pragma once
-
 #ifndef ZOAL_GPIO_STM32F3_HARDWARE_SPI_HPP
 #define ZOAL_GPIO_STM32F3_HARDWARE_SPI_HPP
 
-#include "../../../mem/segment.hpp"
+#include "../../../mem/accessor.hpp"
 
 #include <stdint.h>
 
@@ -50,6 +48,9 @@ namespace zoal { namespace arch { namespace stm32f3 {
     public:
         using Class = spi_controller<Address, RCController, RCCMask>;
 
+        template<uintptr_t Offset>
+        using accessor = zoal::mem::accessor<uint32_t, Address, Offset>;
+
         spi_controller() = delete;
 
         static constexpr uintptr_t SPIx_CR1 = 0x00;
@@ -67,25 +68,22 @@ namespace zoal { namespace arch { namespace stm32f3 {
             const uint16_t TxRxBusyMask = 0x0083;
             const uint16_t TxEmptyAndRxNotEmptyAndNotBusy = 0x0003;
 
-            mem[SPIx_DR] = data;
+            *accessor<SPIx_DR>::p = data;
 
-            while ((mem[SPIx_SR] & TxRxBusyMask) != TxEmptyAndRxNotEmptyAndNotBusy)
+            while ((*accessor<SPIx_SR>::p & TxRxBusyMask) != TxEmptyAndRxNotEmptyAndNotBusy)
                 ;
-            return mem[SPIx_DR];
+            return *accessor<SPIx_DR>::p;
         }
 
         static inline void enable() {
             RCController::instance()->APB2ENR |= RCCMask;
-            mem[SPIx_CR1] |= CR1_SPE;
+            *accessor<SPIx_CR1>::p |= CR1_SPE;
         }
 
         static inline void disable() {
             RCController::instance()->APB2ENR &= ~RCCMask;
-            mem[SPIx_CR1] &= ~CR1_SPE;
+            *accessor<SPIx_CR1>::p &= ~CR1_SPE;
         }
-
-    private:
-        static zoal::mem::segment<uint32_t, Address> mem;
     };
 
     template<class Ctrl, uint8_t MSBF = 1, uint8_t Mode = 0>
