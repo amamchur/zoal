@@ -21,38 +21,32 @@
 volatile uint32_t milliseconds_counter = 0;
 
 using mcu = zoal::mcu::stm32f303_rd_re<>;
-using usart = mcu::usart_01<zoal::data::rx_tx_buffer<8, 8>>;
-using logger = zoal::utils::terminal_logger<usart, zoal::utils::log_level::trace>;
+using usart_01 = mcu::usart_01<zoal::data::rx_tx_buffer<16, 16>>;
+using usart_02 = mcu::usart_02<zoal::data::rx_tx_buffer<16, 16>>;
+using logger_01 = zoal::utils::terminal_logger<usart_01, zoal::utils::log_level::trace>;
+using logger_02 = zoal::utils::terminal_logger<usart_02, zoal::utils::log_level::trace>;
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
-using tools = zoal::utils::tool_set<mcu, counter, logger>;
+using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
 using delay = typename tools::delay;
 using shield = zoal::shields::uno_lcd_shield<tools, zoal::pcb, mcu::adc_01>;
 using lcd_output_stream = zoal::io::output_stream<shield::lcd>;
 
 #pragma GCC diagnostic push
 
-void initTimer() {
-    zoal::pcb::build_in_led::port::power_on();
-    zoal::pcb::build_in_led::mode<zoal::gpio::pin_mode::output>();
-
-    mcu::timer_02::power_on();
-    mcu::timer_02::prescaler<7200>();
-    mcu::timer_02::period<5000>();
-    mcu::timer_02::enable_interrupt<zoal::periph::timer_interrupt::overflow>();
-    mcu::timer_02::enable();
-}
-
 void init_hardware() {
-    mcu::power<usart>::on();
-    usart::power_on();
-    mcu::port_a::power_on();
+    mcu::power<usart_01, usart_02, mcu::port_a, mcu::port_b>::on();
+    mcu::power<usart_02>::on();
 
-    mcu::mux::usart<usart, mcu::pa_10, mcu::pa_09, mcu::pa_08>::on();
-    mcu::cfg::usart<usart, 115200>::apply();
+    mcu::mux::uart<usart_01, mcu::pa_10, mcu::pa_09>::on();
+    mcu::cfg::uart<usart_01, 115200>::apply();
 
-    mcu::enable<usart>::on();
+    mcu::mux::uart<usart_02, mcu::pa_15, mcu::pb_03>::on();
+    mcu::cfg::uart<usart_02, 115200>::apply();
+
+    mcu::enable<usart_01, usart_02>::on();
 
     NVIC_EnableIRQ(USART1_IRQn);
+    NVIC_EnableIRQ(USART2_IRQn);
 
     zoal::utils::interrupts::on();
 }
@@ -62,31 +56,24 @@ int main() {
 
     init_hardware();
 
-#if 1
-    mcu::api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pa_00, mcu::pa_01, mcu::pa_02>();
-    mcu::pa_00::high();
-    mcu::pb_01::high();
-    mcu::pc_02::high();
-#else
-    //    GPIO_InitTypeDef GPIO_InitStruct;
-    //    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
-    //    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
-    //    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
-    //    GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
-    //    GPIO_Init(GPIOA, &GPIO_InitStruct);
-    GPIO_SetBits(GPIOA, 1);
+    logger_01::info() << "USART2 native: " << USART2;
+    logger_01::info() << "USART2   zoal: " << (void *)usart_02::address;
 
-    GPIO_SetBits(GPIOA, 0);
-    GPIO_SetBits(GPIOA, 2);
-#endif
+    uint8_t v = 'A';
 
-    logger::info() << "----- Started!!! -----";
-
-    int counter = 0;
     while (1) {
-        logger::info() << "counter: " << counter++;
-        delay::ms(3000);
+        v++;
+        if (v > 'Z') {
+            v = 'A';
+        }
+        usart_01::write_byte(v);
+        usart_02::write_byte(v);
+        logger_01::info() << "USART1";
+        logger_02::info() << "USART2";
+        delay::ms(1000);
     }
+
+//    USART_SendData(USART1, output[output_index++]);
 
     return 0;
 }
@@ -94,9 +81,11 @@ int main() {
 #pragma GCC diagnostic pop
 
 extern "C" void USART1_IRQHandler(void) {
-    usart::handleIrq();
-    //    usart_01::tx_handler<tx_buffer>();
-    //    usart_01::rx_handler<rx_buffer>();
+    usart_01::handleIrq();
+}
+
+extern "C" void USART2_IRQHandler(void) {
+    usart_02::handleIrq();
 }
 
 extern "C" void SysTick_Handler() {

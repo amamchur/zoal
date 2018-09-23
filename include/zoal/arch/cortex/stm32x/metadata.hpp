@@ -1,36 +1,18 @@
-#ifndef ZOAL_MCU_METADATA_SMT32F3XX_HPP
-#define ZOAL_MCU_METADATA_SMT32F3XX_HPP
 
-#include "../../arch/bus.hpp"
-#include "../../ct/constant.hpp"
-#include "../../gpio/pin.hpp"
-#include "../../periph/usart.hpp"
-#include "../../utils/helpers.hpp"
+#ifndef ZOAL_METADATA_HPP
+#define ZOAL_METADATA_HPP
+
+#include "../../../ct/constant.hpp"
+#include "../../../periph/usart.hpp"
+#include "../../bus.hpp"
 
 #include <stdint.h>
 
 namespace zoal { namespace metadata {
-    template<int Tx, int Rx, int Ck>
-    struct usart_af {
-        static constexpr int rx = Rx;
-        static constexpr int tx = Tx;
-        static constexpr int ck = Ck;
-    };
+    enum class signal { rx, cts, tx, ck, de, rts, ch1, ch2, ch3, ch4, etr };
 
-    template<uintptr_t UsartNo, uintptr_t Port, uint8_t PinOffset>
-    struct stm32_usart_af_mapping : public usart_af<-1, -1, -1> {};
-
-    template<>
-    struct stm32_usart_af_mapping<0x40013800u, 0x00000000, 0> : public usart_af<0xFF, 0xFF, 0xFF> {};
-
-    template<> // PA8 -> USART1_CK
-    struct stm32_usart_af_mapping<0x40013800u, 0x48000000, 8> : public usart_af<-1, -1, 7> {};
-
-    template<> // PA9 -> USART1_TX
-    struct stm32_usart_af_mapping<0x40013800u, 0x48000000, 9> : public usart_af<7, -1, -1> {};
-
-    template<> // PA10 -> USART1_RX
-    struct stm32_usart_af_mapping<0x40013800u, 0x48000000, 10> : public usart_af<-1, 7, -1> {};
+    template<uintptr_t A, uintptr_t Port, uint8_t Pin, signal S>
+    struct stm32_af : zoal::ct::integral_constant<int, -1> {};
 
     template<zoal::arch::bus Bus>
     struct stm32_bus_prescaler {};

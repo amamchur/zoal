@@ -38,7 +38,7 @@ namespace zoal { namespace arch { namespace stm32x {
                  zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
                  zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1,
                  uint32_t UsartFreq = mcu_frequency / zoal::metadata::stm32_bus_prescaler<U::bus>::value>
-        class usart {
+        class uart {
         public:
             using dbc1 = zoal::metadata::stm32_data_bits_to_cr1<Bits>;
             using ptc1 = zoal::metadata::stm32_parity_to_cr1<Parity>;

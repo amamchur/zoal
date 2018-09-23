@@ -23,7 +23,6 @@ function makePortAPB2(index) {
 const familyMap = {
     'stm32f3': {
         includes: [
-            '#include <zoal/arch/cortex/nested_vectored_interrupt_controller.hpp>',
             '#include <zoal/arch/cortex/stm32f3/adc.hpp>',
             '#include <zoal/arch/cortex/stm32f3/adc_common_regs.hpp>',
             '#include <zoal/arch/cortex/stm32f3/general_purpose_timer.hpp>',
@@ -34,6 +33,7 @@ const familyMap = {
             '#include <zoal/arch/cortex/stm32x/port.hpp>',
             '#include <zoal/arch/cortex/stm32x/reset_and_clock_control.hpp>',
             '#include <zoal/arch/cortex/stm32x/usart.hpp>',
+            '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
             '#include <zoal/gpio/api.hpp>'
@@ -105,7 +105,7 @@ class STM32 extends BaseGenerator {
         super(file);
 
         let dir = path.dirname(file);
-        this.configDir = path.join(dir, 'config');
+        this.configDir = path.join(dir);
     }
 
     getConfigFile(metadata, name) {
@@ -160,9 +160,14 @@ class STM32 extends BaseGenerator {
                     continue;
                 }
 
-                periphs[periph] = 1;
-                // console.log(periph, connection);
-                // signals.push({});
+                let p = periphs[periph] || {signals: []};
+                p.signals.push({
+                    pin: pin,
+                    pinData: obj,
+                    signal: signal
+                });
+
+                periphs[periph] = p;
             }
 
             let port = portMap[obj.port] || {
@@ -271,9 +276,12 @@ class STM32 extends BaseGenerator {
         this.mcu.family = metadata.Mcu.$.Family.toLowerCase();
         this.collectPins(metadata);
 
-        // let gpioCfg = this.getConfigFile(metadata, 'GPIO');
-        // this.gpioConfigFilePath = path.join(this.configDir, gpioCfg.$.ConfigFile + '_Configs.xml');
-        // console.log(this.gpioConfigFilePath);
+        let gpioCfg = this.getConfigFile(metadata, 'GPIO');
+        this.gpioConfigFilePath = path.join(this.configDir, 'IP', 'GPIO-' + gpioCfg.$.Version + '_Modes.xml');
+        console.log(this.gpioConfigFilePath);
+
+        // GPIO-STM32F303E_gpio_v1_0_Modes.xml
+        // GPIO-STM32F303E_gpio_v1_0_Modes
     }
 
     buildPortList() {
@@ -348,6 +356,101 @@ class STM32 extends BaseGenerator {
         })
     }
 
+    buildUSARTSsMetadata() {
+        let result = [];
+        let periphs = this.mcu.periphs;
+        let keys = Object.keys(periphs);
+
+        let file = this.gpioConfigFilePath;
+        let buffer = fs.readFileSync(file);
+
+        const parser = new xml2js.Parser();
+        let xmlData;
+        parser.parseString(buffer.toString(), (err, rst) => {
+            xmlData = rst;
+        });
+
+        let data = familyMap[this.mcu.family];
+        let pins = xmlData.IP.GPIO_Pin;
+        let exp = [];
+        let z = [];
+        for (let i = 0; i < pins.length; i++) {
+            let pin = pins[i];
+            let pinName = pin.$.Name;
+            let pm = pinName.toLowerCase().match(/p(\w)(\d+)/);
+            let portName = pm[1];
+            let offset = pm[2] - 0;
+
+            let signals = pin.PinSignal;
+            for (let j = 0; j < signals.length; j++) {
+                let signal = signals[j];
+                let signalName = signal.$.Name;
+                let value = signal.SpecificParameter[0].PossibleValue[0];
+                let vm = value.toLowerCase().match(/^gpio_af(\d+)_(\w+)$/);
+                if (!vm) {
+                    continue;
+                }
+
+                let periphName = vm[2];
+                let periph = data.periphs[periphName];
+                let port = data.ports[portName];
+                let sm = signalName.toLowerCase().match(/^(\w+)_(\w+)$/);
+                if (!periph || !port || !sm) {
+                    continue;
+                }
+
+                let portHex = STM32.toHex(port.address, 8);
+                let usartHex = STM32.toHex(periph.address, 8);
+                let offsetHex = STM32.toHex(offset, 2);
+                let q = {
+                    sortKey: `${signalName}${portHex}${offsetHex}`,
+                    declaration: [
+                        `template<> // ${pinName} -> ${signalName}`,
+                        `struct stm32_af<${usartHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[1]}> {};`
+                    ]
+                };
+                z.push(q);
+
+                // result.push(`template<> // ${pinName} -> ${signalName}`);
+                // result.push(`struct stm32_af<${usartHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[1]}> {};`);
+            }
+        }
+
+        z.sort((a, b)=> {
+            return a.sortKey.localeCompare(b.sortKey);
+        });
+
+        for (let i = 0; i < z.length; i++) {
+            result = result.concat(z[i].declaration);
+        }
+
+        console.log(exp);
+
+        // for (let i = 0; i < keys.length; i++) {
+        //     let key = keys[i];
+        //     let name = key.toLowerCase();
+        //     let match = name.match(/(usart)(\d+)/);
+        //     if (!match) {
+        //         continue;
+        //     }
+        //
+        //     let obj = periphs[key];
+        //     let pinSignals = obj.signals;
+        //     for (let j = 0; j < pinSignals.length; j++) {
+        //         let ps = pinSignals[j];
+        //         let pinName = ps.pin.$.Name;
+        //         let signalName = ps.signal.$.Name;
+        //         let sm = signalName.match(/(\w+)_(\w+)/);
+        //         if (!sm) {
+        //             continue;
+        //         }
+        //
+        //         console.log(sm[1], sm[2], pinName);
+        //     }
+        // }
+        return result;
+    }
+
     buildClass() {
         let name = this.mcu.name;
         let nameUpper = name.toUpperCase();
@@ -374,7 +477,6 @@ class STM32 extends BaseGenerator {
             `        static constexpr auto frequency = hse * pll;`,
             ``,
             `        using self_type = ${nameLower}<hse, pll>;`,
-            `        using nvic = ::zoal::arch::stm32f1::nested_vectored_interrupt_controller<>;`,
             `        using rcc = ::zoal::arch::stm32x::reset_and_clock_control<>;`,
             ``,
             `    template<uint32_t Mask>`,
@@ -411,6 +513,7 @@ class STM32 extends BaseGenerator {
             'namespace zoal { namespace metadata {',
             '    using zoal::ct::integral_constant;',
             '',
+            this.buildUSARTSsMetadata().join('\n'),
             `}}`,
             '',
             `#endif`,

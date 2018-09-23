@@ -3,10 +3,11 @@
 #ifndef ZOAL_IO_OUTPUT_STREAM_HPP
 #define ZOAL_IO_OUTPUT_STREAM_HPP
 
-#include <stdint.h>
-#include <math.h> /* NOLINT */
-#include <stdlib.h> /* NOLINT */
 #include "stream.hpp"
+
+#include <math.h> /* NOLINT */
+#include <stdint.h>
+#include <stdlib.h> /* NOLINT */
 
 namespace zoal { namespace io {
     template<class Transport>
@@ -23,6 +24,21 @@ namespace zoal { namespace io {
         output_stream &operator<<(const char *str) {
             string_functor sf(str);
             return *this << sf;
+        }
+
+        output_stream &operator<<(const void *const ptr) {
+            Transport::write_byte('0');
+            Transport::write_byte('x');
+
+            auto value = reinterpret_cast<uintptr_t>(ptr);
+
+            for (int i = sizeof(ptr) * 8 - 4; i >= 0; i -=4) {
+                auto hex = (value & (0xF << i)) >> i;
+                auto ascii = hex < 10 ? ('0' + hex) : ('A' + hex - 10);
+                Transport::write_byte(ascii);
+            }
+
+            return *this;
         }
 
         output_stream &operator<<(unsigned long value) {
