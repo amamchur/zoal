@@ -9,7 +9,7 @@
 namespace zoal { namespace periph {
 
     template<class U, size_t Size>
-    class tx_buffer {
+    class tx_ring_buffer {
     public:
         using coop = zoal::utils::cooperation<>;
         using buffer_type = zoal::data::ring_buffer<uint8_t, Size, coop::yield>;
@@ -33,7 +33,7 @@ namespace zoal { namespace periph {
     };
 
     template<class U, size_t Size>
-    typename tx_buffer<U, Size>::buffer_type tx_buffer<U, Size>::tx;
+    typename tx_ring_buffer<U, Size>::buffer_type tx_ring_buffer<U, Size>::tx;
 
 }}
 

@@ -11,10 +11,11 @@
 #include <avr/eeprom.h>
 #include <zoal/board/arduino_mega.hpp>
 #include <zoal/data/rx_tx_buffer.hpp>
-#include <zoal/periph/software_spi.hpp>
 #include <zoal/ic/max72xx.hpp>
 #include <zoal/io/analog_keypad.hpp>
 #include <zoal/io/button.hpp>
+#include <zoal/periph/software_spi.hpp>
+#include <zoal/periph/tx_ring_buffer.hpp>
 #include <zoal/shields/uno_lcd_shield.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
@@ -26,9 +27,11 @@ using mcu = zoal::pcb::mcu;
 using timer = typename mcu::timer_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using irq_handler = typename counter::handler<mcu::frequency, 64, timer>;
-using log_usart = mcu::usart_00<zoal::data::rx_tx_buffer<8, 8>>;
+using log_usart = mcu::usart_00;
+using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<log_usart, 64>;
+
 using adc = mcu::adc_00;
-using logger_01 = zoal::utils::terminal_logger<log_usart, zoal::utils::log_level::info>;
+using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::info>;
 using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
 using app1 = multi_function_shield<tools, zoal::pcb>;
@@ -83,9 +86,8 @@ ISR(TIMER0_OVF_vect) {
 }
 
 ISR(USART0_RX_vect) {
-    log_usart::handle_rx_irq();
 }
 
 ISR(USART0_UDRE_vect) {
-    log_usart::handle_tx_irq();
+    log_usart::tx_handler<usart_01_tx_buffer>();
 }

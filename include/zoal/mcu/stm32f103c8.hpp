@@ -49,14 +49,11 @@ namespace zoal { namespace mcu {
         using port_c = port<0x40011000, clock_apb2<0x00000010>, 0xE000>;
         using port_d = port<0x40011400, clock_apb2<0x00000020>, 0x0003>;
 
-        template<class Buffer>
-        using usart_01 = typename ::zoal::arch::stm32f1::usart<0x40013800, 1, Buffer, clock_apb2<0x00004000>>;
+        using usart_01 = typename ::zoal::arch::stm32f1::usart<0x40013800, clock_apb2<0x00004000>>;
 
-        template<class Buffer>
-        using usart_02 = typename ::zoal::arch::stm32f1::usart<0x40004400, 2, Buffer, clock_apb1<0x00020000>>;
+        using usart_02 = typename ::zoal::arch::stm32f1::usart<0x40004400, clock_apb1<0x00020000>>;
 
-        template<class Buffer>
-        using usart_03 = typename ::zoal::arch::stm32f1::usart<0x40004800, 3, Buffer, clock_apb1<0x00040000>>;
+        using usart_03 = typename ::zoal::arch::stm32f1::usart<0x40004800, clock_apb1<0x00040000>>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;

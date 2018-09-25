@@ -13,18 +13,26 @@
 #include <zoal/mcu/stm32f303re.hpp>
 #include <zoal/mem/accessor.hpp>
 #include <zoal/periph/rx_buffer.hpp>
-#include <zoal/periph/tx_buffer.hpp>
+#include <zoal/periph/tx_ring_buffer.hpp>
 #include <zoal/shields/uno_lcd_shield.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 
 volatile uint32_t milliseconds_counter = 0;
 
-using mcu = zoal::mcu::stm32f303_rd_re<>;
-using usart_01 = mcu::usart_01<zoal::data::rx_tx_buffer<16, 16>>;
-using usart_02 = mcu::usart_02<zoal::data::rx_tx_buffer<16, 16>>;
-using logger_01 = zoal::utils::terminal_logger<usart_01, zoal::utils::log_level::trace>;
-using logger_02 = zoal::utils::terminal_logger<usart_02, zoal::utils::log_level::trace>;
+using mcu = zoal::mcu::stm32f303re<>;
+using usart_01 = mcu::usart_01;
+using usart_02 = mcu::usart_02;
+using usart_03 = mcu::usart_03;
+
+using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<usart_01, 64>;
+using usart_02_tx_buffer = zoal::periph::tx_ring_buffer<usart_02, 64>;
+using usart_03_tx_buffer = zoal::periph::tx_ring_buffer<usart_03, 64>;
+
+using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
+using logger_02 = zoal::utils::terminal_logger<usart_02_tx_buffer, zoal::utils::log_level::trace>;
+using logger_03 = zoal::utils::terminal_logger<usart_03_tx_buffer, zoal::utils::log_level::trace>;
+
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
 using delay = typename tools::delay;
@@ -62,18 +70,12 @@ int main() {
     uint8_t v = 'A';
 
     while (1) {
-        v++;
-        if (v > 'Z') {
-            v = 'A';
-        }
-        usart_01::write_byte(v);
-        usart_02::write_byte(v);
         logger_01::info() << "USART1";
         logger_02::info() << "USART2";
         delay::ms(1000);
     }
 
-//    USART_SendData(USART1, output[output_index++]);
+    //    USART_SendData(USART1, output[output_index++]);
 
     return 0;
 }
@@ -81,11 +83,11 @@ int main() {
 #pragma GCC diagnostic pop
 
 extern "C" void USART1_IRQHandler(void) {
-    usart_01::handleIrq();
+    usart_01::tx_handler<usart_01_tx_buffer>();
 }
 
 extern "C" void USART2_IRQHandler(void) {
-    usart_02::handleIrq();
+    usart_01::tx_handler<usart_02_tx_buffer>();
 }
 
 extern "C" void SysTick_Handler() {

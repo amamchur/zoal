@@ -83,7 +83,7 @@ const familyMap = {
         ],
         classDeclaration: [
             `template<uintptr_t Address, uint8_t N, class Clock>`,
-            `using adc = typename ::zoal::arch::stm32f3::adc<Address, N, Clock>;`,
+            `using adc = typename ::zoal::arch::stm32x::adc<Address, N, Clock>;`,
             ``,
             `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
             `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
@@ -243,8 +243,7 @@ class STM32 extends BaseGenerator {
                 let address = STM32.toHex(data.address, 8);
                 let n = ("00" + no.toString(10)).substr(-2);
                 let m = STM32.toHex(data.busClockMask, 8);
-                result.push(`template<class Buffer>`);
-                result.push(`using ${name}_${n} = typename ::zoal::arch::${ns}::usart<${address}, ${no}, Buffer, clock_${data.bus}<${m}>>;`);
+                result.push(`using ${name}_${n} = typename ::zoal::arch::${ns}::usart<${address}, clock_${data.bus}<${m}>>;`);
                 result.push(``);
             },
 
@@ -595,7 +594,7 @@ class STM32 extends BaseGenerator {
 
             let dir = path.dirname(outFile);
 
-            exec(`clang-format-6.0 --style=file -i ${outFile}`, {
+            exec(`clang-format --style=file -i ${outFile}`, {
                 cwd: dir
             });
         });

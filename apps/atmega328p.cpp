@@ -17,6 +17,7 @@
 #include <zoal/io/input_stream.hpp>
 #include <zoal/io/ir_remote_receiver.hpp>
 #include <zoal/periph/software_spi.hpp>
+#include <zoal/periph/tx_ring_buffer.hpp>
 #include <zoal/shields/uno_lcd_shield.hpp>
 #include <zoal/utils/helpers.hpp>
 #include <zoal/utils/logger.hpp>
@@ -29,9 +30,11 @@ using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
 using irq_handler = counter::handler<mcu::frequency, 64, timer>;
-using log_usart = mcu::usart_00<zoal::data::rx_tx_buffer<8, 8>>;
+using log_usart = mcu::usart_00;
+using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<log_usart, 64>;
+
 using adc = mcu::adc_00;
-using logger_01 = zoal::utils::terminal_logger<log_usart, zoal::utils::log_level::trace>;
+using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
 using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
 using delay = tools::delay;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
@@ -98,11 +101,11 @@ ISR(TIMER0_OVF_vect) {
 }
 
 ISR(USART_RX_vect) {
-    log_usart::handle_rx_irq();
 }
 
 ISR(USART_UDRE_vect) {
-    log_usart::handle_tx_irq();
+//    log_usart::handle_tx_irq();
+    log_usart::tx_handler<usart_01_tx_buffer>();
 }
 
 //ISR(TWI_vect) {

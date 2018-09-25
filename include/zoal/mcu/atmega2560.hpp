@@ -54,17 +54,13 @@ namespace zoal { namespace mcu {
         template<uint8_t BufferSize>
         using i2c_00 = ::zoal::arch::avr::atmega::i2c<0x00B8, 0, BufferSize>;
 
-        template<class Buffer>
-        using usart_00 = typename ::zoal::arch::avr::atmega::usart<0x00C0, 0, Buffer>;
+        using usart_00 = typename ::zoal::arch::avr::atmega::usart<0x00C0>;
 
-        template<class Buffer>
-        using usart_01 = typename ::zoal::arch::avr::atmega::usart<0x00C8, 1, Buffer>;
+        using usart_01 = typename ::zoal::arch::avr::atmega::usart<0x00C8>;
 
-        template<class Buffer>
-        using usart_02 = typename ::zoal::arch::avr::atmega::usart<0x00D0, 2, Buffer>;
+        using usart_02 = typename ::zoal::arch::avr::atmega::usart<0x00D0>;
 
-        template<class Buffer>
-        using usart_03 = typename ::zoal::arch::avr::atmega::usart<0x0130, 3, Buffer>;
+        using usart_03 = typename ::zoal::arch::avr::atmega::usart<0x0130>;
 
         using adc_00 = ::zoal::arch::avr::atmega::adc<0x0078, 0>;
 

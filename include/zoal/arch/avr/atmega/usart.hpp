@@ -9,7 +9,7 @@
 #include "../../bus.hpp"
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
-    template<uintptr_t Address, uint8_t N, class Buffer>
+    template<uintptr_t Address>
     class usart {
     private:
         enum UCSRxA_Flags : uint8_t { RXCx = 7, TXCx = 6, UDREx = 5, FEx = 4, DORx = 3, UPEx = 2, U2Xx = 1, MPCMx = 0 };
@@ -26,14 +26,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         };
 
     public:
-        using buffer_type = Buffer;
-
         template<uintptr_t Offset>
         using accessor = zoal::mem::accessor<uint8_t, Address, Offset>;
 
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr auto address = Address;
-        static constexpr uint8_t no = N;
 
         static constexpr intptr_t UCSRxA = 0;
         static constexpr intptr_t UCSRxB = 1;
@@ -42,8 +39,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr intptr_t UBRRxL = 4;
         static constexpr intptr_t UBRRxH = 5;
         static constexpr intptr_t UDRx = 6;
-
-        static buffer_type buffer;
 
         static void power_on() {}
 
@@ -57,40 +52,63 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             *accessor<UCSRxB>::p &= ~static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
         }
 
-        static void flush() {}
-
-        static void write_byte(uint8_t data) {
-            zoal::utils::interrupts ni(false);
-            buffer.tx.enqueue(data, true);
+        static inline void enable_tx() {
             *accessor<UCSRxB>::p |= 1 << UDRIEx;
         }
 
-        template<class F>
-        static void read(::zoal::io::input_stream_functor<F> &fn) {
-            auto f = static_cast<F &>(fn);
-            while (f(buffer.rx.dequeue(true))) continue;
+        static inline void disable_tx() {
+            *accessor<UCSRxB>::p &= ~(1 << UDRIEx);
         }
 
-        static void handle_tx_irq() {
-            *accessor<UDRx>::p = buffer.tx.dequeue();
-            *accessor<UCSRxA>::p |= (1 << TXCx);
+        static void flush() {}
 
-            if (buffer.tx.empty()) {
-                *accessor<UCSRxB>::p &= ~(1 << UDRIEx);
-            }
-        }
+        //        static void write_byte(uint8_t data) {
+        //            zoal::utils::interrupts ni(false);
+        //            buffer.tx.enqueue(data, true);
+        //            *accessor<UCSRxB>::p |= 1 << UDRIEx;
+        //        }
 
-        static void handle_rx_irq() {
-            if (*accessor<UCSRxA>::p & (1 << UPEx)) {
+        //        template<class F>
+        //        static void read(::zoal::io::input_stream_functor<F> &fn) {
+        //            auto f = static_cast<F &>(fn);
+        //            while (f(buffer.rx.dequeue(true))) continue;
+        //        }
+
+        //        static void handle_tx_irq() {
+        //            *accessor<UDRx>::p = buffer.tx.dequeue();
+        //            *accessor<UCSRxA>::p |= (1 << TXCx);
+        //
+        //            if (buffer.tx.empty()) {
+        //                *accessor<UCSRxB>::p &= ~(1 << UDRIEx);
+        //            }
+        //        }
+        //
+        //        static void handle_rx_irq() {
+        //            if (*accessor<UCSRxA>::p & (1 << UPEx)) {
+        //                return;
+        //            }
+        //
+        //            buffer.rx.enqueue(*accessor<UDRx>::p);
+        //        }
+
+        template<class H>
+        static inline void rx_handler() {}
+
+        template<class H>
+        static void tx_handler() {
+            if (H::empty()) {
+                disable_tx();
                 return;
             }
 
-            buffer.rx.enqueue(*accessor<UDRx>::p);
+            *accessor<UDRx>::p = H::get();
+            *accessor<UCSRxA>::p |= (1 << TXCx);
+
+            if (H::empty()) {
+                *accessor<UCSRxB>::p &= ~(1 << UDRIEx);
+            }
         }
     };
-
-    template<uintptr_t Address, uint8_t N, class Buffer>
-    typename usart<Address, N, Buffer>::buffer_type usart<Address, N, Buffer>::buffer;
 }}}}
 
 #endif

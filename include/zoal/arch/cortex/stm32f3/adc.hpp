@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace arch { namespace stm32f3 {
+namespace zoal { namespace arch { namespace stm32x {
     template<uintptr_t Address, uint8_t N, class Clock>
     class adc : public Clock {
     private:

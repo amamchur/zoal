@@ -11,11 +11,9 @@
 #include <stdint.h>
 
 namespace zoal { namespace arch { namespace stm32x {
-    template<uintptr_t Address, uint8_t N, class Buffer, class... Mixin>
+    template<uintptr_t Address, class... Mixin>
     class usart : public Mixin... {
     public:
-        using buffer_type = Buffer;
-
         template<uintptr_t Offset>
         using accessor = zoal::mem::accessor<uint32_t, Address, Offset>;
 
@@ -38,10 +36,6 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr uintptr_t USARTx_ICR = 0x20;
         static constexpr uintptr_t USARTx_RDR = 0x24;
         static constexpr uintptr_t USARTx_TDR = 0x28;
-
-        static constexpr uint8_t no = N;
-
-        static buffer_type buffer;
 
         static void enable() {
             *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_UE;
@@ -67,11 +61,11 @@ namespace zoal { namespace arch { namespace stm32x {
             *accessor<USARTx_CR1>::p &= ~USARTx_CR1_bit_RXNEIE;
         }
 
-        static void write_byte(uint8_t data) {
-            zoal::utils::interrupts ni(false);
-            buffer.tx.enqueue(data, true);
-            *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_TXEIE;
-        }
+//        static void write_byte(uint8_t data) {
+//            zoal::utils::interrupts ni(false);
+//            buffer.tx.enqueue(data, true);
+//            *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_TXEIE;
+//        }
 
         static inline void flush() {}
 
@@ -110,19 +104,16 @@ namespace zoal { namespace arch { namespace stm32x {
             *accessor<USARTx_TDR>::p = H::get();
         }
 
-        static void handleIrq() {
-            if ((*accessor<USARTx_ISR>::p & USARTx_ISR_bit_TXE) != 0) {
-                if (buffer.tx.empty()) {
-                    *accessor<USARTx_CR1>::p &= ~USARTx_CR1_bit_TXEIE;
-                } else {
-                    *accessor<USARTx_TDR>::p = buffer.tx.dequeue();
-                }
-            }
-        }
+//        static void handleIrq() {
+//            if ((*accessor<USARTx_ISR>::p & USARTx_ISR_bit_TXE) != 0) {
+//                if (buffer.tx.empty()) {
+//                    *accessor<USARTx_CR1>::p &= ~USARTx_CR1_bit_TXEIE;
+//                } else {
+//                    *accessor<USARTx_TDR>::p = buffer.tx.dequeue();
+//                }
+//            }
+//        }
     };
-
-    template<uintptr_t Address, uint8_t N, class Buffer, class... Mixin>
-    typename usart<Address, N, Buffer, Mixin...>::buffer_type usart<Address, N, Buffer, Mixin...>::buffer;
 }}}
 
 #endif

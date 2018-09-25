@@ -2,19 +2,25 @@
 
 #include <zoal/data/rx_tx_buffer.hpp>
 #include <zoal/mcu/stm32f103c8.hpp>
+#include <zoal/periph/rx_buffer.hpp>
+#include <zoal/periph/tx_ring_buffer.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 
 volatile uint32_t milliseconds_counter = 0;
 
 using mcu = zoal::mcu::stm32f103c8<>;
-using usart_01 = mcu::usart_01<zoal::data::rx_tx_buffer<16, 16>>;
-using usart_02 = mcu::usart_02<zoal::data::rx_tx_buffer<16, 16>>;
-using usart_03 = mcu::usart_03<zoal::data::rx_tx_buffer<16, 16>>;
+using usart_01 = mcu::usart_01;
+using usart_02 = mcu::usart_02;
+using usart_03 = mcu::usart_03;
 
-using logger_01 = zoal::utils::terminal_logger<usart_01, zoal::utils::log_level::trace>;
-using logger_02 = zoal::utils::terminal_logger<usart_02, zoal::utils::log_level::trace>;
-using logger_03 = zoal::utils::terminal_logger<usart_03, zoal::utils::log_level::trace>;
+using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<usart_01, 64>;
+using usart_02_tx_buffer = zoal::periph::tx_ring_buffer<usart_02, 64>;
+using usart_03_tx_buffer = zoal::periph::tx_ring_buffer<usart_03, 64>;
+
+using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
+using logger_02 = zoal::utils::terminal_logger<usart_02_tx_buffer, zoal::utils::log_level::trace>;
+using logger_03 = zoal::utils::terminal_logger<usart_03_tx_buffer, zoal::utils::log_level::trace>;
 
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using tools = zoal::utils::tool_set<mcu, counter>;
@@ -26,15 +32,15 @@ int main() {
     SysTick_Config(SystemCoreClock / 1000);
 
     mcu::power<usart_01, usart_02, usart_03, mcu::port_a, mcu::port_b, mcu::port_c>::on();
+
     mcu::cfg::usart<usart_01, 115200>::apply();
-    mcu::cfg::usart<usart_02, 115200>::apply();
-    mcu::cfg::usart<usart_03, 115200>::apply();
-
     mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::on();
-    mcu::mux::usart<usart_02, mcu::pa_03, mcu::pa_02>::on();
-    mcu::mux::usart<usart_03, mcu::pb_11, mcu::pb_10>::on();
-//    mcu::mux::usart<usart_03, mcu::pa_10, mcu::pa_09>::on();
 
+    mcu::cfg::usart<usart_02, 115200>::apply();
+    mcu::mux::usart<usart_02, mcu::pa_03, mcu::pa_02>::on();
+
+    mcu::cfg::usart<usart_03, 115200>::apply();
+    mcu::mux::usart<usart_03, mcu::pb_11, mcu::pb_10>::on();
 
     usart_01::enable();
     usart_02::enable();
@@ -61,13 +67,13 @@ extern "C" void SysTick_Handler(void) {
 }
 
 extern "C" void USART1_IRQHandler() {
-    usart_01::handleIrq();
+    usart_01::tx_handler<usart_01_tx_buffer>();
 }
 
 extern "C" void USART2_IRQHandler() {
-    usart_02::handleIrq();
+    usart_01::tx_handler<usart_02_tx_buffer>();
 }
 
 extern "C" void USART3_IRQHandler() {
-    usart_03::handleIrq();
+    usart_03::tx_handler<usart_03_tx_buffer>();
 }

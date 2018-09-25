@@ -29,8 +29,7 @@ class ATmega extends Avr {
             let u = this.mcu.usarts[i];
             let hex = ATmega.toHex(u.address, 4);
             result.push(``);
-            result.push(`template<class Buffer>`);
-            result.push(`using ${u.name} = typename ::zoal::arch::avr::atmega::usart<${hex}, ${u.sn}, Buffer>;`);
+            result.push(`using ${u.name} = typename ::zoal::arch::avr::atmega::usart<${hex}>;`);
         }
         return result;
     }
