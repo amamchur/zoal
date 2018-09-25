@@ -1,5 +1,5 @@
-#ifndef ZOAL_ARCH_STM32X_CFG_HPP
-#define ZOAL_ARCH_STM32X_CFG_HPP
+#ifndef ZOAL_ARCH_STM32F1_CFG_HPP
+#define ZOAL_ARCH_STM32F1_CFG_HPP
 
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../mem/modifier.hpp"
@@ -21,7 +21,7 @@ namespace zoal { namespace metadata {
     struct stm32_stop_bits_to_cr2;
 }}
 
-namespace zoal { namespace arch { namespace stm32x {
+namespace zoal { namespace arch { namespace stm32f1 {
     using zoal::mem::clear_and_set;
     using zoal::mem::modifier;
 
@@ -33,11 +33,11 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr auto mcu_frequency = mcu::frequency;
 
         template<class U,
-                 uint32_t BaudRate,
-                 uint8_t Bits = 8,
-                 zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
-                 zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1,
-                 uint32_t UsartFreq = mcu_frequency / zoal::metadata::stm32_bus_prescaler<U::bus>::value>
+                uint32_t BaudRate,
+                uint8_t Bits = 8,
+                zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
+                zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1,
+                uint32_t UsartFreq = mcu_frequency / zoal::metadata::stm32_bus_prescaler<U::bus>::value>
         class usart {
         public:
             using dbc1 = zoal::metadata::stm32_data_bits_to_cr1<Bits>;
@@ -45,6 +45,7 @@ namespace zoal { namespace arch { namespace stm32x {
             using sbc2 = zoal::metadata::stm32_stop_bits_to_cr2<StopBits>;
 
             static constexpr auto enable_rx_tx = 0x0C;
+
             static constexpr auto c1_clear = dbc1::clear_mask | ptc1::clear_mask;
             static constexpr auto c1_set = enable_rx_tx | dbc1::set_mask | ptc1::set_mask;
             static constexpr auto c2_clear = sbc2::clear_mask;
@@ -68,7 +69,6 @@ namespace zoal { namespace arch { namespace stm32x {
             static void apply() {
                 U::disable();
 
-                *accessor<U::USARTx_BRR>::p = bbr;
                 USARTx_CR1::apply(*accessor<U::USARTx_CR1>::p);
                 USARTx_CR2::apply(*accessor<U::USARTx_CR2>::p);
                 USARTx_CR3::apply(*accessor<U::USARTx_CR3>::p);

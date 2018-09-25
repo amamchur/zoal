@@ -27,7 +27,7 @@ namespace zoal { namespace arch { namespace stm32x {
         template<class U,
                 class PinRX,
                 class PinTX>
-        class uart {
+        class usart {
         public:
 //            using rx_af = zoal::metadata::stm32_usart_af_mapping<U::address, PinRX::port::address, PinRX::offset>;
 //            using tx_af = zoal::metadata::stm32_usart_af_mapping<U::address, PinTX::port::address, PinTX::offset>;
@@ -41,6 +41,8 @@ namespace zoal { namespace arch { namespace stm32x {
 
             template<uintptr_t Offset>
             using accessor = zoal::mem::accessor<uint32_t, U::address, Offset>;
+
+            usart() = delete;
 
             static inline void on() {
                 using namespace zoal::ct;

@@ -9,7 +9,7 @@
 #include "../arch/cortex/stm32x/cfg.hpp"
 #include "../arch/cortex/stm32x/mux.hpp"
 #include "../arch/cortex/stm32x/port.hpp"
-#include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
+#include "zoal/arch/cortex/stm32x/rcc.hpp"
 #include "../arch/cortex/stm32x/usart.hpp"
 #include "../arch/enable.hpp"
 #include "../arch/power.hpp"
@@ -28,7 +28,7 @@ namespace zoal { namespace mcu {
         static constexpr auto frequency = hse * pll;
 
         using self_type = stm32f303xDxE<hse, pll>;
-        using rcc = ::zoal::arch::stm32x::reset_and_clock_control<>;
+        using rcc = ::zoal::arch::stm32x::rcc<>;
 
         template<uint32_t Mask>
         using clock_ahb = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_ahb, Mask>;

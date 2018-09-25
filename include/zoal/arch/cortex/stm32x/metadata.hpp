@@ -14,6 +14,9 @@ namespace zoal { namespace metadata {
     template<uintptr_t A, uintptr_t Port, uint8_t Pin, signal S>
     struct stm32_af : zoal::ct::integral_constant<int, -1> {};
 
+    template<uintptr_t A, uintptr_t Port, uint8_t Pin, signal S>
+    struct stm32_remap : zoal::ct::integral_constant<int, -1> {};
+
     template<zoal::arch::bus Bus>
     struct stm32_bus_prescaler {};
 

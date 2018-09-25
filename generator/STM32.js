@@ -4,6 +4,11 @@ const BaseGenerator = require('./BaseGenerator');
 let exec = require('child_process').exec;
 let path = require('path');
 
+// #define PERIPH_BASE           ((uint32_t)0x40000000)
+// #define APB1PERIPH_BASE       ((uint32_t)0x40000000)
+// #define APB2PERIPH_BASE       (PERIPH_BASE + 0x10000)
+// #define AHBPERIPH_BASE        (PERIPH_BASE + 0x20000)
+
 function makePortAHB(index) {
     return {
         bus: 'ahb',
@@ -21,7 +26,45 @@ function makePortAPB2(index) {
 }
 
 const familyMap = {
+    'stm32f1': {
+        ns: 'stm32f1',
+        includes: [
+            '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/afio.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/cfg.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/mux.hpp>',
+            '#include <zoal/arch/cortex/stm32x/rcc.hpp>',
+            '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
+            '#include <zoal/arch/enable.hpp>',
+            '#include <zoal/arch/power.hpp>',
+            '#include <zoal/gpio/api.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/adc.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/port.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/usart.hpp>',
+        ],
+        classDeclaration: [
+            `using afio = ::zoal::arch::stm32f1::afio<0x40010000, clock_apb2<0x00000001>>;`,
+            ``,
+            `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
+            `using port = typename ::zoal::arch::stm32f1::port<Address, Clock, PinMask>;`,
+            ``
+        ],
+        ports: {
+            a: makePortAPB2(0),
+            b: makePortAPB2(1),
+            c: makePortAPB2(2),
+            d: makePortAPB2(3),
+            e: makePortAPB2(4),
+            f: makePortAPB2(5),
+        },
+        periphs: {
+            usart1: {bus: 'apb2', address: 0x40013800, busClockMask: 0x00004000},
+            usart2: {bus: 'apb1', address: 0x40004400, busClockMask: 0x00020000},
+            usart3: {bus: 'apb1', address: 0x40004800, busClockMask: 0x00040000}
+        }
+    },
     'stm32f3': {
+        ns: 'stm32x',
         includes: [
             '#include <zoal/arch/cortex/stm32f3/adc.hpp>',
             '#include <zoal/arch/cortex/stm32f3/adc_common_regs.hpp>',
@@ -31,14 +74,17 @@ const familyMap = {
             '#include <zoal/arch/cortex/stm32x/cfg.hpp>',
             '#include <zoal/arch/cortex/stm32x/mux.hpp>',
             '#include <zoal/arch/cortex/stm32x/port.hpp>',
-            '#include <zoal/arch/cortex/stm32x/reset_and_clock_control.hpp>',
+            '#include <zoal/arch/cortex/stm32x/rcc.hpp>',
             '#include <zoal/arch/cortex/stm32x/usart.hpp>',
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
             '#include <zoal/gpio/api.hpp>'
         ],
-        portDeclaration: [
+        classDeclaration: [
+            `template<uintptr_t Address, uint8_t N, class Clock>`,
+            `using adc = typename ::zoal::arch::stm32f3::adc<Address, N, Clock>;`,
+            ``,
             `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
             `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
             ``
@@ -101,11 +147,12 @@ const familyMap = {
 };
 
 class STM32 extends BaseGenerator {
-    constructor(file) {
+    constructor(file, className) {
         super(file);
 
         let dir = path.dirname(file);
         this.configDir = path.join(dir);
+        this.className = className;
     }
 
     getConfigFile(metadata, name) {
@@ -189,13 +236,15 @@ class STM32 extends BaseGenerator {
     buildPeriphs() {
         let periphs = this.mcu.periphs;
         let result = [];
+        let data = familyMap[this.mcu.family];
+        let ns = data.ns;
         let builders = {
             usart: function (name, no, data) {
                 let address = STM32.toHex(data.address, 8);
                 let n = ("00" + no.toString(10)).substr(-2);
                 let m = STM32.toHex(data.busClockMask, 8);
                 result.push(`template<class Buffer>`);
-                result.push(`using ${name}_${n} = typename ::zoal::arch::stm32x::usart<${address}, ${no}, Buffer, clock_${data.bus}<${m}>>;`);
+                result.push(`using ${name}_${n} = typename ::zoal::arch::${ns}::usart<${address}, ${no}, Buffer, clock_${data.bus}<${m}>>;`);
                 result.push(``);
             },
 
@@ -203,7 +252,7 @@ class STM32 extends BaseGenerator {
                 let address = STM32.toHex(data.address, 8);
                 let n = ("00" + no.toString(10)).substr(-2);
                 let m = STM32.toHex(data.busClockMask, 8);
-                result.push(`using ${name}_${n} = adc<${address}, ${no}, clock_${data.bus}<${m}>>;`);
+                result.push(`using ${name}_${n} = ::zoal::arch::${ns}::adc<${address}, ${no}, clock_${data.bus}<${m}>>;`);
             },
 
             tim: function (name, no, data) {
@@ -215,7 +264,6 @@ class STM32 extends BaseGenerator {
         };
 
         let array = Object.keys(periphs).sort();
-        let data = familyMap[this.mcu.family];
         let lastGroup = null;
         for (let i = 0; i < array.length; i++) {
             let name = array[i];
@@ -285,8 +333,7 @@ class STM32 extends BaseGenerator {
     }
 
     buildPortList() {
-        let data = familyMap[this.mcu.family];
-        let result = [].concat(data.portDeclaration);
+        let result = [];
         for (let i = 0; i < this.mcu.ports.length; i++) {
             let port = this.mcu.ports[i];
             let hex = STM32.toHex(port.address, 8);
@@ -374,17 +421,52 @@ class STM32 extends BaseGenerator {
         let pins = xmlData.IP.GPIO_Pin;
         let exp = [];
         let z = [];
+
+        function processRemap(pin, s, offset, port) {
+            let signalName = s.$.Name;
+            let sm = signalName.toLowerCase().match(/^(\w+)_(\w+)$/);
+            let name = s.RemapBlock[0].$.Name;
+            let vm = name.toLowerCase().match(/^(\w+)_remap(\d+)$/);
+            let periphName = vm[1];
+            let periph = data.periphs[periphName];
+            if (!periph) {
+                return;
+            }
+
+            let portHex = STM32.toHex(port.address, 8);
+            let usartHex = STM32.toHex(periph.address, 8);
+            let offsetHex = STM32.toHex(offset, 2);
+
+            z.push({
+                sortKey: `${usartHex}${portHex}${offsetHex}`,
+                declaration: [
+                    `template<> // ${name} -> ${periphName}`,
+                    `struct stm32_remap<${usartHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[2]}> {};`
+                ]
+            });
+        }
+
         for (let i = 0; i < pins.length; i++) {
             let pin = pins[i];
             let pinName = pin.$.Name;
             let pm = pinName.toLowerCase().match(/p(\w)(\d+)/);
             let portName = pm[1];
             let offset = pm[2] - 0;
+            let port = data.ports[portName];
+            let signals = pin.PinSignal || [];
 
-            let signals = pin.PinSignal;
             for (let j = 0; j < signals.length; j++) {
                 let signal = signals[j];
                 let signalName = signal.$.Name;
+                if (signal.RemapBlock) {
+                    processRemap(pin, signal, offset, port);
+                    continue;
+                }
+
+                if (!signal.SpecificParameter) {
+                    continue;
+                }
+
                 let value = signal.SpecificParameter[0].PossibleValue[0];
                 let vm = value.toLowerCase().match(/^gpio_af(\d+)_(\w+)$/);
                 if (!vm) {
@@ -393,7 +475,7 @@ class STM32 extends BaseGenerator {
 
                 let periphName = vm[2];
                 let periph = data.periphs[periphName];
-                let port = data.ports[portName];
+
                 let sm = signalName.toLowerCase().match(/^(\w+)_(\w+)$/);
                 if (!periph || !port || !sm) {
                     continue;
@@ -410,13 +492,10 @@ class STM32 extends BaseGenerator {
                     ]
                 };
                 z.push(q);
-
-                // result.push(`template<> // ${pinName} -> ${signalName}`);
-                // result.push(`struct stm32_af<${usartHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[1]}> {};`);
             }
         }
 
-        z.sort((a, b)=> {
+        z.sort((a, b) => {
             return a.sortKey.localeCompare(b.sortKey);
         });
 
@@ -424,39 +503,35 @@ class STM32 extends BaseGenerator {
             result = result.concat(z[i].declaration);
         }
 
-        console.log(exp);
-
-        // for (let i = 0; i < keys.length; i++) {
-        //     let key = keys[i];
-        //     let name = key.toLowerCase();
-        //     let match = name.match(/(usart)(\d+)/);
-        //     if (!match) {
-        //         continue;
-        //     }
-        //
-        //     let obj = periphs[key];
-        //     let pinSignals = obj.signals;
-        //     for (let j = 0; j < pinSignals.length; j++) {
-        //         let ps = pinSignals[j];
-        //         let pinName = ps.pin.$.Name;
-        //         let signalName = ps.signal.$.Name;
-        //         let sm = signalName.match(/(\w+)_(\w+)/);
-        //         if (!sm) {
-        //             continue;
-        //         }
-        //
-        //         console.log(sm[1], sm[2], pinName);
-        //     }
-        // }
         return result;
     }
 
+    buildClocks() {
+        return [
+            `using rcc = ::zoal::arch::stm32x::rcc<>;`,
+            ``,
+            `template<uint32_t Mask>`,
+            `using clock_ahb = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_ahb, Mask>;`,
+            ``,
+            `template<uint32_t Mask>`,
+            `using clock_apb1 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_apb1, Mask>;`,
+            ``,
+            `template<uint32_t Mask>`,
+            `using clock_apb2 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_apb2, Mask>;`,
+        ];
+    }
+
+    buildFamilySpec() {
+        let data = familyMap[this.mcu.family];
+        return data.classDeclaration;
+    }
+
     buildClass() {
-        let name = this.mcu.name;
-        let nameUpper = name.toUpperCase();
-        let nameLower = name.toLowerCase();
+        let nameUpper = this.className.toUpperCase();
+        let nameLower = this.className.toLowerCase();
 
         let data = familyMap[this.mcu.family];
+        let ns = data.ns;
 
         this.buffer = [
             `/**`,
@@ -477,19 +552,10 @@ class STM32 extends BaseGenerator {
             `        static constexpr auto frequency = hse * pll;`,
             ``,
             `        using self_type = ${nameLower}<hse, pll>;`,
-            `        using rcc = ::zoal::arch::stm32x::reset_and_clock_control<>;`,
             ``,
-            `    template<uint32_t Mask>`,
-            `    using clock_ahb = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_ahb, Mask>;`,
+            this.buildClocks().join('\n'),
             ``,
-            `    template<uint32_t Mask>`,
-            `    using clock_apb1 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_apb1, Mask>;`,
-            ``,
-            `    template<uint32_t Mask>`,
-            `    using clock_apb2 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_apb2, Mask>;`,
-            ``,
-            `    template<uintptr_t Address, uint8_t N, class Clock>`,
-            `    using adc = typename ::zoal::arch::stm32f3::adc<Address, N, Clock>;`,
+            this.buildFamilySpec().join('\n'),
             ``,
             this.buildPortList().join('\n'),
             ``,
@@ -499,8 +565,8 @@ class STM32 extends BaseGenerator {
             ``,
             this.buildPortChain().join('\n'),
             `    using api = ::zoal::gpio::api<ports>;`,
-            `    using mux = ::zoal::arch::stm32x::mux<self_type>;`,
-            `    using cfg = ::zoal::arch::stm32x::cfg<self_type>;`,
+            `    using mux = ::zoal::arch::${ns}::mux<self_type>;`,
+            `    using cfg = ::zoal::arch::${ns}::cfg<self_type>;`,
             ``,
             `    template<class ... Module>`,
             `    using power = ::zoal::arch::power<Module...>;`,
@@ -529,7 +595,7 @@ class STM32 extends BaseGenerator {
 
             let dir = path.dirname(outFile);
 
-            exec(`clang-format -i ${outFile}`, {
+            exec(`clang-format-6.0 --style=file -i ${outFile}`, {
                 cwd: dir
             });
         });

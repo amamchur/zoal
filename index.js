@@ -1,4 +1,5 @@
 const program = require('commander');
+const path = require('path');
 const ATmega = require('./generator/ATmega');
 const ATtiny = require('./generator/ATtiny');
 const STM32 = require('./generator/STM32');
@@ -9,6 +10,13 @@ program
     .option('-m, --metadata [metadata]', 'MCU metadata file')
     .option('-o, --out [out]', 'Output file')
     .parse(process.argv);
+
+if (!program.family || !program.metadata || !program.out) {
+    console.log('Incorrect program arguments');
+    process.exit(-1);
+}
+
+let obj = path.parse(program.out);
 
 let generator = null;
 
@@ -21,7 +29,7 @@ if (program.family === 'attiny') {
 }
 
 if (program.family === 'stm32') {
-    generator = new STM32(program.metadata);
+    generator = new STM32(program.metadata, obj.name);
 }
 
 generator.generate()

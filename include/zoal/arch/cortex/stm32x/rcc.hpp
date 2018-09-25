@@ -1,5 +1,5 @@
-#ifndef ZOAL_GPIO_STM32X_RESET_AND_CLOCK_CONTROLL_HPP
-#define ZOAL_GPIO_STM32X_RESET_AND_CLOCK_CONTROLL_HPP
+#ifndef ZOAL_GPIO_STM32X_RCC_HPP
+#define ZOAL_GPIO_STM32X_RCC_HPP
 
 #include "../../../arch/bus.hpp"
 #include "bus_clock.hpp"
@@ -8,9 +8,9 @@
 
 namespace zoal { namespace arch { namespace stm32x {
     template<uintptr_t Address = 0x40021000>
-    class reset_and_clock_control {
+    class rcc {
     public:
-        using self_type = reset_and_clock_control<Address>;
+        using self_type = rcc<Address>;
 
         static constexpr uintptr_t address = Address;
 

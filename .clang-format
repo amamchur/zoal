@@ -74,7 +74,6 @@ ObjCSpaceAfterProperty: true
 ObjCSpaceBeforeProtocolList: true
 
 PenaltyBreakAssignment: 10000
-PenaltyBreakTemplateDeclaration: 20
 PenaltyBreakBeforeFirstCallParameter: 10
 PenaltyBreakComment: 120
 PenaltyBreakFirstLessLess: 20

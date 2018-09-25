@@ -37,11 +37,11 @@ void init_hardware() {
     mcu::power<usart_01, usart_02, mcu::port_a, mcu::port_b>::on();
     mcu::power<usart_02>::on();
 
-    mcu::mux::uart<usart_01, mcu::pa_10, mcu::pa_09>::on();
-    mcu::cfg::uart<usart_01, 115200>::apply();
+    mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::on();
+    mcu::cfg::usart<usart_01, 115200>::apply();
 
-    mcu::mux::uart<usart_02, mcu::pa_15, mcu::pb_03>::on();
-    mcu::cfg::uart<usart_02, 115200>::apply();
+    mcu::mux::usart<usart_02, mcu::pa_15, mcu::pb_03>::on();
+    mcu::cfg::usart<usart_02, 115200>::apply();
 
     mcu::enable<usart_01, usart_02>::on();
 

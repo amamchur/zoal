@@ -6,7 +6,7 @@
 #include "../arch/bus.hpp"
 #include "zoal/arch/cortex/stm32x/bus_clock.hpp"
 #include "../arch/cortex/stm32x/port.hpp"
-#include "../arch/cortex/stm32x/reset_and_clock_control.hpp"
+#include "zoal/arch/cortex/stm32x/rcc.hpp"
 #include "../arch/enable.hpp"
 #include "../arch/power.hpp"
 #include "../ct/type_list.hpp"
@@ -18,7 +18,7 @@ namespace zoal { namespace mcu {
     template<uint32_t Frequency>
     class stm32f0xx : public base_mcu<Frequency, 4> {
     public:
-        using rcc = typename ::zoal::arch::stm32x::reset_and_clock_control<>;
+        using rcc = typename ::zoal::arch::stm32x::rcc<>;
 
         template<uint32_t Set>
         using clock_ahb = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_ahb, Set>;
