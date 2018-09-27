@@ -26,6 +26,40 @@ function makePortAPB2(index) {
 }
 
 const familyMap = {
+    'stm32f0': {
+        ns: 'stm32x',
+        includes: [
+            '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
+            '#include <zoal/arch/cortex/stm32x/cfg.hpp>',
+            '#include <zoal/arch/cortex/stm32x/mux.hpp>',
+            '#include <zoal/arch/cortex/stm32x/port.hpp>',
+            '#include <zoal/arch/cortex/stm32x/rcc.hpp>',
+            '#include <zoal/arch/cortex/stm32x/usart.hpp>',
+            '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
+            '#include <zoal/arch/enable.hpp>',
+            '#include <zoal/arch/power.hpp>',
+            '#include <zoal/gpio/api.hpp>'
+        ],
+        classDeclaration: [
+            ``,
+            `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
+            `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
+            ``
+        ],
+        periphs: {
+            usart1: {bus: 'apb2', address: 0x40013800, busClockMask: 0x00004000},
+            usart2: {bus: 'apb1', address: 0x40004400, busClockMask: 0x00020000},
+            usart3: {bus: 'apb1', address: 0x40004800, busClockMask: 0x00040000}
+        },
+        ports: {
+            a: makePortAHB(0),
+            b: makePortAHB(1),
+            c: makePortAHB(2),
+            d: makePortAHB(3),
+            e: makePortAHB(4),
+            f: makePortAHB(5),
+        }
+    },
     'stm32f1': {
         ns: 'stm32f1',
         includes: [
@@ -308,18 +342,6 @@ class STM32 extends BaseGenerator {
     }
 
     collectData(metadata) {
-        let name = metadata.Mcu.$.RefName;
-        let nameMatch = name.match(/(stm32\w+)(\w)\((\w)\-(\w)\)/i);
-        name = nameMatch[1];
-
-        let l = nameMatch[3].charCodeAt(0);
-        let r = nameMatch[4].charCodeAt(0);
-
-        for (let i = l; i <= r; i++) {
-            name += '_' + nameMatch[2] + String.fromCharCode(i);
-        }
-
-        this.mcu.name = name;
         this.mcu.family = metadata.Mcu.$.Family.toLowerCase();
         this.collectPins(metadata);
 

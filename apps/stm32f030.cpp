@@ -1,6 +1,7 @@
 #include "stm32f0xx.h"
 
-#include <zoal/board/stm32f030.hpp>
+#include <zoal/mcu/stm32f030f4px.hpp>
+#include <zoal/periph/tx_ring_buffer.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 
@@ -11,41 +12,45 @@ extern "C" void SysTick_Handler(void) {
 }
 
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
-using mcu = zoal::pcb::mcu;
-using tools = zoal::utils::tool_set<mcu, counter>;
+using mcu = zoal::mcu::stm32f030f4px<8000000, 6>; // 48 MHz
+
+using usart_01 = mcu::usart_01;
+using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<usart_01, 64>;
+using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
+
+using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
 using delay = tools::delay;
 
 int main() {
     using namespace zoal::gpio;
 
-    asm volatile("nop            \n");
-    asm volatile("nop            \n");
-    asm volatile("nop            \n");
+    SysTick_Config(SystemCoreClock / 1000);
+    usart_01::power_on();
+    mcu::port_a::power_on();
 
-    //    mcu::api::low<mcu::pa_00, mcu::pa_01>();
+    mcu::mux::usart<usart_01, mcu::pa_03, mcu::pa_02>::on();
+    mcu::cfg::usart<usart_01, 115200>::apply();
+    mcu::enable<usart_01>::on();
 
-    mcu::api::merge<mcu::api::low<mcu::pa_00>,
-                    mcu::api::low<mcu::pa_01>,
-                    mcu::api::low<mcu::pa_02>,
-                    mcu::api::high<mcu::pa_00>,
-                    mcu::api::high<mcu::pa_01>,
-                    mcu::api::high<mcu::pa_02>>();
+    NVIC_EnableIRQ(USART1_IRQn);
+    zoal::utils::interrupts::on();
 
-    asm volatile("nop            \n");
-    asm volatile("nop            \n");
-    asm volatile("nop            \n");
+    mcu::pa_04::mode<pin_mode::output>();
 
-    //    SysTick_Config(SystemCoreClock / 1000);
-    //    mcu::pa_04::port::power_on();
-    //    mcu::pa_04::mode<pin_mode::output>();
-    //
-    //    while (true) {
-    //        mcu::pa_04::low();
-    //        ::delay::ms(500);
-    //
-    //        mcu::pa_04::high();
-    //        ::delay::ms(500);
-    //    }
+    logger_01::info() << "--- Started ---";
+    while (true) {
+        logger_01::info() << "Loop";
+
+        mcu::pa_04::low();
+        ::delay::ms(500);
+
+        mcu::pa_04::high();
+        ::delay::ms(500);
+    }
 
     return 0;
+}
+
+extern "C" void USART1_IRQHandler() {
+    usart_01::tx_handler<usart_01_tx_buffer>();
 }

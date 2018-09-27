@@ -5,170 +5,263 @@
 
 namespace zoal { namespace utils {
     template<int32_t Count>
-    struct nop {
-        static void place() {
-            if (Count < 0) {
-                return;
-            }
+    struct nop;
 
-            nop<Count & 0x001>::place();
-            nop<Count & 0x002>::place();
-            nop<Count & 0x004>::place();
-            nop<Count & 0x008>::place();
-            nop<Count & 0x010>::place();
-            nop<Count & 0x020>::place();
-            nop<Count & 0x040>::place();
-            nop<Count & 0x080>::place();
-            nop<Count & 0x100>::place();
-            nop<Count & 0x200>::place();
-            nop<Count & 0x400>::place();
+    template<bool NoInlineLoop, int32_t Count>
+    struct nop_strategy {};
+
+    template<class Dummy>
+    __attribute__((noinline)) void noinline_loop(uint32_t q) {
+        asm volatile("1:	sub 	%[count],     #1		\n"
+                     "      cmp     %[count],     #0      \n"
+                     "   	bne     1b			    \n"
+        :
+        : [count] "r" (q)
+        : "r0", "cc");
+    }
+
+    template<int32_t Count>
+    struct nop_strategy<true, Count> {
+        static constexpr int32_t call_overhead = 5;
+        static constexpr int32_t loops = (Count - call_overhead) / 9;
+        static constexpr int32_t rest = Count - (loops * 9) - call_overhead;
+
+        static inline __attribute__((always_inline)) void place() {
+            nop<rest>::place();
+            noinline_loop<void>(static_cast<uint32_t >(loops));
+        }
+    };
+
+    template<int32_t Count>
+    struct nop : nop_strategy<(Count > 16), Count> {};
+
+    template<>
+    struct nop<0> {
+        static inline __attribute__((always_inline)) void place() {}
+    };
+
+    template<>
+    struct nop<1> {
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n");
         }
     };
 
     template<>
-    struct nop<0x000> {
+    struct nop<2> {
         static constexpr bool applicable = true;
 
-        static inline void place() {
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n nop \n");
         }
     };
 
     template<>
-    struct nop<0x001> {
+    struct nop<3> {
         static constexpr bool applicable = true;
 
-        static inline void place() {
-            asm volatile("nop \n\t");
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n nop \n nop \n");
         }
     };
 
     template<>
-    struct nop<0x002> {
+    struct nop<4> {
         static constexpr bool applicable = true;
 
-        static inline void place() {
-            asm volatile(
-            "nop \n\t"
-            "nop \n\t"
-            );
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n nop \n nop \n nop \n");
         }
     };
 
     template<>
-    struct nop<0x004> {
+    struct nop<5> {
         static constexpr bool applicable = true;
 
-        static inline void place() {
-            asm volatile(
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            );
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n nop \n nop \n nop \n nop \n");
         }
     };
 
     template<>
-    struct nop<0x008> {
+    struct nop<6> {
         static constexpr bool applicable = true;
 
-        static inline void place() {
-            asm volatile(
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            );
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n nop \n nop \n nop \n nop \n nop \n");
         }
     };
 
     template<>
-    struct nop<0x010> {
+    struct nop<7> {
         static constexpr bool applicable = true;
 
-        static inline void place() {
-            asm volatile(
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            "nop \n\t" "nop \n\t"
-            );
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n nop \n nop \n nop \n nop \n nop \n nop \n");
         }
     };
 
     template<>
-    struct nop<0x020> {
+    struct nop<8> {
         static constexpr bool applicable = true;
 
-        static void place() {
-            nop<0x010>::place();
-            nop<0x005>::place();
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 
     template<>
-    struct nop<0x040> {
-        static constexpr bool applicable = true;
-
-        static void place() {
-            nop<0x020>::place();
-            nop<0x010>::place();
+    struct nop<9> {
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 
     template<>
-    struct nop<0x080> {
-        static constexpr bool applicable = true;
-
-        static void place() {
-            nop<0x040>::place();
-            nop<0x020>::place();
-            nop<0x010>::place();
-            nop<0x001>::place();
+    struct nop<10> {
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 
     template<>
-    struct nop<0x100> {
-        static constexpr bool applicable = true;
-
-        static void place() {
-            nop<0x080>::place();
-            nop<0x040>::place();
-            nop<0x020>::place();
-            nop<0x010>::place();
-            nop<0x004>::place();
-            nop<0x002>::place();
+    struct nop<11> {
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 
     template<>
-    struct nop<0x200> {
-        static constexpr bool applicable = true;
-
-        static void place() {
-            nop<0x100>::place();
-            nop<0x080>::place();
-            nop<0x040>::place();
-            nop<0x020>::place();
-            nop<0x010>::place();
-            nop<0x007>::place();
+    struct nop<12> {
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 
     template<>
-    struct nop<0x400> {
-        static constexpr bool applicable = true;
+    struct nop<13> {
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
+        }
+    };
 
-        static void place() {
-            nop<0x200>::place();
-            nop<0x100>::place();
-            nop<0x080>::place();
-            nop<0x040>::place();
-            nop<0x020>::place();
-            nop<0x010>::place();
+    template<>
+    struct nop<14> {
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
+        }
+    };
+
+    template<>
+    struct nop<15> {
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
+        }
+    };
+
+    template<>
+    struct nop<16> {
+        static inline __attribute__((always_inline)) void place() {
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 }}

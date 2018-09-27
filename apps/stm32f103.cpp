@@ -16,7 +16,7 @@ using usart_03 = mcu::usart_03;
 
 using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<usart_01, 64>;
 using usart_02_tx_buffer = zoal::periph::tx_ring_buffer<usart_02, 64>;
-using usart_03_tx_buffer = zoal::periph::tx_ring_buffer<usart_03, 64>;
+using usart_03_tx_buffer = zoal::periph::tx_ring_buffer<usart_03, 1024>;
 
 using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
 using logger_02 = zoal::utils::terminal_logger<usart_02_tx_buffer, zoal::utils::log_level::trace>;
@@ -25,6 +25,49 @@ using logger_03 = zoal::utils::terminal_logger<usart_03_tx_buffer, zoal::utils::
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using tools = zoal::utils::tool_set<mcu, counter>;
 using delay = tools::delay;
+
+#define DEMCR (*((volatile uint32_t *)0xE000EDFC))
+#define DWT_CTRL (*(volatile uint32_t *)0xe0001000)
+#define CYCCNTENA (1 << 0)
+#define DWT_CYCCNT ((volatile uint32_t *)0xE0001004)
+#define CPU_CYCLES *DWT_CYCCNT
+
+__attribute__((noinline)) void noinline_shift(uint32_t q) {
+    asm volatile("1:	asrs 	%[count],     #1		\n"
+                 "   	bne     1b			    \n"
+                 :
+                 : [count] "r"(q)
+                 : "r0", "cc");
+}
+
+template<int32_t Value>
+void do_test() {
+    uint32_t diff = 0;
+    uint32_t overhead = 0;
+    {
+        zoal::utils::interrupts ni(false);
+        CPU_CYCLES = 0;
+        DWT_CTRL |= CYCCNTENA;
+        DWT_CTRL &= ~CYCCNTENA;
+        overhead = CPU_CYCLES;
+    }
+    /*
+     * 0 - 7
+     * 1 - 7
+     * 2 - 9
+     * 3 - 15
+     */
+    {
+        zoal::utils::interrupts ni(false);
+        CPU_CYCLES = 0;
+        DWT_CTRL |= CYCCNTENA;
+        zoal::utils::nop<Value>::place();
+        DWT_CTRL &= ~CYCCNTENA;
+        diff = CPU_CYCLES - overhead;
+    }
+
+    logger_03::info() << "v: " << Value << "; ops: " << diff;
+}
 
 int main() {
     using namespace zoal::gpio;
@@ -53,10 +96,24 @@ int main() {
     mcu::pc_13::mode<zoal::gpio::pin_mode::output>();
 
     int counter = 0;
+
+    logger_03::info() << "--- Start ---";
+
+    using np = zoal::utils::nop<33>;
+    logger_03::info() << "Loops: " << np::loops << "; ops: " << (np::loops * 9);
+    logger_03::info() << "Rest : " << np::rest;
+
     while (true) {
-        logger_03::info() << counter++;
-        mcu::pc_13::toggle();
-        ::delay::ms(1000);
+        logger_03::info() << "-";
+        do_test<31>();
+        do_test<42>();
+        do_test<53>();
+        do_test<64>();
+        do_test<75>();
+        do_test<86>();
+        do_test<97>();
+        counter++;
+        ::delay::ms(3000);
     }
 
     return 0;

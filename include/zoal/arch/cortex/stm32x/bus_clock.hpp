@@ -50,7 +50,8 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr zoal::arch::bus bus = Bus;
 
         static inline void power_on() {
-            zoal::mem::apply_modifiers<rcc::address, modifiers>();
+            using fm = typename zoal::mem::filter_modifiers<modifiers>::result;
+            zoal::mem::apply_modifiers<rcc::address, fm>();
         }
 
         static inline void power_off() {
