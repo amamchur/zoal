@@ -72,16 +72,14 @@ struct font_type {
     };
 };
 
-template<class Tools, class MOSI, class SCLK, class CS>
+template<class Tools, class Spi, class ChipSelect>
 class max72xx {
 private:
 public:
-    static constexpr uint8_t DeviceCount = 1;
+    static constexpr uint8_t DeviceCount = 4;
 
-    using self_type = max72xx<Tools, MOSI, SCLK, CS>;
-    using sspi = zoal::periph::tx_software_spi<MOSI, SCLK>;
-    using max7219 = zoal::ic::max72xx<typename Tools::mcu::spi0, CS>;
-    using repeat = typename max7219::repeat;
+    using self_type = max72xx<Tools, Spi, ChipSelect>;
+    using max7219 = zoal::ic::max72xx<Spi, ChipSelect>;
     using method_scheduler = typename Tools::template method_scheduler<self_type, 8>;
     using matrix_type = zoal::ic::max72xx_data<DeviceCount>;
 
@@ -112,16 +110,17 @@ public:
     }
 
     void init() {
-        auto *ptr = (uint8_t *) (&images[0]);
-        const int size = sizeof(images);
-        for (int i = 0; i < size; i++) {
-            ptr[i] = reverse(ptr[i], 0, 0);
-        }
+//        auto *ptr = (uint8_t *) (&images[0]);
+//        const int size = sizeof(images);
+//        for (int i = 0; i < size; i++) {
+//            ptr[i] = reverse(ptr[i], 0, 0);
+//        }
 
         max7219::init(DeviceCount);
         max7219::send(DeviceCount, max7219::intensity | intensity);
-        matrix.clear(0);
+        matrix.clear(0xAA);
         max7219::display(matrix);
+        init_glyph_column_lsb();
     }
 
     void change_intensity() {

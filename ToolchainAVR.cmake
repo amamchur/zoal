@@ -50,7 +50,8 @@ function(add_avr_executable NAME MCU)
             --no-change-warnings
             --output-target binary
             ${NAME}.elf ${eep_file}
-            COMMAND ${AVR_SIZE} --mcu=${MCU} --format=avr ${NAME}.elf
+#            COMMAND ${AVR_SIZE} --mcu=${MCU} --format=avr ${NAME}.elf
+            COMMAND ${AVR_SIZE} ${NAME}.elf
     )
 
     set_property(

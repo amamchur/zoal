@@ -353,14 +353,11 @@ namespace zoal { namespace ic {
 
         template<size_t Devices>
         static void display(const max72xx_data<Devices> &matrix) {
-            for (int row = 0; row < 8; row++) {
+            for (uint8_t row = 0; row < 8; row++) {
                 CS::low();
                 auto cmd = row + 1;
-                auto h = cmd >> 0x8;
-                auto l = cmd & 0x0F;
-                for (ptrdiff_t device = Devices - 1; device >= 0; device--) {
-                    spi::transfer_byte(h);
-                    spi::transfer_byte(l);
+                for (int device = Devices - 1; device >= 0; device--) {
+                    spi::transfer_byte(cmd);
                     spi::transfer_byte(matrix.data[device][row]);
                 }
                 CS::high();

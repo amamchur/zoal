@@ -29,6 +29,7 @@ volatile uint32_t milliseconds = 0;
 using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
+using spi = mcu::spi_00;
 using irq_handler = counter::handler<mcu::frequency, 64, timer>;
 using log_usart = mcu::usart_00;
 using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<log_usart, 64>;
@@ -44,6 +45,8 @@ using app3 = uno_lcd_shield<tools, zoal::pcb, mcu::adc_00>;
 //using app5 = max72xx<tools, mcu::mosi0, mcu::sclk0, zoal::pcb::ard_d10>;
 using app6 = ir_remove<zoal::pcb::ard_d10, tools, 25>;
 using app7 = tm1637<tools, zoal::pcb::ard_d10, zoal::pcb::ard_d11>;
+using app8 = max72xx_segment<spi, zoal::pcb::ard_d10>;
+using app9 = max72xx<tools, spi, zoal::pcb::ard_d10>;
 using check = compile_check<app0, app1, app2, app3, app6, app7>;
 
 using keypad = typename app3::shield::keypad;
@@ -53,7 +56,7 @@ using lcd = typename app3::shield::lcd;
 //using rtc_type = zoal::ic::ds3231<i2c>;
 //rtc_type rtc;
 
-app3 app;
+app9 app;
 
 uint16_t lcd_buttons_values[app3::shield::button_count] __attribute__((section(".eeprom"))) = {637, 411, 258, 101, 0};
 
@@ -65,6 +68,10 @@ void initialize_hardware() {
 
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
     mcu::irq::timer<timer>::enable_overflow_interrupt();
+
+    mcu::cfg::spi<spi, 4>::apply();
+    mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::on();
+    mcu::enable<spi>::on();
 
     mcu::cfg::adc<adc>::apply();
 

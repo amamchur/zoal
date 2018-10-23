@@ -254,7 +254,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using SPCRx = typename merge_clear_and_set<typename order::SPCRx,
                                                        typename clock_divider::SPCRx,
                                                        typename cpol_cpha::SPCRx,
-                                                       typename mode::SPCRx>::results;
+                                                       typename mode::SPCRx>::result;
             using SPSRx = typename clock_divider::SPSRx;
 
             template<uintptr_t Offset>
