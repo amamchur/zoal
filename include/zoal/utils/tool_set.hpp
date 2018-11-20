@@ -8,8 +8,8 @@
 #include "scheduler.hpp"
 
 namespace zoal { namespace utils {
-    template<class Microcontroller, class Counter, class Logger = plain_logger<void>>
-    class tool_set {
+    template<class Microcontroller, class Counter, class Logger, class... Mixin>
+    class tool_set : public Mixin... {
     public:
         using mcu = Microcontroller;
         using api = typename mcu::api;
@@ -23,16 +23,6 @@ namespace zoal { namespace utils {
 
         template<class T, size_t Capacity, class Token = void>
         using method_scheduler = typename ::zoal::utils::method_scheduler<T, counter, Capacity, Token>;
-
-        template<class A, class B>
-        static B remap(A x, A in_min, A in_max, B out_min, B out_max) {
-            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-        }
-
-        template<class A, class B, A in_min, A in_max, B out_min, B out_max>
-        static B remap(A x) {
-            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-        }
     };
 }}
 

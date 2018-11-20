@@ -148,15 +148,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             *accessor<TWCRx>::p &= ~(1 << TWENx | 1 << TWIEx | 1 << TWEAx);
         }
 
-        template<class Config>
-        static void begin() {
-            //            I2CSDA::high();
-            //            I2CSCL::high();
-
-            *accessor<TWSRx>::p &= ~(1 << TWPS0x | 1 << TWPS1x);
-            *accessor<TWBRx>::p = ((Config::freq / Config::i2c_freq) - 16) / 2;
-        }
-
         static i2c_stream &stream(void *extBuffer = nullptr) {
             stream_.index = 0;
             stream_.data = extBuffer == nullptr ? (uint8_t *)buffer : (uint8_t *)extBuffer;

@@ -56,7 +56,7 @@ namespace zoal { namespace utils {
     class suffix_placer<void> {
     public:
         template<class T>
-        void place_suffix() {
+        void place_suffix(T &) {
         }
 
         void enable_suffix() {

@@ -12,7 +12,7 @@
 #include <zoal/io/output_stream.hpp>
 #include <zoal/mcu/stm32f303re.hpp>
 #include <zoal/mem/accessor.hpp>
-#include <zoal/periph/rx_buffer.hpp>
+#include <zoal/periph/rx_ring_buffer.hpp>
 #include <zoal/periph/tx_ring_buffer.hpp>
 #include <zoal/shields/uno_lcd_shield.hpp>
 #include <zoal/utils/ms_counter.hpp>

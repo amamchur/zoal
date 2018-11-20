@@ -1,5 +1,5 @@
-#ifndef ZOAL_RX_BUFFER_HPP
-#define ZOAL_RX_BUFFER_HPP
+#ifndef ZOAL_RX_RING_BUFFER_HPP
+#define ZOAL_RX_RING_BUFFER_HPP
 
 #include "../data/ring_buffer.hpp"
 #include "../utils/cooperation.hpp"
@@ -8,7 +8,7 @@
 
 namespace zoal { namespace periph {
     template<class U, size_t Size>
-    class rx_buffer {
+    class rx_ring_buffer {
     public:
         using coop = zoal::utils::cooperation<>;
         using buffer_type = zoal::data::ring_buffer<uint8_t, Size, coop::yield>;
@@ -26,7 +26,7 @@ namespace zoal { namespace periph {
     };
 
     template<class U, size_t Size>
-    typename rx_buffer<U, Size>::buffer_type rx_buffer<U, Size>::rx;
+    typename rx_ring_buffer<U, Size>::buffer_type rx_ring_buffer<U, Size>::rx;
 }}
 
-#endif //ZOAL_RX_BUFFER_HPP
+#endif

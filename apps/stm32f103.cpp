@@ -2,7 +2,7 @@
 
 #include <zoal/data/rx_tx_buffer.hpp>
 #include <zoal/mcu/stm32f103c8.hpp>
-#include <zoal/periph/rx_buffer.hpp>
+#include <zoal/periph/rx_ring_buffer.hpp>
 #include <zoal/periph/tx_ring_buffer.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>

@@ -12,7 +12,9 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     template<uintptr_t Address>
     class usart {
     private:
-        enum UCSRxA_Flags : uint8_t { RXCx = 7, TXCx = 6, UDREx = 5, FEx = 4, DORx = 3, UPEx = 2, U2Xx = 1, MPCMx = 0 };
+        enum UCSRxA_Flags : uint8_t {
+            RXCx = 7, TXCx = 6, UDREx = 5, FEx = 4, DORx = 3, UPEx = 2, U2Xx = 1, MPCMx = 0
+        };
 
         enum UCSRxB_Flags : uint8_t {
             RXCIEx = 7,
@@ -92,7 +94,13 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         //        }
 
         template<class H>
-        static inline void rx_handler() {}
+        static inline void rx_handler() {
+            if (*accessor<UCSRxA>::p & (1 << UPEx)) {
+                return;
+            }
+
+            H::put(*accessor<UDRx>::p);
+        }
 
         template<class H>
         static void tx_handler() {
