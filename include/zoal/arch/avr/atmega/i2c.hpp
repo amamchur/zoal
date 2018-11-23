@@ -2,7 +2,7 @@
 #define ZOAL_ARCH_AVR_ATMEGA_I2C_HPP
 
 #include "../../../mem/accessor.hpp"
-#include "../../../periph/i2c_config.hpp"
+#include "../../../periph/i2c_stream.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../../utils/nop.hpp"
 
@@ -42,62 +42,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         I2C_WRITE = 0
     };
 
-    class i2c_stream {
-    public:
-        explicit i2c_stream(void *buffer)
-            : index(0)
-            , length(0)
-            , slawr(0) {
-            data = (uint8_t *)buffer;
-        }
-
-        i2c_stream &write(uint8_t address) {
-            slawr = address << 1;
-            index = 0;
-            length = 0;
-            return *this;
-        }
-
-        i2c_stream &read(uint8_t address, uint16_t count) {
-            slawr = static_cast<uint8_t>(address << 1 | 1);
-            index = 0;
-            length = count;
-            return *this;
-        }
-
-        uint8_t address() const {
-            return slawr;
-        }
-
-        uint16_t size() const {
-            return length;
-        }
-
-        bool next() const {
-            return index < length;
-        }
-
-        uint8_t dequeue() {
-            return data[index++];
-        }
-
-        i2c_stream &value(uint8_t value) {
-            data[length++] = value;
-            return *this;
-        }
-
-        i2c_stream &enqueue(uint8_t value) {
-            data[index++] = value;
-            return *this;
-        }
-
-        uint16_t index;
-        uint16_t length;
-        uint8_t slawr;
-        uint8_t *data;
-    };
-
-    template<uintptr_t Address, uint8_t N, uint8_t BufferSize>
+    template<uintptr_t Address, uint8_t N>
     class i2c {
     private:
         static constexpr uint8_t TWPS1x = 1;
@@ -118,7 +63,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr auto address = Address;
         static constexpr uint8_t no = N;
 
-        using self_type = i2c<Address, BufferSize, N>;
+        using self_type = i2c<Address, N>;
 
         static constexpr uintptr_t TWBRx = 0;
         static constexpr uintptr_t TWSRx = 1;
@@ -127,14 +72,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr uintptr_t TWCRx = 4;
         static constexpr uintptr_t TWAMRx = 5;
 
-        static uint8_t buffer[BufferSize];
-        static i2c_stream stream_;
+        static zoal::periph::i2c_stream<self_type> *stream_;
         static volatile uint8_t busy;
-        static volatile uint8_t error;
-
-        static void (*callback)(void *);
-
-        static void *token;
 
         static void power_on() {}
 
@@ -148,37 +87,29 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             *accessor<TWCRx>::p &= ~(1 << TWENx | 1 << TWIEx | 1 << TWEAx);
         }
 
-        static i2c_stream &stream(void *extBuffer = nullptr) {
-            stream_.index = 0;
-            stream_.data = extBuffer == nullptr ? (uint8_t *)buffer : (uint8_t *)extBuffer;
-            return stream_;
-        }
-
-        static void transmit(void (*cb)(void *) = nullptr, void *t = nullptr) {
-            callback = cb;
-            token = t;
-
+        static void transmit(zoal::periph::i2c_stream<self_type> *stream) {
+            stream_ = stream;
+            stream_->result = zoal::periph::i2c_result::ok;
             busy = 1;
             *accessor<TWCRx>::p = START;
-
-            if (cb == nullptr) {
-                wait();
-            }
         }
 
         static void transmission_complete(uint8_t code) {
-            void (*cb)(void *) = callback;
-            callback = nullptr;
+            auto s = stream_;
+            auto cb = s->callback;
+            auto token = s->token;
+            s->result = (zoal::periph::i2c_result)code;
+
+            stream_ = nullptr;
             busy = 0;
-            error = code;
+
             if (cb) {
-                cb(token);
+                cb(s, token);
             }
         }
 
         static void wait() {
-            while (busy || (*accessor<TWCRx>::p & 1 << TWSTOx))
-                ;
+            while (busy || (*accessor<TWCRx>::p & 1 << TWSTOx));
         }
 
         static constexpr uint8_t START = 1 << TWINTx | 1 << TWEAx | 1 << TWENx | 1 << TWIEx | 1 << TWSTAx;
@@ -186,8 +117,13 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr uint8_t NACK = 1 << TWENx | 1 << TWIEx | 1 << TWINTx;
         static constexpr uint8_t STOP = 1 << TWENx | 1 << TWIEx | 1 << TWEAx | 1 << TWINTx | 1 << TWSTOx;
 
+        static uint8_t debug_buffer[64];
+        static uint8_t debug_index;
+
         static void handle_irq() {
             auto status = static_cast<uint8_t>(*accessor<TWSRx>::p & 0xF8);
+//            debug_buffer[debug_index++] = status;
+
             switch (status) {
             case I2C_BUS_ERROR:
                 *accessor<TWCRx>::p = STOP;
@@ -195,13 +131,13 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 break;
             case I2C_START:
             case I2C_REP_START:
-                *accessor<TWDRx>::p = stream_.address();
+                *accessor<TWDRx>::p = stream_->address();
                 *accessor<TWCRx>::p = ACK;
                 break;
             case I2C_MT_SLA_ACK:
             case I2C_MT_DATA_ACK:
-                if (stream_.next()) {
-                    *accessor<TWDRx>::p = stream_.dequeue();
+                if (stream_->has_next()) {
+                    *accessor<TWDRx>::p = stream_->dequeue();
                     *accessor<TWCRx>::p = ACK;
                 } else {
                     *accessor<TWCRx>::p = STOP;
@@ -213,20 +149,30 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 transmission_complete(2);
                 break;
             case I2C_MR_SLA_ACK:
-                *accessor<TWCRx>::p = stream_.next() ? ACK : NACK;
+                *accessor<TWCRx>::p = stream_->request_next() ? ACK : NACK;
                 break;
             case I2C_MR_DATA_ACK:
-                stream_.enqueue(*accessor<TWDRx>::p);
-                if (stream_.next()) {
+                stream_->enqueue(*accessor<TWDRx>::p);
+                if (stream_->request_next()) {
                     *accessor<TWCRx>::p = ACK;
                 } else {
                     *accessor<TWCRx>::p = NACK;
                 }
                 break;
             case I2C_MT_SLA_NACK:
+                *accessor<TWCRx>::p = STOP;
+                transmission_complete(3);
+                break;
             case I2C_MT_DATA_NACK:
+                *accessor<TWCRx>::p = STOP;
+                transmission_complete(4);
+                break;
             case I2C_MR_SLA_NACK:
+                *accessor<TWCRx>::p = STOP;
+                transmission_complete(5);
+                break;
             case I2C_MR_DATA_NACK:
+                stream_->enqueue(*accessor<TWDRx>::p);
                 *accessor<TWCRx>::p = STOP;
                 transmission_complete(0);
                 break;
@@ -236,23 +182,17 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         }
     };
 
-    template<uintptr_t Address, uint8_t N, uint8_t BufferSize>
-    volatile uint8_t i2c<Address, N, BufferSize>::busy = 0;
+    template<uintptr_t Address, uint8_t N>
+    volatile uint8_t i2c<Address, N>::busy = 0;
 
-    template<uintptr_t Address, uint8_t N, uint8_t BufferSize>
-    volatile uint8_t i2c<Address, N, BufferSize>::error = 0;
+    template<uintptr_t Address, uint8_t N>
+    zoal::periph::i2c_stream<i2c<Address, N>> *i2c<Address, N>::stream_ = nullptr;
 
-    template<uintptr_t Address, uint8_t N, uint8_t BufferSize>
-    uint8_t i2c<Address, N, BufferSize>::buffer[BufferSize];
+    template<uintptr_t Address, uint8_t N>
+    uint8_t  i2c<Address, N>::debug_buffer[64];
 
-    template<uintptr_t Address, uint8_t N, uint8_t BufferSize>
-    i2c_stream i2c<Address, N, BufferSize>::stream_(i2c<Address, N, BufferSize>::buffer);
-
-    template<uintptr_t Address, uint8_t N, uint8_t BufferSize>
-    void (*i2c<Address, N, BufferSize>::callback)(void *) = nullptr;
-
-    template<uintptr_t Address, uint8_t N, uint8_t BufferSize>
-    void *i2c<Address, N, BufferSize>::token = nullptr;
+    template<uintptr_t Address, uint8_t N>
+    uint8_t  i2c<Address, N>::debug_index = 0;
 }}}}
 
 #endif

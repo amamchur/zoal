@@ -7,10 +7,10 @@
 
 namespace zoal { namespace ic {
 
-    template<class I2C, uint8_t Address = 0x68>
+    template<uint8_t Address = 0x68>
     class ds3231 {
     public:
-        using self_type = ds3231<I2C, Address>;
+        using self_type = ds3231<Address>;
 
         enum class reg_address : uint8_t {
             seconds = 0x00,
@@ -34,16 +34,58 @@ namespace zoal { namespace ic {
             temp_lsb = 0x12
         };
 
-        static constexpr uint8_t data_size = static_cast<uint8_t >(reg_address::temp_lsb) + 1;
+        static constexpr uint8_t data_size = static_cast<uint8_t>(reg_address::temp_lsb) + 1;
 
-        volatile bool ready{false};
 
-        void fetch() {
+//        template<class Stream>
+//        friend class ds3231_i2c_callback;
+
+        template<class Stream>
+        class ds3231_i2c_callback {
+        public:
+            static void address_assigned(Stream *stream, void *token) {
+                stream->read(Address, data_size);
+                stream->callback = &ds3231_i2c_callback<Stream>::data_fetched;
+                Stream::i2c::transmit(stream);
+            }
+
+            static void data_fetched(Stream *stream, void *token) {
+                auto *obj = reinterpret_cast<self_type *>(token);
+                for (uint8_t i = 0; i < stream->size(); i++) {
+                    obj->data[i] = stream->data[i];
+                }
+
+                obj->ready = true;
+            }
+
+            static void i2c_data_updated(Stream *stream, void *token) {
+                auto *obj = reinterpret_cast<self_type *>(token);
+                obj->ready = true;
+            }
+        };
+
+        template<class Stream>
+        void fetch(Stream *stream) {
             ready = false;
 
-            I2C::wait();
-            I2C::stream().write(Address).value(static_cast<uint8_t >(reg_address::seconds));
-            I2C::transmit(&i2c_address_assigned, this);
+            stream->callback = &ds3231_i2c_callback<Stream>::address_assigned;
+            stream->token = this;
+            stream->write(Address).value(static_cast<uint8_t>(reg_address::seconds));
+            Stream::i2c::transmit(stream);
+        }
+
+        template<class Stream>
+        void update(Stream *stream) {
+            ready = false;
+
+            stream->callback = &ds3231_i2c_callback<Stream>::i2c_data_updated;
+            stream->token = this;
+            stream->write(Address).value(static_cast<uint8_t>(reg_address::seconds));
+            for (uint8_t i = 0; i < static_cast<uint8_t>(reg_address::temp_lsb); i++) {
+                stream->value(data[i]);
+            }
+
+            Stream::i2c::transmit(stream);
         }
 
         zoal::data::date_time date_time() {
@@ -75,7 +117,7 @@ namespace zoal { namespace ic {
         float temperature() {
             uint8_t msb = data[reg_address::temp_msb];
             uint8_t lsb = data[reg_address::temp_lsb];
-            return (float)msb + ((lsb >> 6u) * 0.25f);
+            return (float) msb + ((lsb >> 6u) * 0.25f);
         }
 
         uint8_t operator[](reg_address addr) const {
@@ -86,21 +128,14 @@ namespace zoal { namespace ic {
             return data[static_cast<uintptr_t>(addr)];
         }
 
-        void update() {
-            I2C::wait();
-            auto &stream = I2C::stream()
-                    .write(Address)
-                    .value(static_cast<uint8_t >(reg_address::seconds));
-            for (uint8_t i = 0; i < static_cast<uint8_t >(reg_address::temp_lsb); i++) {
-                stream.value(data[i]);
-            }
-
-            I2C::transmit(&i2c_data_updated, this);
+        void wait() const {
+            while (!ready);
         }
 
     private:
-        volatile uint8_t data[data_size];
-        uint32_t update_mask{0};
+        volatile bool ready{false};
+
+        volatile uint8_t data[data_size]{0};
 
         static uint8_t bcd2bin(uint8_t value) {
             return static_cast<uint8_t>(value - 6 * (value >> 4u));
@@ -108,27 +143,6 @@ namespace zoal { namespace ic {
 
         static uint8_t bin2bcd(uint8_t value) {
             return static_cast<uint8_t>(value + 6 * (value / 10));
-        }
-
-        static void i2c_data_updated(void *token) {
-            auto *cls = (self_type *)token;
-            cls->ready = true;
-        }
-
-        static void i2c_address_assigned(void *token) {
-            I2C::stream().read(Address, data_size);
-            I2C::transmit(&i2c_data_fetched, token);
-        }
-
-        static void i2c_data_fetched(void *token) {
-            auto *cls = (self_type *)token;
-            auto &stream = I2C::stream();
-
-            for (uint8_t i = 0; i < data_size; i++) {
-                cls->data[i] = stream.data[i];
-            }
-
-            cls->ready = true;
         }
     };
 }}

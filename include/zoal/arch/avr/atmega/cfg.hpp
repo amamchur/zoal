@@ -165,11 +165,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr auto frequency = Frequency;
 
         template<class U,
-                 uint32_t BaudRate,
-                 uint8_t Bits = 8,
-                 usart_parity Parity = usart_parity::none,
-                 usart_stop_bits StopBits = usart_stop_bits::stop_bits_1,
-                 uint32_t Freq = frequency>
+                uint32_t BaudRate,
+                uint8_t Bits = 8,
+                usart_parity Parity = usart_parity::none,
+                usart_stop_bits StopBits = usart_stop_bits::stop_bits_1,
+                uint32_t Freq = frequency>
         class usart {
         public:
             static constexpr uint8_t UCSRxA_bit_U2X = 1 << 1;
@@ -203,7 +203,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using clock_divider_cfg = timer_clock_divider<async, ClockDivider>;
             using TCCRxA_cfg = typename timer_mode<Mode>::TCCRxA;
             using TCCRxB_cfg = typename merge_clear_and_set<typename timer_mode_cfg::TCCRxB,
-                                                            typename clock_divider_cfg::TCCRxB>::result;
+                    typename clock_divider_cfg::TCCRxB>::result;
 
             template<uintptr_t Offset>
             using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
@@ -234,10 +234,10 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         };
 
         template<class S,
-                 uintptr_t ClockDivider = 2,
-                 bit_order Order = bit_order::msbf,
-                 spi_cpol_cpha PolPha = spi_cpol_cpha::mode_0,
-                 spi_mode Mode = spi_mode::master>
+                uintptr_t ClockDivider = 2,
+                bit_order Order = bit_order::msbf,
+                spi_cpol_cpha PolPha = spi_cpol_cpha::mode_0,
+                spi_mode Mode = spi_mode::master>
         class spi {
         public:
             using clock_divider = spi_clock_divider_cfg<ClockDivider>;
@@ -252,9 +252,9 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(order::SPCRx::clear_mask != 0, "Unsupported SPI bit order");
 
             using SPCRx = typename merge_clear_and_set<typename order::SPCRx,
-                                                       typename clock_divider::SPCRx,
-                                                       typename cpol_cpha::SPCRx,
-                                                       typename mode::SPCRx>::result;
+                    typename clock_divider::SPCRx,
+                    typename cpol_cpha::SPCRx,
+                    typename mode::SPCRx>::result;
             using SPSRx = typename clock_divider::SPSRx;
 
             template<uintptr_t Offset>
@@ -271,8 +271,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         template<class I, uint32_t Freq = 400000>
         class i2c {
         public:
-            static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)Frequency / (double)Freq) - 16.0) /
-                                                                        2.0);
+            static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double) Frequency / (double) Freq) - 16.0) / 2.0);
 
             template<uintptr_t Offset>
             using accessor = zoal::mem::accessor<uint8_t, I::address, Offset>;
@@ -280,6 +279,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static void apply() {
                 I::disable();
 
+                *accessor<I::TWSRx>::p = 0;
                 *accessor<I::TWBRx>::p = TWBRx_value;
 
                 //                *accessor<TWSRx>::p &= ~(1 << TWPS0x | 1 << TWPS1x);
