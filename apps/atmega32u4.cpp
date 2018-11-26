@@ -9,6 +9,7 @@
 #include <zoal/ic/adxl345.hpp>
 #include <zoal/ic/ds3231.hpp>
 #include <zoal/ic/max72xx.hpp>
+#include <zoal/ic/ssd1306.hpp>
 #include <zoal/io/analog_keypad.hpp>
 #include <zoal/io/button.hpp>
 #include <zoal/periph/rx_null_buffer.hpp>
@@ -19,47 +20,6 @@
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
-
-
-#define SSD1306_SETCONTRAST 0x81
-#define SSD1306_DISPLAYALLON_RESUME 0xA4
-#define SSD1306_DISPLAYALLON 0xA5
-#define SSD1306_NORMALDISPLAY 0xA6
-#define SSD1306_INVERTDISPLAY 0xA7
-#define SSD1306_DISPLAYOFF 0xAE
-#define SSD1306_DISPLAYON 0xAF
-
-#define SSD1306_SETDISPLAYOFFSET 0xD3
-#define SSD1306_SETCOMPINS 0xDA
-
-#define SSD1306_SETVCOMDETECT 0xDB
-
-#define SSD1306_SETDISPLAYCLOCKDIV 0xD5
-#define SSD1306_SETPRECHARGE 0xD9
-
-#define SSD1306_SETMULTIPLEX 0xA8
-
-#define SSD1306_SETLOWCOLUMN 0x00
-#define SSD1306_SETHIGHCOLUMN 0x10
-
-#define SSD1306_SETSTARTLINE 0x40
-
-#define SSD1306_MEMORYMODE 0x20
-#define SSD1306_COLUMNADDR 0x21
-#define SSD1306_PAGEADDR   0x22
-
-#define SSD1306_COMSCANINC 0xC0
-#define SSD1306_COMSCANDEC 0xC8
-
-#define SSD1306_SEGREMAP 0xA0
-
-#define SSD1306_CHARGEPUMP 0x8D
-
-#define SSD1306_EXTERNALVCC 0x1
-#define SSD1306_SWITCHCAPVCC 0x2
-
-#define SSD1306_LCDWIDTH                  128
-#define SSD1306_LCDHEIGHT                 64
 
 volatile uint32_t milliseconds = 0;
 
@@ -79,11 +39,151 @@ using logger = zoal::utils::plain_logger<usart_01_tx_buffer, zoal::utils::log_le
 using tools = zoal::utils::tool_set<zoal::pcb::mcu, counter, logger>;
 using delay = tools::delay;
 
-uint8_t i2c_buffer[64];
-zoal::periph::i2c_stream<i2c> stream(i2c_buffer);
+using i2c_stream = zoal::periph::i2c_stream<i2c>;
+using ssd1306_interface = zoal::ic::ssd1306_interface_i2c<tools, i2c, zoal::pcb::ard_d07, zoal::pcb::ard_d08, 0x3C>;
+using ssd1306 = zoal::ic::ssd1306<zoal::ic::ssd1306_resolution::ssd1306_128x64, ssd1306_interface>;
 
-zoal::ic::ds3231<> ds3231;
-//zoal::ic::adxl345<i2c, 0x53, logger> adxl345;
+uint8_t graphic_buffer[ssd1306::resolution_info::buffer_size];
+uint8_t i2c_buffer[sizeof(i2c_stream) + 64];
+auto stream = i2c_stream::from_memory(i2c_buffer, sizeof(i2c_buffer));
+ssd1306 ssd1306_display(stream);
+
+template<uint8_t Width, uint8_t Height>
+class ssd1306_writer {
+public:
+    static void ssd1306_write(void *data, int x, int y, uint8_t value) {
+        if ((x < 0) || (x >= Width) || (y < 0) || (y >= Height)) {
+            return;
+        }
+
+        auto buffer = reinterpret_cast<uint8_t *>(data);
+        auto bit = y & 0x07;
+        auto ptr = buffer + x + (y / 8) * Width;
+        if (value) {
+            *ptr |= 1 << bit;
+        } else {
+            *ptr &= ~(1 << bit);
+        }
+    }
+};
+
+template<uint8_t Width, uint8_t Height>
+class gfx_writer_0 : public ssd1306_writer<Width, Height> {
+public:
+    static void write(void *data, int x, int y, uint8_t value) {
+        ssd1306_writer<Width, Height>::ssd1306_write(data, x, y, value);
+    }
+
+    static void clear(void *data) {
+        memset(data, 0, static_cast<size_t>(Width * Height / 8));
+    }
+};
+
+template<uint8_t Width, uint8_t Height>
+class gfx_writer_90 : public ssd1306_writer<Width, Height> {
+public:
+    static void write(void *data, int x, int y, uint8_t value) {
+        ssd1306_writer<Width, Height>::ssd1306_write(data, Width - y - 1, x, value);
+    }
+};
+
+template<uint8_t Width, uint8_t Height>
+class gfx_writer_180 : public ssd1306_writer<Width, Height> {
+public:
+    static void write(void *data, int x, int y, uint8_t value) {
+        ssd1306_writer<Width, Height>::ssd1306_write(data, Width - x - 1, Height - y - 1, value);
+    }
+};
+
+template<uint8_t Width, uint8_t Height>
+class gfx_writer_270 : public ssd1306_writer<Width, Height> {
+public:
+    static void write(void *data, int x, int y, uint8_t value) {
+        ssd1306_writer<Width, Height>::ssd1306_write(data, y, Height - x - 1, value);
+    }
+};
+
+template<class Pixel, class Writer>
+class bresenham_gfx {
+public:
+    using self_type = bresenham_gfx<Pixel, Writer>;
+    using writer = Writer;
+
+    static self_type *from_memory(void *buffer) {
+        return reinterpret_cast<self_type *>(buffer);
+    }
+
+    void clear(Pixel v) {
+        writer::clear(data, 0);
+    }
+
+    void pixel(int x, int y, Pixel c) {
+        writer::write(data, x, y, c);
+    }
+
+    void swap(Pixel &a, Pixel &b) {
+        auto tmp = a;
+        a = b;
+        b = tmp;
+    }
+
+    void line(int x0, int y0, int x1, int y1, Pixel color) {
+        int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+        int dy = abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+        int error = (dx > dy ? dx : -dy) / 2;
+
+        for (;;) {
+            pixel(x0, y0, color);
+            if (x0 == x1 && y0 == y1) {
+                break;
+            }
+
+            int e = error;
+            if (e > -dx) {
+                error -= dy;
+                x0 += sx;
+            }
+
+            if (e < dy) {
+                error += dx;
+                y0 += sy;
+            }
+        }
+    }
+
+    void circle(int x0, int y0, int radius, Pixel color) {
+        int x = radius - 1;
+        int y = 0;
+        int dx = 1;
+        int dy = 1;
+        int error = dx - (radius << 1);
+
+        while (x >= y) {
+            pixel(x0 + x, y0 + y, color);
+            pixel(x0 + y, y0 + x, color);
+            pixel(x0 - y, y0 + x, color);
+            pixel(x0 - x, y0 + y, color);
+            pixel(x0 - x, y0 - y, color);
+            pixel(x0 - y, y0 - x, color);
+            pixel(x0 + y, y0 - x, color);
+            pixel(x0 + x, y0 - y, color);
+
+            if (error <= 0) {
+                y++;
+                error += dy;
+                dy += 2;
+            }
+
+            if (error > 0) {
+                x--;
+                dx += 2;
+                error += dx - (radius << 1);
+            }
+        }
+    }
+
+    uint8_t data[0];
+};
 
 void initialize_hardware() {
     mcu::power<usart, timer, i2c>::on();
@@ -102,80 +202,36 @@ void initialize_hardware() {
     zoal::utils::interrupts::on();
 }
 
-uint8_t graphic_buffer[128 * 64 / 8] = {0xff};
-
-
-void ssd1306_command(uint8_t c) {
-    stream.write(0x3C).value(0x00).value(c);
-    i2c::transmit(&stream);
-    i2c::wait();
-}
-
-void display() {
-    ssd1306_command(SSD1306_COLUMNADDR);
-    ssd1306_command(0);   // Column start address (0 = reset)
-    ssd1306_command(SSD1306_LCDWIDTH - 1); // Column end address (127 = reset)
-    ssd1306_command(SSD1306_PAGEADDR);
-    ssd1306_command(0); // Page start address (0 = reset)
-    ssd1306_command(7); // Page end address
-
-    stream.write(0x40)
-            .value(0xFF)
-            .value(0xFF)
-            .value(0xFF)
-            .value(0xFF);
-    i2c::transmit(&stream);
-    i2c::wait();
-}
-
 int main() {
     initialize_hardware();
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
-    using rst = zoal::pcb::ard_d07;
-    using sa0 = zoal::pcb::ard_d08;
+    logger::info() << "ssd1306_display: " << sizeof(ssd1306_display);
+    logger::info() << "i2c_buffer     : " << sizeof(i2c_buffer);
+    logger::info() << "graphic_buffer : " << sizeof(graphic_buffer);
 
-    rst::mode<zoal::gpio::pin_mode::output>();
-    sa0::mode<zoal::gpio::pin_mode::output>();
+    ssd1306_display.init();
 
-    sa0::low(); // 0x3C
+    using writer = gfx_writer_0<128, 64>;
+    //    using writer_1 = gfx_writer_90<128, 64>;
+    //    using writer_2 = gfx_writer_180<128, 64>;
+    //    using writer_3 = gfx_writer_270<128, 64>;
 
-    rst::high();
-    ::delay::ms(1);
-    rst::low();
-    ::delay::ms(10);
-    rst::high();
+    auto g = bresenham_gfx<uint8_t, writer>::from_memory(graphic_buffer);
+    uint8_t radius = 1;
 
-
-    ssd1306_command(SSD1306_DISPLAYOFF);                    // 0xAE
-    ssd1306_command(SSD1306_SETDISPLAYCLOCKDIV);            // 0xD5
-    ssd1306_command(0x80);                                  // the suggested ratio 0x80
-    ssd1306_command(SSD1306_SETMULTIPLEX);                  // 0xA8
-    ssd1306_command(0x3F);
-    ssd1306_command(SSD1306_SETDISPLAYOFFSET);              // 0xD3
-    ssd1306_command(0x0);                                   // no offset
-    ssd1306_command(SSD1306_SETSTARTLINE | 0x0);            // line #0
-    ssd1306_command(SSD1306_CHARGEPUMP);                    // 0x8D
-    ssd1306_command(0x14);
-    ssd1306_command(SSD1306_MEMORYMODE);                    // 0x20
-    ssd1306_command(0x00);                                  // 0x0 act like ks0108
-    ssd1306_command(SSD1306_SEGREMAP | 0x1);
-    ssd1306_command(SSD1306_COMSCANDEC);
-    ssd1306_command(SSD1306_SETCOMPINS);                    // 0xDA
-    ssd1306_command(0x12);
-    ssd1306_command(SSD1306_SETCONTRAST);                   // 0x81
-    ssd1306_command(0xCF);
-    ssd1306_command(SSD1306_SETPRECHARGE);                  // 0xd9
-    ssd1306_command(0xF1);
-    ssd1306_command(SSD1306_SETVCOMDETECT);                 // 0xDB
-    ssd1306_command(0x40);
-    ssd1306_command(SSD1306_DISPLAYALLON_RESUME);           // 0xA4
-    ssd1306_command(SSD1306_NORMALDISPLAY);                 // 0xA6
-    ssd1306_command(SSD1306_DISPLAYON);//--turn on oled panel
-
-    display();
     while (true) {
+        ssd1306_display.ensure_ready();
+
+        memset(graphic_buffer, 0, 1024);
+        g->circle(64, 32, radius, 1);
+        ssd1306_display.display(graphic_buffer, sizeof(graphic_buffer));
+
+        radius++;
+        if (radius > 30) {
+            radius = 1;
+        }
     }
     return 0;
 #pragma clang diagnostic pop

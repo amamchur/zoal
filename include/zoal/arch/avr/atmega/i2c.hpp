@@ -94,11 +94,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             *accessor<TWCRx>::p = START;
         }
 
-        static void transmission_complete(uint8_t code) {
+        static void transmission_complete(zoal::periph::i2c_result result) {
             auto s = stream_;
             auto cb = s->callback;
             auto token = s->token;
-            s->result = (zoal::periph::i2c_result)code;
+            s->result = result;
 
             stream_ = nullptr;
             busy = 0;
@@ -117,17 +117,12 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr uint8_t NACK = 1 << TWENx | 1 << TWIEx | 1 << TWINTx;
         static constexpr uint8_t STOP = 1 << TWENx | 1 << TWIEx | 1 << TWEAx | 1 << TWINTx | 1 << TWSTOx;
 
-        static uint8_t debug_buffer[64];
-        static uint8_t debug_index;
-
         static void handle_irq() {
             auto status = static_cast<uint8_t>(*accessor<TWSRx>::p & 0xF8);
-//            debug_buffer[debug_index++] = status;
-
             switch (status) {
             case I2C_BUS_ERROR:
                 *accessor<TWCRx>::p = STOP;
-                transmission_complete(1);
+                transmission_complete(zoal::periph::i2c_result::error);
                 break;
             case I2C_START:
             case I2C_REP_START:
@@ -139,14 +134,20 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 if (stream_->has_next()) {
                     *accessor<TWDRx>::p = stream_->dequeue();
                     *accessor<TWCRx>::p = ACK;
-                } else {
-                    *accessor<TWCRx>::p = STOP;
-                    transmission_complete(0);
+                    return;
                 }
+
+                if (stream_->stop_) {
+                    *accessor<TWCRx>::p = STOP;
+                    transmission_complete(zoal::periph::i2c_result::ok);
+                    return;
+                }
+
+                transmission_complete(zoal::periph::i2c_result::end_of_stream);
                 break;
             case I2C_MT_ARB_LOST:
                 *accessor<TWCRx>::p = ACK;
-                transmission_complete(2);
+                transmission_complete(zoal::periph::i2c_result::error);
                 break;
             case I2C_MR_SLA_ACK:
                 *accessor<TWCRx>::p = stream_->request_next() ? ACK : NACK;
@@ -161,20 +162,20 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 break;
             case I2C_MT_SLA_NACK:
                 *accessor<TWCRx>::p = STOP;
-                transmission_complete(3);
+                transmission_complete(zoal::periph::i2c_result::error);
                 break;
             case I2C_MT_DATA_NACK:
                 *accessor<TWCRx>::p = STOP;
-                transmission_complete(4);
+                transmission_complete(zoal::periph::i2c_result::error);
                 break;
             case I2C_MR_SLA_NACK:
                 *accessor<TWCRx>::p = STOP;
-                transmission_complete(5);
+                transmission_complete(zoal::periph::i2c_result::error);
                 break;
             case I2C_MR_DATA_NACK:
                 stream_->enqueue(*accessor<TWDRx>::p);
                 *accessor<TWCRx>::p = STOP;
-                transmission_complete(0);
+                transmission_complete(zoal::periph::i2c_result::ok);
                 break;
             default:
                 break;
@@ -187,12 +188,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
     template<uintptr_t Address, uint8_t N>
     zoal::periph::i2c_stream<i2c<Address, N>> *i2c<Address, N>::stream_ = nullptr;
-
-    template<uintptr_t Address, uint8_t N>
-    uint8_t  i2c<Address, N>::debug_buffer[64];
-
-    template<uintptr_t Address, uint8_t N>
-    uint8_t  i2c<Address, N>::debug_index = 0;
 }}}}
 
 #endif
