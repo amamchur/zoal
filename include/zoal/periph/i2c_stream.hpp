@@ -88,11 +88,11 @@ namespace zoal { namespace periph {
 
         void *token{nullptr};
 
-        size_t index_;
-        size_t size_;
-        size_t capacity_;
-        uint8_t address_rw_;
-        uint8_t *data_;
+        size_t index_{0};
+        size_t size_{0};
+        size_t capacity_{0};
+        uint8_t address_rw_{0};
+        uint8_t *data_{nullptr};
         i2c_result result{i2c_result::ok};
         bool stop_{true};
     };

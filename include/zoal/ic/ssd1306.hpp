@@ -7,6 +7,116 @@
 #include <stdint.h>
 
 namespace zoal { namespace ic {
+
+    template<int Width, int Height, bool safe = true>
+    class ssd1306_adapter {
+    public:
+        static inline void ssd1306_h_line(void *data, int x, int y, int w, uint8_t value) {
+            if (safe && ((y < 0) || (y >= Height))) {
+                return;
+            }
+
+            auto buffer = reinterpret_cast<uint8_t *>(data);
+            auto mask = 1 << (y & 0x07);
+
+            for (int i = 0; i < w; i++) {
+                if ((x < 0) || (x >= Width)) {
+                    continue;
+                }
+
+                auto ptr = buffer + x + i + (y / 8) * Width;
+                if (value) {
+                    *ptr |= mask;
+                } else {
+                    *ptr &= ~mask;
+                }
+            }
+        }
+
+        static inline void ssd1306_v_line(void *data, int x, int y, int w, uint8_t value) {
+            if (safe && ((x < 0) || (x >= Width))) {
+                return;
+            }
+
+            auto t = (y + 0x7) & 0xF8;
+            auto b = (y + w) & 0xF8;
+            auto buffer = reinterpret_cast<uint8_t *>(data);
+            for (int i = t; i < b && i < Height; i++) {
+                auto ptr = buffer + x + (i / 8) * Width;
+                *ptr = static_cast<uint8_t>(value ? 0xFF : 0x00);
+            }
+
+            for (int i = y; i < t; i++) {
+                auto ptr = buffer + x + (i / 8) * Width;
+                if (value) {
+                    *ptr |= 1 << (i & 0x07);
+                } else {
+                    *ptr &= ~(1 << (i & 0x07));
+                }
+            }
+
+            for (int i = b; i <= y + w; i++) {
+                auto ptr = buffer + x + (i / 8) * Width;
+                if (value) {
+                    *ptr |= 1 << (i & 0x07);
+                } else {
+                    *ptr &= ~(1 << (i & 0x07));
+                }
+            }
+        }
+
+        static inline void ssd1306_pixel(void *data, int x, int y, uint8_t value) {
+            if (safe && ((x < 0) || (x >= Width) || (y < 0) || (y >= Height))) {
+                return;
+            }
+
+            auto buffer = reinterpret_cast<uint8_t *>(data);
+            auto bit = y & 0x07;
+            auto ptr = buffer + x + (y / 8) * Width;
+            if (value) {
+                *ptr |= 1 << bit;
+            } else {
+                *ptr &= ~(1 << bit);
+            }
+        }
+
+        static inline void clear(void *data, uint8_t v) {
+            memset(data, v ? 0xFF : 0x00, static_cast<size_t>(Width * Height / 8));
+        }
+    };
+
+    template<int Width, int Height, bool safe = true>
+    class ssd1306_adapter_0 : public ssd1306_adapter<Width, Height, safe> {
+    public:
+        static inline void pixel(void *data, int x, int y, uint8_t value) {
+            ssd1306_adapter_0::ssd1306_pixel(data, x, y, value);
+        }
+    };
+
+    template<int Width, int Height, bool safe = true>
+    class ssd1306_adapter_90 : public ssd1306_adapter<Width, Height, safe> {
+    public:
+        static inline void pixel(void *data, int x, int y, uint8_t value) {
+            ssd1306_adapter_90::ssd1306_pixel(data, Width - y - 1, x, value);
+        }
+    };
+
+    template<int Width, int Height, bool safe = true>
+    class ssd1306_adapter_180 : public ssd1306_adapter<Width, Height, safe> {
+    public:
+        static inline void pixel(void *data, int x, int y, uint8_t value) {
+            ssd1306_adapter_180::ssd1306_pixel(data, Width - x - 1, Height - y - 1, value);
+        }
+    };
+
+    template<int Width, int Height, bool safe = true>
+    class ssd1306_adapter_270 : public ssd1306_adapter<Width, Height, safe> {
+    public:
+        static inline void pixel(void *data, int x, int y, uint8_t value) {
+            ssd1306_adapter_270::ssd1306_pixel(data, y, Height - x - 1, value);
+        }
+    };
+
     template<class Tools, class IICircuit, class Reset, class SlaveAddressSelect, uint8_t Address = 0x3C>
     class ssd1306_interface_i2c {
     public:
