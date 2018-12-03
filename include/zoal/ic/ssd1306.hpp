@@ -11,7 +11,7 @@ namespace zoal { namespace ic {
     template<int Width, int Height, bool safe = true>
     class ssd1306_adapter {
     public:
-        static inline void ssd1306_h_line(void *data, int x, int y, int w, uint8_t value) {
+        static void ssd1306_h_line(void *data, int x, int y, int w, uint8_t value) {
             if (safe && ((y < 0) || (y >= Height))) {
                 return;
             }
@@ -33,13 +33,13 @@ namespace zoal { namespace ic {
             }
         }
 
-        static inline void ssd1306_v_line(void *data, int x, int y, int w, uint8_t value) {
+        static void ssd1306_v_line(void *data, int x, int y, int h, uint8_t value) {
             if (safe && ((x < 0) || (x >= Width))) {
                 return;
             }
 
             auto t = (y + 0x7) & 0xF8;
-            auto b = (y + w) & 0xF8;
+            auto b = (y + h) & 0xF8;
             auto buffer = reinterpret_cast<uint8_t *>(data);
             for (int i = t; i < b && i < Height; i++) {
                 auto ptr = buffer + x + (i / 8) * Width;
@@ -55,7 +55,7 @@ namespace zoal { namespace ic {
                 }
             }
 
-            for (int i = b; i <= y + w; i++) {
+            for (int i = b; i <= y + h; i++) {
                 auto ptr = buffer + x + (i / 8) * Width;
                 if (value) {
                     *ptr |= 1 << (i & 0x07);
@@ -65,7 +65,7 @@ namespace zoal { namespace ic {
             }
         }
 
-        static inline void ssd1306_pixel(void *data, int x, int y, uint8_t value) {
+        static void ssd1306_pixel(void *data, int x, int y, uint8_t value) {
             if (safe && ((x < 0) || (x >= Width) || (y < 0) || (y >= Height))) {
                 return;
             }
@@ -80,7 +80,7 @@ namespace zoal { namespace ic {
             }
         }
 
-        static inline void clear(void *data, uint8_t v) {
+        static void clear(void *data, uint8_t v) {
             memset(data, v ? 0xFF : 0x00, static_cast<size_t>(Width * Height / 8));
         }
     };
@@ -88,15 +88,23 @@ namespace zoal { namespace ic {
     template<int Width, int Height, bool safe = true>
     class ssd1306_adapter_0 : public ssd1306_adapter<Width, Height, safe> {
     public:
-        static inline void pixel(void *data, int x, int y, uint8_t value) {
+        static void pixel(void *data, int x, int y, uint8_t value) {
             ssd1306_adapter_0::ssd1306_pixel(data, x, y, value);
+        }
+
+        static void h_line(void *data, int x, int y, int w, uint8_t value) {
+            ssd1306_adapter_0::ssd1306_h_line(data, x, y, w, value);
+        }
+
+        static void v_line(void *data, int x, int y, int h, uint8_t value) {
+            ssd1306_adapter_0::ssd1306_v_line(data, x, y, h, value);
         }
     };
 
     template<int Width, int Height, bool safe = true>
     class ssd1306_adapter_90 : public ssd1306_adapter<Width, Height, safe> {
     public:
-        static inline void pixel(void *data, int x, int y, uint8_t value) {
+        static void pixel(void *data, int x, int y, uint8_t value) {
             ssd1306_adapter_90::ssd1306_pixel(data, Width - y - 1, x, value);
         }
     };
@@ -104,7 +112,7 @@ namespace zoal { namespace ic {
     template<int Width, int Height, bool safe = true>
     class ssd1306_adapter_180 : public ssd1306_adapter<Width, Height, safe> {
     public:
-        static inline void pixel(void *data, int x, int y, uint8_t value) {
+        static void pixel(void *data, int x, int y, uint8_t value) {
             ssd1306_adapter_180::ssd1306_pixel(data, Width - x - 1, Height - y - 1, value);
         }
     };
@@ -112,7 +120,7 @@ namespace zoal { namespace ic {
     template<int Width, int Height, bool safe = true>
     class ssd1306_adapter_270 : public ssd1306_adapter<Width, Height, safe> {
     public:
-        static inline void pixel(void *data, int x, int y, uint8_t value) {
+        static void pixel(void *data, int x, int y, uint8_t value) {
             ssd1306_adapter_270::ssd1306_pixel(data, y, Height - x - 1, value);
         }
     };

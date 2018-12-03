@@ -10,7 +10,7 @@
 #include "templates/uno_lcd_shield.hpp"
 
 #include <avr/eeprom.h>
-#include <zoal/algorithm/bresenham_gfx.hpp>
+#include <zoal/algorithm/renderer.hpp>
 #include <zoal/arch/avr/atmega/spi.hpp>
 #include <zoal/arch/avr/port.hpp>
 #include <zoal/board/arduino_uno.hpp>
@@ -49,7 +49,7 @@ using delay = tools::delay;
 using ssd1306_interface = zoal::ic::ssd1306_interface_i2c<tools, i2c, zoal::pcb::ard_d07, zoal::pcb::ard_d08, 0x3C>;
 using ssd1306 = zoal::ic::ssd1306<zoal::ic::ssd1306_resolution::ssd1306_128x64, ssd1306_interface>;
 using adapter = zoal::ic::ssd1306_adapter_0<128, 64>;
-using graphics = zoal::algorithm::bresenham_gfx<uint8_t, adapter>;
+using graphics = zoal::gfx::renderer<uint8_t, adapter>;
 
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
 using app1 = multi_function_shield<tools, zoal::pcb>;
@@ -68,6 +68,7 @@ using lcd = typename app3::shield::lcd;
 uint8_t graphic_buffer[ssd1306::resolution_info::buffer_size];
 uint8_t i2c_buffer[sizeof(i2c_stream) + 64];
 auto stream = i2c_stream::from_memory(i2c_buffer, sizeof(i2c_buffer));
+
 ssd1306 display(stream);
 
 void initialize_hardware() {
