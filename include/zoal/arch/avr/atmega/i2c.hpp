@@ -72,9 +72,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr uintptr_t TWCRx = 4;
         static constexpr uintptr_t TWAMRx = 5;
 
-        static zoal::periph::i2c_stream<self_type> *stream_;
-        static volatile uint8_t busy;
-
         static void power_on() {}
 
         static void power_off() {}
@@ -90,7 +87,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static void transmit(zoal::periph::i2c_stream<self_type> *stream) {
             stream_ = stream;
             stream_->result = zoal::periph::i2c_result::ok;
-            busy = 1;
+            busy_ = 1;
             *accessor<TWCRx>::p = START;
         }
 
@@ -101,7 +98,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             s->result = result;
 
             stream_ = nullptr;
-            busy = 0;
+            busy_ = 0;
 
             if (cb) {
                 cb(s, token);
@@ -109,7 +106,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         }
 
         static void wait() {
-            while (busy || (*accessor<TWCRx>::p & 1 << TWSTOx));
+            while (busy_ || (*accessor<TWCRx>::p & 1 << TWSTOx));
+        }
+
+        static bool busy() {
+            return busy_;
         }
 
         static constexpr uint8_t START = 1 << TWINTx | 1 << TWEAx | 1 << TWENx | 1 << TWIEx | 1 << TWSTAx;
@@ -181,10 +182,14 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 break;
             }
         }
+
+    private:
+        static zoal::periph::i2c_stream<self_type> *stream_;
+        static volatile uint8_t busy_;
     };
 
     template<uintptr_t Address, uint8_t N>
-    volatile uint8_t i2c<Address, N>::busy = 0;
+    volatile uint8_t i2c<Address, N>::busy_ = 0;
 
     template<uintptr_t Address, uint8_t N>
     zoal::periph::i2c_stream<i2c<Address, N>> *i2c<Address, N>::stream_ = nullptr;

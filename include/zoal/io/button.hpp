@@ -7,22 +7,24 @@
 
 namespace zoal { namespace io {
 
-    template<zoal::gpio::pin_mode Mode,
+    template<bool Active_Low,
              uint8_t DebounceDelay = 5,
              uint16_t PressDelay = 250,
              uint16_t DecPressDelay = 5,
              uint16_t MinPressDelay = 25>
     class button_config {
     public:
-        static constexpr zoal::gpio::pin_mode mode = Mode;
+        static constexpr bool active_low = Active_Low;
         static constexpr uint16_t debounce_delay = DebounceDelay;
         static constexpr uint16_t press_delay = PressDelay;
         static constexpr uint16_t dec_press_delay = DecPressDelay;
         static constexpr uint16_t min_press_delay = MinPressDelay;
     };
 
-    using pull_up_button = button_config<zoal::gpio::pin_mode::input_pull_up, 5, 250>;
-    using pull_up_button_no_press = button_config<zoal::gpio::pin_mode::input_pull_up, 5, 0>;
+    using active_low_button = button_config<true, 5, 250>;
+    using active_high_button = button_config<false, 5, 250>;
+    using active_low_no_press = button_config<true, 5, 0>;
+    using active_high_no_press = button_config<false, 5, 0>;
 
     template<class CounterType>
     class button_base {
@@ -46,14 +48,13 @@ namespace zoal { namespace io {
         uint8_t button_state{0};
     };
 
-    template<class Tools, class Pin, class Config = pull_up_button>
+    template<class Tools, class Pin, class Config = active_low_button>
     class button : public button_base<typename Tools::counter::value_type> {
     public:
         using pin = Pin;
         using tools = Tools;
         using api = typename tools::api;
         using counter = typename tools::counter;
-        using gpio_cfg = typename api::template mode<Config::mode, Pin>;
 
         template<class Callback>
         void handle(Callback callback) {
@@ -62,7 +63,7 @@ namespace zoal { namespace io {
             button_state_machine machine(Config::debounce_delay, Config::press_delay);
             auto now = counter::now();
             auto dt = now - this->prev_time;
-            auto value = Config::mode == pin_mode::input_pull_up ? pin::read() ^ 1u : pin::read();
+            auto value = Config::active_low ? pin::read() ^ 1u : pin::read();
             auto state = machine.handle_button(dt, this->button_state, static_cast<uint8_t>(value));
             auto events = state & button_state_trigger;
             this->button_state = state & ~button_state_trigger;
@@ -82,7 +83,7 @@ namespace zoal { namespace io {
         }
     };
 
-    template<class Tools, class Pin, class Config = pull_up_button>
+    template<class Tools, class Pin, class Config = active_low_button>
     class button_ext : public button_base<typename Tools::counter::value_type> {
     public:
         using pin = Pin;
@@ -98,7 +99,7 @@ namespace zoal { namespace io {
             button_state_machine machine(Config::debounce_delay, press_delay_ms);
             auto now = counter::now();
             auto dt = now - this->prev_time;
-            auto value = Config::mode == pin_mode::input_pull_up ? pin::read() ^ 1u : pin::read();
+            auto value = Config::active_low ? pin::read() ^ 1u : pin::read();
             auto state = machine.handle_button(dt, this->button_state, static_cast<uint8_t>(value));
             auto events = state & button_state_trigger;
             this->button_state = state & ~button_state_trigger;

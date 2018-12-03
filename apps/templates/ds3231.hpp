@@ -10,7 +10,7 @@ public:
     using tools = Tools;
     using logger = typename tools::logger;
     using i2c = InterIntegratedCircuit;
-    using rtc_type = zoal::ic::ds3231<i2c>;
+    using rtc_type = zoal::ic::ds3231<>;
 
     rtc_type rtc;
 
@@ -38,9 +38,9 @@ public:
             return;
         }
 
-        rtc.fetch();
+//        rtc.fetch();
 
-        while (!rtc.ready) continue;
+        while (!rtc.ready()) continue;
 
         next_update = tools::counter::now() + 1000;
         auto dt = rtc.date_time();

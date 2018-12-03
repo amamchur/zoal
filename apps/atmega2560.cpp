@@ -31,8 +31,8 @@ using log_usart = mcu::usart_00;
 using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<log_usart, 64>;
 
 using adc = mcu::adc_00;
-using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::info>;
-using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
+using logger = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::info>;
+using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
 using app1 = multi_function_shield<tools, zoal::pcb>;
 using app2 = blink<tools, zoal::pcb::ard_d13>;
@@ -66,7 +66,7 @@ int main() {
 
     initialize_hardware();
 
-    logger_01::info() << "Started ATmega2560";
+    logger::info() << "Started ATmega2560";
 
     app8::gpio_cfg();
     app.init();
