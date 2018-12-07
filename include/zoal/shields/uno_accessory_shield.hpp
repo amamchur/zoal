@@ -1,6 +1,7 @@
 #ifndef ZOAL_SHIELDS_UNO_ACCESSORY_SHIELD_HPP
 #define ZOAL_SHIELDS_UNO_ACCESSORY_SHIELD_HPP
 
+#include <zoal/ic/ds3231.hpp>
 #include <zoal/ic/ssd1306.hpp>
 #include <zoal/periph/i2c_stream.hpp>
 
@@ -16,6 +17,8 @@ namespace zoal { namespace shields {
         using i2c_stream = zoal::periph::i2c_stream<i2c>;
         using ssd1306_interface = zoal::ic::ssd1306_interface_i2c<tools, i2c, typename Board::ard_d07, typename Board::ard_d08, 0x3C>;
         using ssd1306 = zoal::ic::ssd1306<zoal::ic::ssd1306_resolution::ssd1306_128x64, ssd1306_interface>;
+        using ds3231 = zoal::ic::ds3231<>;
+        using lm75 = zoal::ic::lm75<>;
 
         using u_button = zoal::io::button<tools, typename Board::ard_a01>;
         using r_button = zoal::io::button<tools, typename Board::ard_a02>;
@@ -57,7 +60,10 @@ namespace zoal { namespace shields {
         l_button l_btn;
         e_button e_btn;
         d_button d_btn;
+
         ssd1306 display;
+        ds3231 rtc;
+        lm75 temp_sensor;
     };
 }}
 

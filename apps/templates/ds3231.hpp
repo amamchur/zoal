@@ -40,7 +40,7 @@ public:
 
 //        rtc.fetch();
 
-        while (!rtc.ready()) continue;
+        while (!rtc.ready_()) continue;
 
         next_update = tools::counter::now() + 1000;
         auto dt = rtc.date_time();

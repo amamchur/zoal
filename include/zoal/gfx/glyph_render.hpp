@@ -19,7 +19,7 @@ namespace zoal { namespace gfx {
 
         void draw(char c, pixel_type fg) {
             for (size_t i = 0; i < Font::width; i++) {
-                auto line = font_->glyph_line(c, i);
+                auto line = font_->glyph_columns(c, i);
                 for (size_t j = 0; line != 0; j++) {
                     if (line & 0x1) {
                         graphics_->pixel(x_ + i, y_ + j, fg);

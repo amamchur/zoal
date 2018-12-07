@@ -12,6 +12,7 @@
 #include <zoal/gfx/renderer.hpp>
 #include <zoal/ic/adxl345.hpp>
 #include <zoal/ic/ds3231.hpp>
+#include <zoal/ic/lm75.hpp>
 #include <zoal/ic/max72xx.hpp>
 #include <zoal/ic/ssd1306.hpp>
 #include <zoal/io/analog_keypad.hpp>
@@ -149,9 +150,11 @@ using shield_type = zoal::shields::uno_accessory_shield<tools, zoal::pcb>;
 
 uint8_t graphic_buffer[shield_type::ssd1306::resolution_info::buffer_size];
 uint8_t i2c_buffer[sizeof(i2c_stream) + 64];
-auto stream = i2c_stream::from_memory(i2c_buffer, sizeof(i2c_buffer));
+auto iic_stream = i2c_stream::from_memory(i2c_buffer, sizeof(i2c_buffer));
 
-shield_type shield(stream);
+scheduler_type scheduler;
+shield_type shield(iic_stream);
+zoal::data::date_time current_date_time;
 
 void initialize_hardware() {
     mcu::power<usart, timer, i2c>::on();
@@ -182,7 +185,7 @@ public:
         return reinterpret_cast<const self_type *>(buffer);
     }
 
-    uint16_t glyph_line(char c, uint8_t index) const {
+    uint16_t glyph_columns(char c, uint8_t index) const {
         return pgm_read_byte(data + c * width + index);
     }
 
@@ -191,11 +194,16 @@ public:
 
 using adapter = zoal::ic::ssd1306_adapter_0<128, 64>;
 using graphics = zoal::gfx::renderer<uint8_t, adapter>;
-bool update_screen = true;
+
+enum update_flags : uint8_t {
+    screen = 0x01, rtc = 0x02, display_rtc = 0x04
+};
+
+uint8_t update_mask = screen | rtc;
 char const *msg = "Test";
 
-int x_pos = 60;
-int y_pos = 125;
+int x_pos = 32;
+int y_pos = 32;
 bool fill = true;
 
 void render() {
@@ -213,7 +221,20 @@ void render() {
         //        g->draw_rect(x_pos, y_pos, 10, 10, 1);
         g->draw_circle(x_pos, y_pos, 16, 1);
     }
+
+    using reg = shield_type::ds3231::register_address;
+    char text[] = "00:00:00";
+    auto &rtc = shield.rtc;
+    text[0] += rtc[reg::hours] >> 0x08;
+    text[1] += rtc[reg::hours] & 0x0F;
+    text[3] += rtc[reg::minutes] >> 0x08;
+    text[4] += rtc[reg::minutes] & 0x0F;
+    text[6] += rtc[reg::seconds] >> 0x08;
+    text[7] += rtc[reg::seconds] & 0x0F;
+
     tl.position(0, 0).draw(msg, 1);
+    tl.position(48, 0).draw(text, 1);
+
     shield.display.display(graphic_buffer, sizeof(graphic_buffer));
 }
 
@@ -234,18 +255,61 @@ void move(int dx, int yx) {
     y_pos &= 0x3F;
 }
 
+void rtc_update_handler(void *) {
+    update_mask |= rtc;
+    scheduler.schedule(1000, rtc_update_handler);
+}
+
+void set_date_time() {
+    shield.rtc.fetch(iic_stream);
+    shield.rtc.wait();
+
+    current_date_time = shield.rtc.date_time();
+    current_date_time.year = 2018;
+    current_date_time.month = 12;
+    current_date_time.date = 5;
+    current_date_time.day = 3;
+    current_date_time.hours = 10;
+    current_date_time.minutes = 24;
+    current_date_time.seconds = 0;
+    shield.rtc.date_time(current_date_time);
+
+    shield.rtc.update(iic_stream);
+    shield.rtc.wait();
+}
+
 int main() {
     initialize_hardware();
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
-
     shield.init();
+    scheduler.schedule(0, rtc_update_handler);
+
+    shield.temp_sensor.fetch(iic_stream);
+    shield.temp_sensor.wait();
+
+    logger::info() << shield.temp_sensor.temperature();
 
     progmem_bitmap_font<>::from_memory(font);
     while (true) {
-        if (update_screen) {
+        scheduler.handle();
+
+
+        if (update_mask & screen) {
             render();
-            update_screen = false;
+            update_mask &= ~screen;
+        }
+
+        if ((update_mask & rtc) != 0 && !i2c::busy()) {
+            shield.rtc.fetch(iic_stream);
+            update_mask &= ~rtc;
+            update_mask |= display_rtc;
+        }
+
+        if ((update_mask & display_rtc) != 0 && shield.rtc.ready()) {
+            current_date_time = shield.rtc.date_time();
+            update_mask &= ~display_rtc;
+            update_mask |= screen;
         }
 
         shield.handle_buttons([](uint8_t button, zoal::io::button_event e) {
@@ -278,7 +342,7 @@ int main() {
                 return;
             }
 
-            update_screen = true;
+            update_mask |= screen;
         });
     }
     return 0;

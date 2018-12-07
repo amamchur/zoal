@@ -10,7 +10,7 @@
 #include "templates/uno_lcd_shield.hpp"
 
 #include <avr/eeprom.h>
-#include <zoal/algorithm/renderer.hpp>
+#include <zoal/gfx/renderer.hpp>
 #include <zoal/arch/avr/atmega/spi.hpp>
 #include <zoal/arch/avr/port.hpp>
 #include <zoal/board/arduino_uno.hpp>
@@ -67,9 +67,9 @@ using lcd = typename app3::shield::lcd;
 
 uint8_t graphic_buffer[ssd1306::resolution_info::buffer_size];
 uint8_t i2c_buffer[sizeof(i2c_stream) + 64];
-auto stream = i2c_stream::from_memory(i2c_buffer, sizeof(i2c_buffer));
+auto iic_stream = i2c_stream::from_memory(i2c_buffer, sizeof(i2c_buffer));
 
-ssd1306 display(stream);
+ssd1306 display(iic_stream);
 
 void initialize_hardware() {
     mcu::power<log_usart, timer, adc, i2c>::on();
