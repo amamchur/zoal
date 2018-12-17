@@ -97,6 +97,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             auto token = s->token;
             s->result = result;
 
+            stream_->callback = nullptr;
             stream_ = nullptr;
             busy_ = 0;
 

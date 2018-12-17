@@ -16,7 +16,7 @@
 #include <zoal/io/button.hpp>
 #include <zoal/periph/software_spi.hpp>
 #include <zoal/periph/tx_ring_buffer.hpp>
-#include <zoal/shields/uno_lcd_shield.hpp>
+#include <zoal/shield/uno_lcd.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>

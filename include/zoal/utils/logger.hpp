@@ -71,11 +71,11 @@ namespace zoal { namespace utils {
     >
     class log_stream : public prefix_placer<Prefixer>, suffix_placer<Suffixer> {
     public:
-        log_stream() {
+        log_stream() : stream(zoal::io::transport_proxy<Transport>::instance()) {
             this->template place_preffix<>(*this);
         }
 
-        log_stream(const log_stream &log) noexcept {
+        log_stream(const log_stream &log) : stream(zoal::io::transport_proxy<Transport>::instance()) {
             log.flush = false;
             stream.precision = log.stream.precision;
             stream.radix = log.stream.radix;
@@ -102,7 +102,7 @@ namespace zoal { namespace utils {
 
     private:
         mutable bool flush{true};
-        zoal::io::output_stream<Transport> stream;
+        zoal::io::output_stream stream;
     };
 
     template<class Prefixer, class Suffixer, bool enabled>

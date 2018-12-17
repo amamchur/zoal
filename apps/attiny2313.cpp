@@ -7,7 +7,6 @@
 #include "templates/tm1637.hpp"
 #include "templates/uno_lcd_shield.hpp"
 
-#include <zoal/periph/software_spi.hpp>
 #include <zoal/ic/max72xx.hpp>
 #include <zoal/io/analog_keypad.hpp>
 #include <zoal/io/button.hpp>
@@ -15,7 +14,8 @@
 #include <zoal/io/ir_remote_receiver.hpp>
 #include <zoal/io/rotary_encoder.hpp>
 #include <zoal/mcu/attiny2313a.hpp>
-#include <zoal/shields/uno_lcd_shield.hpp>
+#include <zoal/periph/software_spi.hpp>
+#include <zoal/shield/uno_lcd.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>

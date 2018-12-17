@@ -10,14 +10,49 @@
 #include <stdlib.h> /* NOLINT */
 
 namespace zoal { namespace io {
+    class abstract_transport {
+    public:
+        virtual void write_byte(uint8_t ch) = 0;
+    };
+
     template<class Transport>
+    class transport_proxy : public abstract_transport {
+    public:
+        void write_byte(uint8_t ch) override {
+            Transport::write_byte(ch);
+        };
+
+        static abstract_transport &instance() {
+            static transport_proxy<Transport> transport;
+            return transport;
+        }
+    };
+
+    class memory_writer : public abstract_transport {
+    public:
+        memory_writer(void *mem)
+            : buffer(reinterpret_cast<uint8_t *>(mem))
+            , length(0) {}
+
+        void write_byte(uint8_t ch) override {
+            buffer[length++] = ch;
+        };
+
+        uint8_t *buffer;
+        size_t length;
+    };
+
     class output_stream {
     public:
         uint8_t radix{10};
         uint8_t precision{2};
+        abstract_transport &proxy;
+
+        output_stream(abstract_transport &p)
+            : proxy(p) {}
 
         output_stream &operator<<(char ch) {
-            Transport::write_byte(ch);
+            proxy.write_byte(static_cast<uint8_t >(ch));
             return *this;
         }
 
@@ -27,15 +62,15 @@ namespace zoal { namespace io {
         }
 
         output_stream &operator<<(const void *const ptr) {
-            Transport::write_byte('0');
-            Transport::write_byte('x');
+            proxy.write_byte('0');
+            proxy.write_byte('x');
 
             auto value = reinterpret_cast<uintptr_t>(ptr);
 
-            for (int i = sizeof(ptr) * 8 - 4; i >= 0; i -=4) {
+            for (int i = sizeof(ptr) * 8 - 4; i >= 0; i -= 4) {
                 auto hex = (value & (0xF << i)) >> i;
                 auto ascii = hex < 10 ? ('0' + hex) : ('A' + hex - 10);
-                Transport::write_byte(ascii);
+                proxy.write_byte(ascii);
             }
 
             return *this;
@@ -62,7 +97,7 @@ namespace zoal { namespace io {
             bool negative = value < 0;
             if (negative) {
                 value = -value;
-                Transport::write_byte('-');
+                proxy.write_byte('-');
             }
 
             uint8_t buffer[32];
@@ -86,7 +121,7 @@ namespace zoal { namespace io {
             bool negative = value < 0.0;
             if (negative) {
                 value = -value;
-                Transport::write_byte('-');
+                proxy.write_byte('-');
             }
 
             auto int_part = static_cast<uint32_t>(value);
@@ -97,7 +132,7 @@ namespace zoal { namespace io {
                 return *this;
             }
 
-            Transport::write_byte('.');
+            proxy.write_byte('.');
 
             double e = 0.5;
             for (uint8_t i = 0; i < precision; i++) {
@@ -110,7 +145,7 @@ namespace zoal { namespace io {
                 fraction *= 10.0;
                 int_part = static_cast<uint32_t>(fraction);
                 fraction -= int_part;
-                Transport::write_byte(int_part + '0');
+                proxy.write_byte(static_cast<uint8_t>(int_part + '0'));
             }
 
             return *this;
@@ -122,7 +157,7 @@ namespace zoal { namespace io {
 
         template<uint8_t Value>
         output_stream &operator<<(const stream_value<Value> &) {
-            Transport::write_byte(Value);
+            proxy.write_byte(Value);
             return *this;
         }
 
@@ -137,16 +172,16 @@ namespace zoal { namespace io {
             return *this;
         }
 
-        output_stream &operator<<(cursor_position pos) {
-            Transport::move(pos.row, pos.col);
-            return *this;
-        }
+        //        output_stream &operator<<(cursor_position pos) {
+        //            proxy.move(pos.row, pos.col);
+        //            return *this;
+        //        }
 
         template<class F>
         output_stream &operator<<(::zoal::io::output_stream_functor<F> &fn) {
             uint8_t data = 0;
             while (static_cast<F &>(fn)(data)) {
-                Transport::write_byte(data);
+                proxy.write_byte(data);
             }
             return *this;
         }

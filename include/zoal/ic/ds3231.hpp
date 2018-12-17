@@ -36,10 +36,6 @@ namespace zoal { namespace ic {
 
         static constexpr uint8_t data_size = static_cast<uint8_t>(register_address::temp_lsb) + 1;
 
-
-//        template<class Stream>
-//        friend class ds3231_i2c_callback;
-
         template<class Stream>
         class ds3231_i2c_callback {
         public:

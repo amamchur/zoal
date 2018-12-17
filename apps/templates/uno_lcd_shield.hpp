@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 #include <zoal/gpio/pin_mode.hpp>
-#include <zoal/shields/uno_lcd_shield.hpp>
+#include <zoal/shield/uno_lcd.hpp>
 #include <zoal/io/output_stream.hpp>
 #include <zoal/utils/method_invoker.hpp>
 
@@ -13,8 +13,8 @@ template<class Tools, class PCB, class Adc>
 class uno_lcd_shield {
 public:
     using self_type = uno_lcd_shield<Tools, PCB, Adc>;
-    using shield = zoal::shields::uno_lcd_shield<Tools, PCB, Adc>;
-    using lcd_stream = zoal::io::output_stream<typename shield::lcd>;
+    using shield = zoal::shield::uno_lcd<Tools, PCB, Adc>;
+    using lcd_stream = zoal::io::output_stream;
     using delay = typename Tools::delay;
     using logger = typename Tools::logger;
     using gpio_cfg = typename shield::gpio_cfg;
@@ -52,7 +52,8 @@ public:
 
     void display_menu_item() {
         using namespace zoal::io;
-        stream << pos(0, 0) << currentMenuItem->text;
+        shield::lcd::move(0, 0);
+        stream << currentMenuItem->text;
     }
 
     void button_handler(size_t button, zoal::io::button_event e) {
@@ -75,7 +76,8 @@ public:
                 return;
         }
 
-        stream << pos(0, 0) << button;
+        shield::lcd::move(0, 0);
+        stream << button;
         display_menu_item();
     }
 
@@ -92,7 +94,7 @@ public:
     menu_item menuItem3;
     menu_item menuItem4;
     menu_item *currentMenuItem{&menuItem0};
-    lcd_stream stream;
+    lcd_stream stream{zoal::io::transport_proxy<typename shield::lcd>::instance()};
 private:
 };
 

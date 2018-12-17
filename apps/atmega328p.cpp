@@ -10,23 +10,23 @@
 #include "templates/uno_lcd_shield.hpp"
 
 #include <avr/eeprom.h>
-#include <zoal/gfx/renderer.hpp>
+#include <zoal/arch/avr/atmega/i2c.hpp>
 #include <zoal/arch/avr/atmega/spi.hpp>
 #include <zoal/arch/avr/port.hpp>
 #include <zoal/board/arduino_uno.hpp>
 #include <zoal/data/rx_tx_buffer.hpp>
+#include <zoal/gfx/renderer.hpp>
 #include <zoal/ic/ssd1306.hpp>
 #include <zoal/io/input_stream.hpp>
 #include <zoal/io/ir_remote_receiver.hpp>
+#include <zoal/periph/rx_null_buffer.hpp>
 #include <zoal/periph/software_spi.hpp>
 #include <zoal/periph/tx_ring_buffer.hpp>
-#include <zoal/periph/rx_null_buffer.hpp>
-#include <zoal/shields/uno_lcd_shield.hpp>
+#include <zoal/shield/uno_lcd.hpp>
 #include <zoal/utils/helpers.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
-#include <zoal/arch/avr/atmega/i2c.hpp>
 
 volatile uint32_t milliseconds = 0;
 
@@ -83,9 +83,9 @@ void initialize_hardware() {
     mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::on();
     mcu::cfg::i2c<i2c>::apply();
 
-//    mcu::cfg::spi<spi, 4>::apply();
-//    mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::on();
-//    mcu::enable<spi>::on();
+    //    mcu::cfg::spi<spi, 4>::apply();
+    //    mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::on();
+    //    mcu::enable<spi>::on();
 
     mcu::cfg::adc<adc>::apply();
 
@@ -106,28 +106,20 @@ left_button left;
 enter_button enter;
 down_button down;
 
-
 int main() {
     initialize_hardware();
-//    tools::api::merge<
-//            typename up_button::gpio_cfg
-//    >();
+    //    tools::api::merge<
+    //            typename up_button::gpio_cfg
+    //    >();
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
     logger::info() << "----- Started!! ------";
 
-    tools::api::mode<
-            zoal::gpio::pin_mode::input_pull_up,
-            zoal::pcb::ard_a01,
-            zoal::pcb::ard_a02,
-            zoal::pcb::ard_a03,
-            zoal::pcb::ard_a04,
-            zoal::pcb::ard_a05
-    >();
+    tools::api::mode<zoal::gpio::pin_mode::input_pull_up, zoal::pcb::ard_a01, zoal::pcb::ard_a02, zoal::pcb::ard_a03, zoal::pcb::ard_a04, zoal::pcb::ard_a05>();
 
-//    zoal::pcb::ard_a01::mode<zoal::gpio::pin_mode::input_pull_up>();
+    //    zoal::pcb::ard_a01::mode<zoal::gpio::pin_mode::input_pull_up>();
 
     display.init();
     display.ensure_ready();
@@ -139,10 +131,9 @@ int main() {
     display.display(graphic_buffer, sizeof(graphic_buffer));
 
     while (true) {
-
         // Enter & down button uses SDA & SCL I2C pins
         // Do not read it values when I2C is working
-        if (i2c::busy()){
+        if (i2c::busy()) {
             continue;
         }
 

@@ -258,10 +258,10 @@ namespace zoal { namespace ic {
         }
     };
 
-    template<class SPI, class CS>
+    template<class SPInterface, class ChipSelect>
     class max72xx {
     public:
-        using spi = SPI;
+        using spi = SPInterface;
         enum Command : uint16_t {
             noop = 0x0000,
             data_row0 = 0x0100,
@@ -313,7 +313,7 @@ namespace zoal { namespace ic {
         class transaction {
         public:
             transaction() {
-                CS::low();
+                ChipSelect::low();
             }
 
             transaction &operator<<(uint16_t cmd) {
@@ -333,7 +333,7 @@ namespace zoal { namespace ic {
             }
 
             ~transaction() {
-                CS::high();
+                ChipSelect::high();
             }
         };
 
@@ -342,8 +342,8 @@ namespace zoal { namespace ic {
         static void init(uint8_t devices) {
             using namespace zoal::gpio;
 
-            CS::template mode<pin_mode::output>();
-            CS::high();
+            ChipSelect::template mode<pin_mode::output>();
+            ChipSelect::high();
 
             send(devices, test_off);
             send(devices, scan_limit | 0x07);
@@ -354,13 +354,13 @@ namespace zoal { namespace ic {
         template<size_t Devices>
         static void display(const max72xx_data<Devices> &matrix) {
             for (uint8_t row = 0; row < 8; row++) {
-                CS::low();
+                ChipSelect::low();
                 auto cmd = row + 1;
                 for (int device = Devices - 1; device >= 0; device--) {
                     spi::transfer_byte(cmd);
                     spi::transfer_byte(matrix.data[device][row]);
                 }
-                CS::high();
+                ChipSelect::high();
             }
         }
 

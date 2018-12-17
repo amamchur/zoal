@@ -3,6 +3,7 @@
 
 #include "../gpio/api.hpp"
 #include "delay.hpp"
+#include "interrupts.hpp"
 #include "logger.hpp"
 #include "nop.hpp"
 #include "scheduler.hpp"
@@ -24,6 +25,18 @@ namespace zoal { namespace utils {
         template<class T, size_t Capacity, class Token = void>
         using method_scheduler = typename ::zoal::utils::method_scheduler<T, counter, Capacity, Token>;
     };
+
+    template<class T>
+    T atomic_read(volatile T &src) {
+        zoal::utils::interrupts ni(false);
+        return src;
+    }
+
+    template<class T>
+    void atomic_write(volatile T &dest, T value) {
+        zoal::utils::interrupts ni(false);
+        dest = value;
+    }
 }}
 
 #endif

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ZOAL_SHIELDS_UNO_LCD_SHIELD_HPP
-#define ZOAL_SHIELDS_UNO_LCD_SHIELD_HPP
+#ifndef ZOAL_SHIELD_UNO_LCD_HPP
+#define ZOAL_SHIELD_UNO_LCD_HPP
 
 #include "../ct/helpers.hpp"
 #include "../gpio/pin_mode.hpp"
@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace shields {
+namespace zoal { namespace shield {
     template<class PinA = void, class PinB = void>
     class uno_lcd_shield_config {
     public:
@@ -21,7 +21,7 @@ namespace zoal { namespace shields {
     };
 
     template<class Tools, class Board, class Adc, class Cfg = uno_lcd_shield_config<>>
-    class uno_lcd_shield {
+    class uno_lcd {
     public:
         using tools = Tools;
         using mcu = typename Board::mcu;

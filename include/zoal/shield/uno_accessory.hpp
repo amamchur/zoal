@@ -1,32 +1,41 @@
-#ifndef ZOAL_SHIELDS_UNO_ACCESSORY_SHIELD_HPP
-#define ZOAL_SHIELDS_UNO_ACCESSORY_SHIELD_HPP
+#ifndef ZOAL_SHIELD_UNO_ACCESSORY_HPP
+#define ZOAL_SHIELD_UNO_ACCESSORY_HPP
 
+#include <zoal/gpio/pin.hpp>
 #include <zoal/ic/ds3231.hpp>
+#include <zoal/ic/p9813.hpp>
 #include <zoal/ic/ssd1306.hpp>
 #include <zoal/periph/i2c_stream.hpp>
+#include <zoal/periph/software_spi.hpp>
 
-namespace zoal { namespace shields {
+namespace zoal { namespace shield {
     template<class Tools, class Board>
-    class uno_accessory_shield {
+    class uno_accessory {
     public:
-        using mcu = typename Board::mcu;
+        using pcb = Board;
+        using mcu = typename pcb::mcu;
         using i2c = typename mcu::i2c_00;
         using tools = Tools;
         using api = typename tools::api;
+        using potentiometer = typename pcb::ard_a00;
+
+        using p9813_spi = zoal::periph::tx_software_spi<typename pcb::ard_d05, typename pcb::ard_d06>;
+        using p9813 = zoal::ic::p9813<p9813_spi>;
+        using p9813_switch = zoal::gpio::active_high<typename pcb::ard_d12>;
 
         using i2c_stream = zoal::periph::i2c_stream<i2c>;
-        using ssd1306_interface = zoal::ic::ssd1306_interface_i2c<tools, i2c, typename Board::ard_d07, typename Board::ard_d08, 0x3C>;
+        using ssd1306_interface = zoal::ic::ssd1306_interface_i2c<tools, i2c, typename pcb::ard_d07, typename pcb::ard_d08, 0x3C>;
         using ssd1306 = zoal::ic::ssd1306<zoal::ic::ssd1306_resolution::ssd1306_128x64, ssd1306_interface>;
         using ds3231 = zoal::ic::ds3231<>;
         using lm75 = zoal::ic::lm75<>;
 
-        using u_button = zoal::io::button<tools, typename Board::ard_a01>;
-        using r_button = zoal::io::button<tools, typename Board::ard_a02>;
-        using l_button = zoal::io::button<tools, typename Board::ard_a03>;
-        using e_button = zoal::io::button<tools, typename Board::ard_a04>;
-        using d_button = zoal::io::button<tools, typename Board::ard_a05>;
+        using u_button = zoal::io::button<tools, typename pcb::ard_a01>;
+        using r_button = zoal::io::button<tools, typename pcb::ard_a02>;
+        using l_button = zoal::io::button<tools, typename pcb::ard_a03>;
+        using e_button = zoal::io::button<tools, typename pcb::ard_a04>;
+        using d_button = zoal::io::button<tools, typename pcb::ard_a05>;
 
-        uno_accessory_shield(i2c_stream *i2cs)
+        uno_accessory(i2c_stream *i2cs)
             : display(i2cs) {}
 
         void init() {
@@ -37,6 +46,18 @@ namespace zoal { namespace shields {
                                                typename l_button::pin,
                                                typename e_button::pin,
                                                typename d_button::pin>();
+        }
+
+        static uint16_t read_potentiometer() {
+            using adc = typename mcu::adc_00;
+            mcu::mux::template adc<adc, potentiometer>::on();
+            return adc::read();
+        }
+
+        static void potentiometer_async() {
+            using adc = typename mcu::adc_00;
+            mcu::mux::template adc<adc, potentiometer>::on();
+            adc::start();
         }
 
         template<class Callback>

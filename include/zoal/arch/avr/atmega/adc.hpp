@@ -7,6 +7,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     class adc_mem_model {
     public:
         static constexpr intptr_t ADCx = 0;
+        static constexpr intptr_t ADCLx = 0;
+        static constexpr intptr_t ADCHx = 1;
         static constexpr intptr_t ADCSRAx = 2;
         static constexpr intptr_t ADCSRBx = 3;
         static constexpr intptr_t ADMUXx = 4;

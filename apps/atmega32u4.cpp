@@ -20,8 +20,8 @@
 #include <zoal/periph/rx_null_buffer.hpp>
 #include <zoal/periph/software_spi.hpp>
 #include <zoal/periph/tx_ring_buffer.hpp>
-#include <zoal/shields/uno_accessory_shield.hpp>
-#include <zoal/shields/uno_lcd_shield.hpp>
+#include <zoal/shield/uno_accessory.hpp>
+#include <zoal/shield/uno_lcd.hpp>
 #include <zoal/utils/i2c_scanner.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
@@ -146,7 +146,7 @@ using tools = zoal::utils::tool_set<zoal::pcb::mcu, counter, logger>;
 using delay = tools::delay;
 
 using i2c_stream = zoal::periph::i2c_stream<i2c>;
-using shield_type = zoal::shields::uno_accessory_shield<tools, zoal::pcb>;
+using shield_type = zoal::shield::uno_accessory<tools, zoal::pcb>;
 
 uint8_t graphic_buffer[shield_type::ssd1306::resolution_info::buffer_size];
 uint8_t i2c_buffer[sizeof(i2c_stream) + 64];
@@ -157,7 +157,7 @@ shield_type shield(iic_stream);
 zoal::data::date_time current_date_time;
 
 void initialize_hardware() {
-    mcu::power<usart, timer, i2c>::on();
+    mcu::power<usart, timer, i2c, adc>::on();
 
     mcu::mux::usart<usart, zoal::pcb::ard_d00, zoal::pcb::ard_d01, mcu::pd_05>::on();
     mcu::cfg::usart<usart, 115200>::apply();
@@ -168,7 +168,10 @@ void initialize_hardware() {
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
     mcu::irq::timer<timer>::enable_overflow_interrupt();
 
-    mcu::enable<usart, timer, i2c>::on();
+    mcu::cfg::adc<adc>::apply();
+    adc::enable_interrupt();
+
+    mcu::enable<usart, timer, i2c, adc>::on();
 
     zoal::utils::interrupts::on();
 }
@@ -196,15 +199,18 @@ using adapter = zoal::ic::ssd1306_adapter_0<128, 64>;
 using graphics = zoal::gfx::renderer<uint8_t, adapter>;
 
 enum update_flags : uint8_t {
-    screen = 0x01, rtc = 0x02, display_rtc = 0x04
+    screen = 0x01,
+    rtc = 0x02,
+    rtc_fetch = 0x04,
+    temp = 0x08,
+    temp_fetch = 0x10
 };
 
-uint8_t update_mask = screen | rtc;
-char const *msg = "Test";
-
+uint8_t update_mask = screen | rtc | temp;
 int x_pos = 32;
 int y_pos = 32;
 bool fill = true;
+volatile uint16_t adc_value = 0;
 
 void render() {
     shield.display.ensure_ready();
@@ -212,28 +218,45 @@ void render() {
     auto g = graphics::from_memory(graphic_buffer);
     auto f = progmem_bitmap_font<>::from_memory(font);
     zoal::gfx::glyph_render<graphics, progmem_bitmap_font<>> tl(g, f);
-
     g->clear(0);
-    if (fill) {
-        //        g->fill_rect(x_pos, y_pos, 10, 10, 1);
-        g->fill_circle(x_pos, y_pos, 16, 1);
-    } else {
-        //        g->draw_rect(x_pos, y_pos, 10, 10, 1);
-        g->draw_circle(x_pos, y_pos, 16, 1);
-    }
 
+    char text[] = "Temp         00:00:00";
+    zoal::io::memory_writer mw(text);
+    zoal::io::output_stream os(mw);
+    mw.length = 5;
+    os << shield.temp_sensor.temperature() << 'C';
+
+#if 0
+    text[0] += current_date_time.hours / 10;
+    text[1] += current_date_time.hours % 10;
+    text[3] += current_date_time.minutes / 10;
+    text[4] += current_date_time.minutes % 10;
+    text[6] += current_date_time.seconds / 10;
+    text[7] += current_date_time.seconds % 10;
+#else
     using reg = shield_type::ds3231::register_address;
-    char text[] = "00:00:00";
     auto &rtc = shield.rtc;
-    text[0] += rtc[reg::hours] >> 0x08;
-    text[1] += rtc[reg::hours] & 0x0F;
-    text[3] += rtc[reg::minutes] >> 0x08;
-    text[4] += rtc[reg::minutes] & 0x0F;
-    text[6] += rtc[reg::seconds] >> 0x08;
-    text[7] += rtc[reg::seconds] & 0x0F;
+    constexpr auto offset = 13;
+    text[offset + 0] += rtc[reg::hours] >> 0x04;
+    text[offset + 1] += rtc[reg::hours] & 0x0F;
+    text[offset + 3] += rtc[reg::minutes] >> 0x04;
+    text[offset + 4] += rtc[reg::minutes] & 0x0F;
+    text[offset + 6] += rtc[reg::seconds] >> 0x04;
+    text[offset + 7] += rtc[reg::seconds] & 0x0F;
+#endif
+    tl.position(0, 0).draw(text, 1);
 
-    tl.position(0, 0).draw(msg, 1);
-    tl.position(48, 0).draw(text, 1);
+
+    uint16_t potentiometer = zoal::utils::atomic_read(adc_value);
+    mw.length = 0;
+    os << "ADC: " << potentiometer << '\0';
+    tl.position(0, 8).draw(text, 1);
+
+    if (fill) {
+        g->fill_circle(x_pos, y_pos, 4, 1);
+    } else {
+        g->draw_circle(x_pos, y_pos, 4, 1);
+    }
 
     shield.display.display(graphic_buffer, sizeof(graphic_buffer));
 }
@@ -255,8 +278,19 @@ void move(int dx, int yx) {
     y_pos &= 0x3F;
 }
 
+uint8_t led_on = 0;
+
+void blink_handler(void *) {
+    shield_type::p9813::frame();
+    shield_type::p9813::send(0, led_on, 1 - led_on);
+    shield_type::p9813::frame();
+    led_on ^= 1;
+
+    scheduler.schedule(1000, blink_handler);
+}
+
 void rtc_update_handler(void *) {
-    update_mask |= rtc;
+    update_mask |= rtc | temp;
     scheduler.schedule(1000, rtc_update_handler);
 }
 
@@ -267,10 +301,10 @@ void set_date_time() {
     current_date_time = shield.rtc.date_time();
     current_date_time.year = 2018;
     current_date_time.month = 12;
-    current_date_time.date = 5;
-    current_date_time.day = 3;
-    current_date_time.hours = 10;
-    current_date_time.minutes = 24;
+    current_date_time.date = 7;
+    current_date_time.day = 5;
+    current_date_time.hours = 14;
+    current_date_time.minutes = 38;
     current_date_time.seconds = 0;
     shield.rtc.date_time(current_date_time);
 
@@ -282,18 +316,22 @@ int main() {
     initialize_hardware();
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
+    logger::info() << "--- Start ---";
+
     shield.init();
+
+    shield_type::potentiometer_async();
+    shield_type::p9813_switch::on();
+    shield_type::p9813::spi::enable();
+    shield_type::p9813::frame();
+    shield_type::p9813::send(0, 0, 0);
+    shield_type::p9813::frame();
+
     scheduler.schedule(0, rtc_update_handler);
+    scheduler.schedule(0, blink_handler);
 
-    shield.temp_sensor.fetch(iic_stream);
-    shield.temp_sensor.wait();
-
-    logger::info() << shield.temp_sensor.temperature();
-
-    progmem_bitmap_font<>::from_memory(font);
     while (true) {
         scheduler.handle();
-
 
         if (update_mask & screen) {
             render();
@@ -303,12 +341,23 @@ int main() {
         if ((update_mask & rtc) != 0 && !i2c::busy()) {
             shield.rtc.fetch(iic_stream);
             update_mask &= ~rtc;
-            update_mask |= display_rtc;
+            update_mask |= rtc_fetch;
         }
 
-        if ((update_mask & display_rtc) != 0 && shield.rtc.ready()) {
+        if ((update_mask & rtc_fetch) != 0 && shield.rtc.ready()) {
             current_date_time = shield.rtc.date_time();
-            update_mask &= ~display_rtc;
+            update_mask &= ~rtc_fetch;
+            update_mask |= screen;
+        }
+
+        if ((update_mask & temp) != 0 && !i2c::busy()) {
+            shield.temp_sensor.fetch(iic_stream);
+            update_mask &= ~temp;
+            update_mask |= temp_fetch;
+        }
+
+        if ((update_mask & temp_fetch) != 0 && shield.temp_sensor.ready()) {
+            update_mask &= ~temp_fetch;
             update_mask |= screen;
         }
 
@@ -319,24 +368,19 @@ int main() {
 
             switch (button) {
             case 0:
-                msg = "Up";
                 move(0, -1);
                 break;
             case 1:
-                msg = "Left";
                 move(-1, 0);
                 break;
             case 2:
-                msg = "Right";
                 move(1, 0);
                 break;
             case 3:
-                msg = "Down";
                 move(0, 1);
                 break;
             case 4:
                 fill = !fill;
-                msg = "Enter";
                 break;
             default:
                 return;
@@ -363,4 +407,9 @@ ISR(USART1_UDRE_vect) {
 
 ISR(TWI_vect) {
     i2c::handle_irq();
+}
+
+ISR(ADC_vect) {
+    adc_value = adc::value();
+    shield_type::potentiometer_async();
 }

@@ -1,18 +1,15 @@
 #ifndef ZOAL_IC_LM75_HPP
 #define ZOAL_IC_LM75_HPP
 
+#include "../utils/logger.hpp"
+
 namespace zoal { namespace ic {
     template<uint8_t Address = 0x48>
     class lm75 {
     public:
         using self_type = lm75<Address>;
 
-        enum class register_address : uint8_t {
-            temperature = 0x00,
-            configuration = 0x01,
-            t_hyst = 0x02,
-            t_os = 0x03
-        };
+        enum class register_address : uint8_t { temperature = 0x00, configuration = 0x01, t_hyst = 0x02, t_os = 0x03 };
 
         template<class Stream>
         void fetch(Stream *stream) {
@@ -39,12 +36,14 @@ namespace zoal { namespace ic {
         }
 
         void wait() const {
-            while (!ready_);
+            while (!ready_)
+                ;
         }
 
         bool ready() const {
             return ready_;
         }
+
     private:
         template<class Stream>
         class i2c_callback {
