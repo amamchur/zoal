@@ -294,6 +294,21 @@ void rtc_update_handler(void *) {
     scheduler.schedule(1000, rtc_update_handler);
 }
 
+shield_type::adxl345 acc;
+
+void read_accelerometer(void *) {
+    acc.read_axis(iic_stream);
+
+    auto v = zoal::utils::atomic_read(acc.raw_vector).convert<float>();
+
+    constexpr float gravityFactor = 9.80665f;
+    constexpr float mg2g = 0.004f;
+    constexpr float m = mg2g * gravityFactor;
+    v *= m;
+    logger::info() << v.x << " " << v.y << " " << v.z;
+    scheduler.schedule(500, read_accelerometer);
+}
+
 void set_date_time() {
     shield.rtc.fetch(iic_stream);
     shield.rtc.wait();
@@ -318,17 +333,27 @@ int main() {
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
     logger::info() << "--- Start ---";
 
-    shield.init();
+//    shield.init();
+//
+//    shield_type::p9813_switch::on();
+//    shield_type::p9813::spi::enable();
+//    shield_type::p9813::frame();
+//    shield_type::p9813::send(0, 0, 0);
+//    shield_type::p9813::frame();
 
+//    scheduler.schedule(0, rtc_update_handler);
+//    scheduler.schedule(0, blink_handler);
+    scheduler.schedule(0, read_accelerometer);
+#if 1
+    auto dev = acc.read_device_id(iic_stream);
+    logger::info() << "Current : " << dev;
+    logger::info() << "Expected: " << 0xE5;
+
+    while (true) {
+        scheduler.handle();
+    }
+#else
     shield_type::potentiometer_async();
-    shield_type::p9813_switch::on();
-    shield_type::p9813::spi::enable();
-    shield_type::p9813::frame();
-    shield_type::p9813::send(0, 0, 0);
-    shield_type::p9813::frame();
-
-    scheduler.schedule(0, rtc_update_handler);
-    scheduler.schedule(0, blink_handler);
 
     while (true) {
         scheduler.handle();
@@ -389,6 +414,7 @@ int main() {
             update_mask |= screen;
         });
     }
+#endif
     return 0;
 #pragma clang diagnostic pop
 }

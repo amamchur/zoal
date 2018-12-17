@@ -2,6 +2,7 @@
 #define ZOAL_SHIELD_UNO_ACCESSORY_HPP
 
 #include <zoal/gpio/pin.hpp>
+#include <zoal/ic/adxl345.hpp>
 #include <zoal/ic/ds3231.hpp>
 #include <zoal/ic/p9813.hpp>
 #include <zoal/ic/ssd1306.hpp>
@@ -28,6 +29,7 @@ namespace zoal { namespace shield {
         using ssd1306 = zoal::ic::ssd1306<zoal::ic::ssd1306_resolution::ssd1306_128x64, ssd1306_interface>;
         using ds3231 = zoal::ic::ds3231<>;
         using lm75 = zoal::ic::lm75<>;
+        using adxl345 = zoal::ic::adxl345<>;
 
         using u_button = zoal::io::button<tools, typename pcb::ard_a01>;
         using r_button = zoal::io::button<tools, typename pcb::ard_a02>;
