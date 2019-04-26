@@ -26,14 +26,18 @@ using sspi = zoal::periph::tx_software_spi<mcu::pb_03, mcu::pb_02>;
 using max7219 = zoal::ic::max72xx<sspi, mcu::pb_01>;
 
 int main() {
+    using namespace zoal::gpio;
+
     mcu::power<timer, adc>::on();
 
     mcu::cfg::adc<adc>::apply();
-    mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
     mcu::mux::adc<adc, mcu::pb_04>::on();
-    mcu::mux::timer<timer, mcu::pb_00, pwm_channel>::on();
-    mcu::irq::timer<timer>::enable_overflow_interrupt();
     mcu::irq::adc<adc>::enable();
+
+    mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
+    mcu::irq::timer<timer>::enable_overflow_interrupt();
+    mcu::mux::timer<timer, mcu::pb_00, pwm_channel>::on();
+
     mcu::enable<timer, adc>::on();
 
     zoal::utils::interrupts::on();
@@ -61,7 +65,7 @@ int main() {
 
             zoal::utils::apply(zoal::data::segment7::gfed_hex, &matrix.data[0][0], end);
 
-            end = zoal::utils::radix<10>::split(adc_value >> 2, &matrix.data[0][4]);
+            end = zoal::utils::radix<10>::split(adc_value >> 2u, &matrix.data[0][4]);
             if (end == &matrix.data[0][4]) {
                 end++;
             }
@@ -69,7 +73,7 @@ int main() {
             zoal::utils::apply(zoal::data::segment7::gfed_hex, &matrix.data[0][4], end);
 
             max7219::display(matrix);
-            timer::compare_value<pwm_channel>(adc_value >> 2);
+            timer::compare_value<pwm_channel>(adc_value >> 2u);
             update_flags &= ~update_adc;
         }
 
