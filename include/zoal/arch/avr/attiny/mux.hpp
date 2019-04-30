@@ -26,22 +26,6 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
     template<class Api>
     class mux {
     public:
-        template<class U, class Rx, class Tx, class Ck = zoal::gpio::null_pin>
-        class usart {
-        public:
-            using rxm = usart_mapping<U::address, Rx::port::address, Rx::offset>;
-            using txm = usart_mapping<U::address, Tx::port::address, Tx::offset>;
-            using ckm = usart_mapping<U::address, Ck::port::address, Ck::offset>;
-
-            static_assert(rxm::rx >= 0, "Specified RX pin could not be connected to USART");
-            static_assert(txm::tx >= 0, "Specified TX pin could not be connected to USART");
-            static_assert(ckm::ck >= 0, "Specified CX pin could not be connected to USART");
-
-            static void on() {}
-
-            static void off() {}
-        };
-
         template<class A, class Pin>
         class adc {
         public:

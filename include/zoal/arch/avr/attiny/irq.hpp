@@ -2,11 +2,12 @@
 #define ZOAL_ARCH_AVR_ATTINY_IRQ_HPP
 
 #include "../../../mem/accessor.hpp"
+#include "../utils/interrupts.hpp"
 
 #include <stdint.h>
 
 namespace zoal { namespace arch { namespace avr { namespace attiny {
-    class irq {
+class irq : public zoal::utils::interrupts {
     public:
         template<class T>
         class timer {

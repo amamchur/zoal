@@ -216,7 +216,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             }
         };
 
-        template<class A, zoal::periph::adc_ref Ref = zoal::periph::adc_ref::external, uintptr_t ClockDivider = 128>
+        template<class A, zoal::periph::adc_ref Ref = zoal::periph::adc_ref::vcc, uintptr_t ClockDivider = 128>
         class adc {
         public:
             using ADCSRAx_cfg = typename adc_clock_divider<ClockDivider>::ADCSRAx;

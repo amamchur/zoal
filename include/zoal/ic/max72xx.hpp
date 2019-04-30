@@ -235,11 +235,11 @@ namespace zoal { namespace ic {
 
         void push_column_msb(uint8_t column) {
             for (int j = 0; j < 8; j++) {
-                auto carry_flag = static_cast<uint8_t>((column >> j) & 1);
+                auto carry_flag = static_cast<uint8_t>((column >> j) & 1u);
                 for (ptrdiff_t i = Devices - 1; i >= 0; i--) {
                     auto tmp = static_cast<uint8_t>(data[i][j] & 1);
                     data[i][j] >>= 1;
-                    data[i][j] |= carry_flag << 7;
+                    data[i][j] |= carry_flag << 7u;
                     carry_flag = tmp;
                 }
             }
@@ -247,9 +247,9 @@ namespace zoal { namespace ic {
 
         void push_column_lsb(uint8_t column) {
             for (int j = 0; j < 8; j++) {
-                auto carry_flag = static_cast<uint8_t>((column >> j) & 1);
+                auto carry_flag = static_cast<uint8_t>((column >> j) & 1u);
                 for (auto i = 0; i < Devices; i++) {
-                    uint8_t tmp = data[i][j] >> 7;
+                    uint8_t tmp = data[i][j] >> 7u;
                     data[i][j] <<= 1;
                     data[i][j] |= carry_flag;
                     carry_flag = tmp;
@@ -316,6 +316,8 @@ namespace zoal { namespace ic {
                 ChipSelect::low();
             }
 
+            transaction(const transaction& t)  = delete;
+
             transaction &operator<<(uint16_t cmd) {
                 spi::transfer(cmd);
                 return *this;
@@ -346,7 +348,7 @@ namespace zoal { namespace ic {
             ChipSelect::high();
 
             send(devices, test_off);
-            send(devices, scan_limit | 0x07);
+            send(devices, scan_limit | 0x07u);
             send(devices, decode_mode_off);
             send(devices, on);
         }

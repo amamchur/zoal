@@ -28,8 +28,6 @@ namespace zoal { namespace metadata {
 
     template<uintptr_t ClockDivider>
     struct adc_clock_divider;
-
-
 }}
 
 namespace zoal { namespace arch { namespace avr { namespace attiny {
@@ -50,7 +48,7 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
     public:
         static constexpr auto frequency = Frequency;
 
-        template<class T, zoal::periph::timer_mode Mode, uintptr_t ClockDivider, uintptr_t Prescale, uintptr_t Period>
+        template<class T, zoal::periph::timer_mode Mode, uintptr_t ClockDivider, uintptr_t Prescale = 1, uintptr_t Period = 0xFF>
         class timer {
         public:
             static_assert(Prescale == 1, "Unsupported prescale");
@@ -72,9 +70,12 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             }
         };
 
-        template<class A, zoal::periph::adc_ref Ref = zoal::periph::adc_ref::external, uintptr_t ClockDivider = 128>
+        template<class A, zoal::periph::adc_ref Ref = zoal::periph::adc_ref::vcc, uintptr_t ClockDivider = 128>
         class adc {
         public:
+            using ADCSRAx_cfg = typename adc_clock_divider<ClockDivider>::ADCSRAx;
+            using ADMUXx_cfg = typename adc_ref<Ref>::ADMUXx;
+
             static void apply() {
                 A::disable();
             }

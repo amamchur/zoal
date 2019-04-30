@@ -17,7 +17,6 @@ if (!program.family || !program.metadata || !program.out) {
 }
 
 let obj = path.parse(program.out);
-
 let generator = null;
 
 if (program.family === 'atmega') {
@@ -32,13 +31,15 @@ if (program.family === 'stm32') {
     generator = new STM32(program.metadata, obj.name);
 }
 
-generator.generate()
-    .then(() => {
-        generator.writeFile(program.out);
-    })
-    .catch((exc) => {
-        console.log(exc);
-    });
+if (generator) {
+    generator.generate()
+        .then(() => {
+            generator.writeFile(program.out);
+        })
+        .catch((exc) => {
+            console.log(exc);
+        });
+}
 
 // const fs = require('fs');
 // let dir = 'C:\\Program Files (x86)\\Atmel\\Studio\\7.0\\packs\\atmel\\ATtiny_DFP\\1.3.172\\atdf';

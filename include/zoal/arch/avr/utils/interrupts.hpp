@@ -7,7 +7,7 @@
 namespace zoal { namespace utils {
 	class interrupts {
 	public:
-		explicit inline interrupts(bool enable) {
+		explicit interrupts(bool enable) {
 			sREG = SREG;
 			if (enable) {
 				on();

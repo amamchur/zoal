@@ -14,15 +14,15 @@ namespace zoal { namespace io {
     };
 
     enum button_state : uint8_t {
-        button_state_current = 1 << 0,
-        button_state_next = 1 << 1,
-        button_state_trigger_down = 1 << 2,
-        button_state_trigger_press = 1 << 3,
-        button_state_trigger_up = 1 << 4,
+        button_state_current = 1u << 0u,
+        button_state_next = 1u << 1u,
+        button_state_trigger_down = 1u << 2u,
+        button_state_trigger_press = 1u << 3u,
+        button_state_trigger_up = 1u << 4u,
         button_state_trigger = button_state_trigger_down | button_state_trigger_press | button_state_trigger_up,
-        button_state_pressing = 1 << 5,
-        button_state_debounce = 1 << 6,
-        button_state_pressed = 1 << 7
+        button_state_pressing = 1u << 5u,
+        button_state_debounce = 1u << 6u,
+        button_state_pressed = 1u << 7u
     };
 
     class button_state_machine {
@@ -46,7 +46,7 @@ namespace zoal { namespace io {
 
         template<class T>
         inline uint8_t handle_press(T dt, uint8_t state, uint8_t value) {
-            auto transition = static_cast<uint8_t>(((state & 0x03) << 4) | value);
+            auto transition = static_cast<uint8_t>(((state & 0x03u) << 4u) | value);
             auto next = state;
             switch (transition) {
             case 0x00:
@@ -54,14 +54,14 @@ namespace zoal { namespace io {
                 return state;
             case 0x01:
                 // Idle->Debounce->Down
-                next = button_state_debounce | 1;
+                next = button_state_debounce | 1u;
                 break;
             case 0x11:
                 // Debounce->Down
-                return button_state_trigger_down | button_state_pressing | 2;
+                return button_state_trigger_down | button_state_pressing | 2u;
             case 0x20:
                 // Down->Debounce->Pressed
-                next |= button_state_debounce | 3;
+                next |= button_state_debounce | 3u;
                 break;
             case 0x30:
                 // Pressed->Idle
@@ -78,7 +78,7 @@ namespace zoal { namespace io {
             }
 
             bool pressing = (next & button_state_pressing) != 0;
-            bool condition = dt >= press_delay && value == 1;
+            bool condition = dt >= (T)press_delay && value == 1;
             if (pressing && condition) {
                 next |= button_state_trigger_press | button_state_pressed;
             }
@@ -88,7 +88,7 @@ namespace zoal { namespace io {
 
         template<class T>
         inline uint8_t handle_debounce(T dt, uint8_t state) {
-            if (dt >= debounce_delay) {
+            if (dt >= (T)debounce_delay) {
                 state &= ~button_state_debounce;
             }
             return state;

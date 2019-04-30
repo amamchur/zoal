@@ -113,6 +113,16 @@ namespace zoal { namespace metadata {
 
     template<>
     struct pin_to_adc_channel<0x0023, 0x0036, 3> : integral_constant<int, 3> {};
+
+    template<>
+    struct adc_ref<zoal::periph::adc_ref::vcc> {
+        using ADMUXx = zoal::mem::clear_and_set<0x40, 0x00>;
+    };
+
+    template<>
+    struct adc_ref<zoal::periph::adc_ref::internal_1v1> {
+        using ADMUXx = zoal::mem::clear_and_set<0x00, 0x40>;
+    };
 }}
 
 #endif

@@ -15,9 +15,6 @@ namespace zoal { namespace utils {
 
         template<uint32_t Frequency, uint16_t Prescale, class Timer>
         class handler {
-        private:
-            static uint16_t fraction_;
-
         public:
             static constexpr uint32_t timer_overflow_value = (uint32_t)(1UL << Timer::resolution);
 
@@ -38,6 +35,8 @@ namespace zoal { namespace utils {
                     *value_ptr += us_inc;
                 }
             }
+        private:
+            static uint16_t fraction_;
         };
 
         static T now() {

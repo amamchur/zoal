@@ -128,12 +128,12 @@ namespace zoal { namespace metadata {
     struct timer_clock_dividers : zoal::ct::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024> {};
 
     template<>
-    struct adc_ref<zoal::periph::adc_ref::internal> {
+    struct adc_ref<zoal::periph::adc_ref::internal_1v1> {
         using ADMUXx = zoal::mem::clear_and_set<0xC0, 0xC0>;
     };
 
     template<>
-    struct adc_ref<zoal::periph::adc_ref::external> {
+    struct adc_ref<zoal::periph::adc_ref::vcc> {
         using ADMUXx = zoal::mem::clear_and_set<0xC0, 0x40>;
     };
 

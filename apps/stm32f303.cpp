@@ -14,7 +14,7 @@
 #include <zoal/mem/accessor.hpp>
 #include <zoal/periph/rx_ring_buffer.hpp>
 #include <zoal/periph/tx_ring_buffer.hpp>
-#include <zoal/shields/uno_lcd_shield.hpp>
+#include <zoal/shield/uno_lcd.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 
@@ -36,8 +36,7 @@ using logger_03 = zoal::utils::terminal_logger<usart_03_tx_buffer, zoal::utils::
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
 using delay = typename tools::delay;
-using shield = zoal::shields::uno_lcd_shield<tools, zoal::pcb, mcu::adc_01>;
-using lcd_output_stream = zoal::io::output_stream<shield::lcd>;
+using shield = zoal::shield::uno_lcd<tools, zoal::pcb, mcu::adc_01>;
 
 #pragma GCC diagnostic push
 

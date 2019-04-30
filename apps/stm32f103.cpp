@@ -23,7 +23,7 @@ using logger_02 = zoal::utils::terminal_logger<usart_02_tx_buffer, zoal::utils::
 using logger_03 = zoal::utils::terminal_logger<usart_03_tx_buffer, zoal::utils::log_level::trace>;
 
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
-using tools = zoal::utils::tool_set<mcu, counter>;
+using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
 using delay = tools::delay;
 
 #define DEMCR (*((volatile uint32_t *)0xE000EDFC))

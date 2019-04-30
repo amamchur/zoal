@@ -3,8 +3,10 @@
 
 namespace zoal { namespace periph {
     enum class adc_ref {
-        external,
-        internal
+        vcc,
+        internal_1v1,
+        internal_2v56,
+        external
     };
 }}
 
