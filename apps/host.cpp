@@ -1,3 +1,6 @@
+#include "data/fonts.hpp"
+
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <zoal/ic/max72xx.hpp>
@@ -13,7 +16,7 @@ const uint64_t messages[][4] = {
 };
 //constexpr auto message_count = sizeof(messages) / sizeof(messages[0]);
 
-using matrix_type = zoal::ic::max72xx_data<4>;
+using matrix_type = zoal::ic::max72xx_data<8>;
 matrix_type matrix;
 
 //const int has_nukes        = 0b00000000000000000000000000000001;
@@ -26,15 +29,15 @@ void fill_matrix(const void *ptr) {
     }
 }
 
-void print_matrix() {
+void print_matrix(int from, int to) {
     for (int j = 7; j >= 0; j--) {
         std::stringstream ss;
 
-        for (auto & i : matrix.data) {
-            uint8_t dest = i[j];
+        for (int i = from; i < to; i++) {
+            uint8_t dest = matrix.data[i][j];
             for (int k = 0; k < 8; k++) {
                 int v = (dest >> k) & 1;
-                ss << (v == 0 ? ' ' : '#');
+                ss << (v == 0 ? '.' : '#');
             }
         }
 
@@ -42,29 +45,62 @@ void print_matrix() {
     }
 }
 
-template<class T>
-T shiftRight(T value, uint8_t, uint8_t, matrix_type &) {
-    return static_cast<T>(value >> 3u);
+void fill_text(const char *ch) {
+    matrix.clear();
+
+    for (int i = 0; i < (int)matrix_type::devices && *ch; i++, ch++) {
+        auto src = reinterpret_cast<const uint8_t *>(font_glyphs + (*ch - start_glyph_code));
+        auto *dest = matrix.data[i];
+        for (uint8_t j = 0; j < 8; j++) {
+            *dest++ = *(src + j);
+        }
+    }
 }
 
-void qqq(uint64_t value) {
-    for (int i = sizeof(value) - 1; i >= 0; i--) {
-        auto ww = value >> (i * 8);
-        auto bt = static_cast<uint8_t>(ww & 0xFF);
-        for (int j = 0; j < 8; j++) {
-            std::cout << (((bt >> j) & 1) == 0 ? '.' : '#');
-        }
+void display_glyphs() {
+    char msg[] = "A";
+    msg[0] = start_glyph_code;
+    for (int i = 0; i < (int)font_glyph_count; i++) {
+        msg[0] = start_glyph_code + i;
+        fill_text(msg);
+        std::cout << "========== Gryph: \"" << msg << "\" ==========" << std::endl;
+        print_matrix(0, 1);
+    }
+}
 
-        std::cout << std::endl;
+const uint64_t IMAGES[] = {
+        0x00380c0c070c0c38,
+        0x0018181818181818,
+        0x00070c0c380c0c07,
+        0x0000000000003b6e
+};
+const int IMAGES_LEN = sizeof(IMAGES)/8;
+
+
+
+uint64_t transform_glyph(uint64_t g) {
+    uint64_t r = 0;
+    for (int i = 0; i < 8; i++) {
+        r <<= 8;
+        r |= (g & 0xff);
+        g >>= 8;
+    }
+    return r;
+}
+
+void transform() {
+    std::cout << "Count: " << IMAGES_LEN << std::endl;
+    for (int i = 0; i < IMAGES_LEN; i++) {
+        uint64_t g = transform_glyph(IMAGES[i]);
+        std::cout << "0x0" << std::hex << std::setfill('0') << std::setw(16) << g << "," << std::endl;
     }
 }
 
 int main() {
-    qqq(0x00AA00FF);
+    transform();
 
-//    for (const auto &message : messages) {
-//        fill_matrix(message);
-//        print_matrix();
-//    }
+    //    fill_text("Hello!!!");
+    //    print_matrix(0, 2);
+    display_glyphs();
     return 0;
 }

@@ -55,5 +55,5 @@ target_compile_definitions(STM32F303RE.elf PRIVATE -DUSE_STDPERIPH_DRIVER -DSTM3
 
 add_zoal_tests()
 
-add_host_executable(host apps/host.cpp)
+add_host_executable(host apps/host.cpp apps/data/fonts.cpp)
 
