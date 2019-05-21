@@ -1,10 +1,11 @@
 #include "gtest/gtest.h"
 
+#include <zoal/ct/check.hpp>
 #include <zoal/utils/helpers.hpp>
 #include <zoal/gpio/pin.hpp>
 
 using namespace zoal::gpio;
-using namespace zoal::utils;
+using namespace zoal::ct;
 
 TEST(StubClasses, null_pin_should_be_callable) {  /* NOLINT */
     null_pin::low();
@@ -38,10 +39,10 @@ TEST(StubClasses, null_port_should_be_callable) {  /* NOLINT */
     null_port::enable();
     null_port::disable();
 
-    null_port::low(1);
-    null_port::high(1);
-    null_port::toggle(1);
-    null_port::template mode<pin_mode::output>(1);
+    null_port::low<1>();
+    null_port::high<1>();
+    null_port::toggle<1>();
+    null_port::template mode<pin_mode::output, 1>();
     {
         auto value = null_port::read();
         EXPECT_EQ(value, 0);

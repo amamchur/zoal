@@ -248,6 +248,11 @@ namespace zoal { namespace ic {
             delay::template us<37>();
         }
 
+        static void push_back_blocking(uint8_t char_code) {
+            iface::send(char_code, 1);
+            delay::template us<37>();
+        }
+
         static void write(const char *str) {
             while (*str) {
                 iface::send(*str++, 1);

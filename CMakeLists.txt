@@ -54,3 +54,6 @@ target_compile_definitions(STM32F303RE.elf PRIVATE -DUSE_STDPERIPH_DRIVER -DSTM3
 #target_compile_definitions(STM32L432.elf PRIVATE -DSTM32L4 -DUSE_HAL_DRIVER -DSTM32L432xx)
 
 add_zoal_tests()
+
+add_host_executable(host apps/host.cpp)
+

@@ -13,12 +13,8 @@ function(add_zoal_tests)
     find_package(GTest)
         
     set(TEST_CASES_FILES
-            tests/atmega_48_88_168_328.cpp
-            tests/atmega_16_32_U4.cpp
-            tests/atmega_640_1280_2560.cpp
             tests/static_assertion.cpp
             tests/stub_classes.cpp
-            tests/scheduler.cpp
             )
     add_executable(zoal_tests
             tests/utils/mcu_memory.hpp
@@ -49,3 +45,7 @@ function(add_zoal_tests)
             ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/zoal_tests.dir/tests/coverage_full.info
     )
 endfunction(add_zoal_tests)
+
+function(add_host_executable NAME)
+    add_executable(${NAME} ${ARGN})
+endfunction(add_host_executable)

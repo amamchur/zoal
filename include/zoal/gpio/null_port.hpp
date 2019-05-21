@@ -29,13 +29,13 @@ namespace zoal { namespace gpio {
         ZOAL_INLINE_IO static void toggle() {}
 
         template<::zoal::gpio::pin_mode, register_type>
-        class mode {};
+        ZOAL_INLINE_IO static void mode() {};
 
         template<register_type>
-        class low {};
+        ZOAL_INLINE_IO static void low() {};
 
         template<register_type>
-        class high {};
+        ZOAL_INLINE_IO static void high() {};
     };
 }}
 
