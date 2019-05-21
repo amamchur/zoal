@@ -19,7 +19,7 @@ namespace zoal { namespace io {
     class transport_proxy : public abstract_transport {
     public:
         void write_byte(uint8_t ch) override {
-            Transport::write_byte(ch);
+            Transport::push_back_blocking(ch);
         };
 
         static abstract_transport &instance() {

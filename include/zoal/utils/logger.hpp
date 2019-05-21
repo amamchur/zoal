@@ -85,7 +85,6 @@ namespace zoal { namespace utils {
         ~log_stream() {
             if (flush) {
                 this->template place_suffix<>(*this);
-                Transport::flush();
             }
         }
 

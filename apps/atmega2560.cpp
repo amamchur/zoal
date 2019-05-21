@@ -28,10 +28,11 @@ using timer = typename mcu::timer_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using irq_handler = typename counter::handler<mcu::frequency, 64, timer>;
 using log_usart = mcu::usart_00;
-using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<log_usart, 64>;
+using tx_buffer = log_usart::default_tx_buffer<16>;
+using rx_buffer = log_usart::default_rx_buffer<16>;
 
 using adc = mcu::adc_00;
-using logger = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::info>;
+using logger = zoal::utils::terminal_logger<tx_buffer, zoal::utils::log_level::info>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
 using app1 = multi_function_shield<tools, zoal::pcb>;
@@ -86,8 +87,9 @@ ISR(TIMER0_OVF_vect) {
 }
 
 ISR(USART0_RX_vect) {
+    log_usart::rx_handler_v2<rx_buffer>();
 }
 
 ISR(USART0_UDRE_vect) {
-    log_usart::tx_handler<usart_01_tx_buffer>();
+    log_usart::tx_handler_v2<tx_buffer>();
 }
