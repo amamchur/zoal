@@ -27,9 +27,9 @@ using mcu = zoal::pcb::mcu;
 using timer = typename mcu::timer_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using irq_handler = typename counter::handler<mcu::frequency, 64, timer>;
-using log_usart = mcu::usart_00;
-using tx_buffer = log_usart::default_tx_buffer<16>;
-using rx_buffer = log_usart::default_rx_buffer<16>;
+using usart = mcu::usart_00;
+using tx_buffer = usart::default_tx_buffer<16>;
+using rx_buffer = usart::default_rx_buffer<16>;
 
 using adc = mcu::adc_00;
 using logger = zoal::utils::terminal_logger<tx_buffer, zoal::utils::log_level::info>;
@@ -39,25 +39,25 @@ using app1 = multi_function_shield<tools, zoal::pcb>;
 using app2 = blink<tools, zoal::pcb::ard_d13>;
 using app3 = uno_lcd_shield<tools, zoal::pcb, mcu::adc_00>;
 //using app5 = max72xx<tools, mcu::mosi0, mcu::sclk0, zoal::pcb::ard_d10>;
-using app6 = ir_remove<zoal::pcb::ard_d10, tools, 25>;
-using app7 = tm1637<tools, zoal::pcb::ard_d10, zoal::pcb::ard_d11>;
-using app8 = keypad<tools, keypad_type::keypad_4x4>;
-using check = compile_check<app0, app1, app2, app3, app6, app7, app8>;
+using app4 = ir_remove<zoal::pcb::ard_d10, tools, 25>;
+using app5 = tm1637<tools, zoal::pcb::ard_d10, zoal::pcb::ard_d11>;
+using app6 = keypad<tools, keypad_type::keypad_4x4>;
+using check = compile_check<app0, app1, app2, app3, app4, app5, app6>;
 
-app8 app;
+app6 app;
 
 void initialize_hardware() {
-    mcu::power<log_usart, timer, adc>::on();
+    mcu::power<usart, timer, adc>::on();
 
-    mcu::mux::usart<log_usart, mcu::pe_00, mcu::pe_01, mcu::pe_02>::on();
-    mcu::cfg::usart<log_usart, 115200>::apply();
+    mcu::mux::usart<usart, mcu::pe_00, mcu::pe_01, mcu::pe_02>::on();
+    mcu::cfg::usart<usart, 115200>::apply();
 
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
     mcu::irq::timer<timer>::enable_overflow_interrupt();
 
     mcu::cfg::adc<adc>::apply();
 
-    mcu::enable<log_usart, timer, adc>::on();
+    mcu::enable<usart, timer, adc>::on();
 
     zoal::utils::interrupts::on();
 }
@@ -69,7 +69,7 @@ int main() {
 
     logger::info() << "Started ATmega2560";
 
-    app8::gpio_cfg();
+    app6::gpio_cfg();
     app.init();
     app.run();
 
@@ -87,9 +87,9 @@ ISR(TIMER0_OVF_vect) {
 }
 
 ISR(USART0_RX_vect) {
-    log_usart::rx_handler_v2<rx_buffer>();
+    usart::rx_handler_v2<rx_buffer>();
 }
 
 ISR(USART0_UDRE_vect) {
-    log_usart::tx_handler_v2<tx_buffer>();
+    usart::tx_handler_v2<tx_buffer>();
 }

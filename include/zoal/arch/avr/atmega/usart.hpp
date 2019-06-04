@@ -34,9 +34,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         public:
             using scope_lock = zoal::utils::interrupts_off;
 
-            static inline void item_added() {
-                self_type::enable_tx();
-            }
+            static inline void item_added() {}
 
             static inline void item_removed() {}
         };
@@ -85,35 +83,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         }
 
         static void flush() {}
-
-        //        static void write_byte(uint8_t data) {
-        //            zoal::utils::interrupts ni(false);
-        //            buffer.tx.enqueue(data, true);
-        //            *accessor<UCSRxB>::p |= 1 << UDRIEx;
-        //        }
-
-        //        template<class F>
-        //        static void read(::zoal::io::input_stream_functor<F> &fn) {
-        //            auto f = static_cast<F &>(fn);
-        //            while (f(buffer.rx.dequeue(true))) continue;
-        //        }
-
-        //        static void handle_tx_irq() {
-        //            *accessor<UDRx>::p = buffer.tx.dequeue();
-        //            *accessor<UCSRxA>::p |= (1 << TXCx);
-        //
-        //            if (buffer.tx.empty()) {
-        //                *accessor<UCSRxB>::p &= ~(1 << UDRIEx);
-        //            }
-        //        }
-        //
-        //        static void handle_rx_irq() {
-        //            if (*accessor<UCSRxA>::p & (1 << UPEx)) {
-        //                return;
-        //            }
-        //
-        //            buffer.rx.enqueue(*accessor<UDRx>::p);
-        //        }
 
         template<class H>
         static inline void rx_handler() {

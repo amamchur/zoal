@@ -152,25 +152,11 @@ namespace zoal { namespace utils {
         static void clear() {
         }
 
-        static ls<log_level::trace >= MinLevel> trace() {
-            return ls<log_level::trace >= MinLevel>();
-        }
-
-        static ls<log_level::info >= MinLevel> info() {
-            return ls<log_level::info >= MinLevel>();
-        }
-
-        static ls<log_level::debug >= MinLevel> debug() {
-            return ls<log_level::debug >= MinLevel>();
-        }
-
-        static ls<log_level::warn >= MinLevel> warn() {
-            return ls<log_level::warn >= MinLevel>();
-        }
-
-        static ls<log_level::error >= MinLevel> error() {
-            return ls<log_level::error >= MinLevel>();
-        }
+        using trace = ls<log_level::trace >= MinLevel>;
+        using info = ls<log_level::info >= MinLevel>;
+        using debug = ls<log_level::debug >= MinLevel>;
+        using warn = ls<log_level::warn >= MinLevel>;
+        using error = ls<log_level::error >= MinLevel>;
     };
 
     template<
