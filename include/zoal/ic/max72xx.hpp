@@ -245,12 +245,44 @@ namespace zoal { namespace ic {
             }
         }
 
+        void push_column_msb(uint8_t column, int count) {
+            if (count == 0) {
+                return;
+            }
+
+            auto mask = (1 << count) - 1;
+            auto offset = 8 - count;
+            for (int j = 0; j < 8; j++) {
+                auto carry_flag = static_cast<uint8_t>((column >> j) & mask);
+                for (ptrdiff_t i = Devices - 1; i >= 0; i--) {
+                    auto tmp = static_cast<uint8_t>(data[i][j] & mask);
+                    data[i][j] >>= count;
+                    data[i][j] |= carry_flag << offset;
+                    carry_flag = tmp;
+                }
+            }
+        }
+
         void push_column_lsb(uint8_t column) {
             for (int j = 0; j < 8; j++) {
                 auto carry_flag = static_cast<uint8_t>((column >> j) & 1u);
                 for (auto i = 0; i < Devices; i++) {
                     uint8_t tmp = data[i][j] >> 7u;
                     data[i][j] <<= 1;
+                    data[i][j] |= carry_flag;
+                    carry_flag = tmp;
+                }
+            }
+        }
+
+        void push_column_lsb(uint8_t column, int count) {
+            auto mask = (1 << count) - 1;
+            auto offset = 8 - count;
+            for (int j = 0; j < 8; j++) {
+                auto carry_flag = static_cast<uint8_t>((column >> j) & mask);
+                for (auto i = 0; i < Devices; i++) {
+                    uint8_t tmp = data[i][j] >> offset;
+                    data[i][j] <<= count;
                     data[i][j] |= carry_flag;
                     carry_flag = tmp;
                 }

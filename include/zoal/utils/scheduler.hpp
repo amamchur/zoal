@@ -12,6 +12,10 @@ namespace zoal { namespace utils {
         Callback handler;
         Token token;
 
+        bool match(const schedule_item &item) const {
+            return handler == item.handler && token == item.token;
+        }
+
         schedule_item() = default;
 
         schedule_item(CounterValueType tm, Callback c)
@@ -28,6 +32,10 @@ namespace zoal { namespace utils {
     public:
         CounterValueType time;
         Callback handler;
+
+        bool match(const schedule_item &item) const {
+            return handler == item.handler;
+        }
 
         schedule_item() = default;
 
@@ -75,6 +83,17 @@ namespace zoal { namespace utils {
                     this->remove(i);
                 } else {
                     item.time = tm;
+                }
+            }
+        }
+
+        template<typename... Args>
+        void clear(Args... args) {
+            item_type itm(0, args...);
+            for (intptr_t i = (intptr_t) this->size - 1; i >= 0; i--) {
+                auto &item = this->items[i];
+                if (itm.match(item)) {
+                    this->remove(i);
                 }
             }
         }
