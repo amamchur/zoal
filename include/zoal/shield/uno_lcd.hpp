@@ -23,6 +23,12 @@ namespace zoal { namespace shield {
     template<class Tools, class Board, class Adc, class Cfg = uno_lcd_shield_config<>>
     class uno_lcd {
     public:
+        static const size_t select_btn = 0;
+        static const size_t left_btn = 1;
+        static const size_t down_btn = 2;
+        static const size_t up_btn = 3;
+        static const size_t right_btn = 4;
+
         using tools = Tools;
         using mcu = typename Board::mcu;
         using api = typename tools::api;
@@ -67,11 +73,11 @@ namespace zoal { namespace shield {
             for (int i = 0; i < 4; i++) {
                 calibration_pin_a::low();
                 zoal::utils::nop<3>::place();
-                value = value << 1 | calibration_pin_b::read();
+                value = value << 1u | calibration_pin_b::read();
 
                 calibration_pin_a::high();
                 zoal::utils::nop<3>::place();
-                value = value << 1 | calibration_pin_b::read();
+                value = value << 1u | calibration_pin_b::read();
             }
 
             logger::trace() << "value:" << value << " force: " << ((int)force);
@@ -80,11 +86,11 @@ namespace zoal { namespace shield {
             }
 
             mcu::mux::template adc<adc, analog_pin>::on();
-            keypad::values[0] = calibrate_button("SELECT");
-            keypad::values[1] = calibrate_button("LEFT");
-            keypad::values[2] = calibrate_button("DOWN");
-            keypad::values[3] = calibrate_button("UP");
-            keypad::values[4] = calibrate_button("RIGHT");
+            keypad::values[select_btn] = calibrate_button("SELECT");
+            keypad::values[left_btn] = calibrate_button("LEFT");
+            keypad::values[down_btn] = calibrate_button("DOWN");
+            keypad::values[up_btn] = calibrate_button("UP");
+            keypad::values[right_btn] = calibrate_button("RIGHT");
 
             logger::trace() << "Calibrated: " << keypad::values[0] << " " << keypad::values[1] << " "
                             << keypad::values[2] << " " << keypad::values[3] << " " << keypad::values[4] << " ";

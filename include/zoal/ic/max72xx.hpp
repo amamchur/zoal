@@ -280,7 +280,7 @@ namespace zoal { namespace ic {
             auto offset = 8 - count;
             for (int j = 0; j < 8; j++) {
                 auto carry_flag = static_cast<uint8_t>((column >> j) & mask);
-                for (auto i = 0; i < Devices; i++) {
+                for (size_t i = 0; i < Devices; i++) {
                     uint8_t tmp = data[i][j] >> offset;
                     data[i][j] <<= count;
                     data[i][j] |= carry_flag;
