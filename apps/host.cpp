@@ -4,6 +4,9 @@
 #include <iostream>
 #include <sstream>
 #include <zoal/ic/max72xx.hpp>
+#include <zoal/utils/ms_counter.hpp>
+#include <zoal/utils/tool_set.hpp>
+#include <zoal/board/arduino_uno.hpp>
 
 const uint64_t messages[][4] = {
     {0x3f66663e66663f00, 0x0000333333336e00, 0x00003e031e301f00, 0x00003333333e301f}, // Busy
@@ -96,11 +99,27 @@ void transform() {
     }
 }
 
-int main() {
-    transform();
+volatile uint32_t timer0_millis = 0;
+using ms_counter = zoal::utils::ms_counter<decltype(timer0_millis), &timer0_millis>;
+using tools = zoal::utils::tool_set<zoal::pcb::mcu, ms_counter, void>;
+tools::function_scheduler<4> timeout;
 
-    //    fill_text("Hello!!!");
-    //    print_matrix(0, 2);
-    display_glyphs();
+void test_timeout() {
+    timeout.clear();
+    timeout.schedule(0, test_timeout);
+}
+
+int main() {
+//    transform();
+//    fill_text("Hello!!!");
+//    print_matrix(0, 2);
+//    display_glyphs();
+    timer0_millis = 10;
+    timeout.schedule(5, test_timeout);
+    timeout.schedule(20, test_timeout);
+    timeout.handle();
+
+    timer0_millis = 100;
+    timeout.handle();
     return 0;
 }

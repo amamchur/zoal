@@ -2,6 +2,28 @@
 #define ZOAL_HELPERS_HPP
 
 namespace zoal { namespace ct {
+    template<class First, class... Rest>
+    struct max_type_size {
+        using other = max_type_size<Rest...>;
+        static constexpr auto value = sizeof(First) > other::value ? sizeof(First) : other::value;
+    };
+
+    template<class First>
+    struct max_type_size<First> {
+        static constexpr auto value = sizeof(First);
+    };
+
+    template<class First, class... Rest>
+    struct min_type_size {
+        using other = max_type_size<Rest...>;
+        static constexpr auto value = sizeof(First) < other::value ? sizeof(First) : other::value;
+    };
+
+    template<class First>
+    struct min_type_size<First> {
+        static constexpr auto value = sizeof(First);
+    };
+
     template<bool condition, class T, class U>
     struct conditional_type {
 

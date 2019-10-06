@@ -51,36 +51,43 @@ namespace zoal { namespace utils {
         using counter_type = typename Counter::value_type;
         using item_type = schedule_item<counter_type, Callback, token_type>;
 
-        base_scheduler() : prevTime(Counter::now()), size(0) {
+        base_scheduler() noexcept : prev_time(Counter::now()) {
+            clear();
         }
 
         template<typename... Args>
         bool schedule(counter_type dt, Args... args) {
-            if (size >= Capacity) {
-                return false;
+            for (size_t i = 0; i < Capacity; i++) {
+                auto &item = this->items[i];
+                if (item.handler == nullptr) {
+                    item = item_type(dt, args...);
+                    return true;
+                }
             }
-
-            items[size++] = item_type(dt, args...);
-            return true;
+            return false;
         }
 
         template<class Invoker>
         void handle(Invoker &invoker) {
             auto now = Counter::now();
-            auto dt = now - prevTime;
+            auto dt = now - prev_time;
             if (dt == 0) {
                 return;
             }
 
-            prevTime = now;
+            prev_time = now;
 
-            for (intptr_t i = (intptr_t) this->size - 1; i >= 0; i--) {
+            for (size_t i = 0; i < Capacity; i++) {
                 auto &item = this->items[i];
-                auto tm = item.time - dt;
+                if (item.handler == nullptr) {
+                    continue;
+                }
 
+                auto tm = item.time - dt;
                 if (tm == 0 || tm > item.time) {
-                    invoker(item);
-                    this->remove(i);
+                    auto clone = item;
+                    item.handler = nullptr;
+                    invoker(clone);
                 } else {
                     item.time = tm;
                 }
@@ -93,28 +100,20 @@ namespace zoal { namespace utils {
             for (intptr_t i = (intptr_t) this->size - 1; i >= 0; i--) {
                 auto &item = this->items[i];
                 if (itm.match(item)) {
-                    this->remove(i);
+                    item.handler = nullptr;
                 }
             }
         }
 
         void clear() {
-            size = 0;
-        }
-
-    protected:
-        counter_type prevTime;
-        size_t size;
-        item_type items[Capacity];
-
-        void remove(intptr_t index) {
-            intptr_t last = (intptr_t) size - 1;
-            for (intptr_t i = index; i < last; i++) {
-                items[i] = items[i + 1];
+            for (size_t i = 0; i < Capacity; i++) {
+                this->items[i].handler = nullptr;
             }
-
-            size--;
         }
+
+    private:
+        counter_type prev_time;
+        item_type items[Capacity];
     };
 
     template<class Token>

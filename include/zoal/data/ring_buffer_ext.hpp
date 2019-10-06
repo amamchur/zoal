@@ -117,17 +117,17 @@ namespace zoal { namespace data {
     template<class T>
     class null_fifo_buffer {
     public:
-        static bool push_back(T value) {
+        inline static bool push_back(T value) {
             return false;
         }
 
-        static void push_back_blocking(T value) {}
+        inline static void push_back_blocking(T value) {}
 
-        static bool pop_front(T &value) {
+        inline static bool pop_front(T &value) {
             return false;
         }
 
-        static T pop_front_blocking() {
+        inline static T pop_front_blocking() {
             return T();
         }
     };

@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_IRQ_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_IRQ_HPP
 
-#include "../utils/interrupts.hpp"
+#include "../../../utils/interrupts.hpp"
 #include "timer_interrupt_flags_vector.hpp"
 #include "timer_interrupt_mask_vector.hpp"
 
