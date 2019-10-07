@@ -97,7 +97,7 @@ namespace zoal { namespace utils {
         template<typename... Args>
         void clear(Args... args) {
             item_type itm(0, args...);
-            for (intptr_t i = (intptr_t) this->size - 1; i >= 0; i--) {
+            for (size_t i = 0; i < Capacity; i++) {
                 auto &item = this->items[i];
                 if (itm.match(item)) {
                     item.handler = nullptr;
