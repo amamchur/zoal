@@ -1,77 +1,52 @@
 #include "cmd_line_parser.hpp"
 
 #include <iostream>
-#include <stdio.h>
-#include <string.h>
 #include <string>
 
-enum class cmd_state {
-    start,
+using cmd_parser = command_line_parser<16>;
 
-    pin_control,
-    pin_number,
+void callback(void *parser, int event) {
+    auto p = reinterpret_cast<cmd_parser *>(parser);
+    auto cle = static_cast<command_line_event>(event);
 
-    finished,
-    error
-};
-
-cmd_state state = cmd_state::start;
-
-void perform_transition_eq(cmd_state from, cmd_state to, const char *str, const char *s, const char *e) {
-    if (state != from) {
-        return;
-    }
-
-    auto *p = str;
-    while (*p && (s != e)) {
-        if (*p != *s) {
-            return;
-        }
-        p++;
-        s++;
-    }
-
-    if (*p == '\0' && s == e) {
-        state = to;
-    }
-}
-
-void callback(cmd_line_parser *p, event event) {
-    switch (event) {
-    case event::command_msg:
-    case event::command_on:
-    case event::command_off: {
-        auto s = p->token_start();
-        auto e = p->token_end();
-        std::string str(s, e);
-        std::cout << "command: " << str << std::endl;
-        break;
-    }
-    case event::token: {
-        auto s = p->token_start();
-        auto e = p->token_end();
-        perform_transition_eq(cmd_state::start, cmd_state::pin_control, "pin", s, e);
-
+    switch (cle) {
+    case command_line_event::command_msg:
+    case command_line_event::command_on:
+    case command_line_event::command_off:
+    case command_line_event::token: {
         std::string str(p->token_start(), p->token_end());
         std::cout << "token: " << str << std::endl;
         break;
     }
-    case event::line_end:
+    case command_line_event::line_end:
         std::cout << "line_end" << std::endl;
         break;
     }
 }
 
 int main(int argc, char **argv) {
-    char msg[] = R"(msg 12312 )"
+    char msg[] = R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
+                 R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
+                 R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
+                 R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
+                 R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
+                 R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
+                 R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
+                 R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
+                 R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
+                 R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
+                 R"(msg 123456789 on off 15962 7894654 1257896454 1324186789 531321 78123456789 123456789 123456789 123456789)"
                  "\r\n";
-    auto p = msg;
-
-    cmd_line_parser clp;
+    cmd_parser clp;
     clp.callback(&callback);
-    while (*p) {
-        clp.push(*p++);
-    }
+    clp.push(msg, sizeof(msg) - 1);
+
+//    int i = 0;
+//    while (*p) {
+//        std::cout << i << std::endl;
+//        clp.push_char(*p++);
+//        i++;
+//    }
 
     return 0;
 }

@@ -15,24 +15,24 @@
 
 	main := |*
 	    'msg' => {
-    	    handler_(this, event::command_msg);
+    	    handler_(this, (int)command_line_event::command_msg);
         };
         'on' => {
-            handler_(this, event::command_on);
+            handler_(this, (int)command_line_event::command_on);
         };
         'off' => {
-            handler_(this, event::command_off);
+            handler_(this, (int)command_line_event::command_off);
         };
         [\+\-]? digit+ =>{
-            std::cout << "Number" << std::endl;
+            handler_(this, (int)command_line_event::token);;
         };
         quoted_param => quoted_param_found;
         (ascii - space - ['"\\])+ => {
-            handler_(this, event::token);
+            handler_(this, (int)command_line_event::token);
         };
         32;
         '\n' => {
-            handler_(this, event::line_end);
+            handler_(this, (int)command_line_event::line_end);
         };
 
         any;
@@ -43,7 +43,7 @@ namespace {
 %% write data;
 }
 
-void cmd_line_parser::quoted_param_found_action() {
+void command_line_parse_machine::quoted_param_found_action() {
     ts++;
     te--;
 
@@ -81,19 +81,15 @@ void cmd_line_parser::quoted_param_found_action() {
     te = dst;
 
     if (handler_) {
-        handler_(this, event::token);
+        handler_(this, (int)command_line_event::token);
     }
 }
 
-void cmd_line_parser::init() {
+void command_line_parse_machine::init_machine() {
     %% write init;
 }
 
-const char* cmd_line_parser::do_parse(const char *p, const char *pe) {
+const char* command_line_parse_machine::run_machine(const char *p, const char *pe) {
     %% write exec;
     return p;
-}
-
-void cmd_line_parser::empty_callback(cmd_line_parser *p, event e) {
-
 }

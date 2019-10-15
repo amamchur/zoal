@@ -13,6 +13,23 @@ endif ()
 
 project(zoal CXX C ASM)
 
+function(RAGEL_GENERATE_CPP RGL_SRC CPP_SRC)
+    get_filename_component(ABS_FIL ${RGL_SRC} ABSOLUTE)
+    get_filename_component(ABS_PATH ${RGL_SRC} PATH)
+    get_filename_component(FILE_NAME ${RGL_SRC} NAME)
+    set(ABS_CPP_SRC ${ABS_FIL}.cpp)
+
+    add_custom_command(
+            OUTPUT "${ABS_CPP_SRC}"
+            COMMAND ragel
+            ARGS -G1 -L -o "${ABS_CPP_SRC}" "${ABS_FIL}"
+            DEPENDS "${ABS_FIL}"
+            COMMENT "Running ragel file ${FILE_NAME}"
+            VERBATIM)
+    set_source_files_properties(${CPP_SRC} PROPERTIES GENERATED TRUE)
+    set(${CPP_SRC} ${ABS_CPP_SRC} PARENT_SCOPE)
+endfunction()
+
 include_directories(include)
 file(GLOB_RECURSE ZOAL_FILES include/*.hpp)
 
@@ -58,4 +75,5 @@ add_zoal_tests()
 add_host_executable(host apps/host.cpp apps/data/fonts.cpp)
 target_compile_definitions(host PRIVATE F_CPU=16000000UL)
 
-add_host_executable(cmd-line apps/cmd_line_parser.cpp ./apps/cmd_line.cpp)
+ragel_generate_cpp(apps/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)
+add_host_executable(cmd-line ./apps/cmd_line.cpp ${CMD_STATE_MACHINE_SRC})
