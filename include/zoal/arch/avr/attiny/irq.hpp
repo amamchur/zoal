@@ -16,30 +16,30 @@ class irq : public zoal::utils::interrupts {
             using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
 
             static void enable_overflow_interrupt() {
-                *accessor<T::TIMSKx>::p |= T::TIMSKx_TOIEx;
+                accessor<T::TIMSKx>::ref() |= T::TIMSKx_TOIEx;
             }
 
             static void disable_overflow_interrupt() {
-                *accessor<T::TIMSKx>::p &= ~T::TIMSKx_TOIEx;
+                accessor<T::TIMSKx>::ref() &= ~T::TIMSKx_TOIEx;
             }
 
             static void clear_overflow_interrupt_flag() {
-                *accessor<T::TIFRx>::p &= ~T::TIFRx_TOVx;
+                accessor<T::TIFRx>::ref() &= ~T::TIFRx_TOVx;
             }
 
             template<uint8_t Channel>
             static void enable_compare_match_interrupt() {
-                *accessor<T::TIMSKx>::p |= (Channel == 0 ? T::TIMSKx_OCIExA : T::TIMSKx_OCIExB);
+                accessor<T::TIMSKx>::ref() |= (Channel == 0 ? T::TIMSKx_OCIExA : T::TIMSKx_OCIExB);
             }
 
             template<uint8_t Channel>
             static void disable_compare_match_interrupt() {
-                *accessor<T::TIMSKx>::p &= ~(Channel == 0 ? T::TIMSKx_OCIExA : T::TIMSKx_OCIExB);
+                accessor<T::TIMSKx>::ref() &= ~(Channel == 0 ? T::TIMSKx_OCIExA : T::TIMSKx_OCIExB);
             }
 
             template<uint8_t Channel>
             static void clear_channel_interrupt_flag() {
-                *accessor<T::TIFRx>::p &= ~(Channel == 0 ? T::TIFRx_OCFxA : T::TIFRx_OCFxB);
+                accessor<T::TIFRx>::ref() &= ~(Channel == 0 ? T::TIFRx_OCFxA : T::TIFRx_OCFxB);
             }
         };
 
@@ -50,11 +50,11 @@ class irq : public zoal::utils::interrupts {
             using accessor = zoal::mem::accessor<uint8_t, A::address, Offset>;
 
             static void enable() {
-                *accessor<A::ADCSRAx>::p |= 0x08;
+                accessor<A::ADCSRAx>::ref() |= 0x08;
             }
 
             static void disable() {
-                *accessor<A::ADCSRAx>::p &= ~0x08;
+                accessor<A::ADCSRAx>::ref() &= ~0x08;
             }
         };
     };

@@ -161,27 +161,27 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr uintptr_t GPIOx_BRR = 0x28;
 
         ZOAL_INLINE_IO static register_type read() {
-            return *accessor<GPIOx_IDR>::p;
+            return *accessor<GPIOx_IDR>::ref();
         }
 
         template<register_type Mask>
         ZOAL_INLINE_IO static void low() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            *accessor<GPIOx_BRR>::p = Mask;
+            accessor<GPIOx_BRR>::ref() = Mask;
         }
 
         template<register_type Mask>
         ZOAL_INLINE_IO static void high() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            *accessor<GPIOx_BSRR>::p = Mask;
+            accessor<GPIOx_BSRR>::ref() = Mask;
         }
 
         template<register_type Mask>
         ZOAL_INLINE_IO static void toggle() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            register_type data = *accessor<GPIOx_ODR>::p;
-            *accessor<GPIOx_BRR>::p = data & Mask;
-            *accessor<GPIOx_BSRR>::p = ~data & Mask;
+            register_type data = accessor<GPIOx_ODR>::ref();
+            accessor<GPIOx_BRR>::ref() = data & Mask;
+            accessor<GPIOx_BSRR>::ref() = ~data & Mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
@@ -189,10 +189,10 @@ namespace zoal { namespace arch { namespace stm32x {
             using namespace zoal::gpio;
             using md = pin_mode_to_cnf_mode<PinMode, Mask>;
 
-            *accessor<GPIOx_OSPEEDR>::p = (*accessor<GPIOx_OSPEEDR>::p & ~md::GPIOx_OSPEEDR::clear_mask) | md::GPIOx_OSPEEDR::set_mask;
-            *accessor<GPIOx_OTYPER>::p = (*accessor<GPIOx_OTYPER>::p & ~md::GPIOx_OTYPER::clear_mask) | md::GPIOx_OTYPER::set_mask;
-            *accessor<GPIOx_MODER>::p = (*accessor<GPIOx_MODER>::p & ~md::GPIOx_MODER::clear_mask) | md::GPIOx_MODER::set_mask;
-            *accessor<GPIOx_PUPDR>::p = (*accessor<GPIOx_PUPDR>::p & ~md::GPIOx_PUPDR::clear_mask) | md::GPIOx_PUPDR::set_mask;
+            accessor<GPIOx_OSPEEDR>::ref() = (accessor<GPIOx_OSPEEDR>::ref() & ~md::GPIOx_OSPEEDR::clear_mask) | md::GPIOx_OSPEEDR::set_mask;
+            accessor<GPIOx_OTYPER>::ref() = (accessor<GPIOx_OTYPER>::ref() & ~md::GPIOx_OTYPER::clear_mask) | md::GPIOx_OTYPER::set_mask;
+            accessor<GPIOx_MODER>::ref() = (accessor<GPIOx_MODER>::ref() & ~md::GPIOx_MODER::clear_mask) | md::GPIOx_MODER::set_mask;
+            accessor<GPIOx_PUPDR>::ref() = (accessor<GPIOx_PUPDR>::ref() & ~md::GPIOx_PUPDR::clear_mask) | md::GPIOx_PUPDR::set_mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>

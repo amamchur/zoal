@@ -25,9 +25,9 @@ using usart_01 = mcu::usart_01;
 using usart_02 = mcu::usart_02;
 using usart_03 = mcu::usart_03;
 
-using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<usart_01, 64>;
-using usart_02_tx_buffer = zoal::periph::tx_ring_buffer<usart_02, 64>;
-using usart_03_tx_buffer = zoal::periph::tx_ring_buffer<usart_03, 64>;
+using usart_01_tx_buffer = usart_01::default_tx_buffer<64>;
+using usart_02_tx_buffer = usart_02::default_tx_buffer<64>;
+using usart_03_tx_buffer = usart_03::default_tx_buffer<64>;
 
 using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
 using logger_02 = zoal::utils::terminal_logger<usart_02_tx_buffer, zoal::utils::log_level::trace>;
@@ -82,11 +82,11 @@ int main() {
 #pragma GCC diagnostic pop
 
 extern "C" void USART1_IRQHandler(void) {
-    usart_01::tx_handler<usart_01_tx_buffer>();
+    usart_01::tx_handler_v2<usart_01_tx_buffer>();
 }
 
 extern "C" void USART2_IRQHandler(void) {
-    usart_01::tx_handler<usart_02_tx_buffer>();
+    usart_01::tx_handler_v2<usart_02_tx_buffer>();
 }
 
 extern "C" void SysTick_Handler() {

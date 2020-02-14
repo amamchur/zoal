@@ -122,8 +122,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
             template<class P>
             static inline void stm32_alternate_function() {
                 using cfg = crh_crl<10, 1 << P::offset>;
-                cfg::GPIOx_CRL::apply(*::zoal::mem::accessor<uint32_t, P::port::address, P::port::GPIOx_CRL>::p);
-                cfg::GPIOx_CRH::apply(*::zoal::mem::accessor<uint32_t, P::port::address, P::port::GPIOx_CRH>::p);
+                cfg::GPIOx_CRL::apply(::zoal::mem::accessor<uint32_t, P::port::address, P::port::GPIOx_CRL>::ref());
+                cfg::GPIOx_CRH::apply(::zoal::mem::accessor<uint32_t, P::port::address, P::port::GPIOx_CRH>::ref());
             }
         };
     };

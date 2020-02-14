@@ -30,31 +30,31 @@ namespace zoal { namespace arch { namespace avr {
         static void power_off() {}
 
         static void enable() {
-            *accessor<self_type::ADCSRAx>::p |= static_cast<uint8_t>(1u << 7u);
+            accessor<self_type::ADCSRAx>::ref() |= static_cast<uint8_t>(1u << 7u);
         }
 
         static void disable() {
-            *accessor<self_type::ADCSRAx>::p &= ~static_cast<uint8_t>(1u << 7u);
+            accessor<self_type::ADCSRAx>::ref() &= ~static_cast<uint8_t>(1u << 7u);
         }
 
         static void enable_interrupt() {
-            *accessor<self_type::ADCSRAx>::p |= 0x08;
+            accessor<self_type::ADCSRAx>::ref() |= 0x08;
         }
 
         static void disable_interrupt() {
-            *accessor<self_type::ADCSRAx>::p &= ~0x08;
+            accessor<self_type::ADCSRAx>::ref() &= ~0x08;
         }
 
         static void start() {
-            *accessor<self_type::ADCSRAx>::p |= 1 << 6;
+            accessor<self_type::ADCSRAx>::ref() |= 1 << 6;
         }
 
         static void wait() {
-            while (*accessor<self_type::ADCSRAx>::p & (1 << 6)) continue;
+            while (accessor<self_type::ADCSRAx>::ref() & (1 << 6)) continue;
         }
 
         static uint16_t value() {
-            return *zoal::mem::accessor<uint16_t, Address, self_type::ADCx>::p;
+            return zoal::mem::accessor<uint16_t, Address, self_type::ADCx>::ref();
         }
 
         static uint16_t read() {

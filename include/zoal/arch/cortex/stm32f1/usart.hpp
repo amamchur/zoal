@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_STM32F1_USART_HPP
 #define ZOAL_ARCH_STM32F1_USART_HPP
 
-#include "../../../data/ring_buffer.hpp"
+#include "../../../data/ring_buffer_ext.hpp"
 #include "../../../gpio/pin_mode.hpp"
 #include "../../../io/stream_functor.hpp"
 #include "../../../mem/accessor.hpp"
@@ -32,47 +32,74 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static constexpr uint32_t USARTx_CR1_bit_RXNEIE = 1 << 5; // Bit 5 RXNE: Read data register not empty
         static constexpr uint32_t USARTx_CR1_bit_TXEIE = 1 << 7; // Bit 7 TXEIE: interrupt enable
 
+        using self_type = usart<Address, Mixin...>;
+
+        class tx_fifo_control {
+        public:
+            using scope_lock = zoal::utils::interrupts_off;
+
+            static inline void item_added() {
+                self_type::enable_tx();
+            }
+
+            static inline void item_removed() {}
+        };
+
+        class rx_fifo_control {
+        public:
+            using scope_lock = zoal::utils::interrupts_off;
+
+            static inline void item_added() {
+                self_type::enable_rx();
+            }
+
+            static inline void item_removed() {}
+        };
+
+        template<size_t Size>
+        using default_tx_buffer = zoal::data::static_blocking_fifo_buffer<uint8_t, Size, tx_fifo_control>;
+
+        template<size_t Size>
+        using default_rx_buffer = zoal::data::static_blocking_fifo_buffer<uint8_t, Size, rx_fifo_control>;
+
+        using null_tx_buffer = zoal::data::null_fifo_buffer<uint8_t>;
+        using null_rx_buffer = zoal::data::null_fifo_buffer<uint8_t>;
+
         static inline void enable() {
-            *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_UE;
+            accessor<USARTx_CR1>::ref() |= USARTx_CR1_bit_UE;
         }
 
         static inline void disable() {
-            *accessor<USARTx_CR1>::p &= ~USARTx_CR1_bit_UE;
+            accessor<USARTx_CR1>::ref() &= ~USARTx_CR1_bit_UE;
         }
 
         static inline void enable_tx() {
-            *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_TXEIE;
+            accessor<USARTx_CR1>::ref() |= USARTx_CR1_bit_TXEIE;
         }
 
         static inline void disable_tx() {
-            *accessor<USARTx_CR1>::p &= ~USARTx_CR1_bit_TXEIE;
+            accessor<USARTx_CR1>::ref() &= ~USARTx_CR1_bit_TXEIE;
         }
 
         static inline void enable_rx() {
-            *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_RXNEIE;
+            accessor<USARTx_CR1>::ref() |= USARTx_CR1_bit_RXNEIE;
         }
-
-//        static inline void write_byte(uint8_t data) {
-//            zoal::utils::interrupts ni(false);
-//            buffer.tx.enqueue(data, true);
-//            *accessor<USARTx_CR1>::p |= USARTx_CR1_bit_TXEIE;
-//        }
 
         static inline void flush() {}
 
         template<class H>
         static void rx_handler() {
-            auto rx_enabled = *accessor<USARTx_CR1>::p & USARTx_CR1_bit_RXNEIE;
+            auto rx_enabled = accessor<USARTx_CR1>::ref() & USARTx_CR1_bit_RXNEIE;
             if (!rx_enabled) {
                 return;
             }
 
-            auto rx_not_empty = *accessor<USARTx_SR>::p & USARTx_SR_bit_RXNE;
+            auto rx_not_empty = accessor<USARTx_SR>::ref() & USARTx_SR_bit_RXNE;
             if (!rx_not_empty) {
                 return;
             }
 
-            H::put(*accessor<USARTx_DR>::p);
+            H::put(accessor<USARTx_DR>::ref());
         }
 
         template<class H>
@@ -82,17 +109,52 @@ namespace zoal { namespace arch { namespace stm32f1 {
                 return;
             }
 
-            auto tx_enabled = *accessor<USARTx_CR1>::p & USARTx_CR1_bit_TXEIE;
+            auto tx_enabled = accessor<USARTx_CR1>::ref() & USARTx_CR1_bit_TXEIE;
             if (!tx_enabled) {
                 return;
             }
 
-            auto tx_empty = *accessor<USARTx_SR>::p & USARTx_SR_bit_TXE;
+            auto tx_empty = accessor<USARTx_SR>::ref() & USARTx_SR_bit_TXE;
             if (!tx_empty) {
                 return;
             }
 
-            *accessor<USARTx_DR>::p = H::get();
+            accessor<USARTx_DR>::ref() = H::get();
+        }
+
+        template<class Buffer>
+        static inline void rx_handler_v2() {
+            auto rx_enabled = accessor<USARTx_CR1>::ref() & USARTx_CR1_bit_RXNEIE;
+            if (!rx_enabled) {
+                return;
+            }
+
+            auto rx_not_empty = accessor<USARTx_SR>::ref() & USARTx_SR_bit_RXNE;
+            if (!rx_not_empty) {
+                return;
+            }
+
+            Buffer::push_back(accessor<USARTx_DR>::ref());
+        }
+
+        template<class Buffer>
+        static void tx_handler_v2() {
+            auto tx_enabled = accessor<USARTx_CR1>::ref() & USARTx_CR1_bit_TXEIE;
+            if (!tx_enabled) {
+                return;
+            }
+
+            auto tx_empty = accessor<USARTx_SR>::ref() & USARTx_SR_bit_TXE;
+            if (!tx_empty) {
+                return;
+            }
+
+            typename Buffer::value_type value;
+            if (Buffer::pop_front(value)) {
+                accessor<USARTx_DR>::ref() = value;
+            } else {
+                disable_tx();
+            }
         }
     };
 }}}

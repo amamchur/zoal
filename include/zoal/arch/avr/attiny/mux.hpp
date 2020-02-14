@@ -39,8 +39,8 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             using accessor = zoal::mem::accessor<uint8_t, A::address, Offset>;
 
             static void on() {
-                clear_and_set<0x0F, mux_set_mask>::apply(*accessor<A::ADMUXx>::p);
-                clear_and_set<(1 << 3), mux5>::apply(*accessor<A::ADCSRBx>::p);
+                clear_and_set<0x0F, mux_set_mask>::apply(accessor<A::ADMUXx>::ref());
+                clear_and_set<(1 << 3), mux5>::apply(accessor<A::ADCSRBx>::ref());
             }
 
             static void off() {}
@@ -60,11 +60,11 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
 
             static void on() {
-                TCCRxA_cfg_on::apply(*accessor<T::TCCRxA>::p);
+                TCCRxA_cfg_on::apply(accessor<T::TCCRxA>::ref());
             }
 
             static void off() {
-                TCCRxA_cfg_off::apply(*accessor<T::TCCRxA>::p);
+                TCCRxA_cfg_off::apply(accessor<T::TCCRxA>::ref());
             }
         };
     };

@@ -65,8 +65,8 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             static void apply() {
                 T::disable();
 
-                TCCRxA_cfg::apply(*accessor<T::TCCRxA>::p);
-                TCCRxB_cfg::apply(*accessor<T::TCCRxB>::p);
+                TCCRxA_cfg::apply(accessor<T::TCCRxA>::ref());
+                TCCRxB_cfg::apply(accessor<T::TCCRxB>::ref());
             }
         };
 

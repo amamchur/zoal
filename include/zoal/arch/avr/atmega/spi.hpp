@@ -27,17 +27,17 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static void power_off() {}
 
         static void enable() {
-            *accessor<SPCRx>::p |= 0x40; // SPE0
+            accessor<SPCRx>::ref() |= 0x40; // SPE0
         }
 
         static void disable() {
-            *accessor<SPCRx>::p &= ~0x40; // SPE0
+            accessor<SPCRx>::ref() &= ~0x40; // SPE0
         }
 
         static uint8_t transfer_byte(uint8_t data) {
-            *accessor<SPDRx>::p = data;
-            while (!(*accessor<SPSRx>::p & 0x80)) continue; // SPIFx
-            return *accessor<SPDRx>::p;
+            accessor<SPDRx>::ref() = data;
+            while (!(accessor<SPSRx>::ref() & 0x80)) continue; // SPIFx
+            return accessor<SPDRx>::ref();
         }
     };
 }}}}

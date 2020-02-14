@@ -67,30 +67,30 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static void power_off() {}
 
         static void enable() {
-            *accessor<UCSRxB>::p |= static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
+            accessor<UCSRxB>::ref() |= static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
         }
 
         static void disable() {
-            *accessor<UCSRxB>::p &= ~static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
+            accessor<UCSRxB>::ref() &= ~static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
         }
 
         static inline void enable_tx() {
-            *accessor<UCSRxB>::p |= 1 << UDRIEx;
+            accessor<UCSRxB>::ref() |= 1 << UDRIEx;
         }
 
         static inline void disable_tx() {
-            *accessor<UCSRxB>::p &= ~(1 << UDRIEx);
+            accessor<UCSRxB>::ref() &= ~(1 << UDRIEx);
         }
 
         static void flush() {}
 
         template<class H>
         static inline void rx_handler() {
-            if (*accessor<UCSRxA>::p & (1 << UPEx)) {
+            if (accessor<UCSRxA>::ref() & (1 << UPEx)) {
                 return;
             }
 
-            H::put(*accessor<UDRx>::p);
+            H::put(accessor<UDRx>::ref());
         }
 
         template<class H>
@@ -100,29 +100,29 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 return;
             }
 
-            *accessor<UDRx>::p = H::get();
-            *accessor<UCSRxA>::p |= (1 << TXCx);
+            accessor<UDRx>::ref() = H::get();
+            accessor<UCSRxA>::ref() |= (1 << TXCx);
 
             if (H::empty()) {
-                *accessor<UCSRxB>::p &= ~(1 << UDRIEx);
+                accessor<UCSRxB>::ref() &= ~(1 << UDRIEx);
             }
         }
 
         template<class Buffer>
         static inline void rx_handler_v2() {
-            if (*accessor<UCSRxA>::p & (1 << UPEx)) {
+            if (accessor<UCSRxA>::ref() & (1 << UPEx)) {
                 return;
             }
 
-            Buffer::push_back(*accessor<UDRx>::p);
+            Buffer::push_back(accessor<UDRx>::ref());
         }
 
         template<class Buffer>
         static void tx_handler_v2() {
             typename Buffer::value_type value;
             if (Buffer::pop_front(value)) {
-                *accessor<UDRx>::p = value;
-                *accessor<UCSRxA>::p |= (1 << TXCx);
+                accessor<UDRx>::ref() = value;
+                accessor<UCSRxA>::ref() |= (1 << TXCx);
             } else {
                 disable_tx();
             }

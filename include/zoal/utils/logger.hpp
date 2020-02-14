@@ -4,14 +4,7 @@
 #include "../io/output_stream.hpp"
 
 namespace zoal { namespace utils {
-    enum class log_level {
-        trace,
-        debug,
-        info,
-        warn,
-        error,
-        highest
-    };
+    enum class log_level { trace, debug, info, warn, error, highest };
 
     template<class Prefixer>
     class prefix_placer {
@@ -27,63 +20,45 @@ namespace zoal { namespace utils {
     class prefix_placer<void> {
     public:
         template<class T>
-        void place_preffix() {
-        }
+        void place_preffix(T &t) {}
     };
 
     template<class Suffixer>
     class suffix_placer {
     public:
-        suffix_placer() : enabled(false) {
-        }
+        suffix_placer() {}
 
         template<class T>
         void place_suffix(T &t) {
-            if (enabled) {
-                Suffixer p;
-                t << p;
-            }
+            Suffixer p;
+            t << p;
         }
-
-        void enable_suffix() {
-            enabled = true;
-        }
-
-        bool enabled;
     };
 
     template<>
     class suffix_placer<void> {
     public:
         template<class T>
-        void place_suffix(T &) {
-        }
-
-        void enable_suffix() {
-        }
+        void place_suffix(T &) {}
     };
 
-    template<
-            class Transport,
-            class Prefixer = void,
-            class Suffixer = void,
-            bool enabled = true
-    >
+    template<class Transport, class Prefixer = void, class Suffixer = void, bool enabled = true>
     class log_stream : public prefix_placer<Prefixer>, suffix_placer<Suffixer> {
     public:
-        log_stream() : stream(zoal::io::transport_proxy<Transport>::instance()) {
+        log_stream()
+            : stream(zoal::io::transport_proxy<Transport>::instance()) {
             this->template place_preffix<>(*this);
         }
 
-        log_stream(const log_stream &log) : stream(zoal::io::transport_proxy<Transport>::instance()) {
-            log.flush = false;
+        log_stream(const log_stream &log)
+            : stream(zoal::io::transport_proxy<Transport>::instance()) {
+            log.final = false;
             stream.precision = log.stream.precision;
             stream.radix = log.stream.radix;
-            this->enable_suffix();
         }
 
         ~log_stream() {
-            if (flush) {
+            if (final) {
                 this->template place_suffix<>(*this);
             }
         }
@@ -100,7 +75,7 @@ namespace zoal { namespace utils {
         }
 
     private:
-        mutable bool flush{true};
+        mutable bool final{true};
         zoal::io::output_stream stream;
     };
 
@@ -131,12 +106,7 @@ namespace zoal { namespace utils {
         }
     };
 
-    template<
-            class Transport,
-            log_level MinLevel = log_level::info,
-            class Prefixer = zoal::io::new_line_cr_lf,
-            class Suffixer = void
-    >
+    template<class Transport, log_level MinLevel = log_level::info, class Prefixer = zoal::io::new_line_cr_lf, class Suffixer = void>
     class plain_logger {
     public:
         static constexpr log_level min_level = MinLevel;
@@ -149,8 +119,7 @@ namespace zoal { namespace utils {
             return hs();
         }
 
-        static void clear() {
-        }
+        static void clear() {}
 
         static ls<log_level::trace >= MinLevel> trace() {
             return ls<log_level::trace >= MinLevel>();
@@ -173,12 +142,7 @@ namespace zoal { namespace utils {
         }
     };
 
-    template<
-            class Transport,
-            log_level MinLevel = log_level::info,
-            class Prefixer = zoal::io::new_line_cr_lf,
-            class Suffixer = zoal::io::stop_escape_sequence
-    >
+    template<class Transport, log_level MinLevel = log_level::info, class Prefixer = zoal::io::new_line_cr_lf, class Suffixer = zoal::io::stop_escape_sequence>
     class terminal_logger {
     public:
         static constexpr log_level min_level = MinLevel;
@@ -199,15 +163,15 @@ namespace zoal { namespace utils {
             return ls<log_level::trace >= MinLevel>() << "\033[0;36mTRACE ";
         }
 
-        static ls<log_level::debug >= MinLevel>debug() {
+        static ls<log_level::debug >= MinLevel> debug() {
             return ls<log_level::debug >= MinLevel>() << "\033[0;37mDEBUG ";
         }
 
-        static ls<log_level::info >= MinLevel>info() {
+        static ls<log_level::info >= MinLevel> info() {
             return ls<log_level::info >= MinLevel>() << "\033[0;32mINFO  ";
         }
 
-        static ls<log_level::warn >= MinLevel>warn() {
+        static ls<log_level::warn >= MinLevel> warn() {
             return ls<log_level::warn >= MinLevel>() << "\033[0;33mWARN  ";
         }
 

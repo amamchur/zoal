@@ -186,10 +186,10 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static void apply() {
                 U::disable();
 
-                *accessor<U::UBRRxL>::p = UBRRxL_value;
-                *accessor<U::UBRRxH>::p = UBRRxH_value;
-                *accessor<U::UCSRxA>::p = UCSRxA_value;
-                *accessor<U::UCSRxC>::p = usart_mode_cfg<Bits, Parity, StopBits>::UCSRxC_value;
+                accessor<U::UBRRxL>::ref() = UBRRxL_value;
+                accessor<U::UBRRxH>::ref() = UBRRxH_value;
+                accessor<U::UCSRxA>::ref() = UCSRxA_value;
+                accessor<U::UCSRxC>::ref() = usart_mode_cfg<Bits, Parity, StopBits>::UCSRxC_value;
             }
         };
 
@@ -211,8 +211,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static void apply() {
                 T::disable();
 
-                TCCRxA_cfg::apply(*accessor<T::TCCRxA>::p);
-                TCCRxB_cfg::apply(*accessor<T::TCCRxB>::p);
+                TCCRxA_cfg::apply(accessor<T::TCCRxA>::ref());
+                TCCRxB_cfg::apply(accessor<T::TCCRxB>::ref());
             }
         };
 
@@ -228,8 +228,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static void apply() {
                 A::disable();
 
-                ADMUXx_cfg::apply(*accessor<A::ADMUXx>::p);
-                ADCSRAx_cfg::apply(*accessor<A::ADCSRAx>::p);
+                ADMUXx_cfg::apply(accessor<A::ADMUXx>::ref());
+                ADCSRAx_cfg::apply(accessor<A::ADCSRAx>::ref());
             }
         };
 
@@ -263,8 +263,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static void apply() {
                 S::disable();
 
-                SPCRx::apply(*accessor<S::SPCRx>::p);
-                SPSRx::apply(*accessor<S::SPSRx>::p);
+                SPCRx::apply(accessor<S::SPCRx>::ref());
+                SPSRx::apply(accessor<S::SPSRx>::ref());
             }
         };
 
@@ -279,11 +279,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static void apply() {
                 I::disable();
 
-                *accessor<I::TWSRx>::p = 0;
-                *accessor<I::TWBRx>::p = TWBRx_value;
+                accessor<I::TWSRx>::ref() = 0;
+                accessor<I::TWBRx>::ref() = TWBRx_value;
 
-                //                *accessor<TWSRx>::p &= ~(1 << TWPS0x | 1 << TWPS1x);
-                //                *accessor<TWBRx>::p = ((Config::freq / Config::i2c_freq) - 16) / 2;
+                //                *accessor<TWSRx>::ref() &= ~(1 << TWPS0x | 1 << TWPS1x);
+                //                *accessor<TWBRx>::ref() = ((Config::freq / Config::i2c_freq) - 16) / 2;
             }
         };
     };

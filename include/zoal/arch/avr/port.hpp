@@ -62,33 +62,33 @@ namespace zoal { namespace arch { namespace avr {
         }
 
         static register_type read() {
-            return *accessor<PINx>::p;
+            return accessor<PINx>::ref();
         }
 
         template<register_type Mask>
         ZOAL_INLINE_IO static void low() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            *accessor<PORTx>::p &= ~Mask;
+            accessor<PORTx>::ref() &= ~Mask;
         }
 
         template<register_type Mask>
         ZOAL_INLINE_IO static void high() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            *accessor<PORTx>::p |= Mask;
+            accessor<PORTx>::ref() |= Mask;
         }
 
         template<register_type Mask>
         static void toggle() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            *accessor<PORTx>::p ^= Mask;
+            *accessor<PORTx>::ref() ^= Mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
         static void mode() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
             using cfg = pin_mode_cfg<PinMode, Mask & pin_mask>;
-            cfg::DDRx::apply(*accessor<DDRx>::p);
-            cfg::PORTx::apply(*accessor<PORTx>::p);
+            cfg::DDRx::apply(accessor<DDRx>::ref());
+            cfg::PORTx::apply(accessor<PORTx>::ref());
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>

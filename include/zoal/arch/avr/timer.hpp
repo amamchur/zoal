@@ -47,9 +47,9 @@ namespace zoal { namespace arch { namespace avr {
 
             switch (Channel) {
             case 0:
-                return *accessor<self_type::OCRxA>::p;
+                return accessor<self_type::OCRxA>::ref();
             case 1:
-                return *accessor<self_type::OCRxB>::p;
+                return accessor<self_type::OCRxB>::ref();
             default:
                 break;
             }
@@ -63,10 +63,10 @@ namespace zoal { namespace arch { namespace avr {
 
             switch (Channel) {
             case 0:
-                *accessor<self_type::OCRxA>::p = value;
+                accessor<self_type::OCRxA>::ref() = value;
                 break;
             case 1:
-                *accessor<self_type::OCRxB>::p = value;
+                accessor<self_type::OCRxB>::ref() = value;
                 break;
             default:
                 break;

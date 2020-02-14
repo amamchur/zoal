@@ -102,7 +102,7 @@ namespace zoal { namespace mem {
 
         ZOAL_INLINE_MF apply_modifiers() {
             using acc = zoal::mem::accessor<typename current::mem_type, Address, current::offset>;
-            current::template apply(*acc::p);
+            current::template apply(acc::ref());
             next();
         }
     };
@@ -118,7 +118,7 @@ namespace zoal { namespace mem {
 
         ZOAL_INLINE_MF clear_modifiers() {
             using acc = zoal::mem::accessor<typename modifier::mem_type, Address, modifier::offset>;
-            modifier::template clear(*acc::p);
+            modifier::template clear(acc::ref());
         }
     };
 

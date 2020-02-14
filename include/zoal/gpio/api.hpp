@@ -228,7 +228,13 @@ namespace zoal { namespace gpio {
         using low = port_action<ports, low_functor, Pins...>;
 
         template<class... Pins>
+        using _0 = low<Pins...>;
+
+        template<class... Pins>
         using high = port_action<ports, high_functor, Pins...>;
+
+        template<class... Pins>
+        using _1 = high<Pins...>;
 
         template<zoal::gpio::pin_mode PinMode, class... Pins>
         using mode = port_action<ports, mode_functor<PinMode>, Pins...>;

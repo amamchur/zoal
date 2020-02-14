@@ -14,13 +14,15 @@ using usart_01 = mcu::usart_01;
 using usart_02 = mcu::usart_02;
 using usart_03 = mcu::usart_03;
 
-using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<usart_01, 64>;
+using usart_01_tx_buffer = usart_01::default_tx_buffer<16>;
+
+//using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<usart_01, 64>;
 using usart_02_tx_buffer = zoal::periph::tx_ring_buffer<usart_02, 64>;
 using usart_03_tx_buffer = zoal::periph::tx_ring_buffer<usart_03, 1024>;
 
 using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
-using logger_02 = zoal::utils::terminal_logger<usart_02_tx_buffer, zoal::utils::log_level::trace>;
-using logger_03 = zoal::utils::terminal_logger<usart_03_tx_buffer, zoal::utils::log_level::trace>;
+//using logger_02 = zoal::utils::terminal_logger<usart_02_tx_buffer, zoal::utils::log_level::trace>;
+//using logger_03 = zoal::utils::terminal_logger<usart_03_tx_buffer, zoal::utils::log_level::trace>;
 
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
@@ -66,7 +68,7 @@ void do_test() {
         diff = CPU_CYCLES - overhead;
     }
 
-    logger_03::info() << "v: " << Value << "; ops: " << diff;
+    logger_01::info() << "v: " << Value << "; ops: " << diff;
 }
 
 int main() {
@@ -97,23 +99,23 @@ int main() {
 
     int counter = 0;
 
-    logger_03::info() << "--- Start ---";
+    logger_01::info() << "--- Start ---";
 
-    using np = zoal::utils::nop<33>;
-    logger_03::info() << "Loops: " << np::loops << "; ops: " << (np::loops * 9);
-    logger_03::info() << "Rest : " << np::rest;
+//    using np = zoal::utils::nop<33>;
+//    logger_03::info() << "Loops: " << np::loops << "; ops: " << (np::loops * 9);
+//    logger_03::info() << "Rest : " << np::rest;
 
     while (true) {
-        logger_03::info() << "-";
-        do_test<31>();
-        do_test<42>();
-        do_test<53>();
-        do_test<64>();
-        do_test<75>();
-        do_test<86>();
-        do_test<97>();
-        counter++;
-        ::delay::ms(3000);
+//        logger_03::info() << "-";
+//        do_test<31>();
+//        do_test<42>();
+//        do_test<53>();
+//        do_test<64>();
+//        do_test<75>();
+//        do_test<86>();
+//        do_test<97>();
+//        counter++;
+//        ::delay::ms(3000);
     }
 
     return 0;
@@ -124,13 +126,13 @@ extern "C" void SysTick_Handler(void) {
 }
 
 extern "C" void USART1_IRQHandler() {
-    usart_01::tx_handler<usart_01_tx_buffer>();
+    usart_01::tx_handler_v2<usart_01_tx_buffer>();
 }
 
 extern "C" void USART2_IRQHandler() {
-    usart_01::tx_handler<usart_02_tx_buffer>();
+//    usart_01::tx_handler<usart_02_tx_buffer>();
 }
 
 extern "C" void USART3_IRQHandler() {
-    usart_03::tx_handler<usart_03_tx_buffer>();
+//    usart_03::tx_handler<usart_03_tx_buffer>();
 }

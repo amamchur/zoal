@@ -53,12 +53,12 @@ namespace zoal { namespace arch { namespace stm32x {
         private:
             template<class Port, uint8_t Pin, uint8_t af>
             static inline void stm32_alternate_function() {
-                *Port::template accessor<Port::GPIOx_OSPEEDR>::p |= (0x3 << (Pin * 2)); // 50MHz
-                *Port::template accessor<Port::GPIOx_OTYPER>::p &= ~(0x1 << Pin); // Output push-pull
-                zoal::mem::clear_and_set<0x3, 0x2, Pin * 2>::apply(*Port::template accessor<Port::GPIOx_MODER>::p);
+                Port::template accessor<Port::GPIOx_OSPEEDR>::ref() |= (0x3 << (Pin * 2)); // 50MHz
+                Port::template accessor<Port::GPIOx_OTYPER>::ref() &= ~(0x1 << Pin); // Output push-pull
+                zoal::mem::clear_and_set<0x3, 0x2, Pin * 2>::apply(Port::template accessor<Port::GPIOx_MODER>::ref());
 
                 constexpr auto index = Pin < 8 ? Port::GPIOx_AFRL : Port::GPIOx_AFRH;
-                zoal::mem::clear_and_set<0xF, af, (Pin & 0x7) << 2>::apply(*Port::template accessor<index>::p);
+                zoal::mem::clear_and_set<0xF, af, (Pin & 0x7) << 2>::apply(Port::template accessor<index>::ref());
             }
         };
     };

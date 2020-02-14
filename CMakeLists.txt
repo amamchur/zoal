@@ -39,6 +39,10 @@ set(APPS_SRCS apps/templates/uno_lcd_shield.hpp)
 add_mcu_executable(ATmega328p atmega328p ${ZOAL_FILES} ${APPS_SRCS} ${ZOAL_FILES} apps/atmega328p.cpp)
 target_compile_definitions(ATmega328p.elf PRIVATE F_CPU=16000000UL)
 
+ragel_generate_cpp(apps/stepper_28byj_machine.rl STEPPER_STATE_MACHINE_SRC)
+add_mcu_executable(Stepper28BYJ atmega328p ${ZOAL_FILES} ${APPS_SRCS} ${ZOAL_FILES} apps/stepper_28byj.cpp ${STEPPER_STATE_MACHINE_SRC})
+target_compile_definitions(Stepper28BYJ.elf PRIVATE F_CPU=16000000UL)
+
 add_mcu_executable(ATmega32u4 atmega32u4 ${ZOAL_FILES} ${APPS_SRCS} apps/atmega32u4.cpp)
 target_compile_definitions(ATmega32u4.elf PRIVATE F_CPU=16000000UL)
 

@@ -68,11 +68,11 @@ namespace zoal { namespace arch { namespace stm32x {
             static void apply() {
                 U::disable();
 
-                *accessor<U::USARTx_BRR>::p = bbr;
-                USARTx_CR1::apply(*accessor<U::USARTx_CR1>::p);
-                USARTx_CR2::apply(*accessor<U::USARTx_CR2>::p);
-                USARTx_CR3::apply(*accessor<U::USARTx_CR3>::p);
-                USARTx_BRR::apply(*accessor<U::USARTx_BRR>::p);
+                accessor<U::USARTx_BRR>::ref() = bbr;
+                USARTx_CR1::apply(accessor<U::USARTx_CR1>::ref());
+                USARTx_CR2::apply(accessor<U::USARTx_CR2>::ref());
+                USARTx_CR3::apply(accessor<U::USARTx_CR3>::ref());
+                USARTx_BRR::apply(accessor<U::USARTx_BRR>::ref());
             }
         };
     };

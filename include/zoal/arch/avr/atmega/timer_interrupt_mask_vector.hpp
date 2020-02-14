@@ -17,22 +17,22 @@ namespace zoal { namespace arch { namespace avr {
 
         template<uint8_t Timer>
         static void enable_overflow_interrupt() {
-            *accessor<Timer>::p |= (1 << TOIEx);
+            accessor<Timer>::ref() |= (1 << TOIEx);
         }
 
         template<uint8_t Timer>
         static void disable_overflow_interrupt() {
-            *accessor<Timer>::p &= ~(1 << TOIEx);
+            accessor<Timer>::ref() &= ~(1 << TOIEx);
         }
 
         template<uint8_t Timer, uint8_t Channel>
         static void enable_compare_match_interrupt() {
             switch (Channel) {
             case 0:
-                *accessor<Timer>::p |= (1 << OCIEAx);
+                accessor<Timer>::ref() |= (1 << OCIEAx);
                 break;
             case 1:
-                *accessor<Timer>::p |= (1 << OCIEBx);
+                accessor<Timer>::ref() |= (1 << OCIEBx);
                 break;
             default:
                 break;
@@ -43,10 +43,10 @@ namespace zoal { namespace arch { namespace avr {
         static void disable_compare_match_interrupt() {
             switch (Channel) {
             case 0:
-                *accessor<Timer>::p &= ~(1 << OCIEAx);
+                accessor<Timer>::ref() &= ~(1 << OCIEAx);
                 break;
             case 1:
-                *accessor<Timer>::p &= ~(1 << OCIEBx);
+                accessor<Timer>::ref() &= ~(1 << OCIEBx);
                 break;
             default:
                 break;

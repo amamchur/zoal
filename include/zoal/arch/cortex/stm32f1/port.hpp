@@ -89,35 +89,35 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using modifier = zoal::mem::modifier<Offset, register_type, Clear, Set, WriteOnly>;
 
         static inline register_type read() {
-            return *accessor<GPIOx_IDR>::p;
+            return *accessor<GPIOx_IDR>::ref();
         }
 
         template<register_type Mask>
         static void low() {
             static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
-            *accessor<GPIOx_BRR>::p = Mask;
+            *accessor<GPIOx_BRR>::ref() = Mask;
         }
 
         template<register_type Mask>
         static void high() {
             static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
-            *accessor<GPIOx_BSRR>::p = Mask;
+            accessor<GPIOx_BSRR>::ref() = Mask;
         }
 
         template<register_type Mask>
         static void toggle() {
             static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
-            auto data = *accessor<GPIOx_ODR>::p;
-            *accessor<GPIOx_BRR>::p = data & Mask;
-            *accessor<GPIOx_BSRR>::p = ~data & Mask;
+            auto data = accessor<GPIOx_ODR>::ref();
+            accessor<GPIOx_BRR>::ref() = data & Mask;
+            accessor<GPIOx_BSRR>::ref() = ~data & Mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
         static inline void mode() {
             using namespace zoal::gpio;
             using md = pin_mode_cfg<PinMode, Mask>;
-            *accessor<GPIOx_CRL>::p = (*accessor<GPIOx_CRL>::p & ~md::GPIOx_CRL::clear_mask) | md::GPIOx_CRL::set_mask;
-            *accessor<GPIOx_CRH>::p = (*accessor<GPIOx_CRH>::p & ~md::GPIOx_CRH::clear_mask) | md::GPIOx_CRH::set_mask;
+            accessor<GPIOx_CRL>::ref() = (accessor<GPIOx_CRL>::ref() & ~md::GPIOx_CRL::clear_mask) | md::GPIOx_CRL::set_mask;
+            accessor<GPIOx_CRH>::ref() = (accessor<GPIOx_CRH>::ref() & ~md::GPIOx_CRH::clear_mask) | md::GPIOx_CRH::set_mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
