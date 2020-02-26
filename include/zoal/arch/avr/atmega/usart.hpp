@@ -84,32 +84,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
         static void flush() {}
 
-        template<class H>
-        static inline void rx_handler() {
-            if (accessor<UCSRxA>::ref() & (1 << UPEx)) {
-                return;
-            }
-
-            H::put(accessor<UDRx>::ref());
-        }
-
-        template<class H>
-        static void tx_handler() {
-            if (H::empty()) {
-                disable_tx();
-                return;
-            }
-
-            accessor<UDRx>::ref() = H::get();
-            accessor<UCSRxA>::ref() |= (1 << TXCx);
-
-            if (H::empty()) {
-                accessor<UCSRxB>::ref() &= ~(1 << UDRIEx);
-            }
-        }
-
         template<class Buffer>
-        static inline void rx_handler_v2() {
+        static inline void rx_handler() {
             if (accessor<UCSRxA>::ref() & (1 << UPEx)) {
                 return;
             }
@@ -118,7 +94,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         }
 
         template<class Buffer>
-        static void tx_handler_v2() {
+        static void tx_handler() {
             typename Buffer::value_type value;
             if (Buffer::pop_front(value)) {
                 accessor<UDRx>::ref() = value;

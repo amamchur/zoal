@@ -87,9 +87,9 @@ ISR(TIMER0_OVF_vect) {
 }
 
 ISR(USART0_RX_vect) {
-    usart::rx_handler_v2<rx_buffer>();
+    usart::rx_handler<rx_buffer>();
 }
 
 ISR(USART0_UDRE_vect) {
-    usart::tx_handler_v2<tx_buffer>();
+    usart::tx_handler<tx_buffer>();
 }

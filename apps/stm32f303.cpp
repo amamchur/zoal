@@ -82,11 +82,11 @@ int main() {
 #pragma GCC diagnostic pop
 
 extern "C" void USART1_IRQHandler(void) {
-    usart_01::tx_handler_v2<usart_01_tx_buffer>();
+    usart_01::tx_handler<usart_01_tx_buffer>();
 }
 
 extern "C" void USART2_IRQHandler(void) {
-    usart_01::tx_handler_v2<usart_02_tx_buffer>();
+    usart_01::tx_handler<usart_02_tx_buffer>();
 }
 
 extern "C" void SysTick_Handler() {

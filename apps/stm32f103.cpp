@@ -126,7 +126,7 @@ extern "C" void SysTick_Handler(void) {
 }
 
 extern "C" void USART1_IRQHandler() {
-    usart_01::tx_handler_v2<usart_01_tx_buffer>();
+    usart_01::tx_handler<usart_01_tx_buffer>();
 }
 
 extern "C" void USART2_IRQHandler() {

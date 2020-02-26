@@ -22,7 +22,6 @@ using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using delay = tools::delay;
 using led_pin = pcb::ard_d13;
 
-
 using stepper_type = zoal::io::stepper_28byj<tools, pcb::ard_d07, pcb::ard_d06, pcb::ard_d05, pcb::ard_d04, 4>;
 stepper_type stepper;
 
@@ -124,8 +123,6 @@ int main() {
 
     zoal::utils::interrupts::on();
 
-    logger::info() << "Hello";
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
@@ -162,9 +159,9 @@ ISR(TIMER2_OVF_vect) {
 }
 
 ISR(USART_RX_vect) {
-    usart::rx_handler_v2<rx_buffer>();
+    usart::rx_handler<rx_buffer>();
 }
 
 ISR(USART_UDRE_vect) {
-    usart::tx_handler_v2<tx_buffer>();
+    usart::tx_handler<tx_buffer>();
 }

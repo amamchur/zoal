@@ -87,43 +87,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
         static inline void flush() {}
 
-        template<class H>
-        static void rx_handler() {
-            auto rx_enabled = accessor<USARTx_CR1>::ref() & USARTx_CR1_bit_RXNEIE;
-            if (!rx_enabled) {
-                return;
-            }
-
-            auto rx_not_empty = accessor<USARTx_SR>::ref() & USARTx_SR_bit_RXNE;
-            if (!rx_not_empty) {
-                return;
-            }
-
-            H::put(accessor<USARTx_DR>::ref());
-        }
-
-        template<class H>
-        static inline void tx_handler() {
-            if (H::empty()) {
-                disable_tx();
-                return;
-            }
-
-            auto tx_enabled = accessor<USARTx_CR1>::ref() & USARTx_CR1_bit_TXEIE;
-            if (!tx_enabled) {
-                return;
-            }
-
-            auto tx_empty = accessor<USARTx_SR>::ref() & USARTx_SR_bit_TXE;
-            if (!tx_empty) {
-                return;
-            }
-
-            accessor<USARTx_DR>::ref() = H::get();
-        }
-
         template<class Buffer>
-        static inline void rx_handler_v2() {
+        static inline void rx_handler() {
             auto rx_enabled = accessor<USARTx_CR1>::ref() & USARTx_CR1_bit_RXNEIE;
             if (!rx_enabled) {
                 return;
@@ -138,7 +103,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
         }
 
         template<class Buffer>
-        static void tx_handler_v2() {
+        static void tx_handler() {
             auto tx_enabled = accessor<USARTx_CR1>::ref() & USARTx_CR1_bit_TXEIE;
             if (!tx_enabled) {
                 return;
