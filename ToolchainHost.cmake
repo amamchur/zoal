@@ -15,6 +15,8 @@ function(add_zoal_tests)
     set(TEST_CASES_FILES
             tests/static_assertion.cpp
             tests/stub_classes.cpp
+            tests/pin_control.cpp
+            tests/atmega_48_88_168_328.cpp
             )
     add_executable(zoal_tests
             tests/utils/mcu_memory.hpp
@@ -22,6 +24,7 @@ function(add_zoal_tests)
             tests/utils/ms_counter.cpp
             ${TEST_CASES_FILES}
             )
+    target_compile_definitions(zoal_tests PRIVATE -DZOAL_COVERAGE)
 
     target_include_directories(zoal_tests PRIVATE ${GTEST_INCLUDE_DIRS})
     target_link_libraries(zoal_tests PRIVATE GTest::GTest GTest::Main)

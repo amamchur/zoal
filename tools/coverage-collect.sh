@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-
-cd ./cmake-build-debug-test/CMakeFiles/zoal_tests.dir/tests
+pwd
+cd ./cmake-build-debug-host/CMakeFiles/zoal_tests.dir/tests
 pwd
 
 lcov --capture --directory . --output-file coverage_full.info
@@ -10,4 +10,4 @@ lcov --remove coverage_full.info \
 
 genhtml coverage.info -o ../../../../coverage
 
-lcov -z -d .
+# lcov -z -d .

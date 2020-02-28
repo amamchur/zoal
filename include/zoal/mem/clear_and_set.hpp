@@ -22,6 +22,11 @@ namespace zoal { namespace mem {
             using ma = zoal::mem::accessor<T, Address, 0>;
             *ma::p = (*ma::p & ~clear_mask) | set_mask;
         }
+
+        template<class T, uintptr_t Address, uintptr_t Offset>
+        ZOAL_INLINE_MF static void apply(const zoal::mem::mock<T> &value) {
+            apply(*value.get_ptr());
+        }
     };
 
     template<uint8_t Shift>
@@ -34,6 +39,11 @@ namespace zoal { namespace mem {
 
         template<uintptr_t Address, class T>
         ZOAL_INLINE_MF static void apply() {}
+
+        template<class T>
+        ZOAL_INLINE_MF static void apply(const zoal::mem::mock<T> &value) {
+            apply(*value.get_ptr());
+        }
     };
 
     template<uintptr_t Clear, uint8_t Shift>
@@ -50,6 +60,11 @@ namespace zoal { namespace mem {
         ZOAL_INLINE_MF static void apply() {
             using ma = zoal::mem::accessor<T, Address, 0>;
             *ma::p &= ~clear_mask;
+        }
+
+        template<class T>
+        ZOAL_INLINE_MF static void apply(const zoal::mem::mock<T> &value) {
+            apply(*value.get_ptr());
         }
     };
 
@@ -68,6 +83,11 @@ namespace zoal { namespace mem {
             using ma = zoal::mem::accessor<T, Address, 0>;
             *ma::p |= set_mask;
         }
+
+        template<class T>
+        ZOAL_INLINE_MF static void apply(const zoal::mem::mock<T> &value) {
+            apply(*value.get_ptr());
+        }
     };
 
     template<uintptr_t Set, uint8_t Shift>
@@ -84,6 +104,11 @@ namespace zoal { namespace mem {
         ZOAL_INLINE_MF static void apply() {
             using ma = zoal::mem::accessor<T, Address, 0>;
             *ma::p |= set_mask;
+        }
+
+        template<class T>
+        ZOAL_INLINE_MF static void apply(const zoal::mem::mock<T> &value) {
+            apply(*value.get_ptr());
         }
     };
 

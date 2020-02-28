@@ -80,7 +80,7 @@ namespace zoal { namespace arch { namespace avr {
         template<register_type Mask>
         static void toggle() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            *accessor<PORTx>::ref() ^= Mask;
+            accessor<PORTx>::ref() ^= Mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
