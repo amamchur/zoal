@@ -1,5 +1,5 @@
 #include <zoal/data/rx_tx_buffer.hpp>
-#include <zoal/mcu/stm32f103c8.hpp>
+#include <zoal/mcu/stm32f103c8tx.hpp>
 #include <zoal/periph/rx_ring_buffer.hpp>
 #include <zoal/periph/tx_ring_buffer.hpp>
 #include <zoal/utils/ms_counter.hpp>
@@ -9,7 +9,7 @@
 
 extern "C" __IO uint32_t uwTick;
 
-using mcu = zoal::mcu::stm32f103c8<>;
+using mcu = zoal::mcu::stm32f103c8tx<>;
 using usart_01 = mcu::usart_01;
 using usart_02 = mcu::usart_02;
 using usart_03 = mcu::usart_03;
