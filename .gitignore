@@ -1,4 +1,5 @@
 cmake-build-*
 coverage
 node_modules
+cube-repo
 *.rl.cpp
