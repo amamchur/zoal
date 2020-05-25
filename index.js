@@ -4,6 +4,8 @@ const ATmega = require('./generator/ATmega');
 const ATtiny = require('./generator/ATtiny');
 const STM32 = require('./generator/STM32');
 
+// node index.js -f stm32 -m ~/STM32CubeMX/db/mcu/STM32F303V(B-C)Tx.xml -o stm32f303vctx.hpp
+
 program
     .version('0.0.0')
     .option('-f, --family [family]', 'MCU family', /^(atmega|attiny|stm32)$/)

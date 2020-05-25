@@ -100,11 +100,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
 
             static void on() {
-                TCCRxA_cfg_on::apply(*accessor<T::TCCRxA>::ref());
+                TCCRxA_cfg_on::apply(accessor<T::TCCRxA>::ref());
             }
 
             static void off() {
-                TCCRxA_cfg_off::apply(*accessor<T::TCCRxA>::ref());
+                TCCRxA_cfg_off::apply(accessor<T::TCCRxA>::ref());
             }
         };
 

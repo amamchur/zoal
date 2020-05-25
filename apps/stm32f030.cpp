@@ -7,10 +7,6 @@
 
 volatile uint32_t milliseconds_counter = 0;
 
-extern "C" void SysTick_Handler(void) {
-    milliseconds_counter++;
-}
-
 using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
 using mcu = zoal::mcu::stm32f030f4px<8000000, 6>; // 48 MHz
 
@@ -22,7 +18,7 @@ using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::
 using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
 using delay = tools::delay;
 
-int main() {
+extern "C" [[noreturn]] void zoal_main() {
     using namespace zoal::gpio;
 
     SysTick_Config(SystemCoreClock / 1000);
@@ -48,10 +44,4 @@ int main() {
         mcu::pa_04::high();
         ::delay::ms(500);
     }
-
-    return 0;
-}
-
-extern "C" void USART1_IRQHandler() {
-    usart_01::tx_handler<usart_01_tx_buffer>();
 }

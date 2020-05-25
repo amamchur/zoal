@@ -12,11 +12,11 @@
 namespace zoal { namespace mem {
     template<class T, uintptr_t Address, uintptr_t Offset>
     struct accessor {
-        static inline volatile T *ptr() {
+        ZOAL_INLINE_IO static volatile T *ptr() {
             return reinterpret_cast<volatile T *>(Address + Offset);
         }
 
-        static inline volatile T &ref() {
+        ZOAL_INLINE_IO static volatile T &ref() {
             return *reinterpret_cast<volatile T *>(Address + Offset);
         }
     };

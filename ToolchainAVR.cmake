@@ -80,3 +80,7 @@ endfunction(add_zoal_tests)
 function(add_host_executable NAME)
     add_executable(${NAME} apps/_empty.cpp)
 endfunction(add_host_executable)
+
+function(add_cubemx_project NAME MCU)
+    add_executable(${NAME}.elf apps/_empty.cpp)
+endfunction(add_cubemx_project)

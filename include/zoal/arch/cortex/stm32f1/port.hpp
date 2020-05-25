@@ -89,13 +89,13 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using modifier = zoal::mem::modifier<Offset, register_type, Clear, Set, WriteOnly>;
 
         static inline register_type read() {
-            return *accessor<GPIOx_IDR>::ref();
+            return accessor<GPIOx_IDR>::ref();
         }
 
         template<register_type Mask>
         static void low() {
             static_assert((Mask & PinMask) == Mask && Mask != 0, "Incorrect pin mask");
-            *accessor<GPIOx_BRR>::ref() = Mask;
+            accessor<GPIOx_BRR>::ref() = Mask;
         }
 
         template<register_type Mask>

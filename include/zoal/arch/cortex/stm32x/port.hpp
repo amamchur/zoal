@@ -161,7 +161,7 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr uintptr_t GPIOx_BRR = 0x28;
 
         ZOAL_INLINE_IO static register_type read() {
-            return *accessor<GPIOx_IDR>::ref();
+            return accessor<GPIOx_IDR>::ref();
         }
 
         template<register_type Mask>
