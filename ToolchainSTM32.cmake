@@ -15,17 +15,6 @@ set(COMMON_FLAGS "-specs=nosys.specs -specs=nano.specs")
 set(CMAKE_CXX_FLAGS_INIT "${COMMON_FLAGS}")
 set(CMAKE_C_FLAGS_INIT "${COMMON_FLAGS}")
 
-function(add_mcu_executable NAME MCU)
-    #    if (${MCU} MATCHES "^[sS][tT][mM]32")
-    #        message(STATUS ${MCU})
-    #        add_stm32_executable(${NAME} ${MCU} ${ARGN})
-    #    else ()
-    #        add_executable(${NAME}.elf apps/_empty.cpp)
-    #    endif ()
-
-    add_executable(${NAME}.elf apps/_empty.cpp)
-endfunction(add_mcu_executable)
-
 function(add_zoal_tests)
     add_executable(zoal_tests apps/_empty.cpp)
 endfunction(add_zoal_tests)
@@ -182,6 +171,8 @@ function(add_cubemx_project NAME CUBEMX_PROJ_PATH)
 
     file(GLOB LINKER_FILE "${CUBEMX_PROJ_PATH}/*.ld")
 
+    message(STATUS "Link File ${LINKER_FILE}")
+
     target_link_options(${NAME}.elf PUBLIC
             -T${LINKER_FILE}
             -Wl,-Map,"${NAME}.map"
@@ -205,3 +196,46 @@ function(add_cubemx_project NAME CUBEMX_PROJ_PATH)
             "${LST_FILE}"
             "${NAME}.map")
 endfunction(add_cubemx_project)
+
+function(add_mcu_executable NAME MCU)
+    if (${MCU} MATCHES "^[sS][tT][mM]32")
+        string(TOUPPER ${NAME} UPPER_NAME)
+
+        set(ARM_SRC "${${UPPER_NAME}_SRC}")
+        set(ARM_INC "${${UPPER_NAME}_INC}")
+        set(ARM_DEFS "${${UPPER_NAME}_DEFS}")
+        set(ARM_LD "${${UPPER_NAME}_LD}")
+        set(ARM_OPT_MCU "${${UPPER_NAME}_OPT_MCU}")
+
+        set(ARM_COMMON_FLAGS ${ARM_OPT_MCU}
+                -ffunction-sections
+                -fdata-sections
+                -g
+                -fno-common
+                -fmessage-length=0
+                )
+
+        add_executable(${NAME}.elf ${ARM_SRC} ${ARGN})
+        target_include_directories(${NAME}.elf PUBLIC ${ARM_INC})
+        target_compile_definitions(${NAME}.elf PUBLIC ${ARM_DEFS})
+        target_compile_options(${NAME}.elf PUBLIC ${ARM_COMMON_FLAGS})
+
+        get_filename_component(ARM_LD_ABS ${ARM_LD} ABSOLUTE)
+        target_link_options(${NAME}.elf PUBLIC -T${ARM_LD_ABS} -Wl,-Map,"${NAME}.map" -Wl,--gc-sections ${ARM_COMMON_FLAGS})
+
+        set(LST_FILE ${NAME}.lst)
+        add_custom_command(
+                TARGET ${NAME}.elf
+                POST_BUILD
+                COMMAND ${ARM_OBJDUMP} -S ${NAME}.elf > ${LST_FILE}
+                COMMAND ${ARM_SIZE} ${NAME}.elf)
+        set_property(
+                DIRECTORY
+                APPEND
+                PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+                "${LST_FILE}"
+                "${NAME}.map")
+    else ()
+        add_executable(${NAME}.elf apps/_empty.cpp)
+    endif ()
+endfunction(add_mcu_executable)

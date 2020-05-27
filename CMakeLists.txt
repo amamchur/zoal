@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.6)
+project(zoal CXX C ASM)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
+set(STM32_FM_REPO cube-repo)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -11,7 +13,6 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
     add_compile_options("-Os")
 endif ()
 
-project(zoal CXX C ASM)
 
 function(RAGEL_GENERATE_CPP RGL_SRC CPP_SRC)
     get_filename_component(ABS_FIL ${RGL_SRC} ABSOLUTE)
@@ -31,51 +32,185 @@ function(RAGEL_GENERATE_CPP RGL_SRC CPP_SRC)
 endfunction()
 
 include_directories(include)
-file(GLOB_RECURSE ZOAL_FILES include/*.hpp)
-
-set(APPS_SRCS apps/templates/uno_lcd_shield.hpp)
 
 # --- atmega Projects ---
-add_mcu_executable(ATmega328p atmega328p ${ZOAL_FILES} ${APPS_SRCS} ${ZOAL_FILES} apps/atmega328p.cpp)
+add_mcu_executable(ATmega328p atmega328p apps/atmega328p.cpp)
 target_compile_definitions(ATmega328p.elf PRIVATE F_CPU=16000000UL)
 
 ragel_generate_cpp(apps/stepper_28byj_machine.rl STEPPER_STATE_MACHINE_SRC)
-add_mcu_executable(Stepper28BYJ atmega328p ${ZOAL_FILES} ${APPS_SRCS} ${ZOAL_FILES} apps/stepper_28byj.cpp ${STEPPER_STATE_MACHINE_SRC})
+add_mcu_executable(Stepper28BYJ atmega328p apps/stepper_28byj.cpp ${STEPPER_STATE_MACHINE_SRC})
 target_compile_definitions(Stepper28BYJ.elf PRIVATE F_CPU=16000000UL)
 
-add_mcu_executable(ATmega32u4 atmega32u4 ${ZOAL_FILES} ${APPS_SRCS} apps/atmega32u4.cpp)
+add_mcu_executable(ATmega32u4 atmega32u4 apps/atmega32u4.cpp)
 target_compile_definitions(ATmega32u4.elf PRIVATE F_CPU=16000000UL)
 
-add_mcu_executable(ATmega2560 atmega2560 ${ZOAL_FILES} ${APPS_SRCS} apps/atmega2560.cpp)
+add_mcu_executable(ATmega2560 atmega2560 apps/atmega2560.cpp)
 target_compile_definitions(ATmega2560.elf PRIVATE F_CPU=16000000UL)
 
-add_mcu_executable(ATtiny13 attiny13 ${ZOAL_FILES} ${APPS_SRCS} apps/attiny13.cpp)
+add_mcu_executable(ATtiny13 attiny13 apps/attiny13.cpp)
 target_compile_definitions(ATtiny13.elf PRIVATE F_CPU=9600000UL)
 
-add_mcu_executable(ATtiny85 attiny85 ${ZOAL_FILES} ${APPS_SRCS} apps/attiny85.cpp)
+add_mcu_executable(ATtiny85 attiny85 apps/attiny85.cpp)
 target_compile_definitions(ATtiny85.elf PRIVATE F_CPU=9600000UL)
 
-add_mcu_executable(ATtiny2313 attiny2313 ${ZOAL_FILES} ${APPS_SRCS} apps/attiny2313.cpp)
+add_mcu_executable(ATtiny2313 attiny2313 apps/attiny2313.cpp)
 target_compile_definitions(ATtiny2313.elf PRIVATE F_CPU=16000000UL)
 
 ## --- STM32 Projects ---
+# Begin cubemx-proj variables
 
-add_cubemx_project(stm32f0_cubemx cubemx-proj/stm32f030 apps/stm32f030.cpp)
-target_compile_definitions(stm32f0_cubemx.elf PRIVATE -DUSE_HAL_DRIVER -DSTM32F030x6)
+# STM32CubeMX project variables for cubemx-proj/stm32f030
+set(STM32F030_SRC 
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_dma.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.c
+        cubemx-proj/stm32f030/Src/main.c
+        cubemx-proj/stm32f030/Src/stm32f0xx_hal_msp.c
+        cubemx-proj/stm32f030/Src/stm32f0xx_it.c
+        cubemx-proj/stm32f030/Src/system_stm32f0xx.c
+        cubemx-proj/stm32f030/startup_stm32f030x6.s)
+set(STM32F030_INC 
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/CMSIS/Device/ST/STM32F0xx/Include
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/CMSIS/Include
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Inc
+        ${STM32_FM_REPO}/STM32Cube_FW_F0_V1.11.0/Drivers/STM32F0xx_HAL_Driver/Inc/Legacy
+        cubemx-proj/stm32f030/Inc)
+set(STM32F030_DEFS -DUSE_HAL_DRIVER -DSTM32F030x6)
+set(STM32F030_OPT_MCU -mcpu=cortex-m0 -mthumb)
+set(STM32F030_LD cubemx-proj/stm32f030/STM32F030F4Px_FLASH.ld)
 
-add_cubemx_project(stm32f103_blue_pill cubemx-proj/stm32f103_blue_pill apps/stm32f103c8.cpp)
-target_compile_definitions(stm32f103_blue_pill.elf PUBLIC -DUSE_HAL_DRIVER -DSTM32F103xB)
+# STM32CubeMX project variables for cubemx-proj/stm32f103_blue_pill
+set(STM32F103_BLUE_PILL_SRC 
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/list.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/port.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/queue.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/timers.c
+        cubemx-proj/stm32f103_blue_pill/Src/freertos.c
+        cubemx-proj/stm32f103_blue_pill/Src/main.c
+        cubemx-proj/stm32f103_blue_pill/Src/stm32f1xx_hal_msp.c
+        cubemx-proj/stm32f103_blue_pill/Src/stm32f1xx_hal_timebase_tim.c
+        cubemx-proj/stm32f103_blue_pill/Src/stm32f1xx_it.c
+        cubemx-proj/stm32f103_blue_pill/Src/system_stm32f1xx.c
+        cubemx-proj/stm32f103_blue_pill/startup_stm32f103xb.s)
+set(STM32F103_BLUE_PILL_INC 
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/CMSIS/Device/ST/STM32F1xx/Include
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/CMSIS/Include
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/include
+        ${STM32_FM_REPO}/STM32Cube_FW_F1_V1.8.0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3
+        cubemx-proj/stm32f103_blue_pill/Inc)
+set(STM32F103_BLUE_PILL_DEFS -DUSE_HAL_DRIVER -DSTM32F103xB)
+set(STM32F103_BLUE_PILL_OPT_MCU -mcpu=cortex-m3 -mthumb)
+set(STM32F103_BLUE_PILL_LD cubemx-proj/stm32f103_blue_pill/STM32F103C8Tx_FLASH.ld)
 
-add_cubemx_project(stm32f303_discovery cubemx-proj/stm32f303_discovery apps/stm32f303vctx.cpp)
-target_compile_definitions(stm32f303_discovery.elf PRIVATE -DUSE_HAL_DRIVER -DSTM32F303xC)
+# STM32CubeMX project variables for cubemx-proj/stm32f303_discovery
+set(STM32F303_DISCOVERY_SRC 
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_cortex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_dma.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_exti.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_flash.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_flash_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_gpio.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_i2c.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_i2c_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pcd.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pcd_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pwr.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pwr_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_rcc.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_rcc_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_spi.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_spi_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_tim.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_tim_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_ll_usb.c
+        cubemx-proj/stm32f303_discovery/Src/main.c
+        cubemx-proj/stm32f303_discovery/Src/stm32f3xx_hal_msp.c
+        cubemx-proj/stm32f303_discovery/Src/stm32f3xx_it.c
+        cubemx-proj/stm32f303_discovery/Src/system_stm32f3xx.c
+        cubemx-proj/stm32f303_discovery/startup_stm32f303xc.s)
+set(STM32F303_DISCOVERY_INC 
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/CMSIS/Device/ST/STM32F3xx/Include
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/CMSIS/Include
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Inc
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy
+        cubemx-proj/stm32f303_discovery/Inc)
+set(STM32F303_DISCOVERY_DEFS -DUSE_HAL_DRIVER -DSTM32F303xC)
+set(STM32F303_DISCOVERY_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16)
+set(STM32F303_DISCOVERY_LD cubemx-proj/stm32f303_discovery/STM32F303VCTx_FLASH.ld)
 
-add_cubemx_project(stm32f303_nucleo cubemx-proj/stm32f303_nucleo apps/stm32f303retx.cpp)
-target_compile_definitions(stm32f303_nucleo.elf PRIVATE -DUSE_HAL_DRIVER -DSTM32F303xE)
+# STM32CubeMX project variables for cubemx-proj/stm32f303_nucleo
+set(STM32F303_NUCLEO_SRC 
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_cortex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_dma.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_exti.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_flash.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_flash_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_gpio.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_i2c.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_i2c_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pwr.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pwr_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_rcc.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_rcc_ex.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_tim.c
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_tim_ex.c
+        cubemx-proj/stm32f303_nucleo/Src/main.c
+        cubemx-proj/stm32f303_nucleo/Src/stm32f3xx_hal_msp.c
+        cubemx-proj/stm32f303_nucleo/Src/stm32f3xx_it.c
+        cubemx-proj/stm32f303_nucleo/Src/system_stm32f3xx.c
+        cubemx-proj/stm32f303_nucleo/startup_stm32f303xe.s)
+set(STM32F303_NUCLEO_INC 
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/CMSIS/Device/ST/STM32F3xx/Include
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/CMSIS/Include
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Inc
+        ${STM32_FM_REPO}/STM32Cube_FW_F3_V1.11.0/Drivers/STM32F3xx_HAL_Driver/Inc/Legacy
+        cubemx-proj/stm32f303_nucleo/Inc)
+set(STM32F303_NUCLEO_DEFS -DUSE_HAL_DRIVER -DSTM32F303xE)
+set(STM32F303_NUCLEO_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16)
+set(STM32F303_NUCLEO_LD cubemx-proj/stm32f303_nucleo/STM32F303RETx_FLASH.ld)
+# End cubemx-proj variables
+
+add_mcu_executable(stm32f030 stm32 apps/stm32f030.cpp)
+add_mcu_executable(stm32f103_blue_pill stm32 apps/stm32f103c8.cpp)
+add_mcu_executable(stm32f303_discovery stm32 apps/stm32f303vctx.cpp)
+add_mcu_executable(stm32f303_nucleo stm32 apps/stm32f303retx.cpp)
 
 #add_zoal_tests()
-#
-#add_host_executable(host apps/host.cpp apps/data/fonts.cpp)
-#target_compile_definitions(host PRIVATE F_CPU=16000000UL)
-#
-#ragel_generate_cpp(apps/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)
-#add_host_executable(cmd-line ./apps/cmd_line.cpp ${CMD_STATE_MACHINE_SRC})
+
+ragel_generate_cpp(apps/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)

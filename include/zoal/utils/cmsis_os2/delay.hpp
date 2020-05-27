@@ -1,20 +1,21 @@
-#ifndef ZOAL_UTILS_DELAY_HPP
-#define ZOAL_UTILS_DELAY_HPP
+#ifndef ZOAL_UTILS_DELAY_CMSIS_OS2_HPP
+#define ZOAL_UTILS_DELAY_CMSIS_OS2_HPP
+
+#include "cmsis_os.h"
+#include "zoal/utils/nop.hpp"
 
 #include <stdint.h>
-#include "nop.hpp"
 
-namespace zoal { namespace utils {
-    template<class Microcontroller, class Counter>
+namespace zoal { namespace utils { namespace cmsis_os2 {
+    template<class Microcontroller>
     class delay {
     public:
         using mcu = Microcontroller;
-        using counter_value_type = typename Counter::value_type;
+        using counter_value_type = uint32_t;
         static constexpr uint32_t ps_per_clock  = (1000000000 / (mcu::frequency / 1000));
 
-        static void ms(counter_value_type milliseconds) {
-            auto value = Counter::now() + milliseconds;
-            while (Counter::now() < value);
+        static inline void ms(counter_value_type milliseconds) {
+            osDelay(milliseconds);
         }
 
         template<uint64_t Milliseconds>
@@ -35,6 +36,6 @@ namespace zoal { namespace utils {
             nop<clocks>::place();
         }
     };
-}}
+}}}
 
 #endif

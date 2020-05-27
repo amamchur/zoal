@@ -84,3 +84,7 @@ endfunction(add_host_executable)
 function(add_cubemx_project NAME MCU)
     add_executable(${NAME}.elf apps/_empty.cpp)
 endfunction(add_cubemx_project)
+
+function(test_fn NAME)
+    add_executable(${NAME}.elf apps/_empty.cpp)
+endfunction(test_fn)
