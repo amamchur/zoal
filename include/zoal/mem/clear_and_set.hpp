@@ -20,7 +20,7 @@ namespace zoal { namespace mem {
         template<uintptr_t Address, class T>
         ZOAL_INLINE_MF static void apply() {
             using ma = zoal::mem::accessor<T, Address, 0>;
-            *ma::p = (*ma::p & ~clear_mask) | set_mask;
+            *ma::ptr() = (*ma::ptr() & ~clear_mask) | set_mask;
         }
     };
 
@@ -66,7 +66,7 @@ namespace zoal { namespace mem {
         template<uintptr_t Address, class T>
         ZOAL_INLINE_MF static void apply() {
             using ma = zoal::mem::accessor<T, Address, 0>;
-            *ma::p |= set_mask;
+            *ma::ptr() |= set_mask;
         }
     };
 
@@ -83,19 +83,19 @@ namespace zoal { namespace mem {
         template<uintptr_t Address, class T>
         ZOAL_INLINE_MF static void apply() {
             using ma = zoal::mem::accessor<T, Address, 0>;
-            *ma::p |= set_mask;
+            *ma::ptr() |= set_mask;
         }
     };
 
-    template<class A, class B, class... Rest>
+    template<class A, class... Rest>
     struct merge_clear_and_set {
-        using next = typename merge_clear_and_set<B, Rest...>::result;
+        using next = typename merge_clear_and_set<Rest...>::result;
         using result = clear_and_set<A::clear_mask | next::clear_mask, A::set_mask | next::set_mask>;
     };
 
-    template<class A, class B>
-    struct merge_clear_and_set<A, B> {
-        using result = clear_and_set<A::clear_mask | B::clear_mask, A::set_mask | B::set_mask>;
+    template<class A>
+    struct merge_clear_and_set<A> {
+        using result = A;
     };
 }}
 

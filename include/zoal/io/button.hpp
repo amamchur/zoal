@@ -56,8 +56,7 @@ namespace zoal { namespace io {
         using api = typename tools::api;
         using counter = typename tools::counter;
 
-        template<class Callback>
-        void handle(Callback callback) {
+        uint8_t handle() {
             using namespace zoal::gpio;
 
             button_state_machine machine(Config::debounce_delay, Config::press_delay);
@@ -68,13 +67,19 @@ namespace zoal { namespace io {
             auto events = state & button_state_trigger;
             this->button_state = state & ~button_state_trigger;
 
-            if (events == 0) {
-                return;
+            if (events != 0) {
+                this->prev_time = now;
             }
 
-            this->prev_time = now;
+            return events;
+        }
 
-            button::invokeCallback(callback, events);
+        template<class Callback>
+        void handle(Callback callback) {
+            auto events = handle();
+            if (events) {
+                button::invokeCallback(callback, events);
+            }
         }
 
         template<class T, class M>

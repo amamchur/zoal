@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const separator = '\n        ';
+const STM32_FM_REPO = 'cube-repo';
 
 function removeComments(lines) {
     let result = [].concat(lines);
@@ -108,7 +109,7 @@ function initSources(result, projectPath) {
     array = array.map((v) => {
         let regexp = /^.*STM32Cube\/Repository\//;
         if (v.match(regexp)) {
-            return v.replace(/^.*STM32Cube\/Repository\//, '${STM32_FM_REPO}/');
+            return v.replace(/^.*STM32Cube\/Repository\//, `${STM32_FM_REPO}/`);
         }
         return path.join(relPath, v);
     });
@@ -129,7 +130,7 @@ function initIncludesDir(result, projectPath) {
     array = array.map((v) => {
         let regexp = /^.*STM32Cube\/Repository\//;
         if (v.match(regexp)) {
-            return v.replace(/^.*STM32Cube\/Repository\//, '${STM32_FM_REPO}/');
+            return v.replace(/^.*STM32Cube\/Repository\//, `${STM32_FM_REPO}/`);
         }
         return path.join(relPath, v);
     });
