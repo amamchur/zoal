@@ -157,8 +157,8 @@ function initCompileOptions(result) {
     return `set(${target} ${defs})`;
 }
 
-function initLinker(result, projectPath) {
-    let target = result['TARGET'].toUpperCase() + '_LD';
+function initFlashLinkerScript(result, projectPath) {
+    let target = result['TARGET'].toUpperCase() + '_FLASH_LD';
     let LDSCRIPT = result['LDSCRIPT'];
     let relPath = path.relative(__dirname, projectPath);
 
@@ -180,7 +180,7 @@ function processMakeSettings(lines, projectPath) {
         initIncludesDir(map, projectPath),
         initCompileDefinitions(map, projectPath),
         initCompileOptions(map, projectPath),
-        initLinker(map, projectPath)
+        initFlashLinkerScript(map, projectPath)
     ]
 }
 

@@ -89,7 +89,7 @@ set(STM32F030_INC
         cubemx-proj/stm32f030/Inc)
 set(STM32F030_DEFS -DUSE_HAL_DRIVER -DSTM32F030x6)
 set(STM32F030_OPT_MCU -mcpu=cortex-m0 -mthumb)
-set(STM32F030_LD cubemx-proj/stm32f030/STM32F030F4Px_FLASH.ld)
+set(STM32F030_FLASH_LD cubemx-proj/stm32f030/STM32F030F4Px_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32f103_blue_pill
 set(STM32F103_BLUE_PILL_SRC 
@@ -134,7 +134,7 @@ set(STM32F103_BLUE_PILL_INC
         cubemx-proj/stm32f103_blue_pill/Inc)
 set(STM32F103_BLUE_PILL_DEFS -DUSE_HAL_DRIVER -DSTM32F103xB)
 set(STM32F103_BLUE_PILL_OPT_MCU -mcpu=cortex-m3 -mthumb)
-set(STM32F103_BLUE_PILL_LD cubemx-proj/stm32f103_blue_pill/STM32F103C8Tx_FLASH.ld)
+set(STM32F103_BLUE_PILL_FLASH_LD cubemx-proj/stm32f103_blue_pill/STM32F103C8Tx_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32f303_discovery
 set(STM32F303_DISCOVERY_SRC 
@@ -171,7 +171,7 @@ set(STM32F303_DISCOVERY_INC
         cubemx-proj/stm32f303_discovery/Inc)
 set(STM32F303_DISCOVERY_DEFS -DUSE_HAL_DRIVER -DSTM32F303xC)
 set(STM32F303_DISCOVERY_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16)
-set(STM32F303_DISCOVERY_LD cubemx-proj/stm32f303_discovery/STM32F303VCTx_FLASH.ld)
+set(STM32F303_DISCOVERY_FLASH_LD cubemx-proj/stm32f303_discovery/STM32F303VCTx_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32f303_nucleo
 set(STM32F303_NUCLEO_SRC 
@@ -203,7 +203,7 @@ set(STM32F303_NUCLEO_INC
         cubemx-proj/stm32f303_nucleo/Inc)
 set(STM32F303_NUCLEO_DEFS -DUSE_HAL_DRIVER -DSTM32F303xE)
 set(STM32F303_NUCLEO_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16)
-set(STM32F303_NUCLEO_LD cubemx-proj/stm32f303_nucleo/STM32F303RETx_FLASH.ld)
+set(STM32F303_NUCLEO_FLASH_LD cubemx-proj/stm32f303_nucleo/STM32F303RETx_FLASH.ld)
 # End cubemx-proj variables
 
 set(STM32F103_BLUE_PILL_DEFS ${STM32F103_BLUE_PILL_DEFS} -DZOAL_INLINE_LEVEL=0)
