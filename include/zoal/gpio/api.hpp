@@ -291,6 +291,8 @@ namespace zoal { namespace gpio {
 
         template<class L>
         struct apply<L> {
+            using result = L;
+
             apply() {
                 zoal::mem::apply_cas_list<L>();
             }

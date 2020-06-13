@@ -31,17 +31,18 @@ namespace zoal { namespace mcu {
         using port_d = port<0x0030, 0x7F>;
         using port_a = port<0x0039, 0x07>;
 
+        template<uint32_t Address>
         class timer_00_mem_model {
         public:
             using word = uint8_t;
 
-            static constexpr ptrdiff_t TCCRxA = 0x00;
-            static constexpr ptrdiff_t TCNTx = 0x02;
-            static constexpr ptrdiff_t TCCRxB = 0x03;
-            static constexpr ptrdiff_t OCRxA = 0x06;
-            static constexpr ptrdiff_t TIFRx = 0x08;
-            static constexpr ptrdiff_t TIMSKx = 0x09;
-            static constexpr ptrdiff_t OCRxB = 0x0C;
+            using TCCRxA = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using TCNTx = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using TCCRxB = zoal::mem::reg<Address + 0x03, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using OCRxA = zoal::mem::reg<Address + 0x06, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using TIFRx = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using TIMSKx = zoal::mem::reg<Address + 0x09, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using OCRxB = zoal::mem::reg<Address + 0x0C, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
 
             static constexpr uint8_t TCCRxA_COMxA = 0xC0;
             static constexpr uint8_t TCCRxA_COMxB = 0x30;
@@ -58,21 +59,22 @@ namespace zoal { namespace mcu {
             static constexpr uint8_t TIMSKx_OCIExA = 0x01;
         };
 
-        using timer_00 = ::zoal::arch::avr::timer8<0x0050, 0, false, timer_00_mem_model>;
+        using timer_00 = ::zoal::arch::avr::timer8<0x0050, 0, false, timer_00_mem_model<0x0050>>;
 
+        template<uint32_t Address>
         class timer_01_mem_model {
         public:
             using word = uint16_t;
 
-            static constexpr ptrdiff_t TCCRxC = 0x00;
-            static constexpr ptrdiff_t ICRx = 0x02;
-            static constexpr ptrdiff_t OCRxB = 0x06;
-            static constexpr ptrdiff_t OCRxA = 0x08;
-            static constexpr ptrdiff_t TCNTx = 0x0A;
-            static constexpr ptrdiff_t TCCRxB = 0x0C;
-            static constexpr ptrdiff_t TCCRxA = 0x0D;
-            static constexpr ptrdiff_t TIFRx = 0x16;
-            static constexpr ptrdiff_t TIMSKx = 0x17;
+            using TCCRxC = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using ICRx = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using OCRxB = zoal::mem::reg<Address + 0x06, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using OCRxA = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using TCNTx = zoal::mem::reg<Address + 0x0A, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using TCCRxB = zoal::mem::reg<Address + 0x0C, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using TCCRxA = zoal::mem::reg<Address + 0x0D, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using TIFRx = zoal::mem::reg<Address + 0x16, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using TIMSKx = zoal::mem::reg<Address + 0x17, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
 
             static constexpr uint8_t TCCRxC_FOCxA = 0x80;
             static constexpr uint8_t TCCRxC_FOCxB = 0x40;
@@ -93,7 +95,7 @@ namespace zoal { namespace mcu {
             static constexpr uint8_t TIMSKx_ICIEx = 0x08;
         };
 
-        using timer_01 = ::zoal::arch::avr::timer16<0x0042, 1, timer_01_mem_model>;
+        using timer_01 = ::zoal::arch::avr::timer16<0x0042, 1, timer_01_mem_model<0x0042>>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;

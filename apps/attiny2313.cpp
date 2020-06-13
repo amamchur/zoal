@@ -32,7 +32,7 @@ using tools = zoal::utils::tool_set<mcu, counter, logger>;
 int main() {
     mcu::power<timer>::on();
 
-    mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
+//    mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
     mcu::irq::timer<timer>::enable_overflow_interrupt();
     mcu::enable<timer>::on();
 

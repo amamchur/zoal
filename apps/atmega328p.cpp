@@ -80,10 +80,17 @@ void initialize_hardware() {
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
     mcu::irq::timer<timer>::enable_overflow_interrupt();
 
+    mcu::cfg::timer<mcu::timer_01 , zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
+    mcu::irq::timer<mcu::timer_01>::enable_overflow_interrupt();
+
     mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::on();
     mcu::cfg::i2c<i2c>::apply();
 
-    mcu::cfg::spi<spi, 4>::apply();
+    using a = mcu::cfg::spi<spi, 4>;
+    a::list();
+//    ::apply();
+
+
     mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::on();
     mcu::enable<spi>::on();
 

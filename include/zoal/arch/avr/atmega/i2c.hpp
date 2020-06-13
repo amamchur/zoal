@@ -2,6 +2,7 @@
 #define ZOAL_ARCH_AVR_ATMEGA_I2C_HPP
 
 #include "../../../mem/accessor.hpp"
+#include "../../../mem/reg.hpp"
 #include "../../../periph/i2c_stream.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../../utils/nop.hpp"
@@ -65,30 +66,30 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
         using self_type = i2c<Address, N>;
 
-        static constexpr uintptr_t TWBRx = 0;
-        static constexpr uintptr_t TWSRx = 1;
-        static constexpr uintptr_t TWARx = 2;
-        static constexpr uintptr_t TWDRx = 3;
-        static constexpr uintptr_t TWCRx = 4;
-        static constexpr uintptr_t TWAMRx = 5;
+        using TWBRx = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using TWSRx = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using TWARx = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using TWDRx = zoal::mem::reg<Address + 0x03, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using TWCRx = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using TWAMRx = zoal::mem::reg<Address + 0x05, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
 
         static void power_on() {}
 
         static void power_off() {}
 
         static void enable() {
-            accessor<TWCRx>::ref() = 1 << TWENx | 1 << TWIEx | 1 << TWEAx;
+            TWCRx::ref() = 1 << TWENx | 1 << TWIEx | 1 << TWEAx;
         }
 
         static void disable() {
-            accessor<TWCRx>::ref() &= ~(1 << TWENx | 1 << TWIEx | 1 << TWEAx);
+            TWCRx::ref() &= ~(1 << TWENx | 1 << TWIEx | 1 << TWEAx);
         }
 
         static void transmit(zoal::periph::i2c_stream<self_type> *stream) {
             stream_ = stream;
             stream_->result = zoal::periph::i2c_result::ok;
             busy_ = 1;
-            accessor<TWCRx>::ref() = START;
+            TWCRx::ref() = START;
         }
 
         static void transmission_complete(zoal::periph::i2c_result result) {
@@ -107,7 +108,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         }
 
         static void wait() {
-            while (busy_ || (accessor<TWCRx>::ref() & 1 << TWSTOx));
+            while (busy_ || (TWCRx::ref() & 1 << TWSTOx));
         }
 
         static bool busy() {
@@ -120,27 +121,27 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr uint8_t STOP = 1 << TWENx | 1 << TWIEx | 1 << TWEAx | 1 << TWINTx | 1 << TWSTOx;
 
         static void handle_irq() {
-            auto status = static_cast<uint8_t>(accessor<TWSRx>::ref() & 0xF8);
+            auto status = static_cast<uint8_t>(TWSRx::ref() & 0xF8);
             switch (status) {
             case I2C_BUS_ERROR:
-                accessor<TWCRx>::ref() = STOP;
+                TWCRx::ref() = STOP;
                 transmission_complete(zoal::periph::i2c_result::error);
                 break;
             case I2C_START:
             case I2C_REP_START:
-                accessor<TWDRx>::ref() = stream_->address();
-                accessor<TWCRx>::ref() = ACK;
+                TWDRx::ref() = stream_->address();
+                TWCRx::ref() = ACK;
                 break;
             case I2C_MT_SLA_ACK:
             case I2C_MT_DATA_ACK:
                 if (stream_->has_next()) {
-                    accessor<TWDRx>::ref() = stream_->dequeue();
-                    accessor<TWCRx>::ref() = ACK;
+                    TWDRx::ref() = stream_->dequeue();
+                    TWCRx::ref() = ACK;
                     return;
                 }
 
                 if (stream_->stop_) {
-                    accessor<TWCRx>::ref() = STOP;
+                    TWCRx::ref() = STOP;
                     transmission_complete(zoal::periph::i2c_result::ok);
                     return;
                 }
@@ -148,35 +149,35 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 transmission_complete(zoal::periph::i2c_result::end_of_stream);
                 break;
             case I2C_MT_ARB_LOST:
-                accessor<TWCRx>::ref() = ACK;
+                TWCRx::ref() = ACK;
                 transmission_complete(zoal::periph::i2c_result::error);
                 break;
             case I2C_MR_SLA_ACK:
-                accessor<TWCRx>::ref() = stream_->request_next() ? ACK : NACK;
+                TWCRx::ref() = stream_->request_next() ? ACK : NACK;
                 break;
             case I2C_MR_DATA_ACK:
-                stream_->enqueue(accessor<TWDRx>::ref());
+                stream_->enqueue(TWDRx::ref());
                 if (stream_->request_next()) {
-                    accessor<TWCRx>::ref() = ACK;
+                    TWCRx::ref() = ACK;
                 } else {
-                    accessor<TWCRx>::ref() = NACK;
+                    TWCRx::ref() = NACK;
                 }
                 break;
             case I2C_MT_SLA_NACK:
-                accessor<TWCRx>::ref() = STOP;
+                TWCRx::ref() = STOP;
                 transmission_complete(zoal::periph::i2c_result::error);
                 break;
             case I2C_MT_DATA_NACK:
-                accessor<TWCRx>::ref() = STOP;
+                TWCRx::ref() = STOP;
                 transmission_complete(zoal::periph::i2c_result::error);
                 break;
             case I2C_MR_SLA_NACK:
-                accessor<TWCRx>::ref() = STOP;
+                TWCRx::ref() = STOP;
                 transmission_complete(zoal::periph::i2c_result::error);
                 break;
             case I2C_MR_DATA_NACK:
-                stream_->enqueue(accessor<TWDRx>::ref());
-                accessor<TWCRx>::ref() = STOP;
+                stream_->enqueue(TWDRx::ref());
+                TWCRx::ref() = STOP;
                 transmission_complete(zoal::periph::i2c_result::ok);
                 break;
             default:

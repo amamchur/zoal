@@ -16,15 +16,15 @@ class irq : public zoal::utils::interrupts {
             using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
 
             static void enable_overflow_interrupt() {
-                accessor<T::TIMSKx>::ref() |= T::TIMSKx_TOIEx;
+                T::TIMSKx::ref() |= T::TIMSKx_TOIEx;
             }
 
             static void disable_overflow_interrupt() {
-                accessor<T::TIMSKx>::ref() &= ~T::TIMSKx_TOIEx;
+                T::TIMSKx::ref() &= ~T::TIMSKx_TOIEx;
             }
 
             static void clear_overflow_interrupt_flag() {
-                accessor<T::TIFRx>::ref() &= ~T::TIFRx_TOVx;
+                T::TIFRx::ref() &= ~T::TIFRx_TOVx;
             }
 
             template<uint8_t Channel>

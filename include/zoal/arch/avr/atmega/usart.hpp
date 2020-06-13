@@ -54,51 +54,53 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr auto address = Address;
 
-        static constexpr intptr_t UCSRxA = 0;
-        static constexpr intptr_t UCSRxB = 1;
-        static constexpr intptr_t UCSRxC = 2;
-        static constexpr intptr_t UCSRxD = 3; // ATmega32U4 only
-        static constexpr intptr_t UBRRxL = 4;
-        static constexpr intptr_t UBRRxH = 5;
-        static constexpr intptr_t UDRx = 6;
+        using SPCRx = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+
+        using UCSRxA = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UCSRxB = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UCSRxC = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UCSRxD = zoal::mem::reg<Address + 0x03, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UBRRxL = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UBRRxH = zoal::mem::reg<Address + 0x05, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UDRx = zoal::mem::reg<Address + 0x06, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
 
         static void power_on() {}
 
         static void power_off() {}
 
         static void enable() {
-            accessor<UCSRxB>::ref() |= static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
+            UCSRxB::ref() |= static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
         }
 
         static void disable() {
-            accessor<UCSRxB>::ref() &= ~static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
+            UCSRxB::ref() &= ~static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
         }
 
         static inline void enable_tx() {
-            accessor<UCSRxB>::ref() |= 1 << UDRIEx;
+            UCSRxB::ref() |= 1 << UDRIEx;
         }
 
         static inline void disable_tx() {
-            accessor<UCSRxB>::ref() &= ~(1 << UDRIEx);
+            UCSRxB::ref() &= ~(1 << UDRIEx);
         }
 
         static void flush() {}
 
         template<class Buffer>
         static void rx_handler() {
-            if (accessor<UCSRxA>::ref() & (1 << UPEx)) {
+            if (UCSRxA::ref() & (1 << UPEx)) {
                 return;
             }
 
-            Buffer::push_back(accessor<UDRx>::ref());
+            Buffer::push_back(UDRx::ref());
         }
 
         template<class Buffer>
         static void tx_handler() {
             typename Buffer::value_type value;
             if (Buffer::pop_front(value)) {
-                accessor<UDRx>::ref() = value;
-                accessor<UCSRxA>::ref() |= (1 << TXCx);
+                UDRx::ref() = value;
+                UCSRxA::ref() |= (1 << TXCx);
             } else {
                 disable_tx();
             }

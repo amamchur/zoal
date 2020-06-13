@@ -53,18 +53,18 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             static_assert(pwm_channel_mapping<T, Pin, Channel>::value, "Unsupported PWM connection");
 
             static constexpr auto mask = static_cast<uint8_t>(Channel == 0 ? (1u << 7u) : (1u << 5u));
-            using TCCRxA_cfg_on = clear_and_set<0, mask>;
-            using TCCRxA_cfg_off = clear_and_set<mask, 0>;
+            using TCCRxA_cfg_on = typename T::TCCRxA::template cas<0, mask>;
+            using TCCRxA_cfg_off = typename T::TCCRxA::template cas<mask, 0>;
 
             template<uintptr_t Offset>
             using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
 
             static void on() {
-                TCCRxA_cfg_on::apply(accessor<T::TCCRxA>::ref());
+                TCCRxA_cfg_on();
             }
 
             static void off() {
-                TCCRxA_cfg_off::apply(accessor<T::TCCRxA>::ref());
+                TCCRxA_cfg_off();
             }
         };
     };

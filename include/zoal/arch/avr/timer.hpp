@@ -47,9 +47,9 @@ namespace zoal { namespace arch { namespace avr {
 
             switch (Channel) {
             case 0:
-                return accessor<self_type::OCRxA>::ref();
+                return self_type::OCRxA::ref();
             case 1:
-                return accessor<self_type::OCRxB>::ref();
+                return self_type::OCRxB::ref();
             default:
                 break;
             }
@@ -63,10 +63,10 @@ namespace zoal { namespace arch { namespace avr {
 
             switch (Channel) {
             case 0:
-                accessor<self_type::OCRxA>::ref() = value;
+                self_type::OCRxA::ref() = value;
                 break;
             case 1:
-                accessor<self_type::OCRxB>::ref() = value;
+                self_type::OCRxB::ref() = value;
                 break;
             default:
                 break;
@@ -76,7 +76,7 @@ namespace zoal { namespace arch { namespace avr {
 }}}
 
 namespace zoal { namespace metadata {
-    template<::zoal::periph::timer_mode Mode>
+    template<class T, ::zoal::periph::timer_mode Mode>
     struct timer_mode;
 }}
 

@@ -39,10 +39,10 @@ namespace zoal { namespace metadata {
     template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
     struct i2c_mapping : base_i2c_mapping<-1, -1> {};
 
-    template<::zoal::periph::timer_mode Mode>
+    template<class T, ::zoal::periph::timer_mode Mode>
     struct timer_mode {};
 
-    template<bool async, uintptr_t ClockDivider>
+    template<class T, bool async, uintptr_t ClockDivider>
     struct timer_clock_divider {
         static_assert(ClockDivider <= 0, "Unsupported clock divider");
     };

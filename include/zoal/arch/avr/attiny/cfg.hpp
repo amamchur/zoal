@@ -1,6 +1,7 @@
 #ifndef ZOAL_ARCH_AVR_ATTINY_CFG_HPP
 #define ZOAL_ARCH_AVR_ATTINY_CFG_HPP
 
+#include "../../../gpio/api.hpp"
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../periph/adc.hpp"
 #include "../../../periph/timer_mode.hpp"
@@ -17,10 +18,10 @@ namespace zoal { namespace metadata {
     template<::zoal::periph::usart_stop_bits StopBits>
     struct usart_stop_bit_flags;
 
-    template<::zoal::periph::timer_mode Mode>
+    template<class T, ::zoal::periph::timer_mode Mode>
     struct timer_mode;
 
-    template<bool async, uintptr_t ClockDivider>
+    template<class T, bool async, uintptr_t ClockDivider>
     struct timer_clock_divider;
 
     template<zoal::periph::adc_ref Ref>
@@ -51,22 +52,15 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
         template<class T, zoal::periph::timer_mode Mode, uintptr_t ClockDivider, uintptr_t Prescale = 1, uintptr_t Period = 0xFF>
         class timer {
         public:
-            static_assert(Prescale == 1, "Unsupported prescale");
             static constexpr auto async = T::async;
-            using timer_mode_cfg = timer_mode<Mode>;
-            using clock_divider_cfg = timer_clock_divider<async, ClockDivider>;
-
-            using TCCRxA_cfg = typename timer_mode<Mode>::TCCRxA;
-            using TCCRxB_cfg = typename merge_clear_and_set<typename timer_mode_cfg::TCCRxB, typename clock_divider_cfg::TCCRxB>::result;
-
-            template<uintptr_t Offset>
-            using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
+            using timer_mode_cfg = timer_mode<T, Mode>;
+            using clock_divider_cfg = timer_clock_divider<T, async, ClockDivider>;
+            using list = typename zoal::gpio::api_new::apply<timer_mode_cfg, clock_divider_cfg>::result;
 
             static void apply() {
                 T::disable();
 
-                TCCRxA_cfg::apply(accessor<T::TCCRxA>::ref());
-                TCCRxB_cfg::apply(accessor<T::TCCRxB>::ref());
+                zoal::mem::apply_cas_list<list>();
             }
         };
 
