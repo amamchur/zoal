@@ -136,7 +136,6 @@ public:
     using logger = typename Tools::logger;
     using counter = typename Tools::counter;
     using matrix_keypad = zoal::io::matrix_keypad<Tools, row_selector, column_reader, keypad_config>;
-    using gpio_cfg = typename matrix_keypad::gpio_cfg;
 
     void init() {
     }

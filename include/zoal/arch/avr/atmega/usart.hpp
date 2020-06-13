@@ -85,7 +85,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static void flush() {}
 
         template<class Buffer>
-        static inline void rx_handler() {
+        static void rx_handler() {
             if (accessor<UCSRxA>::ref() & (1 << UPEx)) {
                 return;
             }

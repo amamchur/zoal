@@ -17,18 +17,7 @@ namespace zoal { namespace ic {
     class hd44780_interface_4bit {
     public:
         using tools = Tools;
-        using api = typename tools::api;
         using delay = typename tools::delay;
-        using gpio_cfg = typename api::template merge<
-            typename api::template mode<zoal::gpio::pin_mode::output_push_pull,
-                                        RegisterSelect,
-                                        Enable,
-                                        DataBus4,
-                                        DataBus5,
-                                        DataBus6,
-                                        DataBus7>,
-            typename api::template low<RegisterSelect, Enable, DataBus6, DataBus7>,
-            typename api::template high<DataBus4, DataBus5>>;
 
         static constexpr uint8_t bit_mode = 4;
 
@@ -173,7 +162,6 @@ namespace zoal { namespace ic {
         using iface = Interface;
         using address_selector = AddressSelector;
         using delay = typename iface::tools::delay;
-        using gpio_cfg = typename iface::gpio_cfg;
 
         enum : uint8_t {
             cmd_clear_display = 0x01,

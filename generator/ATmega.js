@@ -58,8 +58,7 @@ class ATmega extends Avr {
             let spi = this.mcu.i2cs[i];
             let hex = ATmega.toHex(spi.address, 4);
             result.push(``);
-            result.push(`template<uint8_t BufferSize>`);
-            result.push(`using i2c_00 = ::zoal::arch::avr::atmega::i2c<${hex}, ${i}, BufferSize>;`);
+            result.push(`using i2c_00 = ::zoal::arch::avr::atmega::i2c<${hex}, ${i}>;`);
         }
         return result;
     }
@@ -250,9 +249,8 @@ class ATmega extends Avr {
             this.buildPinAliases().join('\n'),
             ``,
             this.buildPortChain().join('\n'),
-            `    using api = ::zoal::gpio::api<ports>;`,
-            `    using mux = ::zoal::arch::avr::atmega::mux<api>;`,
-            `    using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;`,
+            `    using mux = ::zoal::arch::avr::atmega::mux;`,
+            `    using cfg = ::zoal::arch::avr::atmega::cfg<Frequency>;`,
             `    using irq = ::zoal::arch::avr::atmega::irq;`,
             ``,
             `    template<class ... Module>`,

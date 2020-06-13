@@ -5,6 +5,7 @@
 #include "../periph/i2c_stream.hpp"
 
 #include <stdint.h>
+#include <string.h>
 
 namespace zoal { namespace ic {
 

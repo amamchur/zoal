@@ -1,6 +1,8 @@
 #ifndef ZOAL_STEPPER_28BYJ_HPP
 #define ZOAL_STEPPER_28BYJ_HPP
 
+#include "../gpio/api.hpp"
+
 namespace zoal { namespace io {
     template<int steps, class Tools, class pin_a, class pin_b, class pin_c, class pin_d>
     class stepper_28byj_mode {};
@@ -11,7 +13,7 @@ namespace zoal { namespace io {
         using tools = Tools;
 
         static void init() {
-            typename tools::api::template mode<zoal::gpio::pin_mode::output, pin_a, pin_b, pin_c, pin_d>();
+            zoal::gpio::api_new::apply<zoal::gpio::api_new::mode<zoal::gpio::pin_mode::output, pin_a, pin_b, pin_c, pin_d>>();
         }
 
         static void select_step(uint8_t step) {
@@ -61,7 +63,7 @@ namespace zoal { namespace io {
         using tools = Tools;
 
         static void init() {
-            typename tools::api::template mode<zoal::gpio::pin_mode::output, pin_a, pin_b, pin_c, pin_d>();
+            zoal::gpio::api_new::apply<zoal::gpio::api_new::mode<zoal::gpio::pin_mode::output, pin_a, pin_b, pin_c, pin_d>>();
         }
 
         // pin_a - blue;
@@ -69,26 +71,29 @@ namespace zoal { namespace io {
         // pin_c - yellow;
         // pin_d - orage;
 
+        using api = zoal::gpio::api_new;
+        using step0 = api::apply<api::high<pin_a, pin_b>, api::low<pin_c, pin_d>>;
+        using step1 = api::apply<api::high<pin_b, pin_c>, api::low<pin_a, pin_d>>;
+        using step2 = api::apply<api::high<pin_c, pin_d>, api::low<pin_a, pin_b>>;
+        using step3 = api::apply<api::high<pin_a, pin_d>, api::low<pin_b, pin_c>>;
+        using stop = api::apply<api::low<pin_a, pin_d, pin_b, pin_c>>;
+
         static void select_step(uint8_t step) {
             switch (step) {
             case 0:
-                typename tools::api::template _1<pin_a, pin_b>();
-                typename tools::api::template _0<pin_c, pin_d>();
+                step0();
                 break;
             case 1:
-                typename tools::api::template _1<pin_b, pin_c>();
-                typename tools::api::template _0<pin_a, pin_d>();
+                step1();
                 break;
             case 2:
-                typename tools::api::template _1<pin_c, pin_d>();
-                typename tools::api::template _0<pin_a, pin_b>();
+                step2();
                 break;
             case 3:
-                typename tools::api::template _1<pin_a, pin_d>();
-                typename tools::api::template _0<pin_b, pin_c>();
+                step3();
                 break;
             default:
-                typename tools::api::template _0<pin_a, pin_d, pin_b, pin_c>();
+                stop();
                 break;
             }
         }
@@ -139,7 +144,10 @@ namespace zoal { namespace io {
         void stop() {
             perform_step = false;
             steps_left = 0;
-            typename tools::api::template _0<pin_a, pin_d, pin_b, pin_c>();
+
+            zoal::gpio::api_new::apply<zoal::gpio::api_new::low<pin_a, pin_d, pin_b, pin_c>>();
+
+            //            typename tools::api::template _0<pin_a, pin_d, pin_b, pin_c>();
         }
 
         void rotate(uint32_t steps, uint8_t dir) {

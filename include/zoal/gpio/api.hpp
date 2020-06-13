@@ -239,6 +239,63 @@ namespace zoal { namespace gpio {
         template<zoal::gpio::pin_mode PinMode, class... Pins>
         using mode = port_action<ports, mode_functor<PinMode>, Pins...>;
     };
+
+    // New API
+
+    struct low_cas {
+        template<class Pin>
+        using list = typename Pin::port::template low_cas<Pin::mask>;
+    };
+
+    struct high_cas {
+        template<class Pin>
+        using list = typename Pin::port::template high_cas<Pin::mask>;
+    };
+
+    template<zoal::gpio::pin_mode PinMode>
+    struct mode_cas {
+        template<class Pin>
+        using list = typename Pin::port::template mode_cas<PinMode, Pin::mask>;
+    };
+
+    template<class Collector, class Pin, class... Rest>
+    struct collect_cas {
+        using current = typename Collector::template list<Pin>;
+        using next = typename collect_cas<Collector, Rest...>::result;
+        using result = typename zoal::ct::type_list_join<current, next>::result;
+    };
+
+    template<class Collector, class Pin>
+    struct collect_cas<Collector, Pin> {
+        using result = typename Collector::template list<Pin>;
+    };
+
+    struct api_new {
+        template<class... Pins>
+        using low = typename zoal::mem::merge_cas_in_list<typename collect_cas<low_cas, Pins...>::result>::result;
+
+        template<class... Pins>
+        using high = typename zoal::mem::merge_cas_in_list<typename collect_cas<high_cas, Pins...>::result>::result;
+
+        template<zoal::gpio::pin_mode PinMode, class... Pins>
+        using mode = typename zoal::mem::merge_cas_in_list<typename collect_cas<mode_cas<PinMode>, Pins...>::result>::result;
+
+        template<class L, class... Rest>
+        struct apply {
+            using all = typename zoal::ct::type_list_join<L, Rest...>::result;
+            using result = typename zoal::mem::merge_cas_in_list<all>::result;
+            apply() {
+                zoal::mem::apply_cas_list<result>();
+            }
+        };
+
+        template<class L>
+        struct apply<L> {
+            apply() {
+                zoal::mem::apply_cas_list<L>();
+            }
+        };
+    };
 }}
 
 #endif

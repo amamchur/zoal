@@ -30,6 +30,7 @@
 
 volatile uint32_t milliseconds = 0;
 
+using pcb = zoal::pcb;
 using mcu = zoal::pcb::mcu;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
@@ -68,7 +69,7 @@ using check = compile_check<app0, app1, app2, app3, app4, app5, app6, app7>;
 using keypad = typename app3::shield::keypad;
 using lcd = typename app3::shield::lcd;
 
-app6 app;
+app7 app;
 
 void initialize_hardware() {
     mcu::power<usart, timer, adc, i2c>::on();
@@ -91,8 +92,6 @@ void initialize_hardware() {
     mcu::enable<usart, timer, adc, i2c>::on();
 
     zoal::utils::interrupts::on();
-
-    app.init();
 }
 
 int main() {
@@ -103,9 +102,17 @@ int main() {
 
     logger::info() << "-- Start --";
 
+    pcb::ard_d13::mode<zoal::gpio::pin_mode::output>();
+
     while (true) {
-        app.run_once();
+        pcb::ard_d13::low();
         delay::ms(500);
+
+
+        pcb::ard_d13::high();
+        delay::ms(500);
+
+        logger::info() << "Step";
     }
 
     return 0;
@@ -123,7 +130,7 @@ ISR(USART_RX_vect) {
 ISR(USART_UDRE_vect) {
     usart::tx_handler<tx_buffer>();
 }
-
-ISR(TWI_vect) {
-    i2c::handle_irq();
-}
+//
+//ISR(TWI_vect) {
+//    i2c::handle_irq();
+//}

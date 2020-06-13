@@ -53,7 +53,6 @@ namespace zoal { namespace io {
     public:
         using pin = Pin;
         using tools = Tools;
-        using api = typename tools::api;
         using counter = typename tools::counter;
 
         uint8_t handle() {
@@ -93,9 +92,7 @@ namespace zoal { namespace io {
     public:
         using pin = Pin;
         using tools = Tools;
-        using api = typename tools::api;
         using counter = typename tools::counter;
-        using gpio_cfg = typename api::template mode<Config::mode, Pin>;
 
         template<class Callback>
         void handle(Callback callback) {

@@ -12,7 +12,6 @@ template<class Tools, class Board>
 class multi_function_shield {
 public:
     using tools = Tools;
-    using api = typename tools::api;
     using self_type = multi_function_shield<Tools, Board>;
     using delay = typename tools::delay;
     using counter = typename tools::counter;
@@ -37,18 +36,6 @@ public:
 
     using pin_beeper = typename Board::ard_d03;
     using beeper = zoal::gpio::active_drain<pin_beeper>;
-
-    template<class... T>
-    using merge = typename api::template merge<T...>;
-
-    template<class... T>
-    using drain_off = typename api::template mode<zoal::gpio::pin_mode::input_floating, T...>;
-
-    using gpio_cfg = merge<typename display_type::gpio_cfg,
-                           typename button1_type::gpio_cfg,
-                           typename button2_type::gpio_cfg,
-                           typename button3_type::gpio_cfg,
-                           drain_off<pin_beeper, pin_led1, pin_led2, pin_led3, pin_led4>>;
 
     uint16_t value{0};
     uint8_t segments[4]{0};

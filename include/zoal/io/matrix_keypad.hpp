@@ -4,6 +4,7 @@
 #include "../ct/check.hpp"
 #include "../ct/helpers.hpp"
 #include "../ct/type_list.hpp"
+#include "../gpio/api.hpp"
 #include "../gpio/pin.hpp"
 #include "../gpio/pin_mode.hpp"
 #include "../utils/helpers.hpp"
@@ -19,8 +20,7 @@ namespace zoal { namespace io {
         static_assert(!zoal::ct::has_same<Rows...>::value, "Duplicated row pins");
 
         using tools = Tools;
-        using api = typename tools::api;
-        using high_impedance = typename api::template mode<zoal::gpio::pin_mode::input_floating, Rows...>;
+        using high_impedance = typename zoal::gpio::api_new::apply<zoal::gpio::api_new::mode<zoal::gpio::pin_mode::input_floating, Rows...>>;
         using pins = zoal::ct::type_list<Rows...>;
 
         static constexpr auto rows = pins::count;
@@ -55,10 +55,8 @@ namespace zoal { namespace io {
         static_assert(!zoal::ct::has_same<Columns...>::value, "Duplicated column pins");
 
         using tools = Tools;
-        using api = typename tools::api;
 
         using pins = zoal::ct::type_list<Columns...>;
-        using gpio_cfg = typename api::template mode<zoal::gpio::pin_mode::input_pull_up, Columns...>;
 
         static constexpr auto columns = pins::count;
 
@@ -93,18 +91,12 @@ namespace zoal { namespace io {
         static constexpr uint16_t press_delay_ms = 300;
     };
 
-    template<class Tools,
-             class Selector,
-             class Reader,
-             class Config = keypad_config,
-             class Machine = button_state_machine>
+    template<class Tools, class Selector, class Reader, class Config = keypad_config, class Machine = button_state_machine>
     class matrix_keypad {
     public:
-        using api = typename Tools::api;
         using delay = typename Tools::delay;
         using counter = typename Tools::counter;
         using counter_type = typename counter::value_type;
-        using gpio_cfg = typename Reader::gpio_cfg;
 
         static constexpr uint8_t rows = Selector::rows;
         static constexpr uint8_t columns = Reader::columns;
@@ -163,8 +155,7 @@ namespace zoal { namespace io {
     };
 
     template<class Tools, class Selector, class Reader, class Config, class Machine>
-    typename matrix_keypad<Tools, Selector, Reader, Config, Machine>::counter_type
-        matrix_keypad<Tools, Selector, Reader, Config, Machine>::prevTime = 0;
+    typename matrix_keypad<Tools, Selector, Reader, Config, Machine>::counter_type matrix_keypad<Tools, Selector, Reader, Config, Machine>::prevTime = 0;
 
     template<class tools, class Selector, class Reader, class Config, class Machine>
     uint8_t matrix_keypad<tools, Selector, Reader, Config, Machine>::states[Selector::rows][Reader::columns] = {0};

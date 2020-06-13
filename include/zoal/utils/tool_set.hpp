@@ -13,7 +13,6 @@ namespace zoal { namespace utils {
     class tool_set : public Mixin... {
     public:
         using mcu = Microcontroller;
-        using api = typename mcu::api;
         using counter = Counter;
         using logger = Logger;
         using counter_value_type = typename Counter::value_type;

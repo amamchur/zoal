@@ -19,6 +19,30 @@ namespace zoal { namespace ct {
     template<class First>
     struct type_list<First> : type_list_item<First, void, 1> {};
 
+    template<class Current, class Next, class Tail>
+    struct perform_type_list_join {
+        using next_helper = perform_type_list_join<Next, typename Next::next, Tail>;
+        using next_item = typename next_helper::result;
+        using result = type_list_item<typename Current::type, next_item, next_item::count + 1>;
+    };
+
+    template<class Current, class B>
+    struct perform_type_list_join<Current, void, B> {
+        using result = type_list_item<typename Current::type, B, B::count + 1>;
+    };
+
+    template<class A, class... Rest>
+    struct type_list_join {
+        using list_tail = typename type_list_join<Rest...>::result;
+        using helper = perform_type_list_join<A, typename A::next, list_tail>;
+        using result = typename helper::result;
+    };
+
+    template<class A>
+    struct type_list_join<A> {
+        using result = A;
+    };
+
     template<class List>
     struct type_list_iterator {
         template<class F>

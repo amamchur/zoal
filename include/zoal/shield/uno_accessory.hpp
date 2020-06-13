@@ -17,7 +17,6 @@ namespace zoal { namespace shield {
         using mcu = typename pcb::mcu;
         using i2c = typename mcu::i2c_00;
         using tools = Tools;
-        using api = typename tools::api;
         using potentiometer = typename pcb::ard_a00;
 
         using p9813_spi = zoal::periph::tx_software_spi<typename pcb::ard_d05, typename pcb::ard_d06>;

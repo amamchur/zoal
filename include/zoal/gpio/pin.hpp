@@ -3,6 +3,7 @@
 #ifndef ZOAL_GPIO_PIN_HPP
 #define ZOAL_GPIO_PIN_HPP
 
+#include "../ct/helpers.hpp"
 #include "../utils/defs.hpp"
 #include "null_port.hpp"
 #include "pin_mode.hpp"
@@ -45,6 +46,11 @@ namespace zoal { namespace gpio {
                 port::template low<mask>();
             }
         }
+
+        template<uint8_t Value>
+        using set_cas = zoal::ct::conditional_type<Value == 0, typename port::template low_cas<mask>, typename port::template high_cas<mask>>;
+        using low_cas = typename port::template low_cas<mask>;
+        using high_cas = typename port::template high_cas<mask>;
 
         ZOAL_INLINE_IO static void low() {
             port::template low<mask>();

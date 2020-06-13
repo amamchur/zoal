@@ -159,7 +159,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         using SPCRx = clear_and_set<0x01, 0x00, 4>;
     };
 
-    template<class Api, uint32_t Frequency>
+    template<uint32_t Frequency>
     class cfg {
     public:
         static constexpr auto frequency = Frequency;

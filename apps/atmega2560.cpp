@@ -69,7 +69,7 @@ int main() {
 
     logger::info() << "Started ATmega2560";
 
-    app6::gpio_cfg();
+//    app6::gpio_cfg();
     app.init();
     app.run();
 

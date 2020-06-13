@@ -181,11 +181,9 @@ namespace zoal { namespace mcu {
         using rxd_03 = pe_00;
         using xck_03 = pe_02;
 
-        using ports = ::zoal::ct::
-            type_list<port_a, port_b, port_c, port_d, port_e, port_f, port_g, port_h, port_j, port_k, port_l>;
-        using api = ::zoal::gpio::api<ports>;
-        using mux = ::zoal::arch::avr::atmega::mux<api>;
-        using cfg = ::zoal::arch::avr::atmega::cfg<api, Frequency>;
+        using ports = ::zoal::ct::type_list<port_a, port_b, port_c, port_d, port_e, port_f, port_g, port_h, port_j, port_k, port_l>;
+        using mux = ::zoal::arch::avr::atmega::mux;
+        using cfg = ::zoal::arch::avr::atmega::cfg<Frequency>;
         using irq = ::zoal::arch::avr::atmega::irq;
 
         template<class... Module>

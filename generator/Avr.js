@@ -526,10 +526,12 @@ class Avr extends BaseGenerator {
                 return console.log(err);
             }
 
-            let dir = path.dirname(outFile);
+            let dir = path.resolve(path.dirname(outFile));
 
-            exec(`clang-format -i ${outFile}`, {
-                cwd: dir
+            exec(`clang-format --style=file -i ${outFile}`, {
+                // cwd: dir
+            }, function () {
+                console.log(arguments)
             });
         });
     }

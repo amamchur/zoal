@@ -9,8 +9,6 @@ template<class Tools, class LedPin>
 class blink {
 private:
     using delay = typename Tools::delay;
-    using api = typename Tools::api;
-    using chain = typename api::chain;
 public:
     void init() {
         LedPin::port::power_on();

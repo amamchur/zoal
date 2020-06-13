@@ -4,13 +4,13 @@
 #define ZOAL_IC_TM1637_HPP
 
 #include "../gpio/pin.hpp"
+#include "../gpio/api.hpp"
 
 namespace zoal { namespace ic {
     template<class Tools, class CLK, class DIO>
     class tm1637 {
     public:
         using delay = typename Tools::delay;
-        using api = typename Tools::api;
 
         class transaction {
         public:
@@ -84,7 +84,10 @@ namespace zoal { namespace ic {
 
         static void begin() {
             using namespace zoal::gpio;
-            api::template mode<pin_mode::output, DIO, CLK>::apply();
+            zoal::gpio::api_new::template apply<
+                zoal::gpio::api_new::mode<pin_mode::output, DIO, CLK>
+                >();
+//            api::template mode<pin_mode::output, DIO, CLK>::apply();
         }
     };
 }}

@@ -7,7 +7,6 @@
 template<class Tools, class DI>
 class neo_pixel {
 public:
-    using api = typename Tools::api;
     using delay = typename Tools::delay;
     using transmitter = zoal::ic::transmitter_ws2812<DI, Tools::mcu::frequency>;
     using ws2812 = zoal::ic::ws2812<transmitter, delay>;
@@ -26,7 +25,6 @@ public:
     }
 
     void init() {
-        api::template power_on<DI>::apply();
         ws2812::begin();
     }
 

@@ -3,38 +3,27 @@
 
 #include "../../ct/type_list.hpp"
 #include "../../gpio/pin_mode.hpp"
-#include "../../mem/accessor.hpp"
-#include "../../mem/clear_and_set.hpp"
-#include "../../mem/modifier.hpp"
+#include "../../mem/reg.hpp"
 #include "../../utils/defs.hpp"
 #include "../bus.hpp"
 
 #include <stdint.h> /* NOLINT */
 
 namespace zoal { namespace arch { namespace avr {
-    template<::zoal::gpio::pin_mode PinMode, uint8_t Mask>
-    struct pin_mode_cfg {
-        using DDRx = ::zoal::mem::clear_and_set<0, 0>;
-        using PORTx = ::zoal::mem::clear_and_set<0, 0>;
-    };
+    template<class Port, ::zoal::gpio::pin_mode PinMode, uint8_t Mask>
+    struct pin_mode_cfg : zoal::ct::type_list<typename Port::DDRx::template cas<0, 0>, typename Port::PORTx::template cas<0, 0>> {};
 
-    template<uint8_t Mask>
-    struct pin_mode_cfg<::zoal::gpio::pin_mode::input_floating, Mask> {
-        using DDRx = ::zoal::mem::clear_and_set<Mask, 0>;
-        using PORTx = ::zoal::mem::clear_and_set<Mask, 0>;
-    };
+    template<class Port, uint8_t Mask>
+    struct pin_mode_cfg<Port, ::zoal::gpio::pin_mode::input_floating, Mask>
+        : zoal::ct::type_list<typename Port::DDRx::template cas<Mask, 0>, typename Port::PORTx::template cas<Mask, 0>> {};
 
-    template<uint8_t Mask>
-    struct pin_mode_cfg<::zoal::gpio::pin_mode::input_pull_up, Mask> {
-        using DDRx = ::zoal::mem::clear_and_set<Mask, 0>;
-        using PORTx = ::zoal::mem::clear_and_set<0, Mask>;
-    };
+    template<class Port, uint8_t Mask>
+    struct pin_mode_cfg<Port, ::zoal::gpio::pin_mode::input_pull_up, Mask>
+        : zoal::ct::type_list<typename Port::DDRx::template cas<Mask, 0>, typename Port::PORTx::template cas<0, Mask>> {};
 
-    template<uint8_t Mask>
-    struct pin_mode_cfg<::zoal::gpio::pin_mode::output_push_pull, Mask> {
-        using DDRx = ::zoal::mem::clear_and_set<0, Mask>;
-        using PORTx = ::zoal::mem::clear_and_set<0, 0>;
-    };
+    template<class Port, uint8_t Mask>
+    struct pin_mode_cfg<Port, ::zoal::gpio::pin_mode::output_push_pull, Mask>
+        : zoal::ct::type_list<typename Port::DDRx::template cas<0, Mask>, typename Port::PORTx::template cas<0, 0>> {};
 
     template<uintptr_t Address, uint8_t PinMask = 0xFF>
     class port {
@@ -42,87 +31,53 @@ namespace zoal { namespace arch { namespace avr {
         using self_type = port<Address, PinMask>;
         using register_type = uint8_t;
 
-        template<uintptr_t Offset>
-        using accessor = zoal::mem::accessor<uint8_t, Address, Offset>;
-
-        template<intptr_t Offset, register_type Clear, register_type Set>
-        using modifier = zoal::mem::modifier<Offset, register_type, Clear, Set>;
-
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr auto address = Address;
         static constexpr uint8_t pin_mask = PinMask;
-        static constexpr intptr_t PINx = 0x00;
-        static constexpr intptr_t DDRx = 0x01;
-        static constexpr intptr_t PORTx = 0x02;
 
-        static void power_on() {}
+        using PINx = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, register_type, PinMask>;
+        using DDRx = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, register_type, PinMask>;
+        using PORTx = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, register_type, PinMask>;
 
-        static void power_off() {
+        template<::zoal::gpio::pin_mode PinMode, register_type Mask>
+        using mode_cas = pin_mode_cfg<self_type, PinMode, Mask>;
+
+        template<register_type Mask>
+        using low_cas = zoal::ct::type_list<typename PORTx::template cas<Mask, 0>>;
+
+        template<register_type Mask>
+        using high_cas = zoal::ct::type_list<typename PORTx::template cas<0, Mask>>;
+
+        ZOAL_INLINE_IO static void power_on() {}
+
+        ZOAL_INLINE_IO static void power_off() {
             mode<::zoal::gpio::pin_mode::input_floating, PinMask>();
         }
 
-        static register_type read() {
-            return accessor<PINx>::ref();
+        ZOAL_INLINE_IO static register_type read() {
+            return PINx::ref();
         }
 
         template<register_type Mask>
         ZOAL_INLINE_IO static void low() {
-            static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            accessor<PORTx>::ref() &= ~Mask;
+            zoal::mem::apply_cas_list<low_cas<Mask>>();
         }
 
         template<register_type Mask>
         ZOAL_INLINE_IO static void high() {
-            static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            accessor<PORTx>::ref() |= Mask;
+            zoal::mem::apply_cas_list<high_cas<Mask>>();
         }
 
         template<register_type Mask>
-        static void toggle() {
+        ZOAL_INLINE_IO static void toggle() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            accessor<PORTx>::ref() ^= Mask;
-        }
-
-        template<::zoal::gpio::pin_mode PinMode, register_type Mask>
-        static void mode() {
-            static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            using cfg = pin_mode_cfg<PinMode, Mask & pin_mask>;
-            cfg::DDRx::apply(accessor<DDRx>::ref());
-            cfg::PORTx::apply(accessor<PORTx>::ref());
+            PORTx::ref() ^= Mask;
         }
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
-        struct mode_modifiers {
-            using cfg = pin_mode_cfg<PinMode, Mask & pin_mask>;
-
-            using modifiers = zoal::ct::type_list<modifier<DDRx, cfg::DDRx::clear_mask, cfg::DDRx::set_mask>,
-                                                  modifier<PORTx, cfg::PORTx::clear_mask, cfg::PORTx::set_mask>>;
-
-            mode_modifiers() {
-                using fm = typename zoal::mem::filter_modifiers<modifiers>::result;
-                zoal::mem::apply_modifiers<address, fm>();
-            }
-        };
-
-        template<register_type Mask>
-        struct low_modifiers {
-            using modifiers = zoal::ct::type_list<modifier<DDRx, 0, 0>, modifier<PORTx, Mask, 0>>;
-
-            low_modifiers() {
-                using fm = typename zoal::mem::filter_modifiers<modifiers>::result;
-                zoal::mem::apply_modifiers<address, fm>();
-            }
-        };
-
-        template<register_type Mask>
-        struct high_modifiers {
-            using modifiers = zoal::ct::type_list<modifier<DDRx, 0, 0>, modifier<PORTx, 0, Mask>>;
-
-            high_modifiers() {
-                using fm = typename zoal::mem::filter_modifiers<modifiers>::result;
-                zoal::mem::apply_modifiers<address, fm>();
-            }
-        };
+        ZOAL_INLINE_IO static void mode() {
+            zoal::mem::apply_cas_list<mode_cas<PinMode, Mask>>();
+        }
     };
 }}}
 

@@ -31,7 +31,6 @@ namespace zoal { namespace shield {
 
         using tools = Tools;
         using mcu = typename Board::mcu;
-        using api = typename tools::api;
         using logger = typename Tools::logger;
 
         using interface_type = zoal::ic::hd44780_interface_4bit<Tools,
@@ -53,11 +52,6 @@ namespace zoal { namespace shield {
         using analog_pin = typename Board::ard_a00;
         using adc = Adc;
         using keypad = zoal::io::analog_keypad<Tools, button_count>;
-
-        using gpio_cfg = typename api::template merge<
-            typename lcd::gpio_cfg::result,
-            typename api::template mode<zoal::gpio::pin_mode::output, calibration_pin_a>,
-            typename api::template mode<zoal::gpio::pin_mode::input_pull_up, calibration_pin_b>>;
 
         static void init() {
             lcd::init();

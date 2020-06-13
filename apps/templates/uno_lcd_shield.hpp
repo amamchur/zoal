@@ -17,7 +17,6 @@ public:
     using lcd_stream = zoal::io::output_stream;
     using delay = typename Tools::delay;
     using logger = typename Tools::logger;
-    using gpio_cfg = typename shield::gpio_cfg;
 
     typedef struct menu_item {
         const char *text;

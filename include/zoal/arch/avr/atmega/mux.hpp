@@ -3,6 +3,7 @@
 
 #include "../../../ct/check.hpp"
 #include "../../../gpio/pin.hpp"
+#include "../../../gpio/api.hpp"
 #include "../../../mem/accessor.hpp"
 #include "../../../mem/clear_and_set.hpp"
 #include "../../../utils/helpers.hpp"
@@ -33,17 +34,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::metadata::spi_mapping;
     using zoal::metadata::usart_mapping;
 
-    template<class Api>
     class mux {
-    private:
-        using api = Api;
-
-        template<zoal::gpio::pin_mode Mode, class... T>
-        using mode = typename api::template mode<Mode, T...>;
-
-        template<class... T>
-        using merge = typename api::template merge<T...>;
-
     public:
         template<class U, class Rx, class Tx, class Ck = zoal::gpio::null_pin>
         class usart {
@@ -122,11 +113,16 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(ss::slave_select >= 0, "Specified SS pin could not be connected to SPI");
 
             static void on() {
-                merge<mode<pin_mode::output, Mosi, Clock, SlaveSelect>, mode<pin_mode::input, Miso>>();
+                zoal::gpio::api_new::apply<
+                    zoal::gpio::api_new::mode<pin_mode::output, Mosi, Clock, SlaveSelect>,
+                    zoal::gpio::api_new::mode<pin_mode::input, Miso>
+                >();
             }
 
             static void off() {
-                mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>();
+                zoal::gpio::api_new::apply<
+                    zoal::gpio::api_new::mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>
+                >();
             }
         };
 

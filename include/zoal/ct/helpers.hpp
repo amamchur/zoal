@@ -1,5 +1,5 @@
-#ifndef ZOAL_HELPERS_HPP
-#define ZOAL_HELPERS_HPP
+#ifndef ZOAL_CT_HELPERS_HPP
+#define ZOAL_CT_HELPERS_HPP
 
 namespace zoal { namespace ct {
     template<class First, class... Rest>
