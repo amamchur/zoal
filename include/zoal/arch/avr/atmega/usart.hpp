@@ -3,7 +3,6 @@
 
 #include "../../../data/ring_buffer_ext.hpp"
 #include "../../../io/stream_functor.hpp"
-#include "../../../mem/accessor.hpp"
 #include "../../../periph/usart.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../bus.hpp"
@@ -48,13 +47,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         using null_tx_buffer = zoal::data::null_fifo_buffer<uint8_t>;
         using null_rx_buffer = zoal::data::null_fifo_buffer<uint8_t>;
 
-        template<uintptr_t Offset>
-        using accessor = zoal::mem::accessor<uint8_t, Address, Offset>;
-
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr auto address = Address;
-
-        using SPCRx = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
 
         using UCSRxA = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
         using UCSRxB = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;

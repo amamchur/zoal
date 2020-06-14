@@ -8,8 +8,6 @@ namespace zoal { namespace arch {
         using next = enable<Modules...>;
 
     public:
-        enable() = delete;
-
         static void on() {
             Module::enable();
             next::on();
@@ -24,8 +22,6 @@ namespace zoal { namespace arch {
     template<class Module>
     class enable<Module> {
     public:
-        enable() = delete;
-
         static void on() {
             Module::enable();
         }

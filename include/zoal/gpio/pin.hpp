@@ -47,11 +47,6 @@ namespace zoal { namespace gpio {
             }
         }
 
-        template<uint8_t Value>
-        using set_cas = zoal::ct::conditional_type<Value == 0, typename port::template low_cas<mask>, typename port::template high_cas<mask>>;
-        using low_cas = typename port::template low_cas<mask>;
-        using high_cas = typename port::template high_cas<mask>;
-
         ZOAL_INLINE_IO static void low() {
             port::template low<mask>();
         }

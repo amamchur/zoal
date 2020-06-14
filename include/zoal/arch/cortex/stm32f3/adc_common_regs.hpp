@@ -17,8 +17,6 @@ namespace zoal { namespace arch { namespace stm32f3 {
         static constexpr uintptr_t ADCx_CCR = 0x04;
         static constexpr uintptr_t ADCx_CDR = 0x0C;
 
-        adc_common_regs() = delete;
-
         static inline void reset() {
             *accessor<ADCx_CSR>::p = 0;
             *accessor<ADCx_CCR>::p = 0;

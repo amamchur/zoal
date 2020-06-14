@@ -47,7 +47,7 @@ namespace zoal { namespace metadata {
         static_assert(ClockDivider <= 0, "Unsupported clock divider");
     };
 
-    template<zoal::periph::adc_ref Ref>
+    template<class A, zoal::periph::adc_ref Ref>
     struct adc_ref {};
 
     template<uintptr_t AdcAddress, uintptr_t PortAddress, uint8_t PinOffset>

@@ -29,19 +29,16 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
             template<uint8_t Channel>
             static void enable_compare_match_interrupt() {
-                //                static_assert(channel < channels_count, "Channel index is out of range");
                 timrs::template enable_compare_match_interrupt<T::no, Channel>();
             }
 
             template<uint8_t Channel>
             static void disable_compare_match_interrupt() {
-                //                static_assert(channel < channels_count, "Channel index is out of range");
                 timrs::template disable_compare_match_interrupt<T::no, Channel>();
             }
 
             template<uint8_t Channel>
             static void clear_channel_interrupt_flag() {
-                //                static_assert(channel < channels_count, "Channel index is out of range");
                 tifrs::template clear_channel_flag<T::no, Channel>();
             }
         };

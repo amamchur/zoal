@@ -1,38 +1,36 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_VECTOR_HPP
 #define ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_VECTOR_HPP
 
-#include "../../../mem/accessor.hpp"
-
 #include <stdint.h> /* NOLINT */
 
 namespace zoal { namespace arch { namespace avr {
     template<uintptr_t Address>
     class timer_interrupt_mask_vector {
     private:
-        enum { TOIEx = 0, OCIEAx = 1, OCIEBx = 2 };
+        enum { TOIEx = 0, OCIExA = 1, OCIExB = 2 };
 
     public:
-        template<uintptr_t Offset>
-        using accessor = zoal::mem::accessor<uint8_t, Address, Offset>;
+        template<uint32_t No>
+        using TIMRx = zoal::mem::reg<Address + No, zoal::mem::reg_io::read_write, uint8_t, 0x27>;
 
         template<uint8_t Timer>
         static void enable_overflow_interrupt() {
-            accessor<Timer>::ref() |= (1 << TOIEx);
+            TIMRx<Timer>::ref() |= (1 << TOIEx);
         }
 
         template<uint8_t Timer>
         static void disable_overflow_interrupt() {
-            accessor<Timer>::ref() &= ~(1 << TOIEx);
+            TIMRx<Timer>::ref() &= ~(1 << TOIEx);
         }
 
         template<uint8_t Timer, uint8_t Channel>
         static void enable_compare_match_interrupt() {
             switch (Channel) {
             case 0:
-                accessor<Timer>::ref() |= (1 << OCIEAx);
+                TIMRx<Timer>::ref() |= (1 << OCIExA);
                 break;
             case 1:
-                accessor<Timer>::ref() |= (1 << OCIEBx);
+                TIMRx<Timer>::ref() |= (1 << OCIExB);
                 break;
             default:
                 break;
@@ -43,10 +41,10 @@ namespace zoal { namespace arch { namespace avr {
         static void disable_compare_match_interrupt() {
             switch (Channel) {
             case 0:
-                accessor<Timer>::ref() &= ~(1 << OCIEAx);
+                TIMRx<Timer>::ref() &= ~(1 << OCIExA);
                 break;
             case 1:
-                accessor<Timer>::ref() &= ~(1 << OCIEBx);
+                TIMRx<Timer>::ref() &= ~(1 << OCIExB);
                 break;
             default:
                 break;

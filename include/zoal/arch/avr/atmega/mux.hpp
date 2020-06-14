@@ -2,10 +2,8 @@
 #define ZOAL_ARCH_AVR_MUX_HPP
 
 #include "../../../ct/check.hpp"
-#include "../../../gpio/pin.hpp"
 #include "../../../gpio/api.hpp"
-#include "../../../mem/accessor.hpp"
-#include "../../../mem/clear_and_set.hpp"
+#include "../../../gpio/pin.hpp"
 #include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace metadata {
@@ -27,7 +25,6 @@ namespace zoal { namespace metadata {
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::gpio::pin_mode;
-    using zoal::mem::clear_and_set;
     using zoal::metadata::adc_mapping;
     using zoal::metadata::i2c_mapping;
     using zoal::metadata::pwm_channel_mapping;
@@ -61,12 +58,9 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
             static_assert(channel >= 0, "Specified pin could not be connected to ADC");
 
-            template<uintptr_t Offset>
-            using accessor = zoal::mem::accessor<uint8_t, A::address, Offset>;
-
             static void on() {
-                clear_and_set<0x0F, mux_set_mask>::apply(accessor<A::ADMUXx>::ref());
-                clear_and_set<(1 << 3), mux5>::apply(accessor<A::ADCSRBx>::ref());
+                typename A::ADMUXx::template cas<0x0F, mux_set_mask>();
+                typename A::ADCSRBx::template cas<(1 << 3), mux5>();
             }
 
             static void off() {}
@@ -84,18 +78,15 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static constexpr auto set_mask = static_cast<uint8_t>(pwm_mode << mask_shift);
             static_assert((set_mask & clear_mask) == set_mask, "Ops, wrong metadata");
 
-            using TCCRxA_cfg_on = clear_and_set<clear_mask, set_mask>;
-            using TCCRxA_cfg_off = clear_and_set<clear_mask, 0>;
-
-            template<uintptr_t Offset>
-            using accessor = zoal::mem::accessor<uint8_t, T::address, Offset>;
+            using TCCRxA_cfg_on = typename T::TCCRxA::template cas<clear_mask, set_mask>;
+            using TCCRxA_cfg_off = typename T::TCCRxA::template cas<clear_mask, 0>;
 
             static void on() {
-                TCCRxA_cfg_on::apply(accessor<T::TCCRxA>::ref());
+                TCCRxA_cfg_on();
             }
 
             static void off() {
-                TCCRxA_cfg_off::apply(accessor<T::TCCRxA>::ref());
+                TCCRxA_cfg_off();
             }
         };
 
@@ -113,16 +104,12 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(ss::slave_select >= 0, "Specified SS pin could not be connected to SPI");
 
             static void on() {
-                zoal::gpio::api_new::apply<
-                    zoal::gpio::api_new::mode<pin_mode::output, Mosi, Clock, SlaveSelect>,
-                    zoal::gpio::api_new::mode<pin_mode::input, Miso>
-                >();
+                zoal::gpio::api_new::apply<zoal::gpio::api_new::mode<pin_mode::output, Mosi, Clock, SlaveSelect>,
+                                           zoal::gpio::api_new::mode<pin_mode::input, Miso>>();
             }
 
             static void off() {
-                zoal::gpio::api_new::apply<
-                    zoal::gpio::api_new::mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>
-                >();
+                zoal::gpio::api_new::apply<zoal::gpio::api_new::mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>>();
             }
         };
 

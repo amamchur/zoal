@@ -1,7 +1,6 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_I2C_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_I2C_HPP
 
-#include "../../../mem/accessor.hpp"
 #include "../../../mem/reg.hpp"
 #include "../../../periph/i2c_stream.hpp"
 #include "../../../utils/interrupts.hpp"
@@ -58,9 +57,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr uint8_t TWIEx = 0;
 
     public:
-        template<uintptr_t Offset>
-        using accessor = zoal::mem::accessor<uint8_t, Address, Offset>;
-
         static constexpr auto address = Address;
         static constexpr uint8_t no = N;
 
@@ -108,7 +104,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         }
 
         static void wait() {
-            while (busy_ || (TWCRx::ref() & 1 << TWSTOx));
+            while (busy_ || (TWCRx::ref() & 1 << TWSTOx))
+                ;
         }
 
         static bool busy() {

@@ -14,8 +14,6 @@ namespace zoal { namespace arch { namespace avr {
         using self_type = timer<Address, N, Mixin...>;
         using word = typename self_type::word;
 
-        timer16() = delete;
-
         static word period() {
             auto wgm1 = self_type::TCCRxA::ref() & 0x03;
             auto wgm2 = self_type::TCCRxB::ref() & 0x18;

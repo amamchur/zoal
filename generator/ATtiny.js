@@ -15,6 +15,7 @@ class ATtiny extends Avr {
         let adcName = 'adc_00';
 
         let result = [
+            "template<uint32_t Address>",
             `class ${adcName}_mem_model {`,
             `public:`
         ];
@@ -24,7 +25,8 @@ class ATtiny extends Avr {
             let r = regs.array[i];
             let offsetHex = Avr.toHex(r.offset, 2);
             address = Math.min(r.address, address);
-            result.push(`static constexpr uintptr_t ${r.avrName}x = ${offsetHex};`);
+            // result.push(`static constexpr uintptr_t ${r.avrName}x = ${offsetHex};`);
+            result.push(`using ${r.avrName}x= zoal::mem::reg<Address + ${offsetHex}, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;`);
         }
 
         result.push(`};`);
@@ -32,7 +34,7 @@ class ATtiny extends Avr {
 
         adc.address = address;
         let hex = Avr.toHex(address, 4);
-        result.push(`using adc_00 = ::zoal::arch::avr::adc<${hex}, 0, ${adcName}_mem_model>;`);
+        result.push(`using adc_00 = ::zoal::arch::avr::adc<${hex}, 0, ${adcName}_mem_model<${hex}>>;`);
         result.push(``);
         return result;
     }
@@ -53,10 +55,10 @@ class ATtiny extends Avr {
 
             let hex = Avr.toHex(t.address, 4);
             if (t.type === 'timer16') {
-                result.push(`using ${t.name} = ::zoal::arch::avr::timer16<${hex}, ${t.sn}, ${t.name}_mem_model>;`);
+                result.push(`using ${t.name} = ::zoal::arch::avr::timer16<${hex}, ${t.sn}, ${t.name}_mem_model<${hex}>>;`);
             } else {
                 let async = m.$.name.match(/ASYNC/i) != null;
-                result.push(`using ${t.name} = ::zoal::arch::avr::timer8<${hex}, ${t.sn}, ${async}, ${t.name}_mem_model>;`);
+                result.push(`using ${t.name} = ::zoal::arch::avr::timer8<${hex}, ${t.sn}, ${async}, ${t.name}_mem_model<${hex}>>;`);
             }
 
             result.push(``);

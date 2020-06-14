@@ -59,16 +59,17 @@ namespace zoal { namespace mcu {
 
         using timer_00 = ::zoal::arch::avr::timer8<0x0049, 0, false, timer_00_mem_model<0x0049>>;
 
+        template<uint32_t Address>
         class adc_00_mem_model {
         public:
-            static constexpr uintptr_t ADCSRBx = 0x00;
-            static constexpr uintptr_t ADCx = 0x01;
-            static constexpr uintptr_t ADCSRAx = 0x03;
-            static constexpr uintptr_t ADMUXx = 0x04;
-            static constexpr uintptr_t DIDR0x = 0x11;
+            using ADCSRBx = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using ADCx = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using ADCSRAx = zoal::mem::reg<Address + 0x03, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using ADMUXx = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+            using DIDR0x = zoal::mem::reg<Address + 0x11, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
         };
 
-        using adc_00 = ::zoal::arch::avr::adc<0x0023, 0, adc_00_mem_model>;
+        using adc_00 = ::zoal::arch::avr::adc<0x0023, 0, adc_00_mem_model<0x0023>>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;
@@ -114,16 +115,6 @@ namespace zoal { namespace metadata {
 
     template<>
     struct pin_to_adc_channel<0x0023, 0x0036, 3> : integral_constant<int, 3> {};
-
-    template<>
-    struct adc_ref<zoal::periph::adc_ref::vcc> {
-        using ADMUXx = zoal::mem::clear_and_set<0x40, 0x00>;
-    };
-
-    template<>
-    struct adc_ref<zoal::periph::adc_ref::internal_1v1> {
-        using ADMUXx = zoal::mem::clear_and_set<0x00, 0x40>;
-    };
 }}
 
 #endif

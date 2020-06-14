@@ -3,8 +3,6 @@
 
 #include "../../../ct/type_list.hpp"
 #include "../../../gpio/api.hpp"
-#include "../../../mem/accessor.hpp"
-#include "../../../mem/clear_and_set.hpp"
 #include "../../../periph/adc.hpp"
 #include "../../../periph/spi.hpp"
 #include "../../../periph/timer_mode.hpp"
@@ -27,17 +25,15 @@ namespace zoal { namespace metadata {
     template<class T, bool async, uintptr_t ClockDivider>
     struct timer_clock_divider;
 
-    template<zoal::periph::adc_ref Ref>
+    template<class A, zoal::periph::adc_ref Ref>
     struct adc_ref;
 
-    template<uintptr_t ClockDivider>
+    template<class A, uintptr_t ClockDivider>
     struct adc_clock_divider;
 }}
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::ct::type_list;
-    using zoal::mem::clear_and_set;
-    using zoal::mem::merge_clear_and_set;
     using zoal::metadata::adc_clock_divider;
     using zoal::metadata::adc_ref;
     using zoal::metadata::timer_clock_divider;
@@ -167,17 +163,15 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         template<class A, zoal::periph::adc_ref Ref = zoal::periph::adc_ref::vcc, uintptr_t ClockDivider = 128>
         class adc {
         public:
-            using ADCSRAx_cfg = typename adc_clock_divider<ClockDivider>::ADCSRAx;
-            using ADMUXx_cfg = typename adc_ref<Ref>::ADMUXx;
-
-            template<uintptr_t Offset>
-            using accessor = zoal::mem::accessor<uint8_t, A::address, Offset>;
+            using list = typename zoal::gpio::api_new::apply<
+                //
+                adc_clock_divider<A, ClockDivider>,
+                adc_ref<A, Ref>>::result;
 
             static void apply() {
                 A::disable();
 
-                ADMUXx_cfg::apply(accessor<A::ADMUXx>::ref());
-                ADCSRAx_cfg::apply(accessor<A::ADCSRAx>::ref());
+                zoal::mem::apply_cas_list<list>();
             }
         };
 
@@ -207,17 +201,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         public:
             static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)Frequency / (double)Freq) - 16.0) / 2.0);
 
-            template<uintptr_t Offset>
-            using accessor = zoal::mem::accessor<uint8_t, I::address, Offset>;
-
             static void apply() {
                 I::disable();
 
                 I::TWSRx::ref() = 0;
                 I::TWBRx::ref() = TWBRx_value;
-
-                //                *accessor<TWSRx>::ref() &= ~(1 << TWPS0x | 1 << TWPS1x);
-                //                *accessor<TWBRx>::ref() = ((Config::freq / Config::i2c_freq) - 16) / 2;
             }
         };
     };

@@ -51,8 +51,6 @@ namespace zoal { namespace arch { namespace stm32f3 {
         template<uintptr_t Offset>
         using accessor = zoal::mem::accessor<uint32_t, Address, Offset>;
 
-        spi_controller() = delete;
-
         static constexpr uintptr_t SPIx_CR1 = 0x00;
         static constexpr uintptr_t SPIx_CR2 = 0x04;
         static constexpr uintptr_t SPIx_SR = 0x08;

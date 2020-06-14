@@ -1,27 +1,22 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_REGISTER_HPP
 #define ZOAL_ARCH_ATMEL_AVR_TIMER_INTERRUPT_MASK_REGISTER_HPP
 
-#include "../../../mem/accessor.hpp"
-
 #include <stdint.h> /* NOLINT */
 
 namespace zoal { namespace arch { namespace avr {
     template<uintptr_t Address, uint8_t toieMask, uint8_t ocieaMask, uint8_t ociebMask>
     class timer_interrupt_mask_register {
     public:
-        static constexpr uintptr_t TIMSKs = 0;
-
-        template<uintptr_t Offset>
-        using accessor = zoal::mem::accessor<uint8_t, Address, Offset>;
+        using TIMSKs = zoal::mem::reg<Address, zoal::mem::reg_io::read_write, uint8_t, 0x27>;
 
         template<uint8_t Timer>
         static inline void enable_overflow_interrupt() {
-            *accessor<TIMSKs>::p |= toieMask;
+            TIMSKs::ref()|= toieMask;
         }
 
         template<uint8_t Timer>
         static inline void disable_overflow_interrupt() {
-            *accessor<TIMSKs>::p &= ~toieMask;
+            TIMSKs::ref() &= ~toieMask;
         }
 
         template<uint8_t Timer, uint8_t Channel>
@@ -29,10 +24,10 @@ namespace zoal { namespace arch { namespace avr {
             static_assert(Channel < 2, "Channel index is out of range");
             switch (Channel) {
             case 0:
-                *accessor<TIMSKs>::p |= ocieaMask;
+                TIMSKs::ref() |= ocieaMask;
                 break;
             case 1:
-                *accessor<TIMSKs>::p |= ociebMask;
+                TIMSKs::ref() |= ociebMask;
                 break;
             default:
                 break;
@@ -45,10 +40,10 @@ namespace zoal { namespace arch { namespace avr {
 
             switch (Channel) {
             case 0:
-                *accessor<TIMSKs>::p &= ~ocieaMask;
+                TIMSKs::ref() &= ~ocieaMask;
                 break;
             case 1:
-                *accessor<TIMSKs>::p &= ~ociebMask;
+                TIMSKs::ref() &= ~ociebMask;
                 break;
             default:
                 break;

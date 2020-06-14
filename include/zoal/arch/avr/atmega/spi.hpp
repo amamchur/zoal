@@ -15,10 +15,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         using SPSRx = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
         using SPDRx = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
 
-        spi() = delete;
-
-        spi(const spi &) = delete;
-
         static void power_on() {}
 
         static void power_off() {}

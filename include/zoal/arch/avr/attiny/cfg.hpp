@@ -2,7 +2,6 @@
 #define ZOAL_ARCH_AVR_ATTINY_CFG_HPP
 
 #include "../../../gpio/api.hpp"
-#include "../../../mem/clear_and_set.hpp"
 #include "../../../periph/adc.hpp"
 #include "../../../periph/timer_mode.hpp"
 #include "../../../periph/usart.hpp"
@@ -24,16 +23,14 @@ namespace zoal { namespace metadata {
     template<class T, bool async, uintptr_t ClockDivider>
     struct timer_clock_divider;
 
-    template<zoal::periph::adc_ref Ref>
+    template<class A, zoal::periph::adc_ref Ref>
     struct adc_ref;
 
-    template<uintptr_t ClockDivider>
+    template<class A, uintptr_t ClockDivider>
     struct adc_clock_divider;
 }}
 
 namespace zoal { namespace arch { namespace avr { namespace attiny {
-    using zoal::mem::clear_and_set;
-    using zoal::mem::merge_clear_and_set;
     using zoal::metadata::adc_clock_divider;
     using zoal::metadata::adc_ref;
     using zoal::metadata::timer_clock_divider;
@@ -67,8 +64,8 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
         template<class A, zoal::periph::adc_ref Ref = zoal::periph::adc_ref::vcc, uintptr_t ClockDivider = 128>
         class adc {
         public:
-            using ADCSRAx_cfg = typename adc_clock_divider<ClockDivider>::ADCSRAx;
-            using ADMUXx_cfg = typename adc_ref<Ref>::ADMUXx;
+            //            using ADCSRAx_cfg = typename adc_clock_divider<ClockDivider>::ADCSRAx;
+            //            using ADMUXx_cfg = typename adc_ref<Ref>::ADMUXx;
 
             static void apply() {
                 A::disable();

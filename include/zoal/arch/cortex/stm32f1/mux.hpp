@@ -109,8 +109,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
             template<uintptr_t Offset>
             using accessor = zoal::mem::accessor<uint32_t, U::address, Offset>;
 
-            usart() = delete;
-
             static inline void on() {
 //                afio::power_on();
 

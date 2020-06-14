@@ -2,7 +2,6 @@
 #define ZOAL_ARCH_AVR_ATMEGA_METADATA_HPP
 
 #include "../../../ct/type_list.hpp"
-#include "../../../mem/clear_and_set.hpp"
 #include "../../../periph/adc.hpp"
 #include "../../../periph/timer_mode.hpp"
 #include "../../../periph/usart.hpp"
@@ -66,19 +65,13 @@ namespace zoal { namespace metadata {
     struct timer_mode<T, ::zoal::periph::timer_mode::up> : type_list<
                                                                //
                                                                typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>,
-                                                               typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {
-        using TCCRxA = zoal::mem::clear_and_set<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>;
-        using TCCRxB = zoal::mem::clear_and_set<mode_clear_TCCRxB, 0x0>;
-    };
+                                                               typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
 
     template<class T>
     struct timer_mode<T, ::zoal::periph::timer_mode::up_down> : type_list<
                                                                     //
                                                                     typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
-                                                                    typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {
-        using TCCRxA = zoal::mem::clear_and_set<mode_clear_TCCRxA, 1u << WGMx0>;
-        using TCCRxB = zoal::mem::clear_and_set<mode_clear_TCCRxB, 0x0>;
-    };
+                                                                    typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
 
     template<class T, uintptr_t Set>
     using tcd_cas = type_list<typename T::TCCRxB::template cas<0x7, Set>>;
@@ -127,53 +120,35 @@ namespace zoal { namespace metadata {
 
     struct timer_clock_dividers : zoal::ct::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024> {};
 
-    template<>
-    struct adc_ref<zoal::periph::adc_ref::internal_1v1> {
-        using ADMUXx = zoal::mem::clear_and_set<0xC0, 0xC0>;
-    };
+    template<class A>
+    struct adc_ref<A, zoal::periph::adc_ref::internal_1v1> : type_list<typename A::ADMUXx::template cas<0xC0, 0xC0>> {};
 
-    template<>
-    struct adc_ref<zoal::periph::adc_ref::vcc> {
-        using ADMUXx = zoal::mem::clear_and_set<0xC0, 0x40>;
-    };
+    template<class A>
+    struct adc_ref<A, zoal::periph::adc_ref::vcc> : type_list<typename A::ADMUXx::template cas<0xC0, 0x40>> {};
 
-    template<uintptr_t ClockDivider>
-    struct adc_clock_divider {};
+    template<class A, uintptr_t ClockDivider>
+    struct adc_clock_divider : type_list<typename A::ADCSRAx::template cas<0x00, 0x00>> {};
 
-    template<>
-    struct adc_clock_divider<2> {
-        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x01>;
-    };
+    template<class A>
+    struct adc_clock_divider<A, 2> : type_list<typename A::ADCSRAx::template cas<0x07, 0x01>> {};
 
-    template<>
-    struct adc_clock_divider<4> {
-        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x02>;
-    };
+    template<class A>
+    struct adc_clock_divider<A, 4> : type_list<typename A::ADCSRAx::template cas<0x07, 0x02>> {};
 
-    template<>
-    struct adc_clock_divider<8> {
-        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x03>;
-    };
+    template<class A>
+    struct adc_clock_divider<A, 8> : type_list<typename A::ADCSRAx::template cas<0x07, 0x03>> {};
 
-    template<>
-    struct adc_clock_divider<16> {
-        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x04>;
-    };
+    template<class A>
+    struct adc_clock_divider<A, 16> : type_list<typename A::ADCSRAx::template cas<0x07, 0x04>> {};
 
-    template<>
-    struct adc_clock_divider<32> {
-        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x05>;
-    };
+    template<class A>
+    struct adc_clock_divider<A, 32> : type_list<typename A::ADCSRAx::template cas<0x07, 0x05>> {};
 
-    template<>
-    struct adc_clock_divider<64> {
-        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x06>;
-    };
+    template<class A>
+    struct adc_clock_divider<A, 64> : type_list<typename A::ADCSRAx::template cas<0x07, 0x06>> {};
 
-    template<>
-    struct adc_clock_divider<128> {
-        using ADCSRAx = zoal::mem::clear_and_set<0x07, 0x07>;
-    };
+    template<class A>
+    struct adc_clock_divider<A, 128> : type_list<typename A::ADCSRAx::template cas<0x07, 0x07>> {};
 }}
 
 #endif

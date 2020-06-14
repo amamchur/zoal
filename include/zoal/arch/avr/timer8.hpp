@@ -14,8 +14,6 @@ namespace zoal { namespace arch { namespace avr {
 
         static constexpr bool async = Async;
 
-        timer8() = delete;
-
         static typename self_type::word period() {
             return 0xFF;
         }

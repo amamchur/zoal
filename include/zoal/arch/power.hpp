@@ -8,8 +8,6 @@ namespace zoal { namespace arch {
         using next = power<Modules...>;
 
     public:
-        power() = delete;
-
         static void on() {
             Module::power_on();
             next::on();
@@ -24,8 +22,6 @@ namespace zoal { namespace arch {
     template<class Module>
     class power<Module> {
     public:
-        power() = delete;
-
         static void on() {
             Module::power_on();
         }

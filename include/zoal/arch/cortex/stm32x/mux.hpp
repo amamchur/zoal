@@ -42,8 +42,6 @@ namespace zoal { namespace arch { namespace stm32x {
             template<uintptr_t Offset>
             using accessor = zoal::mem::accessor<uint32_t, U::address, Offset>;
 
-            usart() = delete;
-
             static inline void on() {
                 using namespace zoal::ct;
                 stm32_alternate_function<typename PinTX::port, PinTX::offset, tx_af::value>();

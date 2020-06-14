@@ -368,6 +368,7 @@ class Avr extends BaseGenerator {
 
     buildMemoryModel(name, regs, word) {
         let result = [
+            `template<uint32_t Address>`,
             `class ${name} {`,
             `public:`,
             `   using word = ${word};`,
@@ -384,7 +385,7 @@ class Avr extends BaseGenerator {
                 name += 'x';
             }
             address = Math.min(r.address, address);
-            result.push(`static constexpr ptrdiff_t ${name} = ${offsetHex};`);
+            result.push(`using ${name} = zoal::mem::reg<Address + ${offsetHex}, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;`);
 
             let bitFields = r.node.bitfield || [];
             for (let j = 0; j < bitFields.length; j++) {
