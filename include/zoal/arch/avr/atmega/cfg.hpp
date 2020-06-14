@@ -133,13 +133,14 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static constexpr uint8_t UBRRxL_value = static_cast<uint8_t>(value & 0xFFu);
             static constexpr uint8_t UBRRxH_value = static_cast<uint8_t>(value >> 0x8u);
 
-            static void apply() {
-                U::disable();
+            using cfg = type_list<
+                typename U::UBRRxL::template cas<0xFF, UBRRxL_value>,
+                typename U::UBRRxH::template cas<0xFF, UBRRxH_value>,
+                typename U::UCSRxA::template cas<0xFF, UCSRxA_value>,
+                typename U::UCSRxC::template cas<0xFF, usart_mode_cfg<Bits, Parity, StopBits>::UCSRxC_value>>;
 
-                U::UBRRxL::ref() = UBRRxL_value;
-                U::UBRRxH::ref() = UBRRxH_value;
-                U::UCSRxA::ref() = UCSRxA_value;
-                U::UCSRxC::ref() = usart_mode_cfg<Bits, Parity, StopBits>::UCSRxC_value;
+            static void apply() {
+                zoal::mem::apply_cas_list<cfg>();
             }
         };
 
@@ -151,27 +152,23 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static constexpr auto async = T::async;
             using timer_mode_cfg = timer_mode<T, Mode>;
             using clock_divider_cfg = timer_clock_divider<T, async, ClockDivider>;
-            using list = typename zoal::gpio::api::optimize<timer_mode_cfg, clock_divider_cfg>::result;
+            using cfg = typename zoal::gpio::api::optimize<timer_mode_cfg, clock_divider_cfg>;
 
             static void apply() {
-                T::disable();
-
-                zoal::mem::apply_cas_list<list>();
+                zoal::mem::apply_cas_list<cfg>();
             }
         };
 
         template<class A, zoal::periph::adc_ref Ref = zoal::periph::adc_ref::vcc, uintptr_t ClockDivider = 128>
         class adc {
         public:
-            using list = typename zoal::gpio::api::optimize<
+            using cfg = typename zoal::gpio::api::optimize<
                 //
                 adc_clock_divider<A, ClockDivider>,
-                adc_ref<A, Ref>>::result;
+                adc_ref<A, Ref>>;
 
             static void apply() {
-                A::disable();
-
-                zoal::mem::apply_cas_list<list>();
+                zoal::mem::apply_cas_list<cfg>();
             }
         };
 
@@ -186,13 +183,10 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using order = spi_bit_order_cfg<S, Order>;
             using cpol_cpha = spi_cpol_cpha_cfg<S, PolPha>;
             using mode = spi_mode_cfg<S, Mode>;
-
-            using list = typename zoal::gpio::api::optimize<clock_divider, order, cpol_cpha, mode>::result;
+            using cfg = typename zoal::gpio::api::optimize<clock_divider, order, cpol_cpha, mode>::result;
 
             static void apply() {
-                S::disable();
-
-                zoal::mem::apply_cas_list<list>();
+                zoal::mem::apply_cas_list<cfg>();
             }
         };
 
@@ -200,12 +194,12 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         class i2c {
         public:
             static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)Frequency / (double)Freq) - 16.0) / 2.0);
+            using cfg = type_list<
+                typename I::TWSRx::template cas<0xFF, 0>,
+                typename I::TWBRx::template cas<0xFF, TWBRx_value>>;
 
             static void apply() {
-                I::disable();
-
-                I::TWSRx::ref() = 0;
-                I::TWBRx::ref() = TWBRx_value;
+                zoal::mem::apply_cas_list<cfg>();
             }
         };
     };

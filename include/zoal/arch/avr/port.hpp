@@ -39,6 +39,11 @@ namespace zoal { namespace arch { namespace avr {
         using DDRx = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, register_type, PinMask>;
         using PORTx = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, register_type, PinMask>;
 
+        using enable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using disable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using power_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using power_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
         using mode_cas = pin_mode_cfg<self_type, PinMode, Mask>;
 

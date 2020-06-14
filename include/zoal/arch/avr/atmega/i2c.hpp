@@ -1,6 +1,8 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_I2C_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_I2C_HPP
 
+#include "../../../ct/type_list.hpp"
+#include "../../../mem/cas.hpp"
 #include "../../../mem/reg.hpp"
 #include "../../../periph/i2c_stream.hpp"
 #include "../../../utils/interrupts.hpp"
@@ -69,12 +71,17 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         using TWCRx = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
         using TWAMRx = zoal::mem::reg<Address + 0x05, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
 
+        using enable_cas = zoal::ct::type_list<typename self_type::TWCRx::template cas<0, 1 << TWENx | 1 << TWIEx | 1 << TWEAx>>;
+        using disable_cas = zoal::ct::type_list<typename self_type::TWCRx::template cas<1 << TWENx | 1 << TWIEx | 1 << TWEAx, 0>>;
+        using power_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using power_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+
         static void power_on() {}
 
         static void power_off() {}
 
         static void enable() {
-            TWCRx::ref() = 1 << TWENx | 1 << TWIEx | 1 << TWEAx;
+            TWCRx::ref() |= 1 << TWENx | 1 << TWIEx | 1 << TWEAx;
         }
 
         static void disable() {

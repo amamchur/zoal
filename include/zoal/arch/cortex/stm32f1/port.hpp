@@ -71,7 +71,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using p15 = crh_cas<(Mask & (1 << 0xF)), 28>;
 
         using cr_list = type_list<p00, p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13, p14, p15>;
-        using all = typename zoal::gpio::api::optimize<cr_list, mode>::result;
+        using all = typename zoal::gpio::api::optimize<cr_list, mode>;
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask = 0xFFFF>
@@ -90,6 +90,9 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using GPIOx_BSRR = zoal::mem::reg<Address + 0x10, zoal::mem::reg_io::write, register_type, pin_mask>;
         using GPIOx_BRR = zoal::mem::reg<Address + 0x14, zoal::mem::reg_io::write, register_type, pin_mask>;
         using GPIOx_LCKR = zoal::mem::reg<Address + 0x18, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
+
+        using enable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using disable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
         using mode_cas = typename pin_mode_cfg<self_type, PinMode, Mask>::all;

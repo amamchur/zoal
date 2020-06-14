@@ -19,6 +19,7 @@ using usart_01_tx_buffer = usart_01::default_tx_buffer<128>;
 using logger = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
 using tools = zoal::utils::cmsis_os2::tool_set<mcu, logger>;
 using delay = zoal::utils::cmsis_os2::delay<mcu>;
+using api = zoal::gpio::api;
 
 osThreadId_t inputTaskHandle;
 osThreadAttr_t inputTask_attributes;
@@ -79,14 +80,22 @@ extern "C" void zoal_init() {
 
     inputTaskHandle = osThreadNew(zoal_input_handler, NULL, &inputTask_attributes);
 
-    mcu::power<usart_01, mcu::port_a, mcu::port_c>::on();
-    mcu::pb_12::mode<zoal::gpio::pin_mode::input_pull_up>();
-    mcu::pc_13::mode<zoal::gpio::pin_mode::output>();
+    api::optimize<api::power_on<usart_01, mcu::port_a, mcu::port_c>>();
+    api::optimize<api::disable<usart_01>>();
 
-    mcu::cfg::usart<usart_01, 115200>::apply();
-    mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::on();
+    api::optimize<
+        //
+        mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::on_cas,
+        //
+        mcu::cfg::usart<usart_01, 115200>::cfg,
+        //
+        api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12>,
+        api::mode<zoal::gpio::pin_mode::output, mcu::pc_13>
+        //
+        >::apply();
 
-    usart_01::enable();
+    api::optimize<api::enable<usart_01, mcu::port_a, mcu::port_c>>::apply();
+
     NVIC_EnableIRQ(USART1_IRQn);
 }
 

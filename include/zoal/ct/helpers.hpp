@@ -1,6 +1,8 @@
 #ifndef ZOAL_CT_HELPERS_HPP
 #define ZOAL_CT_HELPERS_HPP
 
+#include "type_list.hpp"
+
 namespace zoal { namespace ct {
     template<class First, class... Rest>
     struct max_type_size {
@@ -24,26 +26,8 @@ namespace zoal { namespace ct {
         static constexpr auto value = sizeof(First);
     };
 
-    template<bool condition, class T, class U>
-    struct conditional_type {
-
-    };
-
-    template<class T, class U>
-    struct conditional_type<true, T, U> {
-        using type = T;
-    };
-
-    template<class T, class U>
-    struct conditional_type<false, T, U> {
-        using type = U;
-    };
-
-
     template<bool condition, class T, T A, T B>
-    struct conditional_value {
-
-    };
+    struct conditional_value {};
 
     template<class T, T A, T B>
     struct conditional_value<true, T, A, B> {

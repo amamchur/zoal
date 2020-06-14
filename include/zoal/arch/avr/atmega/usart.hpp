@@ -58,6 +58,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         using UBRRxH = zoal::mem::reg<Address + 0x05, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
         using UDRx = zoal::mem::reg<Address + 0x06, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
 
+        using enable_cas =  zoal::ct::type_list<typename self_type::UCSRxB::template cas<0, 1u << TXENx | 1u << RXENx | 1u << RXCIEx>>;
+        using disable_cas =  zoal::ct::type_list<typename self_type::UCSRxB::template cas<1u << TXENx | 1u << RXENx | 1u << RXCIEx, 0>>;
+        using power_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using power_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+
         static void power_on() {}
 
         static void power_off() {}

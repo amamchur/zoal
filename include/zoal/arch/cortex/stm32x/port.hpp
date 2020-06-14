@@ -138,7 +138,7 @@ namespace zoal { namespace arch { namespace stm32x {
             pud_cas<(Mask & 1 << 0xE), 28>,
             pud_cas<(Mask & 1 << 0xF), 30>>;
 
-        using all = typename zoal::gpio::api::optimize<GPIOx_OSPEEDR, GPIOx_MODER, GPIOx_OTYPER, GPIOx_PUPDR>::result;
+        using all = typename zoal::gpio::api::optimize<GPIOx_OSPEEDR, GPIOx_MODER, GPIOx_OTYPER, GPIOx_PUPDR>;
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask = 0xFFFF>

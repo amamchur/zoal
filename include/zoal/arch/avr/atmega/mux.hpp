@@ -24,6 +24,7 @@ namespace zoal { namespace metadata {
 }}
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
+    using zoal::ct::type_list;
     using zoal::gpio::api;
     using zoal::gpio::pin_mode;
     using zoal::metadata::adc_mapping;
@@ -37,6 +38,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         template<class U, class Rx, class Tx, class Ck = zoal::gpio::null_pin>
         class usart {
         public:
+            using self_type = usart<U, Rx, Tx, Ck>;
+
             using rxm = usart_mapping<U::address, Rx::port::address, Rx::offset>;
             using txm = usart_mapping<U::address, Tx::port::address, Tx::offset>;
             using ckm = usart_mapping<U::address, Ck::port::address, Ck::offset>;
@@ -44,6 +47,9 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(rxm::rx >= 0, "Specified RX pin could not be connected to USART");
             static_assert(txm::tx >= 0, "Specified TX pin could not be connected to USART");
             static_assert(ckm::ck >= 0, "Specified CX pin could not be connected to USART");
+
+            using on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+            using off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
 
             static void on() {}
 
@@ -104,12 +110,20 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(clock::clock >= 0, "Specified CLK pin could not be connected to SPI");
             static_assert(ss::slave_select >= 0, "Specified SS pin could not be connected to SPI");
 
+            using on_cas = typename api::optimize<
+                //
+                api::mode<pin_mode::output, Mosi, Clock, SlaveSelect>,
+                api::mode<pin_mode::input, Miso>>;
+            using off_cas = typename api::optimize<
+                //
+                api::mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>>;
+
             static void on() {
-                api::optimize<api::mode<pin_mode::output, Mosi, Clock, SlaveSelect>, api::mode<pin_mode::input, Miso>>::apply();
+                zoal::mem::apply_cas_list<on_cas>();
             }
 
             static void off() {
-                api::optimize<api::mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>>::apply();
+                zoal::mem::apply_cas_list<off_cas>();
             }
         };
 
@@ -122,16 +136,20 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(sda::sda >= 0, "Specified SDA pin could not be connected to I2C");
             static_assert(scl::scl >= 0, "Specified SCL pin could not be connected to I2C");
 
+            using on_cas = typename api::optimize<
+                //
+                api::mode<pin_mode::output_push_pull, SerialDataLine, SerialClockLine>,
+                api::high<SerialDataLine, SerialClockLine>>;
+            using off_cas = typename api::optimize<
+                //
+                api::mode<pin_mode::input_floating, SerialDataLine, SerialClockLine>>;
+
             static void on() {
-                SerialDataLine::template mode<pin_mode::output_push_pull>();
-                SerialClockLine::template mode<pin_mode::output_push_pull>();
-                SerialDataLine::high();
-                SerialClockLine::high();
+                zoal::mem::apply_cas_list<on_cas>();
             }
 
             static void off() {
-                SerialDataLine::template mode<pin_mode::input_floating>();
-                SerialClockLine::template mode<pin_mode::input_floating>();
+                zoal::mem::apply_cas_list<off_cas>();
             }
         };
     };

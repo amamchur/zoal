@@ -2,6 +2,7 @@
 #define ZOAL_CT_TYPE_LIST_HPP
 
 #include "../utils/defs.hpp"
+#include "conditional_type.hpp"
 
 #include <stddef.h>
 
@@ -46,7 +47,7 @@ namespace zoal { namespace ct {
     template<class List>
     struct type_list_iterator {
         template<class F>
-        ZOAL_INLINE_MF static void for_each(const F &fn) {
+        ZOAL_INLINE_MF static void for_each(F &fn) {
             fn.template operator()<typename List::type>();
             type_list_iterator<typename List::next>::for_each(fn);
         }
@@ -71,6 +72,23 @@ namespace zoal { namespace ct {
     struct type_list_index_iterator<void, Index> {
         template<class F>
         static void for_each(F fn) {}
+    };
+
+    template<int Index, int Pos, class Default, class List>
+    struct type_at_index_iter {
+        using current = typename List::type;
+        using next = type_at_index_iter<Index, Pos + 1, Default, typename List::next>;
+        using result = typename conditional_type<Index == Pos, current, typename next::result>::type;
+    };
+
+    template<int Index, int Pos, class Default>
+    struct type_at_index_iter<Index, Pos, Default, void> {
+        using result = Default;
+    };
+
+    template<int Index, class Default, class List>
+    struct type_at_index {
+        using result = typename type_at_index_iter<Index, 0, Default, List>::result;
     };
 }}
 

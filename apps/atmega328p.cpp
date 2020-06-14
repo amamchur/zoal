@@ -68,37 +68,40 @@ using check = compile_check<app0, app1, app2, app3, app4, app5, app6, app7>;
 
 using keypad = typename app3::shield::keypad;
 using lcd = typename app3::shield::lcd;
+using api = zoal::gpio::api;
 
 app7 app;
 
 void initialize_hardware() {
-    mcu::power<usart, timer, adc, i2c>::on();
+    // Power on modules
+    api::optimize<api::power_on<usart, timer, adc, i2c, spi>>();
 
-    mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::on();
-    mcu::cfg::usart<usart, 115200>::apply();
+    // Disble all module before applying setting
+    api::optimize<api::disable<usart, timer, adc, i2c, spi>>();
+    api::optimize<
+        // Connecting module to appropriate GPIO pin using multiplexer
+        mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::on_cas,
+        //        mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::on_cas,
+        mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::on_cas,
 
-    mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
-    mcu::irq::timer<timer>::enable_overflow_interrupt();
+        // Configuring modules using configurator
+        mcu::cfg::usart<usart, 115200>::cfg,
+        //        mcu::cfg::i2c<i2c>::cfg,
+        mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::cfg,
+        mcu::cfg::adc<adc>::cfg,
 
-    mcu::cfg::timer<mcu::timer_01 , zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
-    mcu::irq::timer<mcu::timer_01>::enable_overflow_interrupt();
+        // Configuring pin
+        api::mode<zoal::gpio::pin_mode::output, pcb::ard_d13>,
 
-    mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::on();
-    mcu::cfg::i2c<i2c>::apply();
+        mcu::irq::timer<timer>::enable_overflow_interrupt
+        //
+        >::apply();
 
-    using a = mcu::cfg::spi<spi, 4>;
-    a::list();
-//    ::apply();
-
-
-    mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::on();
-    mcu::enable<spi>::on();
-
-    mcu::cfg::adc<adc>::apply();
-
-    mcu::enable<usart, timer, adc, i2c>::on();
-
+    // Enable system interrupts
     zoal::utils::interrupts::on();
+
+    // Enable all module
+    api::optimize<api::enable<usart, timer, adc, i2c, spi>>();
 }
 
 int main() {
@@ -109,12 +112,13 @@ int main() {
 
     logger::info() << "-- Start --";
 
-    pcb::ard_d13::mode<zoal::gpio::pin_mode::output>();
+    zoal::utils::cas_print_functor<logger> func;
+    using tlf = api::optimize<api::power_on<usart, timer, adc, i2c, spi>>;
+    zoal::ct::type_list_iterator<tlf>::for_each(func);
 
     while (true) {
         pcb::ard_d13::low();
         delay::ms(500);
-
 
         pcb::ard_d13::high();
         delay::ms(500);
@@ -137,7 +141,7 @@ ISR(USART_RX_vect) {
 ISR(USART_UDRE_vect) {
     usart::tx_handler<tx_buffer>();
 }
-//
+
 //ISR(TWI_vect) {
 //    i2c::handle_irq();
 //}

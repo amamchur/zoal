@@ -12,6 +12,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
     template<uintptr_t Address, class... Mixin>
     class usart : public Mixin... {
     public:
+        using self_type = usart<Address, Mixin...>;
         static constexpr uintptr_t address = Address;
 
         using USARTx_SR = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
@@ -28,7 +29,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static constexpr uint32_t USARTx_CR1_bit_RXNEIE = 1 << 5; // Bit 5 RXNE: Read data register not empty
         static constexpr uint32_t USARTx_CR1_bit_TXEIE = 1 << 7; // Bit 7 TXEIE: interrupt enable
 
-        using self_type = usart<Address, Mixin...>;
+        using enable_cas = zoal::ct::type_list<typename self_type::USARTx_CR1::template cas<0, USARTx_CR1_bit_UE>>;
+        using disable_cas = zoal::ct::type_list<typename self_type::USARTx_CR1::template cas<USARTx_CR1_bit_UE, 0>>;
 
         class tx_fifo_control {
         public:

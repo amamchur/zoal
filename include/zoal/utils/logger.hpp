@@ -179,6 +179,14 @@ namespace zoal { namespace utils {
             return ls<log_level::error >= MinLevel>() << "\033[0;31mERROR ";
         }
     };
+
+    template<class Logger>
+    struct cas_print_functor {
+        template<class A>
+        void operator()() {
+            Logger::info() << "CAS: " << (void *)A::address << " | " << (void *)A::clear << ", " << (void *)A::set;
+        }
+    };
 }}
 
 #endif

@@ -1,6 +1,8 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_A2D_Converter_HPP
 #define ZOAL_ARCH_ATMEL_AVR_A2D_Converter_HPP
 
+#include "../../ct/type_list.hpp"
+#include "../../mem/cas.hpp"
 #include "../bus.hpp"
 #include "mcu_type.hpp"
 
@@ -16,6 +18,11 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
         static constexpr uint8_t resolution = 10;
+
+        using enable_cas = zoal::ct::type_list<typename self_type::ADCSRAx::template cas<0, 1u << 7u>>;
+        using disable_cas =  zoal::ct::type_list<typename self_type::ADCSRAx::template cas<1u << 7u, 0>>;
+        using power_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using power_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
 
         static void power_on() {}
 

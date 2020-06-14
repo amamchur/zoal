@@ -3,6 +3,7 @@
 
 #include "../../../ct/check.hpp"
 #include "../../../gpio/pin.hpp"
+#include "../../../gpio/api.hpp"
 #include "../../../utils/helpers.hpp"
 #include "../stm32x/metadata.hpp"
 
@@ -109,16 +110,14 @@ namespace zoal { namespace arch { namespace stm32f1 {
 //            using remap = usart_remapper<U::address, rx_rm::value>;
 //            static_assert(remap::register_offset >= 0, "Unsupported pin mapping");
 
-            static inline void on() {
-                PinRX::template mode<zoal::gpio::pin_mode::input_floating>();
-                stm32_alternate_function<PinTX>();
-            }
+            using on_cas = zoal::gpio::api::optimize<
+                typename PinRX::port::template mode_cas<zoal::gpio::pin_mode::input_floating, PinRX::mask>,
+                typename crh_crl<typename PinTX::port, 10, 1 << PinTX::offset>::all>;
 
-        private:
-            template<class P>
-            static inline void stm32_alternate_function() {
-                using cfg = crh_crl<typename P::port, 10, 1 << P::offset>;
-                zoal::mem::apply_cas_list<typename cfg::all>();
+            using off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+
+            static inline void on() {
+                zoal::mem::apply_cas_list<on_cas>();
             }
         };
     };

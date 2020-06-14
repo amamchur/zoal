@@ -6,6 +6,26 @@
 #include "pin.hpp"
 
 namespace zoal { namespace gpio {
+    struct enable_cas {
+        template<class Module>
+        using list = typename Module::enable_cas;
+    };
+
+    struct disable_cas {
+        template<class Module>
+        using list = typename Module::disable_cas;
+    };
+
+    struct power_on_cas {
+        template<class Module>
+        using list = typename Module::power_on_cas;
+    };
+
+    struct power_off_cas {
+        template<class Module>
+        using list = typename Module::power_off_cas;
+    };
+
     struct low_cas {
         template<class Pin>
         using list = typename Pin::port::template low_cas<Pin::mask>;
@@ -22,19 +42,31 @@ namespace zoal { namespace gpio {
         using list = typename Pin::port::template mode_cas<PinMode, Pin::mask>;
     };
 
-    template<class Collector, class Pin, class... Rest>
+    template<class Selector, class T, class... Rest>
     struct collect_cas {
-        using current = typename Collector::template list<Pin>;
-        using next = typename collect_cas<Collector, Rest...>::result;
+        using current = typename Selector::template list<T>;
+        using next = typename collect_cas<Selector, Rest...>::result;
         using result = typename zoal::ct::type_list_join<current, next>::result;
     };
 
-    template<class Collector, class Pin>
-    struct collect_cas<Collector, Pin> {
-        using result = typename Collector::template list<Pin>;
+    template<class Selector, class T>
+    struct collect_cas<Selector, T> {
+        using result = typename Selector::template list<T>;
     };
 
     struct api {
+        template<class... Module>
+        using power_on = typename zoal::mem::merge_cas_in_list<typename collect_cas<power_on_cas, Module...>::result>::result;
+
+        template<class... Module>
+        using power_off = typename zoal::mem::merge_cas_in_list<typename collect_cas<power_off_cas, Module...>::result>::result;
+
+        template<class... Module>
+        using enable = typename zoal::mem::merge_cas_in_list<typename collect_cas<enable_cas, Module...>::result>::result;
+
+        template<class... Module>
+        using disable = typename zoal::mem::merge_cas_in_list<typename collect_cas<disable_cas, Module...>::result>::result;
+
         template<class... Pins>
         using low = typename zoal::mem::merge_cas_in_list<typename collect_cas<low_cas, Pins...>::result>::result;
 
@@ -45,27 +77,18 @@ namespace zoal { namespace gpio {
         using mode = typename zoal::mem::merge_cas_in_list<typename collect_cas<mode_cas<PinMode>, Pins...>::result>::result;
 
         template<class L, class... Rest>
-        struct optimize {
+        struct perform_cas_optimization {
             using all = typename zoal::ct::type_list_join<L, Rest...>::result;
             using result = typename zoal::mem::merge_cas_in_list<all>::result;
-
-            optimize() = delete;
-
-            static void apply() {
-                zoal::mem::apply_cas_list<result>();
-            }
         };
 
         template<class L>
-        struct optimize<L> {
-            using result = L;
-
-            optimize() = delete;
-
-            static void apply() {
-                zoal::mem::apply_cas_list<L>();
-            }
+        struct perform_cas_optimization<L> {
+            using result = typename zoal::mem::merge_cas_in_list<L>::result;
         };
+
+        template<class L, class... Rest>
+        using optimize = zoal::mem::callable_cas_list<typename perform_cas_optimization<L, Rest...>::result>;
     };
 }}
 

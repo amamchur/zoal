@@ -1,9 +1,9 @@
+#include "stm32f3xx_hal.h"
+
+#include <zoal/board/nucleo_f303re.hpp>
 #include <zoal/mcu/stm32f303retx.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
-#include <zoal/board/nucleo_f303re.hpp>
-
-#include "stm32f3xx_hal.h"
 
 using mcu = zoal::mcu::stm32f303retx<>;
 using usart_01 = mcu::usart_01;
@@ -24,10 +24,15 @@ using delay = typename tools::delay;
 using pcb = zoal::pcb;
 
 extern "C" [[noreturn]] void zoal_main() {
+    using api = zoal::gpio::api;
     using led = pcb::build_in_led;
 
-    mcu::power<led::port>::on();
-    led::mode<zoal::gpio::pin_mode::output>();
+    api::optimize<
+        //
+        api::power_on<led::port>,
+        api::mode<zoal::gpio::pin_mode::output, led>
+        //
+        >::apply();
 
     while (1) {
         led::low();

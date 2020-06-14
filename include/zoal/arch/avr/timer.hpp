@@ -19,6 +19,11 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uint8_t channels_count = 2;
         static constexpr uint8_t resolution = sizeof(self_type::word) * 8;
 
+        using enable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using disable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using power_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using power_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+
         static void power_on() {}
 
         static void power_off() {}
