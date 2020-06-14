@@ -24,6 +24,7 @@ namespace zoal { namespace metadata {
 }}
 
 namespace zoal { namespace arch { namespace avr { namespace atmega {
+    using zoal::gpio::api;
     using zoal::gpio::pin_mode;
     using zoal::metadata::adc_mapping;
     using zoal::metadata::i2c_mapping;
@@ -104,12 +105,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(ss::slave_select >= 0, "Specified SS pin could not be connected to SPI");
 
             static void on() {
-                zoal::gpio::api_new::apply<zoal::gpio::api_new::mode<pin_mode::output, Mosi, Clock, SlaveSelect>,
-                                           zoal::gpio::api_new::mode<pin_mode::input, Miso>>();
+                api::optimize<api::mode<pin_mode::output, Mosi, Clock, SlaveSelect>, api::mode<pin_mode::input, Miso>>::apply();
             }
 
             static void off() {
-                zoal::gpio::api_new::apply<zoal::gpio::api_new::mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>>();
+                api::optimize<api::mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>>::apply();
             }
         };
 

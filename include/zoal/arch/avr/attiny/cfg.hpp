@@ -52,7 +52,7 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             static constexpr auto async = T::async;
             using timer_mode_cfg = timer_mode<T, Mode>;
             using clock_divider_cfg = timer_clock_divider<T, async, ClockDivider>;
-            using list = typename zoal::gpio::api_new::apply<timer_mode_cfg, clock_divider_cfg>::result;
+            using list = typename zoal::gpio::api::optimize<timer_mode_cfg, clock_divider_cfg>::result;
 
             static void apply() {
                 T::disable();

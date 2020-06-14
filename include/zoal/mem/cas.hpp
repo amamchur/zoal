@@ -97,6 +97,30 @@ namespace zoal { namespace mem {
         static_assert(clear == 0 && set == 0, "Memory is readonly");
     };
 
+    template<uintptr_t Address, class Type, Type Mask>
+    struct cas<Address, reg_io::write, Type, Mask, 0, 0> {
+        static constexpr auto address = Address;
+        static constexpr auto io = reg_io::write;
+        static constexpr auto mask = Mask;
+        static constexpr Type clear = 0;
+        static constexpr Type set = 0;
+        using type = Type;
+    };
+
+    template<uintptr_t Address, class Type, Type Mask, uint32_t S>
+    struct cas<Address, reg_io::write, Type, Mask, 0, S> {
+        static constexpr auto address = Address;
+        static constexpr auto io = reg_io::write;
+        static constexpr auto mask = Mask;
+        static constexpr Type clear = 0;
+        static constexpr Type set = S;
+        using type = Type;
+
+        inline cas() {
+            *reinterpret_cast<volatile Type *>(Address) = set;
+        }
+    };
+
     template<uintptr_t Address, class Type, Type Mask, uint32_t C, uint32_t S>
     struct cas<Address, reg_io::write, Type, Mask, C, S> {
         static constexpr auto address = Address;

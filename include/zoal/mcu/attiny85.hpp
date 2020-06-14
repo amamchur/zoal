@@ -117,7 +117,7 @@ namespace zoal { namespace mcu {
         using pb_05 = pin<port_b, 5>;
 
         using ports = ::zoal::ct::type_list<port_b>;
-        using api = ::zoal::gpio::api<ports>;
+        using api = ::zoal::gpio::api;
         using mux = ::zoal::arch::avr::attiny::mux<api>;
         using cfg = ::zoal::arch::avr::attiny::cfg<api, Frequency>;
         using irq = ::zoal::arch::avr::attiny::irq;
@@ -155,19 +155,13 @@ namespace zoal { namespace metadata {
     struct pin_to_adc_channel<0x0023, 0x0036, 4> : integral_constant<int, 2> {};
 
     template<class A>
-    struct adc_ref<A, zoal::periph::adc_ref::vcc> {
-        using ADMUXx = zoal::mem::clear_and_set<0xC0, 0x00>;
-    };
+    struct adc_ref<A, zoal::periph::adc_ref::vcc> : type_list<typename A::ADMUXx::template cas<0xC0, 0xC0>> {};
 
     template<class A>
-    struct adc_ref<A, zoal::periph::adc_ref::internal_1v1> {
-        using ADMUXx = zoal::mem::clear_and_set<0xD0, 0x80>;
-    };
+    struct adc_ref<A, zoal::periph::adc_ref::internal_1v1> : type_list<typename A::ADMUXx::template cas<0xD0, 0x80>> {};
 
     template<class A>
-    struct adc_ref<A, zoal::periph::adc_ref::internal_2v56> {
-        using ADMUXx = zoal::mem::clear_and_set<0xD0, 0x90>;
-    };
+    struct adc_ref<A, zoal::periph::adc_ref::internal_2v56> : type_list<typename A::ADMUXx::template cas<0xD0, 0x90>> {};
 }}
 
 #endif

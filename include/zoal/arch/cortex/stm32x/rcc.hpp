@@ -14,18 +14,18 @@ namespace zoal { namespace arch { namespace stm32x {
 
         static constexpr uintptr_t address = Address;
 
-        static constexpr uintptr_t RCCx_CR = 0x000;
-        static constexpr uintptr_t RCCx_CFGR = 0x004;
-        static constexpr uintptr_t RCCx_CIR = 0x008;
-        static constexpr uintptr_t RCCx_APB2RSTR = 0x00C;
-        static constexpr uintptr_t RCCx_APB1RSTR = 0x010;
-        static constexpr uintptr_t RCCx_AHBENR = 0x014;
-        static constexpr uintptr_t RCCx_APB2ENR = 0x018;
-        static constexpr uintptr_t RCCx_APB1ENR = 0x01C;
-        static constexpr uintptr_t RCCx_BDCR = 0x020;
-        static constexpr uintptr_t RCCx_CSR = 0x024;
-        static constexpr uintptr_t RCCx_AHBRSTR = 0x028;
-        static constexpr uintptr_t RCCx_CFGR2 = 0x02C;
+        using RCCx_CR = zoal::mem::reg<Address + 0x000, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_CFGR = zoal::mem::reg<Address + 0x004, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_CIR = zoal::mem::reg<Address + 0x008, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_APB2RSTR = zoal::mem::reg<Address + 0x00C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_APB1RSTR = zoal::mem::reg<Address + 0x010, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_AHBENR = zoal::mem::reg<Address + 0x014, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_APB2ENR = zoal::mem::reg<Address + 0x018, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_APB1ENR = zoal::mem::reg<Address + 0x01C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_BDCR = zoal::mem::reg<Address + 0x020, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_CSR = zoal::mem::reg<Address + 0x024, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_AHBRSTR = zoal::mem::reg<Address + 0x028, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_CFGR2 = zoal::mem::reg<Address + 0x02C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
     };
 }}}
 

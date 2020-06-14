@@ -20,7 +20,7 @@ namespace zoal { namespace io {
         static_assert(!zoal::ct::has_same<Rows...>::value, "Duplicated row pins");
 
         using tools = Tools;
-        using high_impedance = typename zoal::gpio::api_new::apply<zoal::gpio::api_new::mode<zoal::gpio::pin_mode::input_floating, Rows...>>;
+        using high_impedance = typename zoal::gpio::api::optimize<zoal::gpio::api::mode<zoal::gpio::pin_mode::input_floating, Rows...>>;
         using pins = zoal::ct::type_list<Rows...>;
 
         static constexpr auto rows = pins::count;
@@ -44,7 +44,7 @@ namespace zoal { namespace io {
         };
 
         static void select_row(size_t row) {
-            high_impedance();
+            high_impedance::apply();
             zoal::ct::type_list_index_iterator<pins>::for_each(to_ground(row));
         }
     };

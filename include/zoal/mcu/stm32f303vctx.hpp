@@ -166,7 +166,7 @@ namespace zoal { namespace mcu {
         using pf_10 = pin<port_f, 0x0A>;
 
         using ports = ::zoal::ct::type_list<port_a, port_b, port_c, port_d, port_e, port_f>;
-        using api = ::zoal::gpio::api<ports>;
+        using api = ::zoal::gpio::api;
         using mux = ::zoal::arch::stm32x::mux<self_type>;
         using cfg = ::zoal::arch::stm32x::cfg<self_type>;
 

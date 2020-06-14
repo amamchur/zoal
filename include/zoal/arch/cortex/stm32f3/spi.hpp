@@ -1,8 +1,6 @@
 #ifndef ZOAL_GPIO_STM32F3_HARDWARE_SPI_HPP
 #define ZOAL_GPIO_STM32F3_HARDWARE_SPI_HPP
 
-#include "../../../mem/accessor.hpp"
-
 #include <stdint.h>
 
 namespace zoal { namespace arch { namespace stm32f3 {
@@ -48,39 +46,36 @@ namespace zoal { namespace arch { namespace stm32f3 {
     public:
         using Class = spi_controller<Address, RCController, RCCMask>;
 
-        template<uintptr_t Offset>
-        using accessor = zoal::mem::accessor<uint32_t, Address, Offset>;
-
-        static constexpr uintptr_t SPIx_CR1 = 0x00;
-        static constexpr uintptr_t SPIx_CR2 = 0x04;
-        static constexpr uintptr_t SPIx_SR = 0x08;
-        static constexpr uintptr_t SPIx_DR = 0x0C;
-        static constexpr uintptr_t SPIx_CRCPR = 0x10;
-        static constexpr uintptr_t SPIx_RXCRCR = 0x14;
-        static constexpr uintptr_t SPIx_TXCRCR = 0x18;
-        static constexpr uintptr_t SPIx_I2SCFGR = 0x1C;
-        static constexpr uintptr_t SPIx_I2SPR = 0x20;
+        using SPIx_CR1 = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using SPIx_CR2 = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using SPIx_SR = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using SPIx_DR = zoal::mem::reg<Address + 0x0C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using SPIx_CRCPR = zoal::mem::reg<Address + 0x10, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using SPIx_RXCRCR = zoal::mem::reg<Address + 0x14, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using SPIx_TXCRCR = zoal::mem::reg<Address + 0x18, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using SPIx_I2SCFGR = zoal::mem::reg<Address + 0x1C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using SPIx_I2SPR = zoal::mem::reg<Address + 0x20, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
 
         static inline void transfer_byte(uint8_t data) {
             // SPI_I2S_FLAG_TXE | SPI_I2S_FLAG_RXNE
             const uint16_t TxRxBusyMask = 0x0083;
             const uint16_t TxEmptyAndRxNotEmptyAndNotBusy = 0x0003;
 
-            *accessor<SPIx_DR>::p = data;
+            SPIx_DR::ref() = data;
 
-            while ((*accessor<SPIx_SR>::p & TxRxBusyMask) != TxEmptyAndRxNotEmptyAndNotBusy)
+            while ((SPIx_SR::ref() & TxRxBusyMask) != TxEmptyAndRxNotEmptyAndNotBusy)
                 ;
-            return *accessor<SPIx_DR>::p;
+            return SPIx_DR::ref();
         }
 
         static inline void enable() {
             RCController::instance()->APB2ENR |= RCCMask;
-            *accessor<SPIx_CR1>::p |= CR1_SPE;
+            SPIx_CR1::ref() |= CR1_SPE;
         }
 
         static inline void disable() {
             RCController::instance()->APB2ENR &= ~RCCMask;
-            *accessor<SPIx_CR1>::p &= ~CR1_SPE;
+            SPIx_CR1::ref() &= ~CR1_SPE;
         }
     };
 

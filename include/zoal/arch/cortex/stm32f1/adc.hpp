@@ -40,8 +40,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
 	    template <class Config>
 	    static void connect() {
-//			ADC_TypeDef *adc = (ADC_TypeDef *)Base;
-//			ADC_RegularChannelConfig(adc, Config::Channel, 1, ADC_SampleTime_28Cycles5);
 	    }
 
 	    static uint16_t read() {
@@ -55,17 +53,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
 	    static void setup() {
 	    	Clock::enable();
-//
-//			ADC_TypeDef *adc = (ADC_TypeDef *)Base;
-//
-//	        ADC_InitTypeDef ADC_InitStructure;
-//	        ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
-//	        ADC_InitStructure.ADC_ScanConvMode = DISABLE;
-//	        ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;  // we work in continuous sampling mode
-//	        ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
-//	        ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
-//	        ADC_InitStructure.ADC_NbrOfChannel = 1;
-//	        ADC_Init (adc, &ADC_InitStructure);   //set config of ADC1
 	    }
 	};
 }}}

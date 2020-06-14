@@ -100,7 +100,7 @@ namespace zoal { namespace mcu {
         using pd_01 = pin<port_d, 0x01>;
 
         using ports = ::zoal::ct::type_list<port_a, port_b, port_c, port_d>;
-        using api = ::zoal::gpio::api<ports>;
+        using api = ::zoal::gpio::api;
         using mux = ::zoal::arch::stm32f1::mux<self_type>;
         using cfg = ::zoal::arch::stm32f1::cfg<self_type>;
 

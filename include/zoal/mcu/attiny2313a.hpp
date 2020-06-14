@@ -122,7 +122,7 @@ namespace zoal { namespace mcu {
         using pa_02 = pin<port_a, 2>;
 
         using ports = ::zoal::ct::type_list<port_b, port_d, port_a>;
-        using api = ::zoal::gpio::api<ports>;
+        using api = ::zoal::gpio::api;
         using mux = ::zoal::arch::avr::attiny::mux<api>;
         using cfg = ::zoal::arch::avr::attiny::cfg<api, Frequency>;
         using irq = ::zoal::arch::avr::attiny::irq;

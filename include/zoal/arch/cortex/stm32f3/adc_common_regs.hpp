@@ -1,8 +1,6 @@
 #ifndef ZOAL_ARCH_STM32F3_A2DC_COMMON_REGS_HPP
 #define ZOAL_ARCH_STM32F3_A2DC_COMMON_REGS_HPP
 
-#include "../../../mem/accessor.hpp"
-
 #include <stdint.h>
 
 namespace zoal { namespace arch { namespace stm32f3 {
@@ -10,17 +8,14 @@ namespace zoal { namespace arch { namespace stm32f3 {
     template<uintptr_t Address>
     class adc_common_regs {
     public:
-        template<uintptr_t Offset>
-        using accessor = zoal::mem::accessor<uint32_t , Address, Offset>;
-
-        static constexpr uintptr_t ADCx_CSR = 0x00;
-        static constexpr uintptr_t ADCx_CCR = 0x04;
-        static constexpr uintptr_t ADCx_CDR = 0x0C;
+        using ADCx_CSR = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t , 0xFFFFFFFF>;
+        using ADCx_CCR = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_CDR = zoal::mem::reg<Address + 0x0C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
 
         static inline void reset() {
-            *accessor<ADCx_CSR>::p = 0;
-            *accessor<ADCx_CCR>::p = 0;
-            *accessor<ADCx_CDR>::p = 0;
+            ADCx_CSR::ref() = 0;
+            ADCx_CCR::ref() = 0;
+            ADCx_CDR::ref() = 0;
         }
     };
 }}}

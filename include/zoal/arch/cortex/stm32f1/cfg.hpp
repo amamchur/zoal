@@ -1,10 +1,8 @@
 #ifndef ZOAL_ARCH_STM32F1_CFG_HPP
 #define ZOAL_ARCH_STM32F1_CFG_HPP
 
-#include "../../../mem/clear_and_set.hpp"
-#include "../../../mem/modifier.hpp"
+#include "../../../mem/cas.hpp"
 #include "../../../periph/usart.hpp"
-#include "../../../utils/helpers.hpp"
 #include "../../bus.hpp"
 
 namespace zoal { namespace metadata {
@@ -22,9 +20,6 @@ namespace zoal { namespace metadata {
 }}
 
 namespace zoal { namespace arch { namespace stm32f1 {
-    using zoal::mem::clear_and_set;
-    using zoal::mem::modifier;
-
     template<class Microcontroller>
     class cfg {
     public:
@@ -33,11 +28,11 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static constexpr auto mcu_frequency = mcu::frequency;
 
         template<class U,
-                uint32_t BaudRate,
-                uint8_t Bits = 8,
-                zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
-                zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1,
-                uint32_t UsartFreq = mcu_frequency / zoal::metadata::stm32_bus_prescaler<U::bus>::value>
+                 uint32_t BaudRate,
+                 uint8_t Bits = 8,
+                 zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
+                 zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1,
+                 uint32_t UsartFreq = mcu_frequency / zoal::metadata::stm32_bus_prescaler<U::bus>::value>
         class usart {
         public:
             using dbc1 = zoal::metadata::stm32_data_bits_to_cr1<Bits>;
@@ -56,21 +51,18 @@ namespace zoal { namespace arch { namespace stm32f1 {
             static constexpr auto mantissa = static_cast<uint16_t>((divider - int_part) * 16);
             static constexpr uint16_t bbr = (int_part << 4) + mantissa;
 
-            using USARTx_CR1 = modifier<U::USARTx_CR1, uint32_t, c1_clear, c1_set>;
-            using USARTx_CR2 = modifier<U::USARTx_CR2, uint32_t, c2_clear, c2_set>;
-            using USARTx_CR3 = modifier<U::USARTx_CR3, uint32_t, 0x300, 0>;
-            using USARTx_BRR = modifier<U::USARTx_BRR, uint32_t, 0, bbr, true>;
-
-            template<uintptr_t Offset>
-            using accessor = zoal::mem::accessor<uint32_t, U::address, Offset>;
+            using USARTx_CR1 = typename U::USARTx_CR1::template cas<c1_clear, c1_set>;
+            using USARTx_CR2 = typename U::USARTx_CR2::template cas<c2_clear, c2_set>;
+            using USARTx_CR3 = typename U::USARTx_CR3::template cas<0x300, 0>;
+            using USARTx_BRR = typename U::USARTx_BRR::template cas<0, bbr>;
 
             static void apply() {
                 U::disable();
 
-                USARTx_CR1::apply(accessor<U::USARTx_CR1>::ref());
-                USARTx_CR2::apply(accessor<U::USARTx_CR2>::ref());
-                USARTx_CR3::apply(accessor<U::USARTx_CR3>::ref());
-                USARTx_BRR::apply(accessor<U::USARTx_BRR>::ref());
+                USARTx_CR1();
+                USARTx_CR2();
+                USARTx_CR3();
+                USARTx_BRR();
             }
         };
     };

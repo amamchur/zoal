@@ -151,7 +151,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static constexpr auto async = T::async;
             using timer_mode_cfg = timer_mode<T, Mode>;
             using clock_divider_cfg = timer_clock_divider<T, async, ClockDivider>;
-            using list = typename zoal::gpio::api_new::apply<timer_mode_cfg, clock_divider_cfg>::result;
+            using list = typename zoal::gpio::api::optimize<timer_mode_cfg, clock_divider_cfg>::result;
 
             static void apply() {
                 T::disable();
@@ -163,7 +163,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         template<class A, zoal::periph::adc_ref Ref = zoal::periph::adc_ref::vcc, uintptr_t ClockDivider = 128>
         class adc {
         public:
-            using list = typename zoal::gpio::api_new::apply<
+            using list = typename zoal::gpio::api::optimize<
                 //
                 adc_clock_divider<A, ClockDivider>,
                 adc_ref<A, Ref>>::result;
@@ -187,7 +187,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using cpol_cpha = spi_cpol_cpha_cfg<S, PolPha>;
             using mode = spi_mode_cfg<S, Mode>;
 
-            using list = typename zoal::gpio::api_new::apply<clock_divider, order, cpol_cpha, mode>::result;
+            using list = typename zoal::gpio::api::optimize<clock_divider, order, cpol_cpha, mode>::result;
 
             static void apply() {
                 S::disable();

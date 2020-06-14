@@ -3,7 +3,6 @@
 
 #include "../../../data/ring_buffer_ext.hpp"
 #include "../../../io/stream_functor.hpp"
-#include "../../../mem/accessor.hpp"
 #include "../../../utils/cooperation.hpp"
 #include "../../../utils/interrupts.hpp"
 #include "../../../utils/nop.hpp"
@@ -14,9 +13,6 @@ namespace zoal { namespace arch { namespace stm32x {
     template<uintptr_t Address, class... Mixin>
     class usart : public Mixin... {
     public:
-        template<uintptr_t Offset>
-        using accessor = zoal::mem::accessor<uint32_t, Address, Offset>;
-
         static constexpr uintptr_t address = Address;
 
         static constexpr uint32_t USARTx_ISR_bit_TXE = 1 << 7; // Bit 7 TXE: Transmit data register empty
@@ -25,17 +21,17 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr uint32_t USARTx_CR1_bit_TXEIE = 1 << 7; // Bit 7 TXEIE: interrupt enable
         static constexpr uint32_t USARTx_CR1_bit_UE = 1 << 0; // Bit 0 UE: USART enable
 
-        static constexpr uintptr_t USARTx_CR1 = 0x00;
-        static constexpr uintptr_t USARTx_CR2 = 0x04;
-        static constexpr uintptr_t USARTx_CR3 = 0x08;
-        static constexpr uintptr_t USARTx_BRR = 0x0C;
-        static constexpr uintptr_t USARTx_GTPR = 0x10;
-        static constexpr uintptr_t USARTx_RTOR = 0x14;
-        static constexpr uintptr_t USARTx_RQR = 0x18;
-        static constexpr uintptr_t USARTx_ISR = 0x1C;
-        static constexpr uintptr_t USARTx_ICR = 0x20;
-        static constexpr uintptr_t USARTx_RDR = 0x24;
-        static constexpr uintptr_t USARTx_TDR = 0x28;
+        using USARTx_CR1 = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using USARTx_CR2 = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using USARTx_CR3 = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using USARTx_BRR = zoal::mem::reg<Address + 0x0C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using USARTx_GTPR = zoal::mem::reg<Address + 0x10, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using USARTx_RTOR = zoal::mem::reg<Address + 0x14, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using USARTx_RQR = zoal::mem::reg<Address + 0x18, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using USARTx_ISR = zoal::mem::reg<Address + 0x1C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using USARTx_ICR = zoal::mem::reg<Address + 0x20, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using USARTx_RDR = zoal::mem::reg<Address + 0x24, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using USARTx_TDR = zoal::mem::reg<Address + 0x28, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
 
         using self_type = usart<Address, Mixin...>;
 
@@ -71,61 +67,61 @@ namespace zoal { namespace arch { namespace stm32x {
         using null_rx_buffer = zoal::data::null_fifo_buffer<uint8_t>;
 
         static void enable() {
-            accessor<USARTx_CR1>::ref() |= USARTx_CR1_bit_UE;
+            USARTx_CR1::ref() |= USARTx_CR1_bit_UE;
         }
 
         static void disable() {
-            accessor<USARTx_CR1>::ref() &= ~USARTx_CR1_bit_UE;
+            USARTx_CR1::ref() &= ~USARTx_CR1_bit_UE;
         }
 
         static void enable_tx() {
-            accessor<USARTx_CR1>::ref() |= USARTx_CR1_bit_TXEIE;
+            USARTx_CR1::ref() |= USARTx_CR1_bit_TXEIE;
         }
 
         static void disable_tx() {
-            accessor<USARTx_CR1>::ref() &= ~USARTx_CR1_bit_TXEIE;
+            USARTx_CR1::ref() &= ~USARTx_CR1_bit_TXEIE;
         }
 
         static void enable_rx() {
-            accessor<USARTx_CR1>::ref() |= USARTx_CR1_bit_RXNEIE;
+            USARTx_CR1::ref() |= USARTx_CR1_bit_RXNEIE;
         }
 
         static void disable_rx() {
-            accessor<USARTx_CR1>::ref() &= ~USARTx_CR1_bit_RXNEIE;
+            USARTx_CR1::ref() &= ~USARTx_CR1_bit_RXNEIE;
         }
 
         static inline void flush() {}
 
         template<class Buffer>
         static inline void rx_handler() {
-            auto rx_enabled = accessor<USARTx_CR1>::ref() & USARTx_CR1_bit_RXNEIE;
+            auto rx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_RXNEIE;
             if (!rx_enabled) {
                 return;
             }
 
-            auto rx_not_empty = accessor<USARTx_ISR>::ref() & USARTx_ISR_bit_RXNE;
+            auto rx_not_empty = USARTx_ISR::ref() & USARTx_ISR_bit_RXNE;
             if (!rx_not_empty) {
                 return;
             }
 
-            Buffer::push_back(accessor<USARTx_RDR>::ref());
+            Buffer::push_back(USARTx_RDR::ref());
         }
 
         template<class Buffer>
         static void tx_handler() {
-            auto tx_enabled = accessor<USARTx_CR1>::ref() & USARTx_CR1_bit_TXEIE;
+            auto tx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_TXEIE;
             if (!tx_enabled) {
                 return;
             }
 
-            auto tx_empty = accessor<USARTx_ISR>::ref() & USARTx_ISR_bit_TXE;
+            auto tx_empty = USARTx_ISR::ref() & USARTx_ISR_bit_TXE;
             if (!tx_empty) {
                 return;
             }
 
             typename Buffer::value_type value;
             if (Buffer::pop_front(value)) {
-                accessor<USARTx_TDR>::ref() = value;
+                USARTx_TDR::ref() = value;
             } else {
                 disable_tx();
             }
