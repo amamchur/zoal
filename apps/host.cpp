@@ -71,5 +71,16 @@ int main() {
 
     std::cout << "------------------ " << (void *)A::set << std::endl;
     zoal::ct::type_list_iterator<d>::for_each(func);
+
+    api::optimize<
+    //
+    mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::on_cas,
+        //
+        mcu::cfg::usart<usart_01, 115200>::cfg,
+        //
+        api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12>,
+        api::mode<zoal::gpio::pin_mode::output, mcu::pc_13>
+                                                //
+                                                >();
     return 0;
 }

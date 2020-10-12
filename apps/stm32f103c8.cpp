@@ -92,9 +92,9 @@ extern "C" void zoal_init() {
         api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12>,
         api::mode<zoal::gpio::pin_mode::output, mcu::pc_13>
         //
-        >::apply();
+        >();
 
-    api::optimize<api::enable<usart_01, mcu::port_a, mcu::port_c>>::apply();
+    api::optimize<api::enable<usart_01, mcu::port_a, mcu::port_c>>();
 
     NVIC_EnableIRQ(USART1_IRQn);
 }

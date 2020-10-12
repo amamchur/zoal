@@ -76,7 +76,7 @@ void initialize_hardware() {
     // Power on modules
     api::optimize<api::power_on<usart, timer, adc, i2c, spi>>();
 
-    // Disble all module before applying setting
+    // Disble all module before applying settings
     api::optimize<api::disable<usart, timer, adc, i2c, spi>>();
     api::optimize<
         // Connecting module to appropriate GPIO pin using multiplexer
@@ -113,7 +113,7 @@ int main() {
     logger::info() << "-- Start --";
 
     zoal::utils::cas_print_functor<logger> func;
-    using tlf = api::optimize<api::power_on<usart, timer, adc, i2c, spi>>;
+    using tlf = api::optimize<mcu::cfg::usart<usart, 115200>::cfg>;
     zoal::ct::type_list_iterator<tlf>::for_each(func);
 
     while (true) {

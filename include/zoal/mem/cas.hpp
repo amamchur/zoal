@@ -256,13 +256,19 @@ namespace zoal { namespace mem {
     };
 
     template<class List>
-    ZOAL_INLINE_IO void apply_cas_list() {
-        typename List::type();
-        apply_cas_list<typename List::next>();
-    }
+    class apply_cas_list {
+    public:
+        ZOAL_INLINE_IO apply_cas_list() {
+            typename List::type();
+            apply_cas_list<typename List::next>();
+        }
+    };
 
     template<>
-    ZOAL_INLINE_IO void apply_cas_list<void>() {}
+    class apply_cas_list<void> {
+    public:
+        ZOAL_INLINE_IO apply_cas_list<void>() {}
+    };
 
     template<class List>
     struct callable_cas_list : List {

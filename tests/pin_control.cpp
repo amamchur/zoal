@@ -1,5 +1,3 @@
-#include "utils/accessor.hpp"
-
 #include "gtest/gtest.h"
 #include <zoal/gpio/pin.hpp>
 

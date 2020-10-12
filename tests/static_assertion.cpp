@@ -1,6 +1,4 @@
 #include "gtest/gtest.h"
-#include "utils/accessor.hpp"
-
 #include <zoal/ct/check.hpp>
 #include <zoal/gpio/pin.hpp>
 #include <zoal/mcu/atmega328p.hpp>

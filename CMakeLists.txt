@@ -215,6 +215,6 @@ add_mcu_executable(stm32f303_nucleo stm32 apps/stm32f303retx.cpp)
 
 add_host_executable(host apps/host.cpp)
 
-#add_zoal_tests()
+add_zoal_tests()
 
 ragel_generate_cpp(apps/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)
