@@ -6,6 +6,12 @@
 #include "../ct/type_list.hpp"
 #include "../utils/defs.hpp"
 
+#ifdef ZOAL_COVERAGE
+#include "../../../tests/utils/address_cast.hpp"
+#else
+#define ZOAL_ADDRESS_CAST(TYPE, ADDRESS) reinterpret_cast<volatile TYPE *>(ADDRESS)
+#endif
+
 namespace zoal { namespace mem {
     enum class reg_io { read, write, read_write };
 
@@ -18,83 +24,74 @@ namespace zoal { namespace mem {
         static constexpr Type set = S;
         using type = Type;
 
-        static_assert((clear & Mask) == clear, "Incorrect clear mask");
-        static_assert((set & Mask) == set, "Incorrect set mask");
+        static_assert((int)RegIO == 0xDEADBEEF, "Unsupported clear and set configuration");
+    };
 
-        inline cas() {
-            auto p = reinterpret_cast<volatile Type *>(Address);
+    template<uintptr_t Address, class Type, Type Mask, uint32_t C, uint32_t S>
+    struct cas<Address, reg_io::read_write, Type, Mask, C, S> {
+        static constexpr auto address = Address;
+        static constexpr auto io = reg_io::read_write;
+        static constexpr auto mask = Mask;
+        static constexpr Type clear = C;
+        static constexpr Type set = S;
+        using type = Type;
+
+        ZOAL_INLINE_IO cas() {
+            auto p = ZOAL_ADDRESS_CAST(Type, Address);
             *p = (*p & ~clear) | set;
         }
     };
 
-    template<uintptr_t Address, reg_io RegIO, class Type, Type Mask>
-    struct cas<Address, RegIO, Type, Mask, 0, 0> {
+    template<uintptr_t Address, class Type, Type Mask>
+    struct cas<Address, reg_io::read_write, Type, Mask, 0, 0> {
         static constexpr auto address = Address;
-        static constexpr auto io = RegIO;
+        static constexpr auto io = reg_io::read_write;
         static constexpr auto mask = Mask;
         static constexpr Type clear = 0;
         static constexpr Type set = 0;
         using type = Type;
     };
 
-    template<uintptr_t Address, reg_io RegIO, class Type, Type Mask, uint32_t CS>
-    struct cas<Address, RegIO, Type, Mask, CS, CS> {
+    template<uintptr_t Address, class Type, Type Mask, uint32_t Q>
+    struct cas<Address, reg_io::read_write, Type, Mask, Q, Q> {
         static constexpr auto address = Address;
-        static constexpr auto io = RegIO;
+        static constexpr auto io = reg_io::read_write;
         static constexpr auto mask = Mask;
-        static constexpr Type clear = CS;
-        static constexpr Type set = CS;
+        static constexpr Type clear = Q;
+        static constexpr Type set = Q;
         using type = Type;
 
-        static_assert((CS & Mask) == CS, "Incorrect mask");
-
-        inline cas() {
-            *reinterpret_cast<volatile Type *>(Address) |= CS;
+        ZOAL_INLINE_IO cas() {
+           *ZOAL_ADDRESS_CAST(Type, Address) |= set;
         }
     };
 
-    template<uintptr_t Address, reg_io RegIO, class Type, Type Mask, uint32_t S>
-    struct cas<Address, RegIO, Type, Mask, 0, S> {
+    template<uintptr_t Address, class Type, Type Mask, uint32_t S>
+    struct cas<Address, reg_io::read_write, Type, Mask, 0, S> {
         static constexpr auto address = Address;
-        static constexpr auto io = RegIO;
+        static constexpr auto io = reg_io::read_write;
         static constexpr auto mask = Mask;
         static constexpr Type clear = 0;
         static constexpr Type set = S;
         using type = Type;
 
-        static_assert((S & Mask) == S, "Incorrect set mask");
-
         ZOAL_INLINE_IO cas() {
-            *reinterpret_cast<volatile Type *>(Address) |= set;
+            *ZOAL_ADDRESS_CAST(Type, Address) |= set;
         }
     };
 
-    template<uintptr_t Address, reg_io RegIO, class Type, Type Mask, uint32_t C>
-    struct cas<Address, RegIO, Type, Mask, C, 0> {
+    template<uintptr_t Address, class Type, Type Mask, uint32_t C>
+    struct cas<Address, reg_io::read_write, Type, Mask, C, 0> {
         static constexpr auto address = Address;
-        static constexpr auto io = RegIO;
+        static constexpr auto io = reg_io::read_write;
         static constexpr auto mask = Mask;
         static constexpr Type clear = C;
         static constexpr Type set = 0;
         using type = Type;
 
-        static_assert((C & Mask) == C, "Incorrect clear mask");
-
         ZOAL_INLINE_IO cas() {
-            *reinterpret_cast<volatile Type *>(Address) &= ~clear;
+            *ZOAL_ADDRESS_CAST(Type, Address) &= ~clear;
         }
-    };
-
-    template<uintptr_t Address, class Type, Type Mask, uint32_t C, uint32_t S>
-    struct cas<Address, reg_io::read, Type, Mask, C, S> {
-        static constexpr auto address = Address;
-        static constexpr auto io = reg_io::read;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = C;
-        static constexpr Type set = S;
-        using type = Type;
-
-        static_assert(clear == 0 && set == 0, "Memory is readonly");
     };
 
     template<uintptr_t Address, class Type, Type Mask>
@@ -116,25 +113,29 @@ namespace zoal { namespace mem {
         static constexpr Type set = S;
         using type = Type;
 
-        inline cas() {
-            *reinterpret_cast<volatile Type *>(Address) = set;
+        ZOAL_INLINE_IO cas() {
+            *ZOAL_ADDRESS_CAST(Type, Address) = set;
         }
     };
 
-    template<uintptr_t Address, class Type, Type Mask, uint32_t C, uint32_t S>
-    struct cas<Address, reg_io::write, Type, Mask, C, S> {
+    template<uintptr_t Address, class Type, Type Mask, uint32_t C>
+    struct cas<Address, reg_io::write, Type, Mask, C, 0> {
         static constexpr auto address = Address;
         static constexpr auto io = reg_io::write;
         static constexpr auto mask = Mask;
         static constexpr Type clear = C;
-        static constexpr Type set = S;
+        static constexpr Type set = 0;
         using type = Type;
+    };
 
-        static_assert(clear == 0, "Memory write only");
-
-        inline cas() {
-            *reinterpret_cast<volatile Type *>(Address) = set;
-        }
+    template<uintptr_t Address, class Type, Type Mask>
+    struct cas<Address, reg_io::read, Type, Mask, 0, 0> {
+        static constexpr auto address = Address;
+        static constexpr auto io = reg_io::read;
+        static constexpr auto mask = Mask;
+        static constexpr Type clear = 0;
+        static constexpr Type set = 0;
+        using type = Type;
     };
 
     using null_cas = cas<0, reg_io::read_write, uint8_t, 0xFF, 0, 0>;
@@ -276,7 +277,7 @@ namespace zoal { namespace mem {
             apply_cas_list<List>();
         }
 
-        static void apply() {
+        ZOAL_INLINE_IO static void apply() {
             zoal::mem::apply_cas_list<List>();
         }
     };

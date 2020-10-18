@@ -1,6 +1,6 @@
 #include <iostream>
 #include <zoal/board/arduino_uno.hpp>
-#include <zoal/mcu/stm32f103c8tx.hpp>
+#include <zoal/mcu/atmega328p.hpp>
 #include <zoal/mem/reg.hpp>
 
 using PINx_A = zoal::mem::reg<0x0023, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
@@ -56,31 +56,19 @@ using tlf = zoal::ct::type_list_join<tl1, tl2, tl3>::result;
 int main() {
     using namespace std;
 
-    using mcu = zoal::mcu::stm32f103c8tx<>;
-    using usart_01 = mcu::usart_01;
-    using api = zoal::gpio::api;
-    using pa = mcu::port_a;
-
-    using list_aa = pa::template mode_cas<zoal::gpio::pin_mode::input_pull_up, 1 << 10 | 3>;
-    using d =  api::optimize<list_aa>;
+    using mcu = zoal::mcu::atmega328p<16000000>;
+    using timer = mcu::timer_01;
+    using cfg = mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>;
+    using cfg_cas = cfg::cfg;
 
     cas_print_functor func;
+    std::cout << "timer_mode_cfg ------------------ " << std::endl;
+    zoal::ct::type_list_iterator<cfg::timer_mode_cfg>::for_each(func);
 
-    std::cout << "------------------ " << (void *)A::set << std::endl;
-    zoal::ct::type_list_iterator<list_aa>::for_each(func);
+    std::cout << "clock_divider_cfg ------------------ " << std::endl;
+    zoal::ct::type_list_iterator<cfg::clock_divider_cfg>::for_each(func);
 
-    std::cout << "------------------ " << (void *)A::set << std::endl;
-    zoal::ct::type_list_iterator<d>::for_each(func);
-
-    api::optimize<
-    //
-    mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::on_cas,
-        //
-        mcu::cfg::usart<usart_01, 115200>::cfg,
-        //
-        api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12>,
-        api::mode<zoal::gpio::pin_mode::output, mcu::pc_13>
-                                                //
-                                                >();
+    std::cout << "cfg_cas ------------------ " << std::endl;
+    zoal::ct::type_list_iterator<cfg_cas>::for_each(func);
     return 0;
 }

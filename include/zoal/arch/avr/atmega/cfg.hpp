@@ -154,7 +154,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using clock_divider_cfg = timer_clock_divider<T, async, ClockDivider>;
             using cfg = typename zoal::gpio::api::optimize<timer_mode_cfg, clock_divider_cfg>;
 
-            static void apply() {
+            ZOAL_INLINE_IO static void apply() {
                 zoal::mem::apply_cas_list<cfg>();
             }
         };

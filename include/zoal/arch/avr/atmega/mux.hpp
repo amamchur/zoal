@@ -65,12 +65,19 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
             static_assert(channel >= 0, "Specified pin could not be connected to ADC");
 
+            using on_cas = zoal::ct::type_list<
+                //
+                typename A::ADMUXx::template cas<0x0F, mux_set_mask>,
+                typename A::ADCSRBx::template cas<(1 << 3), mux5>>;
+            using off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+
             static void on() {
-                typename A::ADMUXx::template cas<0x0F, mux_set_mask>();
-                typename A::ADCSRBx::template cas<(1 << 3), mux5>();
+                zoal::mem::apply_cas_list<on_cas>();
             }
 
-            static void off() {}
+            static void off() {
+                zoal::mem::apply_cas_list<off_cas>();
+            }
         };
 
         template<class T, class Pin, uint8_t Channel>
@@ -85,15 +92,15 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static constexpr auto set_mask = static_cast<uint8_t>(pwm_mode << mask_shift);
             static_assert((set_mask & clear_mask) == set_mask, "Ops, wrong metadata");
 
-            using TCCRxA_cfg_on = typename T::TCCRxA::template cas<clear_mask, set_mask>;
-            using TCCRxA_cfg_off = typename T::TCCRxA::template cas<clear_mask, 0>;
+            using on_cas = zoal::ct::type_list<typename T::TCCRxA::template cas<clear_mask, set_mask>>;
+            using off_cas = zoal::ct::type_list<typename T::TCCRxA::template cas<clear_mask, 0>>;
 
             static void on() {
-                TCCRxA_cfg_on();
+                zoal::mem::apply_cas_list<on_cas>();
             }
 
             static void off() {
-                TCCRxA_cfg_off();
+                zoal::mem::apply_cas_list<off_cas>();
             }
         };
 

@@ -17,7 +17,7 @@ namespace zoal { namespace io {
     };
 
     template<class Duration, trigger_mode Mode, Duration Holdoff>
-    struct samling_trigger {
+    struct sampling_trigger {
         using duration_type = Duration;
 
         static constexpr trigger_mode mode = Mode;
@@ -25,11 +25,7 @@ namespace zoal { namespace io {
     };
 
     template<trigger_mode mode>
-    struct trigger_condition {
-        static bool matched(signal_transition transition) {
-            return false;
-        }
-    };
+    struct trigger_condition {};
 
     template<>
     struct trigger_condition<trigger_mode::falling_edge> {

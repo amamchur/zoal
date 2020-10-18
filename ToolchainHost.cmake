@@ -13,15 +13,17 @@ function(add_zoal_tests)
     find_package(GTest)
         
     set(TEST_CASES_FILES
+            tests/utils/address_cast.cpp
             tests/static_assertion.cpp
             tests/stub_classes.cpp
             tests/pin_control.cpp
+            tests/clear_and_set.cpp
+            tests/atmega328.cpp
             )
-    add_executable(zoal_tests ${TEST_CASES_FILES})
-    target_compile_definitions(zoal_tests PRIVATE -DZOAL_COVERAGE)
-
-    target_include_directories(zoal_tests PRIVATE ${GTEST_INCLUDE_DIRS})
-    target_link_libraries(zoal_tests PRIVATE GTest::GTest GTest::Main)
+    add_executable(zoal_tests_atmega328 ${TEST_CASES_FILES})
+    target_compile_definitions(zoal_tests_atmega328 PRIVATE -DZOAL_COVERAGE)
+    target_include_directories(zoal_tests_atmega328 PRIVATE ${GTEST_INCLUDE_DIRS})
+    target_link_libraries(zoal_tests_atmega328 PRIVATE GTest::GTest GTest::Main)
 
     foreach (loop_var ${TEST_CASES_FILES})
         get_filename_component(FILE_NAME ${loop_var} NAME)

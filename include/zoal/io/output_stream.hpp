@@ -3,6 +3,7 @@
 #ifndef ZOAL_IO_OUTPUT_STREAM_HPP
 #define ZOAL_IO_OUTPUT_STREAM_HPP
 
+#include "../utils/defs.hpp"
 #include "stream.hpp"
 
 #include <math.h> /* NOLINT */
@@ -22,7 +23,7 @@ namespace zoal { namespace io {
             Transport::push_back_blocking(ch);
         };
 
-        static abstract_transport &instance() {
+        ZOAL_INLINE_IO static abstract_transport &instance() {
             static transport_proxy<Transport> transport;
             return transport;
         }
@@ -52,7 +53,7 @@ namespace zoal { namespace io {
             : proxy(p) {}
 
         output_stream &operator<<(char ch) {
-            proxy.write_byte(static_cast<uint8_t >(ch));
+            proxy.write_byte(static_cast<uint8_t>(ch));
             return *this;
         }
 
@@ -68,8 +69,8 @@ namespace zoal { namespace io {
             auto value = reinterpret_cast<uintptr_t>(ptr);
 
             for (int i = sizeof(ptr) * 8 - 4; i >= 0; i -= 4) {
-                auto hex = (value & (0xF << i)) >> i;
-                auto ascii = hex < 10 ? ('0' + hex) : ('A' + hex - 10);
+                auto h = (value & (0xF << i)) >> i;
+                auto ascii = h < 10 ? ('0' + h) : ('A' + h - 10);
                 proxy.write_byte(ascii);
             }
 
@@ -171,11 +172,6 @@ namespace zoal { namespace io {
             this->precision = p.value;
             return *this;
         }
-
-        //        output_stream &operator<<(cursor_position pos) {
-        //            proxy.move(pos.row, pos.col);
-        //            return *this;
-        //        }
 
         template<class F>
         output_stream &operator<<(::zoal::io::output_stream_functor<F> &fn) {

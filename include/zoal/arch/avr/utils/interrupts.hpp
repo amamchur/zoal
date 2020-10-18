@@ -16,15 +16,15 @@ namespace zoal { namespace utils {
 			}
 		}
 
-		inline ~interrupts() {
+        ZOAL_INLINE_IO ~interrupts() {
 		 	SREG = sREG;
 		}
 
-		static inline void off() {
+        ZOAL_INLINE_IO static void off() {
 			asm volatile("cli"			"\n\t");
 		}
 
-		static inline void on() {
+		ZOAL_INLINE_IO static void on() {
 			asm volatile("sei"			"\n\t");
 		}
 

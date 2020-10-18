@@ -20,8 +20,8 @@ namespace zoal { namespace io {
         static constexpr uint16_t threshold = zero_space_iterations + 200 / PeriodMicroseconds;
 
         using duration_type = uint16_t;
-        using start_trigger = samling_trigger<duration_type, trigger_mode::falling_edge, start_holdoff_iterations>;
-        using stop_trigger = samling_trigger<duration_type, trigger_mode::rising_edge, stop_holdoff_iterations>;
+        using start_trigger = sampling_trigger<duration_type, trigger_mode::falling_edge, start_holdoff_iterations>;
+        using stop_trigger = sampling_trigger<duration_type, trigger_mode::rising_edge, stop_holdoff_iterations>;
         using sample_type = sample<duration_type>;
         using digital_sampler_type = digital_sampler<Pin, start_trigger, stop_trigger>;
 

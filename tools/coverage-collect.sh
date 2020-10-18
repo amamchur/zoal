@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 pwd
-cd ./cmake-build-debug-host/CMakeFiles/zoal_tests.dir/tests
+cd ./cmake-build-debug-host/CMakeFiles/zoal_tests_atmega328.dir/tests
 pwd
 
 lcov --capture --directory . --output-file coverage_full.info
