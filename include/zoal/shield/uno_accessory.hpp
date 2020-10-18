@@ -57,7 +57,7 @@ namespace zoal { namespace shield {
 
         static void potentiometer_async() {
             using adc = typename mcu::adc_00;
-            mcu::mux::template adc<adc, potentiometer>::on();
+            typename mcu::mux::template adc<adc, potentiometer>::connect();
             adc::start();
         }
 

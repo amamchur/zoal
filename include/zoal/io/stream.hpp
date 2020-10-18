@@ -1,10 +1,11 @@
 #ifndef ZOAL_IO_STREAM_HPP
 #define ZOAL_IO_STREAM_HPP
 
-#include <stdint.h>
-#include <stddef.h>
-#include <ctype.h>
 #include "stream_functor.hpp"
+
+#include <ctype.h>
+#include <stddef.h>
+#include <stdint.h>
 
 namespace zoal { namespace io {
     template<uint8_t Value>
@@ -23,97 +24,59 @@ namespace zoal { namespace io {
     };
 
     struct setprecision {
-        setprecision(uint8_t value) : value(value) {
-        }
+        setprecision(uint8_t value)
+            : value(value) {}
 
         uint8_t value;
     };
 
     struct cursor_position {
-        cursor_position(uint8_t row, uint8_t col) : row(row), col(col) {
-        }
+        cursor_position(uint8_t row, uint8_t col)
+            : row(row)
+            , col(col) {}
 
         uint8_t row;
         uint8_t col;
     };
 
-    struct new_line_cr_lf : public output_stream_functor<new_line_cr_lf> {
-        bool operator()(uint8_t &data) {
-            data = static_cast<uint8_t>(index == 0 ? '\r' : '\n');
-            return index++ < 2;
+    struct new_line_cr_lf {
+        template<class T>
+        static void write() {
+            T::push_back_blocking('\r');
+            T::push_back_blocking('\n');
         }
-
-        uint8_t index{0};
     };
 
-    struct stop_escape_sequence : public output_stream_functor<stop_escape_sequence> {
-        bool operator()(uint8_t &data) {
-            switch (index) {
-                case 0:
-                    data = '\033';
-                    break;
-                case 1:
-                    data = '[';
-                    break;
-                case 2:
-                    data = '0';
-                    break;
-                case 3:
-                    data = 'm';
-                    break;
-                default:
-                    break;
-            }
-            return index++ < 4;
+    struct stop_escape_sequence {
+        template<class T>
+        static void write() {
+            T::push_back_blocking('\033');
+            T::push_back_blocking('[');
+            T::push_back_blocking('0');
+            T::push_back_blocking('m');
         }
-
-        uint8_t index{0};
-    };
-
-    struct fill_functor : public output_stream_functor<fill_functor> {
-        fill_functor(uint8_t ch, size_t count) : ch(ch), count(count) {
-        }
-
-        bool operator()(uint8_t &data) {
-            data = ch;
-            return count-- > 0;
-        }
-
-        uint8_t ch{' '};
-        size_t count{0};
     };
 
     struct buffer_functor : public output_stream_functor<buffer_functor> {
         buffer_functor(const void *buffer, size_t count)
-                : buffer((const uint8_t *) buffer), count(count) {
-        }
+            : buffer((const uint8_t *)buffer)
+            , count(count) {}
 
-        bool operator()(uint8_t &data) {
-            data = *buffer++;
-            return count-- > 0;
+        template<class T>
+        void write() {
+            for (size_t i = 0; i < count; i++) {
+                T::push_back_blocking(buffer[i]);
+            }
         }
 
         const uint8_t *buffer;
         size_t count;
     };
 
-    struct string_functor : public output_stream_functor<string_functor> {
-        explicit string_functor(const void *buffer)
-                : buffer((const uint8_t *) buffer) {
-        }
-
-        bool operator()(uint8_t &data) {
-            data = *buffer++;
-            return data != 0;
-        }
-
-        const uint8_t *buffer;
-    };
-
-
     struct ignore_functor : public input_stream_functor<ignore_functor> {
-        ignore_functor(int count, char ch) : count(count), ch(ch) {
-        }
+        ignore_functor(int count, char ch)
+            : count(count)
+            , ch(ch) {}
 
         bool operator()(uint8_t value) {
             return !(--count <= 0 || value == ch);

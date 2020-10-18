@@ -38,9 +38,7 @@ namespace zoal { namespace utils {
     template<>
     struct nop_depth<3, 1> {
         static inline __attribute__((always_inline)) void place() {
-            asm volatile(
-            "lpm"            "\n"
-            );
+            asm volatile("lpm"            "\n");
         }
     };
 

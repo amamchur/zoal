@@ -7,70 +7,48 @@
 namespace zoal { namespace utils {
     enum class log_level { trace, debug, info, warn, error, highest };
 
-    template<class Prefixer>
-    class prefix_placer {
-    public:
-        template<class T>
-        void place_prefix(T &t) {
-            Prefixer p;
-            t << p;
-        }
+    template<class Pattern>
+    class placer : public Pattern {
     };
 
     template<>
-    class prefix_placer<void> {
+    class placer<void> {
     public:
         template<class T>
-        ZOAL_INLINE_IO void place_prefix(T &t) {}
-    };
-
-    template<class Suffixer>
-    class suffix_placer {
-    public:
-        template<class T>
-        void place_suffix(T &t) {
-            Suffixer p;
-            t << p;
-        }
-    };
-
-    template<>
-    class suffix_placer<void> {
-    public:
-        template<class T>
-        ZOAL_INLINE_IO void place_suffix(T &) {}
+        ZOAL_INLINE_IO static void write() {}
     };
 
     template<class Transport, class Prefixer = void, class Suffixer = void, bool enabled = true>
-    class log_stream : public prefix_placer<Prefixer>, suffix_placer<Suffixer> {
+    class log_stream : public zoal::io::output_stream<Transport> {
     public:
-        log_stream()
-            : stream(zoal::io::transport_proxy<Transport>::instance()) {
-            this->template place_prefix<>(*this);
+        using pp_class = placer<Prefixer>;
+        using sp_class = placer<Suffixer>;
+        using os_class = zoal::io::output_stream<Transport>;
+
+        log_stream() {
+            pp_class:: template write<Transport>();
         }
 
-        log_stream(const log_stream &log)
-            : stream(log.stream) {
+        log_stream(const log_stream &log) {
             log.final = false;
-            stream.precision = log.stream.precision;
-            stream.radix = log.stream.radix;
-        }
-
-        ~log_stream() {
-            if (final) {
-                this->template place_suffix<>(*this);
-            }
+            this->precision = log.precision;
+            this->radix = log.radix;
         }
 
         template<class T>
         log_stream &operator<<(T value) {
-            stream << value;
+            static_cast<os_class&>(*this) << value;
             return *this;
+        }
+
+        ~log_stream() {
+            if (final) {
+                sp_class:: template write<Transport>();
+            }
         }
 
     private:
         mutable bool final{true};
-        zoal::io::output_stream stream;
     };
 
     template<class Prefixer, class Suffixer, bool enabled>
@@ -178,7 +156,7 @@ namespace zoal { namespace utils {
     struct cas_print_functor {
         template<class A>
         void operator()() {
-            Logger::info() << "CAS: " << (void *)A::address << " | " << (void *)A::clear << ", " << (void *)A::set;
+            Logger::info() << "CAS: *" << (void *)A::address << " & ~" << (void *)A::clear << " | " << (void *)A::set;
         }
     };
 }}

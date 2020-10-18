@@ -110,7 +110,7 @@ int main() {
 
     stepper.init();
 
-    mcu::mux::usart<usart, pcb::ard_d00, pcb::ard_d01>::on();
+    mcu::mux::usart<usart, pcb::ard_d00, pcb::ard_d01>::connect();
     mcu::cfg::usart<usart, 115200>::apply();
 
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();

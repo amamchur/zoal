@@ -49,7 +49,7 @@ app6 app;
 void initialize_hardware() {
     mcu::power<usart, timer, adc>::on();
 
-    mcu::mux::usart<usart, mcu::pe_00, mcu::pe_01, mcu::pe_02>::on();
+    mcu::mux::usart<usart, mcu::pe_00, mcu::pe_01, mcu::pe_02>::connect();
     mcu::cfg::usart<usart, 115200>::apply();
 
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();

@@ -144,11 +144,11 @@ TEST_F(ATmega328, spi_mux) {
     EXPECT_EQ(ddrb_address, 0x0024);
     EXPECT_EQ(portb_address, 0x0025);
 
-    mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::on();
+    mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::connect();
     EXPECT_EQ(m[ddrb_address], 0x2C);
     EXPECT_EQ(m[portb_address], 0x00);
 
-    mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::off();
+    mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::disconnect();
     EXPECT_EQ(m[ddrb_address], 0x00);
     EXPECT_EQ(m[portb_address], 0x00);
 }
@@ -157,8 +157,8 @@ TEST_F(ATmega328, usart_mux) {
     using namespace ::zoal::gpio;
     using usart = mcu::usart_00;
 
-    mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::on();
-    mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::off();
+    mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::connect();
+    mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::disconnect();
 
     //    using cas = mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::on_cas;
     //    zoal::test::cas_print_functor func;
@@ -181,10 +181,10 @@ TEST_F(ATmega328, adc_mux) {
     uint8_t *m = zoal::test::mem<void>::avr();
     EXPECT_EQ(m[ADCSRBx_address], 0x00);
     EXPECT_EQ(m[ADMUXx_address], 0x00);
-    mcu::mux::adc<adc, mcu::pc_01>::on();
+    mcu::mux::adc<adc, mcu::pc_01>::connect();
     EXPECT_EQ(m[ADCSRBx_address], 0x00);
     EXPECT_EQ(m[ADMUXx_address], 0x01);
-    mcu::mux::adc<adc, mcu::pc_01>::off();
+    mcu::mux::adc<adc, mcu::pc_01>::disconnect();
     EXPECT_EQ(m[ADCSRBx_address], 0x00);
     EXPECT_EQ(m[ADMUXx_address], 0x01);
 }
@@ -205,11 +205,11 @@ TEST_F(ATmega328, i2c_mux) {
 
     uint8_t *m = zoal::test::mem<void>::avr();
 
-    mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::on();
+    mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::connect();
     EXPECT_EQ(m[DDRx_address], 0x30);
     EXPECT_EQ(m[PORTx_address], 0x30);
 
-    mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::off();
+    mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::disconnect();
     EXPECT_EQ(m[DDRx_address], 0x00);
     EXPECT_EQ(m[PORTx_address], 0x00);
 }
@@ -223,10 +223,10 @@ TEST_F(ATmega328, timer_mux) {
     EXPECT_EQ(TCCRxA_address, 0x44);
     EXPECT_EQ(m[TCCRxA_address], 0x00);
 
-    mcu::mux::timer<timer, mcu::pd_06, 0>::on();
+    mcu::mux::timer<timer, mcu::pd_06, 0>::connect();
     EXPECT_EQ(m[TCCRxA_address], 0x80);
 
-    mcu::mux::timer<timer, mcu::pd_06, 0>::off();
+    mcu::mux::timer<timer, mcu::pd_06, 0>::disconnect();
     EXPECT_EQ(m[TCCRxA_address], 0x00);
 
 //    using cas = mcu::mux::timer<timer, mcu::pd_06, 0>::on_cas;

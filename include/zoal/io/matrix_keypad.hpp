@@ -44,7 +44,7 @@ namespace zoal { namespace io {
         };
 
         static void select_row(size_t row) {
-            high_impedance::apply();
+            high_impedance();
             zoal::ct::type_list_index_iterator<pins>::for_each(to_ground(row));
         }
     };

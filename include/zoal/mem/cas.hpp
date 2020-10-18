@@ -15,6 +15,41 @@
 namespace zoal { namespace mem {
     enum class reg_io { read, write, read_write };
 
+    template<uintptr_t Address, class Type, bool U, uint32_t C, uint32_t S>
+    struct cas_base {
+        ZOAL_INLINE_IO cas_base() {
+            *ZOAL_ADDRESS_CAST(Type, Address) = (*ZOAL_ADDRESS_CAST(Type, Address) & ~C) | S;
+        }
+    };
+
+    template<uintptr_t Address, class Type, uint32_t C, uint32_t S>
+    struct cas_base<Address, Type, true, C, S> {
+        ZOAL_INLINE_IO cas_base() {
+            *ZOAL_ADDRESS_CAST(Type, Address) = S;
+        }
+    };
+
+    template<uintptr_t Address, class Type, uint32_t C>
+    struct cas_base<Address, Type, false, C, 0> {
+        ZOAL_INLINE_IO cas_base() {
+            *ZOAL_ADDRESS_CAST(Type, Address) &= ~C;
+        }
+    };
+
+    template<uintptr_t Address, class Type, uint32_t S>
+    struct cas_base<Address, Type, false, 0, S> {
+        ZOAL_INLINE_IO cas_base() {
+            *ZOAL_ADDRESS_CAST(Type, Address) |= S;
+        }
+    };
+
+    template<uintptr_t Address, class Type, uint32_t C, uint32_t S>
+    struct cas_base<Address, Type, false, C, S> {
+        ZOAL_INLINE_IO cas_base() {
+            *ZOAL_ADDRESS_CAST(Type, Address) = (*ZOAL_ADDRESS_CAST(Type, Address) & ~C) | S;
+        }
+    };
+
     template<uintptr_t Address, reg_io RegIO, class Type, Type Mask, uint32_t C, uint32_t S>
     struct cas {
         static constexpr auto address = Address;
@@ -28,18 +63,13 @@ namespace zoal { namespace mem {
     };
 
     template<uintptr_t Address, class Type, Type Mask, uint32_t C, uint32_t S>
-    struct cas<Address, reg_io::read_write, Type, Mask, C, S> {
+    struct cas<Address, reg_io::read_write, Type, Mask, C, S> : public cas_base<Address, Type, ((C | S) & Mask) == Mask, C, S> {
         static constexpr auto address = Address;
         static constexpr auto io = reg_io::read_write;
         static constexpr auto mask = Mask;
         static constexpr Type clear = C;
         static constexpr Type set = S;
         using type = Type;
-
-        ZOAL_INLINE_IO cas() {
-            auto p = ZOAL_ADDRESS_CAST(Type, Address);
-            *p = (*p & ~clear) | set;
-        }
     };
 
     template<uintptr_t Address, class Type, Type Mask>
@@ -53,45 +83,33 @@ namespace zoal { namespace mem {
     };
 
     template<uintptr_t Address, class Type, Type Mask, uint32_t Q>
-    struct cas<Address, reg_io::read_write, Type, Mask, Q, Q> {
+    struct cas<Address, reg_io::read_write, Type, Mask, Q, Q> : public cas_base<Address, Type, (Q & Mask) == Mask, 0, Q> {
         static constexpr auto address = Address;
         static constexpr auto io = reg_io::read_write;
         static constexpr auto mask = Mask;
         static constexpr Type clear = Q;
         static constexpr Type set = Q;
         using type = Type;
-
-        ZOAL_INLINE_IO cas() {
-           *ZOAL_ADDRESS_CAST(Type, Address) |= set;
-        }
     };
 
     template<uintptr_t Address, class Type, Type Mask, uint32_t S>
-    struct cas<Address, reg_io::read_write, Type, Mask, 0, S> {
+    struct cas<Address, reg_io::read_write, Type, Mask, 0, S> : public cas_base<Address, Type, (S & Mask) == Mask, 0, S> {
         static constexpr auto address = Address;
         static constexpr auto io = reg_io::read_write;
         static constexpr auto mask = Mask;
         static constexpr Type clear = 0;
         static constexpr Type set = S;
         using type = Type;
-
-        ZOAL_INLINE_IO cas() {
-            *ZOAL_ADDRESS_CAST(Type, Address) |= set;
-        }
     };
 
     template<uintptr_t Address, class Type, Type Mask, uint32_t C>
-    struct cas<Address, reg_io::read_write, Type, Mask, C, 0> {
+    struct cas<Address, reg_io::read_write, Type, Mask, C, 0> : public cas_base<Address, Type, (C & Mask) == Mask, C, 0> {
         static constexpr auto address = Address;
         static constexpr auto io = reg_io::read_write;
         static constexpr auto mask = Mask;
         static constexpr Type clear = C;
         static constexpr Type set = 0;
         using type = Type;
-
-        ZOAL_INLINE_IO cas() {
-            *ZOAL_ADDRESS_CAST(Type, Address) &= ~clear;
-        }
     };
 
     template<uintptr_t Address, class Type, Type Mask>
@@ -139,6 +157,7 @@ namespace zoal { namespace mem {
     };
 
     using null_cas = cas<0, reg_io::read_write, uint8_t, 0xFF, 0, 0>;
+    using null_cas_list = zoal::ct::type_list<null_cas>;
 
     template<class A, class... Rest>
     struct merge_cas {
@@ -256,12 +275,12 @@ namespace zoal { namespace mem {
         using result = typename zoal::mem::filter_cas_zeros<agg_list>::result;
     };
 
-    template<class List>
+    template<class TypeList>
     class apply_cas_list {
     public:
         ZOAL_INLINE_IO apply_cas_list() {
-            typename List::type();
-            apply_cas_list<typename List::next>();
+            typename TypeList::type();
+            apply_cas_list<typename TypeList::next>();
         }
     };
 
@@ -271,16 +290,15 @@ namespace zoal { namespace mem {
         ZOAL_INLINE_IO apply_cas_list<void>() {}
     };
 
-    template<class List>
-    struct callable_cas_list : List {
+    template<class TypeList>
+    struct callable_cas_list : TypeList {
         ZOAL_INLINE_IO callable_cas_list() {
-            apply_cas_list<List>();
-        }
-
-        ZOAL_INLINE_IO static void apply() {
-            zoal::mem::apply_cas_list<List>();
+            apply_cas_list<TypeList>();
         }
     };
+
+    template<class... Rest>
+    using cas_list = callable_cas_list<zoal::ct::type_list<Rest...>>;
 }}
 
 #endif

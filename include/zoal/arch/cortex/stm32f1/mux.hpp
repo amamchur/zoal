@@ -110,15 +110,12 @@ namespace zoal { namespace arch { namespace stm32f1 {
 //            using remap = usart_remapper<U::address, rx_rm::value>;
 //            static_assert(remap::register_offset >= 0, "Unsupported pin mapping");
 
-            using on_cas = zoal::gpio::api::optimize<
+            using connect = zoal::gpio::api::optimize<
                 typename PinRX::port::template mode_cas<zoal::gpio::pin_mode::input_floating, PinRX::mask>,
                 typename crh_crl<typename PinTX::port, 10, 1 << PinTX::offset>::all>;
 
-            using off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+            using disconnect = zoal::mem::null_cas_list;
 
-            static inline void on() {
-                zoal::mem::apply_cas_list<on_cas>();
-            }
         };
     };
 }}}

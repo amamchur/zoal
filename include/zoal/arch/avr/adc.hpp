@@ -19,10 +19,10 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr uint8_t no = N;
         static constexpr uint8_t resolution = 10;
 
-        using enable_cas = zoal::ct::type_list<typename self_type::ADCSRAx::template cas<0, 1u << 7u>>;
-        using disable_cas =  zoal::ct::type_list<typename self_type::ADCSRAx::template cas<1u << 7u, 0>>;
-        using power_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-        using power_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using enable_cas = zoal::mem::cas_list<typename self_type::ADCSRAx::template cas<0, 1u << 7u>>;
+        using disable_cas =  zoal::mem::cas_list<typename self_type::ADCSRAx::template cas<1u << 7u, 0>>;
+        using power_on_cas = zoal::mem::null_cas_list;
+        using power_off_cas = zoal::mem::null_cas_list;
 
         static void power_on() {}
 

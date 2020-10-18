@@ -11,67 +11,56 @@
 #include <stdlib.h> /* NOLINT */
 
 namespace zoal { namespace io {
-    class abstract_transport {
+    template<class Dummy = void>
+    class memory_transport {
     public:
-        virtual void write_byte(uint8_t ch) = 0;
-    };
-
-    template<class Transport>
-    class transport_proxy : public abstract_transport {
-    public:
-        void write_byte(uint8_t ch) override {
-            Transport::push_back_blocking(ch);
-        };
-
-        ZOAL_INLINE_IO static abstract_transport &instance() {
-            static transport_proxy<Transport> transport;
-            return transport;
-        }
-    };
-
-    class memory_writer : public abstract_transport {
-    public:
-        memory_writer(void *mem)
-            : buffer(reinterpret_cast<uint8_t *>(mem))
-            , length(0) {}
-
-        void write_byte(uint8_t ch) override {
+        static void push_back_blocking(uint8_t ch) {
             buffer[length++] = ch;
         };
 
-        uint8_t *buffer;
-        size_t length;
+        static void init(void *b) {
+            buffer = reinterpret_cast<uint8_t *>(b);
+            length = 0;
+        }
+
+        static uint8_t *buffer;
+        static size_t length;
     };
 
+    template<class Dummy>
+    uint8_t *memory_transport<Dummy>::buffer = nullptr;
+
+    template<class Dummy>
+    size_t memory_transport<Dummy>::length = 0;
+
+    template<class Transport>
     class output_stream {
     public:
         uint8_t radix{10};
         uint8_t precision{2};
-        abstract_transport &proxy;
-
-        output_stream(abstract_transport &p)
-            : proxy(p) {}
 
         output_stream &operator<<(char ch) {
-            proxy.write_byte(static_cast<uint8_t>(ch));
+            Transport::push_back_blocking(static_cast<uint8_t>(ch));
             return *this;
         }
 
         output_stream &operator<<(const char *str) {
-            string_functor sf(str);
-            return *this << sf;
+            for (auto ptr = str; *ptr; ptr++) {
+                Transport::push_back_blocking(static_cast<uint8_t>(*ptr));
+            }
+            return *this;
         }
 
         output_stream &operator<<(const void *const ptr) {
-            proxy.write_byte('0');
-            proxy.write_byte('x');
+            Transport::push_back_blocking('0');
+            Transport::push_back_blocking('x');
 
             auto value = reinterpret_cast<uintptr_t>(ptr);
 
             for (int i = sizeof(ptr) * 8 - 4; i >= 0; i -= 4) {
                 auto h = (value & (0xF << i)) >> i;
                 auto ascii = h < 10 ? ('0' + h) : ('A' + h - 10);
-                proxy.write_byte(ascii);
+                Transport::push_back_blocking(ascii);
             }
 
             return *this;
@@ -98,7 +87,7 @@ namespace zoal { namespace io {
             bool negative = value < 0;
             if (negative) {
                 value = -value;
-                proxy.write_byte('-');
+                Transport::push_back_blocking('-');
             }
 
             uint8_t buffer[32];
@@ -122,7 +111,7 @@ namespace zoal { namespace io {
             bool negative = value < 0.0;
             if (negative) {
                 value = -value;
-                proxy.write_byte('-');
+                Transport::push_back_blocking('-');
             }
 
             auto int_part = static_cast<uint32_t>(value);
@@ -133,7 +122,7 @@ namespace zoal { namespace io {
                 return *this;
             }
 
-            proxy.write_byte('.');
+            Transport::push_back_blocking('.');
 
             double e = 0.5;
             for (uint8_t i = 0; i < precision; i++) {
@@ -146,7 +135,7 @@ namespace zoal { namespace io {
                 fraction *= 10.0;
                 int_part = static_cast<uint32_t>(fraction);
                 fraction -= int_part;
-                proxy.write_byte(static_cast<uint8_t>(int_part + '0'));
+                Transport::push_back_blocking(static_cast<uint8_t>(int_part + '0'));
             }
 
             return *this;
@@ -158,7 +147,7 @@ namespace zoal { namespace io {
 
         template<uint8_t Value>
         output_stream &operator<<(const stream_value<Value> &) {
-            proxy.write_byte(Value);
+            Transport::push_back_blocking(Value);
             return *this;
         }
 
@@ -175,10 +164,7 @@ namespace zoal { namespace io {
 
         template<class F>
         output_stream &operator<<(::zoal::io::output_stream_functor<F> &fn) {
-            uint8_t data = 0;
-            while (static_cast<F &>(fn)(data)) {
-                proxy.write_byte(data);
-            }
+            static_cast<F &>(fn).template write<Transport>();
             return *this;
         }
 

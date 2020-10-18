@@ -32,7 +32,7 @@ extern "C" [[noreturn]] void zoal_main() {
         api::power_on<led::port>,
         api::mode<zoal::gpio::pin_mode::output, led>
         //
-        >::apply();
+        >();
 
     while (1) {
         led::low();

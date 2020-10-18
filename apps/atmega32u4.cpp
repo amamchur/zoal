@@ -159,10 +159,10 @@ zoal::data::date_time current_date_time;
 void initialize_hardware() {
     mcu::power<usart, timer, i2c, adc>::on();
 
-    mcu::mux::usart<usart, zoal::pcb::ard_d00, zoal::pcb::ard_d01, mcu::pd_05>::on();
+    mcu::mux::usart<usart, zoal::pcb::ard_d00, zoal::pcb::ard_d01, mcu::pd_05>::connect();
     mcu::cfg::usart<usart, 115200>::apply();
 
-    mcu::mux::i2c<i2c, mcu::pd_01, mcu::pd_00>::on();
+    mcu::mux::i2c<i2c, mcu::pd_01, mcu::pd_00>::connect();
     mcu::cfg::i2c<i2c>::apply();
 
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
@@ -221,9 +221,10 @@ void render() {
     g->clear(0);
 
     char text[] = "Temp         00:00:00";
-    zoal::io::memory_writer mw(text);
-    zoal::io::output_stream os(mw);
-    mw.length = 5;
+    using mt = zoal::io::memory_transport<>;
+    mt::init(text);
+    zoal::io::output_stream<mt> os;
+    mt::length = 5;
     os << shield.temp_sensor.temperature() << 'C';
 
 #if 0
@@ -248,7 +249,7 @@ void render() {
 
 
     uint16_t potentiometer = zoal::utils::atomic_read(adc_value);
-    mw.length = 0;
+    mt::length = 0;
     os << "ADC: " << potentiometer << '\0';
     tl.position(0, 8).draw(text, 1);
 

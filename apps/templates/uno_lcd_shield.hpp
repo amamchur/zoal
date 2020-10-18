@@ -14,7 +14,6 @@ class uno_lcd_shield {
 public:
     using self_type = uno_lcd_shield<Tools, PCB, Adc>;
     using shield = zoal::shield::uno_lcd<Tools, PCB, Adc>;
-    using lcd_stream = zoal::io::output_stream;
     using delay = typename Tools::delay;
     using logger = typename Tools::logger;
 
@@ -52,7 +51,6 @@ public:
     void display_menu_item() {
         using namespace zoal::io;
         shield::lcd::move(0, 0);
-        stream << currentMenuItem->text;
     }
 
     void button_handler(size_t button, zoal::io::button_event e) {
@@ -76,7 +74,6 @@ public:
         }
 
         shield::lcd::move(0, 0);
-        stream << button;
         display_menu_item();
     }
 
@@ -93,7 +90,6 @@ public:
     menu_item menuItem3;
     menu_item menuItem4;
     menu_item *currentMenuItem{&menuItem0};
-    lcd_stream stream{zoal::io::transport_proxy<typename shield::lcd>::instance()};
 private:
 };
 

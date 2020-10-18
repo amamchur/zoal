@@ -74,25 +74,25 @@ namespace zoal { namespace io {
         using stop = api::optimize<api::low<pin_a, pin_d, pin_b, pin_c>>;
 
         static void init() {
-            api::optimize<api::mode<zoal::gpio::pin_mode::output, pin_a, pin_b, pin_c, pin_d>>::apply();
+            api::optimize<api::mode<zoal::gpio::pin_mode::output, pin_a, pin_b, pin_c, pin_d>>();
         }
 
         static void select_step(uint8_t step) {
             switch (step) {
             case 0:
-                step0::apply();
+                step0();
                 break;
             case 1:
-                step1::apply();
+                step1();
                 break;
             case 2:
-                step2::apply();
+                step2();
                 break;
             case 3:
-                step3::apply();
+                step3();
                 break;
             default:
-                stop::apply();
+                stop();
                 break;
             }
         }
@@ -144,7 +144,7 @@ namespace zoal { namespace io {
             perform_step = false;
             steps_left = 0;
 
-            zoal::gpio::api::optimize<zoal::gpio::api::low<pin_a, pin_d, pin_b, pin_c>>::apply();
+            zoal::gpio::api::optimize<zoal::gpio::api::low<pin_a, pin_d, pin_b, pin_c>>();
 
             //            typename tools::api::template _0<pin_a, pin_d, pin_b, pin_c>();
         }

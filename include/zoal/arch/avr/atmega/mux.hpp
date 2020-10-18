@@ -48,12 +48,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(txm::tx >= 0, "Specified TX pin could not be connected to USART");
             static_assert(ckm::ck >= 0, "Specified CX pin could not be connected to USART");
 
-            using on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-            using off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-
-            static void on() {}
-
-            static void off() {}
+            using connect = zoal::ct::type_list<zoal::mem::null_cas>;
+            using disconnect = zoal::ct::type_list<zoal::mem::null_cas>;
         };
 
         template<class A, class Pin>
@@ -65,19 +61,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
             static_assert(channel >= 0, "Specified pin could not be connected to ADC");
 
-            using on_cas = zoal::ct::type_list<
+            using connect = zoal::mem::cas_list<
                 //
                 typename A::ADMUXx::template cas<0x0F, mux_set_mask>,
                 typename A::ADCSRBx::template cas<(1 << 3), mux5>>;
-            using off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-
-            static void on() {
-                zoal::mem::apply_cas_list<on_cas>();
-            }
-
-            static void off() {
-                zoal::mem::apply_cas_list<off_cas>();
-            }
+            using disconnect = zoal::mem::null_cas_list;
         };
 
         template<class T, class Pin, uint8_t Channel>
@@ -92,16 +80,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static constexpr auto set_mask = static_cast<uint8_t>(pwm_mode << mask_shift);
             static_assert((set_mask & clear_mask) == set_mask, "Ops, wrong metadata");
 
-            using on_cas = zoal::ct::type_list<typename T::TCCRxA::template cas<clear_mask, set_mask>>;
-            using off_cas = zoal::ct::type_list<typename T::TCCRxA::template cas<clear_mask, 0>>;
-
-            static void on() {
-                zoal::mem::apply_cas_list<on_cas>();
-            }
-
-            static void off() {
-                zoal::mem::apply_cas_list<off_cas>();
-            }
+            using connect = zoal::mem::cas_list<typename T::TCCRxA::template cas<clear_mask, set_mask>>;
+            using disconnect = zoal::mem::cas_list<typename T::TCCRxA::template cas<clear_mask, 0>>;
         };
 
         template<class S, class Mosi, class Miso, class Clock, class SlaveSelect>
@@ -117,21 +97,13 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(clock::clock >= 0, "Specified CLK pin could not be connected to SPI");
             static_assert(ss::slave_select >= 0, "Specified SS pin could not be connected to SPI");
 
-            using on_cas = typename api::optimize<
+            using connect = typename api::optimize<
                 //
                 api::mode<pin_mode::output, Mosi, Clock, SlaveSelect>,
                 api::mode<pin_mode::input, Miso>>;
-            using off_cas = typename api::optimize<
+            using disconnect = typename api::optimize<
                 //
                 api::mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>>;
-
-            static void on() {
-                zoal::mem::apply_cas_list<on_cas>();
-            }
-
-            static void off() {
-                zoal::mem::apply_cas_list<off_cas>();
-            }
         };
 
         template<class I, class SerialDataLine, class SerialClockLine>
@@ -143,21 +115,13 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(sda::sda >= 0, "Specified SDA pin could not be connected to I2C");
             static_assert(scl::scl >= 0, "Specified SCL pin could not be connected to I2C");
 
-            using on_cas = typename api::optimize<
+            using connect = typename api::optimize<
                 //
                 api::mode<pin_mode::output_push_pull, SerialDataLine, SerialClockLine>,
                 api::high<SerialDataLine, SerialClockLine>>;
-            using off_cas = typename api::optimize<
+            using disconnect = typename api::optimize<
                 //
                 api::mode<pin_mode::input_floating, SerialDataLine, SerialClockLine>>;
-
-            static void on() {
-                zoal::mem::apply_cas_list<on_cas>();
-            }
-
-            static void off() {
-                zoal::mem::apply_cas_list<off_cas>();
-            }
         };
     };
 }}}}

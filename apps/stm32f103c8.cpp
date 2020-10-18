@@ -26,42 +26,6 @@ osThreadAttr_t inputTask_attributes;
 
 zoal::io::button<tools, mcu::pb_12> user_button;
 
-#define DEMCR (*((volatile uint32_t *)0xE000EDFC))
-#define DWT_CTRL (*(volatile uint32_t *)0xe0001000)
-#define CYCCNTENA (1 << 0)
-#define DWT_CYCCNT ((volatile uint32_t *)0xE0001004)
-#define CPU_CYCLES *DWT_CYCCNT
-
-template<int32_t Value>
-void do_test() {
-    uint32_t diff = 0;
-    uint32_t overhead = 0;
-    {
-        zoal::utils::interrupts ni(false);
-        CPU_CYCLES = 0;
-        DWT_CTRL |= CYCCNTENA;
-        DWT_CTRL &= ~CYCCNTENA;
-        overhead = CPU_CYCLES;
-    }
-    /*
-     * 0 - 7
-     * 1 - 7
-     * 2 - 9
-     * 3 - 15
-     */
-    {
-        zoal::utils::interrupts ni(false);
-        CPU_CYCLES = 0;
-        DWT_CTRL |= CYCCNTENA;
-        while (CPU_CYCLES < Value)
-            ;
-        DWT_CTRL &= ~CYCCNTENA;
-        diff = CPU_CYCLES - overhead;
-    }
-
-    logger::info() << "v: " << Value << "; ops: " << diff;
-}
-
 [[noreturn]] void zoal_input_handler(void *) {
     while (1) {
         auto events = user_button.handle();
@@ -85,9 +49,9 @@ extern "C" void zoal_init() {
 
     api::optimize<
         //
-        mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::on_cas,
+//        mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::connect,
         //
-        mcu::cfg::usart<usart_01, 115200>::cfg,
+//        mcu::cfg::usart<usart_01, 115200>::cfg,
         //
         api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12>,
         api::mode<zoal::gpio::pin_mode::output, mcu::pc_13>
@@ -100,17 +64,14 @@ extern "C" void zoal_init() {
 }
 
 extern "C" [[noreturn]] void zoal_default_thread(void *argument) {
+    //zoal_init();
+
     logger::info() << "----- Started CubeMX-----";
 
-    constexpr int delay = 3000;
+    constexpr int delay = 500;
     for (;;) {
         logger::info() << "Heartbeat: " << osKernelGetTickCount();
         ::delay::ms(delay);
-    }
-}
-
-extern "C" [[noreturn]] void zoal_main() {
-    while (1) {
     }
 }
 

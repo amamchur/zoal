@@ -5,9 +5,9 @@
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 
-volatile uint32_t milliseconds_counter = 0;
+extern volatile uint32_t uwTick;
 
-using counter = zoal::utils::ms_counter<uint32_t, &milliseconds_counter>;
+using counter = zoal::utils::ms_counter<uint32_t, &uwTick>;
 using mcu = zoal::mcu::stm32f030f4px<8000000, 6>; // 48 MHz
 
 using usart_01 = mcu::usart_01;
@@ -34,7 +34,7 @@ extern "C" [[noreturn]] void zoal_main() {
 
     mcu::pa_04::mode<pin_mode::output>();
 
-    logger_01::info() << "--- Started ---";
+    logger_01::info() << "Start";
     while (true) {
         logger_01::info() << "Loop";
 
@@ -44,4 +44,8 @@ extern "C" [[noreturn]] void zoal_main() {
         mcu::pa_04::high();
         ::delay::ms(500);
     }
+}
+
+extern "C" void USART1_IRQHandler() {
+    usart_01::tx_handler<usart_01_tx_buffer>();
 }
