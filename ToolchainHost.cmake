@@ -18,6 +18,7 @@ function(add_zoal_tests)
             tests/stub_classes.cpp
             tests/pin_control.cpp
             tests/clear_and_set.cpp
+            tests/button_machine.cpp
             tests/atmega328.cpp
             )
     add_executable(zoal_tests_atmega328 ${TEST_CASES_FILES})

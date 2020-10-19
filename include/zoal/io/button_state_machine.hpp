@@ -14,8 +14,6 @@ namespace zoal { namespace io {
     };
 
     enum button_state : uint8_t {
-        button_state_current = 1u << 0u,
-        button_state_next = 1u << 1u,
         button_state_trigger_down = 1u << 2u,
         button_state_trigger_press = 1u << 3u,
         button_state_trigger_up = 1u << 4u,
@@ -33,6 +31,7 @@ namespace zoal { namespace io {
 
         template<class T>
         uint8_t handle_button(T dt, uint8_t state, uint8_t value) {
+            state &= ~button_state_trigger;
             if (state & button_state_debounce) {
                 return handle_debounce(dt, state);
             }

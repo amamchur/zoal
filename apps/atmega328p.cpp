@@ -1,10 +1,9 @@
 #include <avr/eeprom.h>
-#include <avr/pgmspace.h>
-#include <zoal/arch/avr/stream.hpp>
 #include <zoal/board/arduino_uno.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
+#include <zoal/utils/vt100.hpp>
 
 volatile uint32_t milliseconds = 0;
 
@@ -17,8 +16,8 @@ using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using irq_handler = counter::handler<mcu::frequency, 64, timer>;
 
 using tx_buffer = usart::default_tx_buffer<16>;
-//using rx_buffer = usart::default_rx_buffer<16>;
-using rx_buffer = usart::null_tx_buffer;
+using rx_buffer = usart::default_rx_buffer<16>;
+//using rx_buffer = usart::null_tx_buffer;
 
 using logger = zoal::utils::terminal_logger<tx_buffer, zoal::utils::log_level::trace>;
 //using logger = zoal::utils::plain_logger<tx_buffer, zoal::utils::log_level::trace>;
@@ -26,10 +25,13 @@ using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using delay = tools::delay;
 using api = zoal::gpio::api;
 using blink_pin = pcb::ard_d08;
+using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
+
+scheduler_type scheduler;
 
 void initialize_hardware() {
     // Power on modules
-    api::optimize<api::power_on<usart, timer>>();
+    api::optimize<api::power_on<usart, timer, spi>>();
 
     // Disable all modules before applying settings
     api::optimize<api::disable<usart, timer>>();
@@ -41,7 +43,6 @@ void initialize_hardware() {
         mcu::cfg::usart<usart, 115200>::apply,
         mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply,
         //
-        //        api::power_off<mcu::port_b, mcu::port_c, mcu::port_d>,
         api::mode<zoal::gpio::pin_mode::output, blink_pin>,
         mcu::irq::timer<timer>::enable_overflow_interrupt
         //
@@ -51,26 +52,65 @@ void initialize_hardware() {
     zoal::utils::interrupts::on();
 
     // Enable all modules
-    api::optimize<api::enable<usart, timer>>();
+    api::optimize<api::enable<usart, timer, spi>>();
+}
+
+void vt100_print() {
+    using namespace zoal::utils;
+    auto stream = logger::stream();
+    stream << vt100::ris();
+    stream << vt100::cup(3, 3);
+    stream << vt100::color(vt100::red, vt100::none) << "QWERTYUIO" << vt100::sgr0() << vt100::cr_lf();
+    stream << vt100::cup(0, 0);
+
+    for (int i = 0; i <= 100; i += 10) {
+        stream << vt100::el2() << "\rLoading: " << i << "%";
+        ::delay::ms(100);
+    }
+
+    stream << "\r\n123456789";
+
+//    stream << vt100::ris();
+}
+
+void led_on(void *);
+void led_off(void *);
+
+void led_on(void *) {
+    ::blink_pin::high();
+    scheduler.schedule(500, led_off);
+}
+
+void led_off(void *) {
+    ::blink_pin::low();
+    scheduler.schedule(500, led_on);
 }
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
+void get_cur(void *) {
+    auto stream = logger::stream();
+    stream << "\033[6n";
+}
+
 int main() {
     initialize_hardware();
+    vt100_print();
 
-    logger::info() << "-- Start";
+    scheduler.schedule(0, led_on);
+    scheduler.schedule(1000, get_cur);
 
     while (true) {
-        blink_pin::low();
-        delay::ms(500);
+        uint8_t rx_byte = 0;
+        auto result = rx_buffer::pop_front(rx_byte);
+        if (result && rx_byte > 0x20) {
+            logger::info() << "char=" << (char)rx_byte;
+//            tx_buffer::push_back_blocking(rx_byte);
+        }
 
-        blink_pin::high();
-        delay::ms(500);
-
-        logger::info() << "-- Start";
+        scheduler.handle();
     }
 }
 

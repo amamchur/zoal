@@ -39,12 +39,10 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static constexpr uint32_t crx = 0x0 | 0x3;
     };
 
-    template<class P, ::zoal::gpio::pin_mode PinMode, uint32_t Mask>
-    struct pin_mode_cfg {
-        using mode = pin_mode_to_gpio<P, PinMode, Mask>;
-
+    template<class P, uint32_t CnfMode, uint32_t Mask>
+    struct cnf_mode_to_cas {
         static constexpr auto crx_c = 0x0F;
-        static constexpr auto crx_s = mode::crx;
+        static constexpr auto crx_s = CnfMode;
 
         template<uintptr_t V, uint8_t Shift = 0>
         using crl_cas = typename P::GPIOx_CRL::template cas<(V != 0 ? crx_c : 0) << Shift, (V != 0 ? crx_s : 0) << Shift>;
@@ -70,8 +68,15 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using p14 = crh_cas<(Mask & (1 << 0xE)), 24>;
         using p15 = crh_cas<(Mask & (1 << 0xF)), 28>;
 
-        using cr_list = type_list<p00, p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13, p14, p15>;
-        using all = typename zoal::gpio::api::optimize<cr_list, mode>;
+        using list = type_list<p00, p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13, p14, p15>;
+        using all = typename zoal::gpio::api::optimize<list>;
+    };
+
+    template<class P, ::zoal::gpio::pin_mode PinMode, uint32_t Mask>
+    struct pin_mode_cfg {
+        using mode = pin_mode_to_gpio<P, PinMode, Mask>;
+        using pcm = cnf_mode_to_cas<P, mode::crx, Mask>;
+        using all = typename zoal::gpio::api::optimize<typename pcm::all, mode>;
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask = 0xFFFF>
@@ -91,11 +96,17 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using GPIOx_BRR = zoal::mem::reg<Address + 0x14, zoal::mem::reg_io::write, register_type, pin_mask>;
         using GPIOx_LCKR = zoal::mem::reg<Address + 0x18, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
 
+        template<uint32_t CnfMode, uint32_t Mask>
+        using port_cnf_mode = cnf_mode_to_cas<self_type, CnfMode, Mask>;
+
+        template<::zoal::gpio::pin_mode PinMode, uint32_t Mask>
+        using port_pin_mode_cfg = pin_mode_cfg<self_type, PinMode, Mask>;
+
         using enable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
         using disable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
-        using mode_cas = typename pin_mode_cfg<self_type, PinMode, Mask>::all;
+        using mode_cas = typename port_pin_mode_cfg<PinMode, Mask>::all;
 
         template<register_type Mask>
         using low_cas = zoal::ct::type_list<typename GPIOx_BRR::template cas<0, Mask>>;

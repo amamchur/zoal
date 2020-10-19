@@ -107,7 +107,6 @@ set(STM32F103_BLUE_PILL_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.2/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c
         cube-repo/STM32Cube_FW_F1_V1.8.2/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c
         cube-repo/STM32Cube_FW_F1_V1.8.2/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c
-        cube-repo/STM32Cube_FW_F1_V1.8.2/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c
         cube-repo/STM32Cube_FW_F1_V1.8.2/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
         cube-repo/STM32Cube_FW_F1_V1.8.2/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
         cube-repo/STM32Cube_FW_F1_V1.8.2/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c

@@ -52,7 +52,6 @@ namespace zoal { namespace io {
         static void write() {
             T::push_back_blocking('\033');
             T::push_back_blocking('[');
-            T::push_back_blocking('0');
             T::push_back_blocking('m');
         }
     };

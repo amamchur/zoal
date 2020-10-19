@@ -62,15 +62,15 @@ namespace zoal { namespace io {
             auto now = counter::now();
             auto dt = now - this->prev_time;
             auto value = Config::active_low ? pin::read() ^ 1u : pin::read();
-            auto state = machine.handle_button(dt, this->button_state, static_cast<uint8_t>(value));
-            auto events = state & button_state_trigger;
-            this->button_state = state & ~button_state_trigger;
+            auto current = this->button_state;
+            auto next = machine.handle_button(dt, current, static_cast<uint8_t>(value));
 
-            if (events != 0) {
+            if (current != next) {
                 this->prev_time = now;
+                this->button_state = next;
             }
 
-            return events;
+            return next;
         }
 
         template<class Callback>
@@ -102,15 +102,17 @@ namespace zoal { namespace io {
             auto now = counter::now();
             auto dt = now - this->prev_time;
             auto value = Config::active_low ? pin::read() ^ 1u : pin::read();
-            auto state = machine.handle_button(dt, this->button_state, static_cast<uint8_t>(value));
-            auto events = state & button_state_trigger;
-            this->button_state = state & ~button_state_trigger;
+            auto current = this->button_state;
+            auto next = machine.handle_button(dt, current, static_cast<uint8_t>(value));
+            auto events = next & button_state_trigger;
+            this->button_state = next & ~button_state_trigger;
 
-            if (events == 0) {
+            if (current == next) {
                 return;
             }
 
             this->prev_time = now;
+            this->button_state = next;
 
             if (events & button_state_trigger_down) {
                 callback(button_event::down);
