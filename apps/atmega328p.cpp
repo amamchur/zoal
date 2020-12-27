@@ -59,21 +59,15 @@ void vt100_print() {
     using namespace zoal::utils;
     auto stream = logger::stream();
     stream << vt100::ris();
-    stream << vt100::cup(3, 3);
-    stream << vt100::color(vt100::red, vt100::none) << "QWERTYUIO" << vt100::sgr0() << vt100::cr_lf();
-    stream << vt100::cup(0, 0);
 
     for (int i = 0; i <= 100; i += 10) {
         stream << vt100::el2() << "\rLoading: " << i << "%";
         ::delay::ms(100);
     }
-
-    stream << "\r\n123456789";
-
-//    stream << vt100::ris();
 }
 
 void led_on(void *);
+
 void led_off(void *);
 
 void led_on(void *) {
@@ -90,26 +84,18 @@ void led_off(void *) {
 #pragma ide diagnostic ignored "EndlessLoop"
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
-void get_cur(void *) {
-    auto stream = logger::stream();
-    stream << "\033[6n";
-}
-
 int main() {
     initialize_hardware();
     vt100_print();
 
     scheduler.schedule(0, led_on);
-    scheduler.schedule(1000, get_cur);
 
     while (true) {
         uint8_t rx_byte = 0;
         auto result = rx_buffer::pop_front(rx_byte);
-        if (result && rx_byte > 0x20) {
-            logger::info() << "char=" << (char)rx_byte;
-//            tx_buffer::push_back_blocking(rx_byte);
+        if (result) {
+            logger::info() << "char=" << (int)rx_byte;
         }
-
         scheduler.handle();
     }
 }

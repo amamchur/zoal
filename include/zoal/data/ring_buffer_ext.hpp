@@ -53,7 +53,7 @@ namespace zoal { namespace data {
         size_t size_{0};
         volatile size_t head_{0};
         volatile size_t tail_{0};
-        volatile T buffer_[0];
+        volatile T buffer_[1];
     };
 
     template<class T, size_t MinSize>
