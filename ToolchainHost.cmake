@@ -6,12 +6,12 @@ if (WIN32)
 endif (WIN32)
 
 function(add_mcu_executable NAME MCU)
-    add_executable(${NAME}.elf apps/_empty.cpp)
+    add_executable(${NAME} apps/_empty.cpp)
 endfunction(add_mcu_executable)
 
 function(add_zoal_tests)
     find_package(GTest)
-        
+
     set(TEST_CASES_FILES
             tests/utils/address_cast.cpp
             tests/static_assertion.cpp
@@ -51,10 +51,10 @@ function(add_host_executable NAME)
 endfunction(add_host_executable)
 
 function(add_cubemx_project NAME MCU)
-    add_executable(${NAME}.elf apps/_empty.cpp)
+    add_executable(${NAME} apps/_empty.cpp)
 endfunction(add_cubemx_project)
 
 function(test_fn NAME)
-    add_executable(${NAME}.elf apps/_empty.cpp)
+    add_executable(${NAME} apps/_empty.cpp)
 endfunction(test_fn)
 

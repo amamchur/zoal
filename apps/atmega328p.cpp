@@ -1,3 +1,5 @@
+#include "terminal_input.hpp"
+
 #include <avr/eeprom.h>
 #include <zoal/board/arduino_uno.hpp>
 #include <zoal/utils/logger.hpp>
@@ -28,6 +30,9 @@ using blink_pin = pcb::ard_d08;
 using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
 
 scheduler_type scheduler;
+char terminal_buffer[128];
+terminal_input term(terminal_buffer, sizeof(terminal_buffer));
+auto greeting = "\033[0;32mmcu\033[m$ ";
 
 void initialize_hardware() {
     // Power on modules
@@ -84,9 +89,26 @@ void led_off(void *) {
 #pragma ide diagnostic ignored "EndlessLoop"
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
+void vt100_callback(terminal_input *t, const char *s) {
+    for (auto ch = s; *ch; ch++) {
+        tx_buffer::push_back_blocking(*ch);
+    }
+}
+
+void input_callback(terminal_input *t, const char *s) {
+    if (*s) {
+        logger::info() << "User input: " << s;
+    }
+}
+
 int main() {
     initialize_hardware();
-    vt100_print();
+
+    term.vt100_callback(&vt100_callback);
+    term.input_callback(&input_callback);
+    term.greeting(greeting);
+    term.clear();
+    term.sync();
 
     scheduler.schedule(0, led_on);
 
@@ -94,7 +116,8 @@ int main() {
         uint8_t rx_byte = 0;
         auto result = rx_buffer::pop_front(rx_byte);
         if (result) {
-            logger::info() << "char=" << (int)rx_byte;
+//            logger::info() << (int)rx_byte;
+term.push(&rx_byte, 1);
         }
         scheduler.handle();
     }

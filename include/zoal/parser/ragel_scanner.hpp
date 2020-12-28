@@ -71,15 +71,16 @@ namespace zoal { namespace parser {
                 auto be = this->buffer_ + length_;
                 this->p = this->run_machine(this->p, be);
 
-                if (this->ts > this->buffer_) {
+                if (this->ts > this->buffer_ || this->cs == this->start_state()) {
                     auto dst = this->buffer_;
-                    auto src = this->ts;
+                    auto ptr = this->ts ? this->ts : this->p;
+                    auto src = ptr;
                     while (src != be) {
                         *dst++ = *src++;
                     }
 
-                    this->p = this->buffer_ + (this->p - this->ts);
-                    this->te = this->buffer_ + (this->te - this->ts);
+                    this->p = this->buffer_ + (this->p - ptr);
+                    this->te = this->buffer_ + (this->te - ptr);
                     this->ts = this->buffer_;
                     length_ = dst - this->buffer_;
                 }

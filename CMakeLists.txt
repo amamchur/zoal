@@ -13,7 +13,6 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
     add_compile_options("-Os")
 endif ()
 
-
 function(RAGEL_GENERATE_CPP RGL_SRC CPP_SRC)
     get_filename_component(ABS_FIL ${RGL_SRC} ABSOLUTE)
     get_filename_component(ABS_PATH ${RGL_SRC} PATH)
@@ -33,28 +32,35 @@ endfunction()
 
 include_directories(include)
 
-# --- atmega Projects ---
-add_mcu_executable(ATmega328p atmega328p apps/atmega328p.cpp)
-target_compile_definitions(ATmega328p.elf PRIVATE F_CPU=16000000UL)
-
 ragel_generate_cpp(apps/stepper_28byj_machine.rl STEPPER_STATE_MACHINE_SRC)
+ragel_generate_cpp(apps/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)
+ragel_generate_cpp(apps/terminal_machine.rl TERMINAL_STATE_MACHINE_SRC)
+
+# --- atmega Projects ---
+add_mcu_executable(ATmega328p atmega328p
+        apps/atmega328p.cpp
+        apps/terminal_input.cpp
+        ${TERMINAL_STATE_MACHINE_SRC}
+        )
+target_compile_definitions(ATmega328p PRIVATE F_CPU=16000000UL)
+
 add_mcu_executable(Stepper28BYJ atmega328p apps/stepper_28byj.cpp ${STEPPER_STATE_MACHINE_SRC})
-target_compile_definitions(Stepper28BYJ.elf PRIVATE F_CPU=16000000UL)
+target_compile_definitions(Stepper28BYJ PRIVATE F_CPU=16000000UL)
 
 add_mcu_executable(ATmega32u4 atmega32u4 apps/atmega32u4.cpp)
-target_compile_definitions(ATmega32u4.elf PRIVATE F_CPU=16000000UL)
+target_compile_definitions(ATmega32u4 PRIVATE F_CPU=16000000UL)
 
 add_mcu_executable(ATmega2560 atmega2560 apps/atmega2560.cpp)
-target_compile_definitions(ATmega2560.elf PRIVATE F_CPU=16000000UL)
+target_compile_definitions(ATmega2560 PRIVATE F_CPU=16000000UL)
 
 add_mcu_executable(ATtiny13 attiny13 apps/attiny13.cpp)
-target_compile_definitions(ATtiny13.elf PRIVATE F_CPU=9600000UL)
+target_compile_definitions(ATtiny13 PRIVATE F_CPU=9600000UL)
 
 add_mcu_executable(ATtiny85 attiny85 apps/attiny85.cpp)
-target_compile_definitions(ATtiny85.elf PRIVATE F_CPU=9600000UL)
+target_compile_definitions(ATtiny85 PRIVATE F_CPU=9600000UL)
 
 add_mcu_executable(ATtiny2313 attiny2313 apps/attiny2313.cpp)
-target_compile_definitions(ATtiny2313.elf PRIVATE F_CPU=16000000UL)
+target_compile_definitions(ATtiny2313 PRIVATE F_CPU=16000000UL)
 
 ## --- STM32 Projects ---
 # Begin cubemx-proj variables
@@ -217,8 +223,7 @@ add_mcu_executable(stm32f103_blue_pill stm32 apps/stm32f103c8.cpp)
 add_mcu_executable(stm32f303_discovery stm32 apps/stm32f303vctx.cpp)
 add_mcu_executable(stm32f303_nucleo stm32 apps/stm32f303retx.cpp)
 
-add_host_executable(host apps/host.cpp)
+add_host_executable(host apps/host.cpp apps/terminal_input.cpp ${TERMINAL_STATE_MACHINE_SRC})
 
 add_zoal_tests()
 
-ragel_generate_cpp(apps/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)

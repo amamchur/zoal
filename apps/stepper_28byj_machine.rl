@@ -29,6 +29,10 @@ namespace {
 %% write data;
 }
 
+int stepper_28byj_machine::start_state() const {
+    return fsm_name_start;
+}
+
 void stepper_28byj_machine::init_machine() {
     %% write init;
 }

@@ -95,7 +95,7 @@ namespace zoal { namespace utils { namespace vt100 {
 
     struct el2 {
         inline operator const char *() const {
-            return "\033[2k";
+            return "\033[2K";
         }
     };
 #endif

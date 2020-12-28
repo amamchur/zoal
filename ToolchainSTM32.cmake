@@ -41,13 +41,13 @@ function(add_mcu_executable NAME MCU)
                 -g
                 )
 
-        add_executable(${NAME}.elf ${ARM_SRC} ${ARGN})
-        target_include_directories(${NAME}.elf PUBLIC ${ARM_INC})
-        target_compile_definitions(${NAME}.elf PUBLIC ${ARM_DEFS})
-        target_compile_options(${NAME}.elf PUBLIC ${ARM_COMMON_FLAGS})
+        add_executable(${NAME} ${ARM_SRC} ${ARGN})
+        target_include_directories(${NAME} PUBLIC ${ARM_INC})
+        target_compile_definitions(${NAME} PUBLIC ${ARM_DEFS})
+        target_compile_options(${NAME} PUBLIC ${ARM_COMMON_FLAGS})
 
         get_filename_component(ARM_FLASH_LD_ABS ${ARM_FLASH_LD} ABSOLUTE)
-        target_link_options(${NAME}.elf PUBLIC
+        target_link_options(${NAME} PUBLIC
                 -T${ARM_FLASH_LD_ABS}
                 -Wl,-Map,"${NAME}.map"
                 -Wl,--gc-sections,--print-memory-usage
@@ -55,9 +55,9 @@ function(add_mcu_executable NAME MCU)
 
         set(LST_FILE ${NAME}.lst)
         add_custom_command(
-                TARGET ${NAME}.elf
+                TARGET ${NAME}
                 POST_BUILD
-                COMMAND ${ARM_OBJDUMP} -S ${NAME}.elf > ${LST_FILE})
+                COMMAND ${ARM_OBJDUMP} -S ${NAME} > ${LST_FILE})
         set_property(
                 DIRECTORY
                 APPEND
@@ -65,6 +65,6 @@ function(add_mcu_executable NAME MCU)
                 "${LST_FILE}"
                 "${NAME}.map")
     else ()
-        add_executable(${NAME}.elf apps/_empty.cpp)
+        add_executable(${NAME} apps/_empty.cpp)
     endif ()
 endfunction(add_mcu_executable)
