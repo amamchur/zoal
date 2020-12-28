@@ -57,15 +57,17 @@ namespace {
     %% write data;
 }
 
-void terminal_machine::init_machine() {
-    %% write init;
-}
+namespace zoal { namespace misc {
+    void terminal_machine::init_machine() {
+        %% write init;
+    }
 
-int terminal_machine::start_state() const {
-    return fsm_name_start;
-}
+    int terminal_machine::start_state() const {
+        return fsm_name_start;
+    }
 
-const char *terminal_machine::run_machine(const char *p, const char *pe) {
-    %% write exec;
-    return p;
-}
+    const char *terminal_machine::run_machine(const char *p, const char *pe) {
+        %% write exec;
+        return p;
+    }
+}}

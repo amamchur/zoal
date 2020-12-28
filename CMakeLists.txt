@@ -33,14 +33,15 @@ endfunction()
 include_directories(include)
 
 ragel_generate_cpp(apps/stepper_28byj_machine.rl STEPPER_STATE_MACHINE_SRC)
-ragel_generate_cpp(apps/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)
-ragel_generate_cpp(apps/terminal_machine.rl TERMINAL_STATE_MACHINE_SRC)
+ragel_generate_cpp(misc/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)
+ragel_generate_cpp(misc/terminal_machine.rl TERMINAL_STATE_MACHINE_SRC)
 
 # --- atmega Projects ---
 add_mcu_executable(ATmega328p atmega328p
         apps/atmega328p.cpp
-        apps/terminal_input.cpp
+        misc/terminal_input.cpp
         ${TERMINAL_STATE_MACHINE_SRC}
+        ${CMD_STATE_MACHINE_SRC}
         )
 target_compile_definitions(ATmega328p PRIVATE F_CPU=16000000UL)
 
@@ -223,7 +224,13 @@ add_mcu_executable(stm32f103_blue_pill stm32 apps/stm32f103c8.cpp)
 add_mcu_executable(stm32f303_discovery stm32 apps/stm32f303vctx.cpp)
 add_mcu_executable(stm32f303_nucleo stm32 apps/stm32f303retx.cpp)
 
-add_host_executable(host apps/host.cpp apps/terminal_input.cpp ${TERMINAL_STATE_MACHINE_SRC})
+add_host_executable(host
+        apps/host.cpp
+        misc/terminal_input.cpp
+        ${TERMINAL_STATE_MACHINE_SRC}
+        ${CMD_STATE_MACHINE_SRC}
+        ${LOOKUP_MACHINE_SRC}
+        )
 
 add_zoal_tests()
 

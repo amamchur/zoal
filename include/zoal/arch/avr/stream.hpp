@@ -22,6 +22,29 @@ namespace zoal { namespace io {
 
         const char *buffer;
     };
+
+    struct progmem_str_iter {
+        progmem_str_iter(const char *str)
+            : ptr_(str) {}
+
+        char operator *() const {
+            auto v = pgm_read_byte(ptr_);
+            return static_cast<char>(v);
+        }
+
+        progmem_str_iter& operator++() {
+            ptr_++;
+            return *this;
+        }
+
+        const progmem_str_iter operator++(int) {
+            progmem_str_iter temp = *this;
+            ++*this;
+            return temp;
+        }
+
+        const char *ptr_;
+    };
 }}
 
 #endif

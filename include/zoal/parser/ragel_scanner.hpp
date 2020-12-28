@@ -4,16 +4,14 @@
 #define ZOAL_PARSER_RAGEL_SCANNER_HPP
 
 #include <stddef.h>
-#include <stdint.h>
 
 namespace zoal { namespace parser {
-    template <class T = void *, class E = int>
+    template<class T = void *, class E = int>
     class scanner_callback {
     public:
         typedef void (*scanner_machine_callback)(T parser, E event);
 
-        static void empty_callback(T p, E e) {
-        }
+        static void empty_callback(T p, E e) {}
 
         inline void callback(scanner_machine_callback cb) {
             this->handler_ = cb;
@@ -22,11 +20,12 @@ namespace zoal { namespace parser {
         inline scanner_machine_callback callback() const {
             return this->handler_;
         }
+
     protected:
         scanner_machine_callback handler_{&empty_callback};
     };
 
-    template <class T = void *, class E = int>
+    template<class T = void *, class E = int>
     class scanner_machine : public scanner_callback<T, E> {
     public:
         inline const char *token_start() const {
@@ -36,6 +35,7 @@ namespace zoal { namespace parser {
         inline const char *token_end() const {
             return te;
         }
+
     protected:
         int cs{0};
         int act{0};
@@ -48,8 +48,6 @@ namespace zoal { namespace parser {
     template<class Machine, size_t BufferSize>
     class ragel_scanner : public Machine {
     public:
-        using scanner_machine_callback = typename Machine::scanner_machine_callback;
-
         ragel_scanner() noexcept {
             reset();
         }
@@ -60,9 +58,12 @@ namespace zoal { namespace parser {
             this->init_machine();
         }
 
-        void push(const void* data, size_t size) {
+        void push(const void *data, size_t size, const void *eof = nullptr) {
             auto dp = reinterpret_cast<const char *>(data);
+            auto de = reinterpret_cast<const char *>(eof);
             do {
+                this->eof = de ? this->buffer_ + (de - dp) : nullptr;
+
                 while (size > 0 && length_ < BufferSize) {
                     this->buffer_[length_++] = *dp++;
                     size--;
@@ -84,23 +85,14 @@ namespace zoal { namespace parser {
                     this->ts = this->buffer_;
                     length_ = dst - this->buffer_;
                 }
-            }
-            while (size > 0);
-        }
-
-        inline void context(void *c) {
-            this->context_ = c;
-        }
-
-        inline void *context() const {
-            return context_;
+            } while (size > 0);
         }
 
         inline size_t length() const {
             return length_;
         }
+
     protected:
-        void *context_{nullptr};
         size_t length_{0};
         char buffer_[BufferSize]{0};
     };
