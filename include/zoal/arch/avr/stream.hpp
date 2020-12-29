@@ -7,7 +7,7 @@
 
 namespace zoal { namespace io {
     struct progmem_str : public zoal::io::output_stream_functor<progmem_str> {
-        progmem_str(const char *str)
+        explicit progmem_str(const char *str)
             : buffer(str) {}
 
         template<class T>
@@ -32,15 +32,25 @@ namespace zoal { namespace io {
             return static_cast<char>(v);
         }
 
+        bool operator==(const progmem_str_iter& iter) const {
+            return ptr_ == iter.ptr_;
+        }
+
+        bool operator!=(const progmem_str_iter& iter) const {
+            return ptr_ != iter.ptr_;
+        }
+
         progmem_str_iter& operator++() {
             ptr_++;
             return *this;
         }
 
-        const progmem_str_iter operator++(int) {
-            progmem_str_iter temp = *this;
-            ++*this;
-            return temp;
+        progmem_str_iter operator+(intptr_t d) const {
+            return {ptr_ + d};
+        }
+
+        intptr_t operator-(progmem_str_iter iter) const {
+            return ptr_ - iter.ptr_;
         }
 
         const char *ptr_;

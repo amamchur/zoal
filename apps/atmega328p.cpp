@@ -2,12 +2,13 @@
 #include "../misc/terminal_input.hpp"
 
 #include <avr/eeprom.h>
+#include <zoal/algorithm/kmp.hpp>
+#include <zoal/arch/avr/stream.hpp>
 #include <zoal/board/arduino_uno.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 #include <zoal/utils/vt100.hpp>
-#include <zoal/arch/avr/stream.hpp>
 
 volatile uint32_t milliseconds = 0;
 
@@ -37,9 +38,9 @@ char terminal_buffer[max_input_str];
 zoal::misc::terminal_input term(terminal_buffer, sizeof(terminal_buffer));
 auto greeting = "\033[0;32mmcu\033[m$ ";
 
-const char help_msg[] PROGMEM = "\r\nMCU command list:"
-                                "\r\n\tstart-blink"
-                                "\r\n\tend-blink";
+const char help_msg[] PROGMEM = "\r\nMCU command list:";
+const char cmd_lookup[] PROGMEM = "\r\n\thelp\r\n\tstart-blink\r\n\tstop-blink";
+
 const char cmd_not_found_msg[] PROGMEM = "\r\nCommand not found";
 const char help_cmd[] PROGMEM = "help";
 const char start_blink_cmd[] PROGMEM = "start-blink";
@@ -106,15 +107,6 @@ bool cmp_str_token(zoal::io::progmem_str_iter s1, const char *ss, const char *se
     return !*s1 && ss == se;
 }
 
-bool cmp_str_token(const char *s1, const char *ss, const char *se) {
-    while (*s1 && ss < se) {
-        if (*s1++ != *ss++) {
-            return false;
-        }
-    }
-    return !*s1 && ss == se;
-}
-
 void cmd_select_callback(void *p, zoal::misc::command_line_event e) {
     if (e == zoal::misc::command_line_event::line_end) {
         return;
@@ -126,7 +118,7 @@ void cmd_select_callback(void *p, zoal::misc::command_line_event e) {
 
     if (cmp_str_token(zoal::io::progmem_str_iter(help_cmd), ts, te)) {
         auto stream = logger::stream();
-        stream << zoal::io::progmem_str(help_msg);
+        stream << zoal::io::progmem_str(help_msg) << zoal::io::progmem_str(cmd_lookup);
         parser->callback(&cmd_parser::empty_callback);
         return;
     }
@@ -141,6 +133,7 @@ void cmd_select_callback(void *p, zoal::misc::command_line_event e) {
 
     if (cmp_str_token(zoal::io::progmem_str_iter(stop_blink_cmd), ts, te)) {
         scheduler.clear_handle(led_on);
+        scheduler.clear_handle(led_off);
         parser->callback(&cmd_parser::empty_callback);
         return;
     }
@@ -168,7 +161,7 @@ int main() {
         uint8_t rx_byte = 0;
         auto result = rx_buffer::pop_front(rx_byte);
         if (result) {
-//            logger::info() << (int)rx_byte;
+            //            logger::info() << (int)rx_byte;
             term.push(&rx_byte, 1);
         }
         scheduler.handle();
