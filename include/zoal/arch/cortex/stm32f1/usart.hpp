@@ -86,30 +86,31 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static inline void flush() {}
 
         template<class Buffer>
-        static inline void rx_handler() {
+        static inline bool rx_handler() {
             auto rx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_RXNEIE;
             if (!rx_enabled) {
-                return;
+                return false;
             }
 
             auto rx_not_empty = USARTx_SR::ref() & USARTx_SR_bit_RXNE;
             if (!rx_not_empty) {
-                return;
+                return false;
             }
 
             Buffer::push_back(USARTx_DR::ref());
+            return true;
         }
 
         template<class Buffer>
-        static void tx_handler() {
+        static bool tx_handler() {
             auto tx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_TXEIE;
             if (!tx_enabled) {
-                return;
+                return false;
             }
 
             auto tx_empty = USARTx_SR::ref() & USARTx_SR_bit_TXE;
             if (!tx_empty) {
-                return;
+                return false;
             }
 
             typename Buffer::value_type value;
@@ -118,6 +119,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
             } else {
                 disable_tx();
             }
+
+            return true;
         }
     };
 }}}

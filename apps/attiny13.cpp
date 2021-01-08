@@ -52,7 +52,7 @@ int main() {
     mcu::power<timer, adc>::on();
 
     mcu::cfg::adc<adc>::apply();
-    mcu::mux::adc<adc, mcu::pb_04>::on();
+    mcu::mux::adc<adc, mcu::pb_04>::connect();
     mcu::irq::adc<adc>::enable();
 
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64>::apply();

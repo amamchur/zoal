@@ -10,7 +10,13 @@ namespace zoal { namespace misc {
         me->process_event(event);
     }
 
-    terminal_input::terminal_input(char *buffer, size_t size) {
+    terminal_input::terminal_input() = default;
+
+    terminal_input::terminal_input(char *buffer, size_t size) noexcept {
+        this->init_buffer(buffer, size);
+    }
+
+    void terminal_input::init_buffer(char *buffer, size_t size) {
         this->buffer_ = buffer;
         this->size_ = size;
         this->cursor_ = buffer_;
@@ -18,24 +24,6 @@ namespace zoal { namespace misc {
         this->callback(&scanner_callback);
     }
 
-    void terminal_input::move_cursor(int dx) {
-        cursor_ += dx;
-        normalize_cursor();
-        sync();
-    }
-
-    void terminal_input::normalize_cursor() {
-        auto l = buffer_;
-        auto r = buffer_ == end_ ? end_ + 1 : end_;
-
-        if (cursor_ < l) {
-            cursor_ = l;
-        }
-
-        if (cursor_ > r) {
-            cursor_ = r;
-        }
-    }
     void terminal_input::process_event(terminal_machine_event e) {
         switch (e) {
         case terminal_machine_event::ctrl_right_key:
@@ -45,19 +33,20 @@ namespace zoal { namespace misc {
             move_to_word_start();
             break;
         case terminal_machine_event::right_key:
-            move_cursor(1);
+            cursor(cursor_ + 1);
+            ;
             break;
         case terminal_machine_event::left_key:
-            move_cursor(-1);
+            cursor(cursor_ - 1);
             break;
         case terminal_machine_event::home_key:
-            move_cursor(-size_);
+            cursor(cursor_ - size_);
             break;
         case terminal_machine_event::delete_key:
             do_delete();
             break;
         case terminal_machine_event::end_key:
-            move_cursor(size_);
+            cursor(cursor_ + size_);
             break;
         case terminal_machine_event::backspace_key:
             do_backspace();
@@ -144,7 +133,7 @@ namespace zoal { namespace misc {
         this->input_callback_ = fn;
     }
 
-    void terminal_input::sync() {
+    void terminal_input::sync() const {
         send_cstr("\r\033[2K");
 
         if (greeting_) {
@@ -178,23 +167,45 @@ namespace zoal { namespace misc {
     }
 
     void terminal_input::move_to_word_end() {
-        cursor_++;
+        auto c = cursor_ + 1;
         auto r = buffer_ == end_ ? end_ + 1 : end_;
-        while (cursor_ < r && *cursor_ != ' ') cursor_++;
-        normalize_cursor();
-        sync();
+        while (c < r && *c != ' ') c++;
+        cursor(c);
     }
 
     void terminal_input::move_to_word_start() {
-        cursor_--;
-        while (cursor_ > buffer_ && *(cursor_ - 1) != ' ') cursor_--;
-        normalize_cursor();
-        sync();
+        auto c = cursor_ - 1;
+        while (c > buffer_ && *(c - 1) != ' ') c--;
+        cursor(c);
     }
 
     void terminal_input::send_cstr(const char *str) const {
         auto e = str;
-        while (*e++);
+        while (*e++)
+            ;
         vt100_callback_(this, str, e);
+    }
+
+    char *terminal_input::normalize_cursor(char *c) const {
+        auto l = buffer_;
+        auto r = buffer_ == end_ ? end_ + 1 : end_;
+
+        if (c < l) {
+            c = l;
+        }
+
+        if (c > r) {
+            c = r;
+        }
+
+        return c;
+    }
+
+    void terminal_input::cursor(char *c) {
+        c = normalize_cursor(c);
+        if (c != cursor_) {
+            cursor_ = c;
+            sync();
+        }
     }
 }}

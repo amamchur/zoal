@@ -34,6 +34,11 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
 
             static_assert(channel >= 0, "Specified pin could not be connected to ADC");
 
+            using connect = zoal::mem::cas_list<
+                //
+                typename A::ADMUXx::template cas<0x0F, mux_set_mask>,
+                typename A::ADCSRBx::template cas<(1 << 3), mux5>>;
+
             static void on() {
                 typename A::ADMUXx::template cas<0x0F, mux_set_mask>();
                 typename A::ADCSRBx::template cas<(1 << 3), mux5>();
@@ -52,13 +57,8 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             using TCCRxA_cfg_on = typename T::TCCRxA::template cas<0, mask>;
             using TCCRxA_cfg_off = typename T::TCCRxA::template cas<mask, 0>;
 
-            static void on() {
-                TCCRxA_cfg_on();
-            }
-
-            static void off() {
-                TCCRxA_cfg_off();
-            }
+            using connect = zoal::mem::cas_list<TCCRxA_cfg_on>;
+            using disconnect = zoal::mem::cas_list<TCCRxA_cfg_off>;
         };
     };
 }}}}

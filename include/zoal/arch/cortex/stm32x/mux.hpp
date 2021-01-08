@@ -37,13 +37,15 @@ namespace zoal { namespace arch { namespace stm32x {
         private:
             template<class Port, uint8_t Pin, uint8_t af>
             static inline void stm32_alternate_function() {
-                Port::GPIOx_OSPEEDR::ref() |= (0x3 << (Pin * 2)); // 50MHz
-                Port::GPIOx_OTYPER::ref() &= ~(0x1 << Pin); // Output push-pull
-                typename Port::GPIOx_MODER::template cas<0x3 << (Pin * 2), 0x2 << (Pin * 2)>();
-
                 using reg = typename zoal::ct::conditional_type<Pin < 8, typename Port::GPIOx_AFRL, typename Port::GPIOx_AFRH>::type;
                 static const auto shift = (Pin & 0x7) << 2;
-                typename reg::template cas<0xF << shift, af << shift>();
+                using list = zoal::mem::cas_list<
+                    typename Port::GPIOx_OSPEEDR::template cas<0, 0x3 << (Pin * 2)>,
+                    typename Port::GPIOx_OTYPER::template cas<0x1 << Pin, 0>,
+                    typename Port::GPIOx_MODER::template cas<0x3 << (Pin * 2), 0x2 << (Pin * 2)>,
+                    typename reg::template cas<0xF << shift, af << shift>
+                    >;
+                zoal::mem::apply_cas_list<list>::apply();
             }
         };
     };

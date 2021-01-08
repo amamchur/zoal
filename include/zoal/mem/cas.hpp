@@ -15,41 +15,6 @@
 namespace zoal { namespace mem {
     enum class reg_io { read, write, read_write };
 
-    template<uintptr_t Address, class Type, bool U, uint32_t C, uint32_t S>
-    struct cas_base {
-        ZOAL_INLINE_IO cas_base() {
-            *ZOAL_ADDRESS_CAST(Type, Address) = (*ZOAL_ADDRESS_CAST(Type, Address) & ~C) | S;
-        }
-    };
-
-    template<uintptr_t Address, class Type, uint32_t C, uint32_t S>
-    struct cas_base<Address, Type, true, C, S> {
-        ZOAL_INLINE_IO cas_base() {
-            *ZOAL_ADDRESS_CAST(Type, Address) = S;
-        }
-    };
-
-    template<uintptr_t Address, class Type, uint32_t C>
-    struct cas_base<Address, Type, false, C, 0> {
-        ZOAL_INLINE_IO cas_base() {
-            *ZOAL_ADDRESS_CAST(Type, Address) &= ~C;
-        }
-    };
-
-    template<uintptr_t Address, class Type, uint32_t S>
-    struct cas_base<Address, Type, false, 0, S> {
-        ZOAL_INLINE_IO cas_base() {
-            *ZOAL_ADDRESS_CAST(Type, Address) |= S;
-        }
-    };
-
-    template<uintptr_t Address, class Type, uint32_t C, uint32_t S>
-    struct cas_base<Address, Type, false, C, S> {
-        ZOAL_INLINE_IO cas_base() {
-            *ZOAL_ADDRESS_CAST(Type, Address) = (*ZOAL_ADDRESS_CAST(Type, Address) & ~C) | S;
-        }
-    };
-
     template<uintptr_t Address, reg_io RegIO, class Type, Type Mask, uint32_t C, uint32_t S>
     struct cas {
         static constexpr auto address = Address;
@@ -59,121 +24,65 @@ namespace zoal { namespace mem {
         static constexpr Type set = S;
         using type = Type;
 
-        static_assert((int)RegIO == 0xDEADBEEF, "Unsupported clear and set configuration");
-    };
-
-    template<uintptr_t Address, class Type, Type Mask, uint32_t C, uint32_t S>
-    struct cas<Address, reg_io::read_write, Type, Mask, C, S> : public cas_base<Address, Type, ((C | S) & Mask) == Mask, C, S> {
-        static constexpr auto address = Address;
-        static constexpr auto io = reg_io::read_write;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = C;
-        static constexpr Type set = S;
-        using type = Type;
-    };
-
-    template<uintptr_t Address, class Type, Type Mask>
-    struct cas<Address, reg_io::read_write, Type, Mask, 0, 0> {
-        static constexpr auto address = Address;
-        static constexpr auto io = reg_io::read_write;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = 0;
-        static constexpr Type set = 0;
-        using type = Type;
-    };
-
-    template<uintptr_t Address, class Type, Type Mask, uint32_t Q>
-    struct cas<Address, reg_io::read_write, Type, Mask, Q, Q> : public cas_base<Address, Type, (Q & Mask) == Mask, 0, Q> {
-        static constexpr auto address = Address;
-        static constexpr auto io = reg_io::read_write;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = Q;
-        static constexpr Type set = Q;
-        using type = Type;
-    };
-
-    template<uintptr_t Address, class Type, Type Mask, uint32_t S>
-    struct cas<Address, reg_io::read_write, Type, Mask, 0, S> : public cas_base<Address, Type, (S & Mask) == Mask, 0, S> {
-        static constexpr auto address = Address;
-        static constexpr auto io = reg_io::read_write;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = 0;
-        static constexpr Type set = S;
-        using type = Type;
-    };
-
-    template<uintptr_t Address, class Type, Type Mask, uint32_t C>
-    struct cas<Address, reg_io::read_write, Type, Mask, C, 0> : public cas_base<Address, Type, (C & Mask) == Mask, C, 0> {
-        static constexpr auto address = Address;
-        static constexpr auto io = reg_io::read_write;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = C;
-        static constexpr Type set = 0;
-        using type = Type;
-    };
-
-    template<uintptr_t Address, class Type, Type Mask>
-    struct cas<Address, reg_io::write, Type, Mask, 0, 0> {
-        static constexpr auto address = Address;
-        static constexpr auto io = reg_io::write;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = 0;
-        static constexpr Type set = 0;
-        using type = Type;
-    };
-
-    template<uintptr_t Address, class Type, Type Mask, uint32_t S>
-    struct cas<Address, reg_io::write, Type, Mask, 0, S> {
-        static constexpr auto address = Address;
-        static constexpr auto io = reg_io::write;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = 0;
-        static constexpr Type set = S;
-        using type = Type;
-
-        ZOAL_INLINE_IO cas() {
-            *ZOAL_ADDRESS_CAST(Type, Address) = set;
-        }
-    };
-
-    template<uintptr_t Address, class Type, Type Mask, uint32_t C>
-    struct cas<Address, reg_io::write, Type, Mask, C, 0> {
-        static constexpr auto address = Address;
-        static constexpr auto io = reg_io::write;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = C;
-        static constexpr Type set = 0;
-        using type = Type;
-    };
-
-    template<uintptr_t Address, class Type, Type Mask>
-    struct cas<Address, reg_io::read, Type, Mask, 0, 0> {
-        static constexpr auto address = Address;
-        static constexpr auto io = reg_io::read;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = 0;
-        static constexpr Type set = 0;
-        using type = Type;
+        cas() = delete;
     };
 
     using null_cas = cas<0, reg_io::read_write, uint8_t, 0xFF, 0, 0>;
     using null_cas_list = zoal::ct::type_list<null_cas>;
 
-    template<class A, class... Rest>
-    struct merge_cas {
-        using next = typename merge_cas<Rest...>::result;
-        using result = cas<A::address, A::io, typename A::type, A::mask, A::clear | next::clear, A::set | next::set>;
+    enum class cas_strategy_type { main, set, clear, assign, ignore };
 
-        using same_type = zoal::ct::is_same<typename A::type, typename next::type>;
-        static_assert(A::address == next::address, "Memory address does not match");
-        static_assert(A::mask == next::mask, "Memory mask does not match");
-        static_assert(A::io == next::io, "Memory IO does not match");
-        static_assert(same_type::value, "Memory type does not match");
+    template<cas_strategy_type type>
+    class cas_strategy {};
+
+    template<>
+    struct cas_strategy<cas_strategy_type::main> {
+        template<class T>
+        ZOAL_INLINE_IO static void apply(uintptr_t Address, T C, T S) {
+            *ZOAL_ADDRESS_CAST(T, Address) = (*ZOAL_ADDRESS_CAST(T, Address) & ~C) | S;
+        }
     };
 
-    template<class A>
-    struct merge_cas<A> {
-        using result = A;
+    template<>
+    struct cas_strategy<cas_strategy_type::set> {
+        template<class T>
+        ZOAL_INLINE_IO static void apply(uintptr_t Address, T, T S) {
+            *ZOAL_ADDRESS_CAST(T, Address) |= S;
+        }
+    };
+
+    template<>
+    struct cas_strategy<cas_strategy_type::clear> {
+        template<class T>
+        ZOAL_INLINE_IO static void apply(uintptr_t Address, T C, T) {
+            *ZOAL_ADDRESS_CAST(T, Address) &= ~C;
+        }
+    };
+
+    template<>
+    struct cas_strategy<cas_strategy_type::assign> {
+        template<class T>
+        ZOAL_INLINE_IO static void apply(uintptr_t Address, T, T S) {
+            *ZOAL_ADDRESS_CAST(T, Address) = S;
+        }
+    };
+
+    template<>
+    struct cas_strategy<cas_strategy_type::ignore> {
+        template<class T>
+        ZOAL_INLINE_IO static void apply(uintptr_t Address, T, T) {}
+    };
+
+    template<zoal::mem::reg_io RegIO, uint32_t Mask, uint32_t C, uint32_t S>
+    struct choose_strategy {
+        static constexpr auto ignore = C == 0 && S == 0;
+        static constexpr auto assign = ((C | S) & Mask) == Mask || RegIO == zoal::mem::reg_io::write;
+        static constexpr auto clear = S == 0;
+        static constexpr auto set = C == 0 || C == S;
+        static constexpr cas_strategy_type strategy = ignore ? cas_strategy_type::ignore
+                                                             : (assign ? cas_strategy_type::assign
+                                                                       : (clear ? cas_strategy_type::clear
+                                                                                : (set ? cas_strategy_type::set : cas_strategy_type::main)));
     };
 
     template<class A, class B>
@@ -278,22 +187,28 @@ namespace zoal { namespace mem {
     template<class TypeList>
     class apply_cas_list {
     public:
-        ZOAL_INLINE_IO apply_cas_list() {
-            typename TypeList::type();
-            apply_cas_list<typename TypeList::next>();
+        using cas = typename TypeList::type;
+        using ct = choose_strategy<cas::io, cas::mask, cas::clear, cas::set>;
+        using st = cas_strategy<ct::strategy>;
+
+        ZOAL_INLINE_IO static void apply() {
+            st::template apply<typename cas::type>(cas::address, cas::clear, cas::set);
+            apply_cas_list<typename TypeList::next>::apply();
         }
+
+        apply_cas_list() = delete;
     };
 
     template<>
     class apply_cas_list<void> {
     public:
-        ZOAL_INLINE_IO apply_cas_list<void>() {}
+        ZOAL_INLINE_IO static void apply() {}
     };
 
     template<class TypeList>
     struct callable_cas_list : TypeList {
         ZOAL_INLINE_IO callable_cas_list() {
-            apply_cas_list<TypeList>();
+            apply_cas_list<TypeList>::apply();
         }
     };
 

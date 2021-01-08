@@ -34,8 +34,8 @@ int main() {
 
     mcu::cfg::adc<adc>::apply();
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
-    mcu::mux::adc<adc, mcu::pb_04>::on();
-    mcu::mux::timer<timer, mcu::pb_00, pwm_channel>::on();
+    mcu::mux::adc<adc, mcu::pb_04>::connect();
+    mcu::mux::timer<timer, mcu::pb_00, pwm_channel>::connect();
     mcu::irq::timer<timer>::enable_overflow_interrupt();
     mcu::irq::adc<adc>::enable();
     mcu::enable<timer, adc>::on();

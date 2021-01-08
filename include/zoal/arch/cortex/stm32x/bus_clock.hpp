@@ -47,11 +47,11 @@ namespace zoal { namespace arch { namespace stm32x {
         using power_off_cas =  typename power_cas::power_on_cas;
 
         static inline void power_on() {
-            zoal::mem::apply_cas_list<typename power_cas::power_on_cas>();
+            zoal::mem::apply_cas_list<typename power_cas::power_on_cas>::apply();
         }
 
         static inline void power_off() {
-            zoal::mem::apply_cas_list<typename power_cas::power_off_cas>();
+            zoal::mem::apply_cas_list<typename power_cas::power_off_cas>::apply();
         }
     };
 }}}

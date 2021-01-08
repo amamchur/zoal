@@ -7,13 +7,14 @@
 
 namespace zoal { namespace mem {
     template<class Register, uint32_t C, uint32_t S>
-    class reg_cas {
+    class reg_cas final {
     public:
         using cas = zoal::mem::cas<Register::address, Register::io, typename Register::type, Register::mask, C, S>;
+        reg_cas() = delete;
     };
 
     template<uintptr_t Address, reg_io RegIO, class Type, Type Mask>
-    class reg {
+    class reg final {
     public:
         static constexpr auto address = Address;
         static constexpr auto io = RegIO;
@@ -27,6 +28,8 @@ namespace zoal { namespace mem {
         ZOAL_INLINE_IO static volatile type &ref() {
             return *ZOAL_ADDRESS_CAST(Type, Address);
         }
+
+        reg() = delete;
     };
 }}
 

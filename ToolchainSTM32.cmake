@@ -38,6 +38,7 @@ function(add_mcu_executable NAME MCU)
                 -fdata-sections
                 -ffunction-sections
                 -fmessage-length=0
+                -fno-exceptions
                 -g
                 )
 

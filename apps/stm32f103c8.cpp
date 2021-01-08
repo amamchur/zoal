@@ -1,15 +1,17 @@
 #include "cmsis_os.h"
 #include "stm32f1xx_hal.h"
+#include "task.h"
 
 #include <zoal/data/rx_tx_buffer.hpp>
 #include <zoal/io/button.hpp>
 #include <zoal/mcu/stm32f103c8tx.hpp>
-#include <zoal/periph/rx_ring_buffer.hpp>
-#include <zoal/periph/tx_ring_buffer.hpp>
 #include <zoal/utils/cmsis_os2/delay.hpp>
 #include <zoal/utils/cmsis_os2/tool_set.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/vt100.hpp>
+
+#include "../misc/cmd_line_parser.hpp"
+#include "../misc/terminal_input.hpp"
 
 using mcu = zoal::mcu::stm32f103c8tx<>;
 using usart_01 = mcu::usart_01;
@@ -17,19 +19,25 @@ using usart_02 = mcu::usart_02;
 using usart_03 = mcu::usart_03;
 
 using usart_01_tx_buffer = usart_01::default_tx_buffer<128>;
+using usart_01_rx_buffer = usart_01::default_rx_buffer<128>;
 using logger = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
 using tools = zoal::utils::cmsis_os2::tool_set<mcu, logger>;
 using delay = zoal::utils::cmsis_os2::delay<mcu>;
 using api = zoal::gpio::api;
+using user_led = mcu::pc_13;
 
-osThreadId_t inputTaskHandle;
-osThreadAttr_t inputTask_attributes;
+constexpr size_t max_input_str = 128;
+using command_line_parser = zoal::misc::command_line_parser<max_input_str>;
+char terminal_buffer[max_input_str];
+auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
+zoal::misc::terminal_input term(terminal_buffer, sizeof(terminal_buffer));
+command_line_parser cmd_parser;
 
 zoal::io::button<tools, mcu::pb_13> user_button_1;
 zoal::io::button<tools, mcu::pb_12> user_button_2;
 
 [[noreturn]] void zoal_input_handler(void *) {
-    while (1) {
+    while (true) {
         auto events = user_button_1.handle();
         if ((events & zoal::io::button_state_trigger_press) != 0) {
             logger::stream() << zoal::utils::vt100::ris();
@@ -59,61 +67,87 @@ extern "C" void zoal_init() {
         >();
 
     api::optimize<api::enable<usart_01>>();
+    usart_01::enable_rx();
 
     NVIC_EnableIRQ(USART1_IRQn);
 
-    inputTask_attributes.name = "inputHandler";
-    inputTask_attributes.priority = osPriorityLow;
-    inputTask_attributes.stack_size = 64 * 4;
-    inputTaskHandle = osThreadNew(zoal_input_handler, NULL, &inputTask_attributes);
+    xTaskCreate(zoal_input_handler, nullptr, 128, nullptr, osPriorityNormal, nullptr);
 }
 
-static void vt100_print() {
-    using namespace zoal::utils;
-    using zoal::metadata::signal;
-    using zoal::metadata::stm32_remap;
+void vt100_callback(const zoal::misc::terminal_input *t, const char *s, const char *) {
+    for (auto ch = s; *ch; ch++) {
+        usart_01_tx_buffer::push_back_blocking(*ch);
+    }
+}
 
-    using pa09 = mcu::pa_09;
-    using pa09r = stm32_remap<usart_01::address, pa09::port::address, pa09::offset, signal::tx>;
+template<class T>
+bool cmp_str_token(T s1, const char *ss, const char *se) {
+    while (*s1 && ss < se) {
+        if (*s1 != *ss) {
+            return false;
+        }
+        ++s1;
+        ++ss;
+    }
+    return !*s1 && ss == se;
+}
 
-    using pa10 = mcu::pa_10;
-    using pa10r = stm32_remap<usart_01::address, pa10::port::address, pa10::offset, signal::rx>;
+void cmd_select_callback(void *p, zoal::misc::command_line_event e) {
+    if (e == zoal::misc::command_line_event::line_end) {
+        return;
+    }
 
-    auto stream = logger::stream();
-    stream << vt100::ris();
-    stream << "PA09 TX AF: " << pa10r::value << vt100::cr_lf();
-    stream << "PA10 RX AF: " << pa10r::value << vt100::cr_lf();
+    auto parser = reinterpret_cast<command_line_parser *>(p);
+    auto ts = parser->token_start();
+    auto te = parser->token_end();
+    if (cmp_str_token("help", ts, te)) {
+        auto stream = logger::stream();
+        stream << "\r\nHello!";
+        parser->callback(&command_line_parser::empty_callback);
+        return;
+    }
 
-    zoal::utils::cas_print_functor<logger> func;
+    if (cmp_str_token("on", ts, te)) {
+        user_led::low();
+        return;
+    }
 
-    logger::trace() << "rx_list";
-    using rx_list = mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::rx_in;
-    zoal::ct::type_list_iterator<rx_list>::for_each(func);
+    if (cmp_str_token("off", ts, te)) {
+        user_led::high();
+        return;
+    }
 
-    logger::trace() << "tx_list";
-    using tx_list = mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::tx_af;
-    zoal::ct::type_list_iterator<tx_list>::for_each(func);
+    parser->callback(&command_line_parser::empty_callback);
+    logger::warn() << "Not found";
+}
 
-    logger::trace() << "connect";
-    using connect = mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::connect;
-    zoal::ct::type_list_iterator<connect>::for_each(func);
-
-    logger::info() << "GPIOA_CRL: *" << (void *)mcu::port_a::GPIOx_CRL::address << "=" << (void *)mcu::port_a::GPIOx_CRL::ref();
-    logger::info() << "GPIOA_CRH: *" << (void *)mcu::port_a::GPIOx_CRH::address << "=" << (void *)mcu::port_a::GPIOx_CRH::ref();
+void input_callback(const zoal::misc::terminal_input *t, const char *s, const char *e) {
+    cmd_parser.reset();
+    cmd_parser.callback(cmd_select_callback);
+    cmd_parser.push(s, e - s, e);
 }
 
 extern "C" [[noreturn]] void zoal_default_thread(void *argument) {
     zoal_init();
+    logger::info() << "Started!";
 
-    vt100_print();
+    term.vt100_callback(&vt100_callback);
+    term.input_callback(&input_callback);
+    term.greeting(terminal_greeting);
+    term.clear();
+    term.sync();
 
-    constexpr int delay = 3000;
     for (;;) {
-        //        logger::info() << "Heartbeat: " << osKernelGetTickCount();
-        ::delay::ms(delay);
+        uint8_t rx_byte = 0;
+        auto result = usart_01_rx_buffer::pop_front(rx_byte);
+        if (result) {
+            term.push(&rx_byte, 1);
+        }
+        osThreadYield();
     }
 }
 
 extern "C" void USART1_IRQHandler() {
     usart_01::tx_handler<usart_01_tx_buffer>();
+    usart_01::rx_handler<usart_01_rx_buffer>();
 }

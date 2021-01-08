@@ -10,25 +10,27 @@ namespace zoal { namespace misc {
 
         typedef void (*callback_fn)(const self_type *t, const char *s, const char *e);
 
-        terminal_input(char *buffer, size_t size);
+        terminal_input() noexcept;
+        terminal_input(char *buffer, size_t size) noexcept;
+        void init_buffer(char *buffer, size_t size);
 
         const char *str_start() const;
         const char *str_end() const;
         void clear();
-        void sync();
+        void sync() const;
         void vt100_callback(callback_fn fn);
         void input_callback(callback_fn fn);
         void greeting(const char *g);
     public:
         const char *greeting_{nullptr};
-        char *buffer_;
-        char *cursor_;
-        char *end_;
-        size_t size_;
+        char *buffer_{nullptr};
+        char *cursor_{nullptr};
+        char *end_{nullptr};
+        size_t size_{0};
         callback_fn vt100_callback_{&empty_callback};
         callback_fn input_callback_{&empty_callback};
 
-        void move_cursor(int dx);
+        void cursor(char *c);
         void insert_char(char ch);
         void do_backspace();
         void do_delete();
@@ -39,7 +41,7 @@ namespace zoal { namespace misc {
         void process_event(terminal_machine_event e);
         void move_to_word_end();
         void move_to_word_start();
-        void normalize_cursor();
+        char * normalize_cursor(char *c) const;
         void send_cstr(const char *str) const;
     };
 
