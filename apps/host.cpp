@@ -1,9 +1,9 @@
 #include "../misc/terminal_input.hpp"
 
 #include <iostream>
-#include <zoal/utils/scheduler.hpp>
 #include <zoal/algorithm/kmp.hpp>
 #include <zoal/mcu/stm32f103c8tx.hpp>
+#include <zoal/utils/scheduler.hpp>
 
 using namespace std;
 
@@ -27,13 +27,68 @@ struct cas_print_functor {
     int counter{0};
 };
 
+template<class N>
+class print_name {
+public:
+    static void print() {
+        std::cout << "noname" << std::endl;
+    }
+};
+
+template<>
+class print_name<int> {
+public:
+    static void print() {
+        std::cout << "int" << std::endl;
+    }
+};
+
+template<>
+class print_name<void> {
+public:
+    static void print() {
+        std::cout << "void" << std::endl;
+    }
+};
+
+template<>
+class print_name<float> {
+public:
+    static void print() {
+        std::cout << "float" << std::endl;
+    }
+};
+
+template<int No, class T, class... Rest>
+class test {
+public:
+    using next = test<No + 1, Rest...>;
+
+    static inline void print_at_index(int index) {
+        if (index == No) {
+            print_name<T>::print();
+        } else {
+            next::print_at_index(index);
+        }
+    }
+};
+
+template<int No, class T>
+class test<No, T> {
+public:
+    static inline void print_at_index(int index) {
+        if (index == No) {
+            print_name<T>::print();
+        }
+    }
+};
+
 int main() {
     using namespace std;
 
-    using cfg_cas = api::optimize<api::power_on<usart, mcu::port_a, mcu::port_c, mcu::port_b>>;
-    cas_print_functor func;
-    zoal::ct::type_list_iterator<cfg_cas>::for_each(func);
-    cfg_cas();
+    for (int i = 0; i < 100; ++i) {
+        test<0, int, void, float>::print_at_index(i);
+    }
 
     return 0;
 }

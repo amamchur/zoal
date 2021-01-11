@@ -158,7 +158,7 @@ public:
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
     void run_once() {
-        matrix_keypad::handle(this, &self_type::keypadHandler);
+//        matrix_keypad::handle(this, &self_type::keypadHandler);
     }
 
     void run() {

@@ -83,7 +83,9 @@ namespace zoal { namespace arch { namespace stm32f1 {
             USARTx_CR1::ref() |= USARTx_CR1_bit_RXNEIE;
         }
 
-        static inline void flush() {}
+        static inline void disable_rx() {
+            USARTx_CR1::ref() &= ~USARTx_CR1_bit_RXNEIE;
+        }
 
         template<class Buffer>
         static inline bool rx_handler() {
@@ -102,19 +104,18 @@ namespace zoal { namespace arch { namespace stm32f1 {
         }
 
         template<class RxCallback>
-        static inline bool rx_handler(RxCallback rx_callback) {
+        static inline void rx_handler(RxCallback rx_callback) {
             auto rx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_RXNEIE;
             if (!rx_enabled) {
-                return false;
+                return;
             }
 
             auto rx_not_empty = USARTx_SR::ref() & USARTx_SR_bit_RXNE;
             if (!rx_not_empty) {
-                return false;
+                return;
             }
 
             rx_callback(USARTx_DR::ref());
-            return true;
         }
 
         template<class Buffer>
@@ -131,6 +132,28 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
             typename Buffer::value_type value;
             if (Buffer::pop_front(value)) {
+                USARTx_DR::ref() = value;
+            } else {
+                disable_tx();
+            }
+
+            return true;
+        }
+
+        template<class TxCallback>
+        static bool tx_handler(TxCallback callback) {
+            auto tx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_TXEIE;
+            if (!tx_enabled) {
+                return false;
+            }
+
+            auto tx_empty = USARTx_SR::ref() & USARTx_SR_bit_TXE;
+            if (!tx_empty) {
+                return false;
+            }
+
+            uint8_t value;
+            if (callback(value)) {
                 USARTx_DR::ref() = value;
             } else {
                 disable_tx();

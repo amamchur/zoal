@@ -39,6 +39,13 @@ namespace zoal { namespace freertos {
             return xStreamBufferReceive(handle_, data, size, ticks_to_wait);
         }
 
+        inline size_t receive_isr(void *data, size_t size) {
+            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+            size_t bytes = xStreamBufferReceiveFromISR(handle_, data, size, &xHigherPriorityTaskWoken);
+            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+            return bytes;
+        }
+
         StreamBufferHandle_t handle_{nullptr};
     };
 

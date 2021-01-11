@@ -30,11 +30,11 @@ namespace zoal { namespace shield {
         using lm75 = zoal::ic::lm75<>;
         using adxl345 = zoal::ic::adxl345<>;
 
-        using u_button = zoal::io::button<tools, typename pcb::ard_a01>;
-        using r_button = zoal::io::button<tools, typename pcb::ard_a02>;
-        using l_button = zoal::io::button<tools, typename pcb::ard_a03>;
-        using e_button = zoal::io::button<tools, typename pcb::ard_a04>;
-        using d_button = zoal::io::button<tools, typename pcb::ard_a05>;
+        using u_button = zoal::io::button<uint32_t, typename pcb::ard_a01>;
+        using r_button = zoal::io::button<uint32_t, typename pcb::ard_a02>;
+        using l_button = zoal::io::button<uint32_t, typename pcb::ard_a03>;
+        using e_button = zoal::io::button<uint32_t, typename pcb::ard_a04>;
+        using d_button = zoal::io::button<uint32_t, typename pcb::ard_a05>;
 
         uno_accessory(i2c_stream *i2cs)
             : display(i2cs) {}

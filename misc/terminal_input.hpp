@@ -9,6 +9,7 @@ namespace zoal { namespace misc {
         using self_type = terminal_input;
 
         typedef void (*callback_fn)(const self_type *t, const char *s, const char *e);
+        typedef void (*handle_v100_fn)(const self_type *t, terminal_machine_event e);
 
         terminal_input() noexcept;
         terminal_input(void *buffer, size_t size) noexcept;
@@ -20,8 +21,9 @@ namespace zoal { namespace misc {
         void sync() const;
         void vt100_feedback(callback_fn fn);
         void input_callback(callback_fn fn);
+        void handle_v100(handle_v100_fn fn);
         void greeting(const char *g);
-
+        void value(const char *str);
     public:
         char scanner_buffer_[8]{0};
 
@@ -32,6 +34,7 @@ namespace zoal { namespace misc {
         size_t size_{0};
         callback_fn vt100_callback_{&empty_callback};
         callback_fn input_callback_{&empty_callback};
+        handle_v100_fn handle_v100_fn_{nullptr};
 
         void cursor(char *c);
         void insert_char(char ch);

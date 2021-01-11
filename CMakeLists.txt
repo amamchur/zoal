@@ -45,9 +45,6 @@ add_mcu_executable(ATmega328p atmega328p
         )
 target_compile_definitions(ATmega328p PRIVATE F_CPU=16000000UL)
 
-add_mcu_executable(Stepper28BYJ atmega328p apps/stepper_28byj.cpp ${STEPPER_STATE_MACHINE_SRC})
-target_compile_definitions(Stepper28BYJ PRIVATE F_CPU=16000000UL)
-
 add_mcu_executable(ATmega32u4 atmega32u4 apps/atmega32u4.cpp)
 target_compile_definitions(ATmega32u4 PRIVATE F_CPU=16000000UL)
 

@@ -26,11 +26,7 @@ namespace zoal { namespace io {
         static void handle(H handler, int16_t value) {
             using namespace zoal::io;
 
-            zoal::io::button_state_machine machine(5, 300);
-            counter_value_type milliseconds = counter::now();
-            counter_value_type dt = milliseconds - prev_time;
-
-            uint8_t allEvents = 0;
+            counter_value_type current_time = counter::now();
             for (int i = 0; i < button_count; i++) {
                 uint8_t dv = 0;
                 int buttonValue = values[i];
@@ -38,41 +34,21 @@ namespace zoal { namespace io {
                     dv = 1;
                 }
 
-                uint8_t state = machine.handle_button(dt, states[i], dv);
-                uint8_t events = state & button_state_trigger;
-                states[i] = state & ~button_state_trigger;
-                allEvents |= events;
-
-                if (events == 0) {
-                    continue;
+                auto dt = current_time - prev_time[i];
+                auto switched = machines[i].handle(dv, dt, 5, 250);
+                if (switched) {
+                    prev_time[i] = current_time;
                 }
 
-                if ((events & button_state_trigger_down) != 0) {
-                    logger::trace() << "ButtonStateTriggerDown: " << i;
-                    handler(i, button_event::down);
-                }
-
-                if ((events & button_state_trigger_press) != 0) {
-                    logger::trace() << "ButtonStateTriggerPress: " << i;
-                    handler(i, button_event::press);
-                }
-
-                if ((events & button_state_trigger_up) != 0) {
-                    logger::trace() << "ButtonStateTriggerUp: " << i;
-                    handler(i, button_event::up);
-                }
-            }
-
-            if (allEvents != 0) {
-                prev_time = milliseconds;
+                machines[i].invoke_callback(handler, i);
             }
         }
 
         static button_value_type values[Count];
 
     protected:
-        static counter_value_type prev_time;
-        static uint8_t states[Count];
+        static counter_value_type prev_time[Count];
+        static zoal::io::button_state_machine machines[Count];
     };
 
     template<class Tools, uint8_t Count, int Threshold>
@@ -80,11 +56,7 @@ namespace zoal { namespace io {
         analog_keypad<Tools, Count, Threshold>::values[Count];
 
     template<class Tools, uint8_t Count, int Threshold>
-    typename analog_keypad<Tools, Count, Threshold>::counter_value_type
-        analog_keypad<Tools, Count, Threshold>::prev_time = 0;
-
-    template<class Tools, uint8_t Count, int Threshold>
-    uint8_t analog_keypad<Tools, Count, Threshold>::states[Count] = {0};
+    typename analog_keypad<Tools, Count, Threshold>::counter_value_type analog_keypad<Tools, Count, Threshold>::prev_time[Count] = {0};
 }}
 
 #endif

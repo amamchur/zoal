@@ -141,7 +141,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
         ZOAL_INLINE_IO static void mode() {
             using md = pin_mode_cfg<self_type, PinMode, Mask>;
-            zoal::mem::apply_cas_list<typename md::all>();
+            zoal::mem::apply_cas_list<typename md::all>::apply();
         }
     };
 }}}

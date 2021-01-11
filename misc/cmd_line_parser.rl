@@ -31,7 +31,7 @@ namespace zoal { namespace misc {
     command_line_parser::command_line_parser(void *buffer, size_t buffer_size)
         : ragel_scanner(buffer, buffer_size) {}
 
-    void command_line_parse_machine::quoted_param_found_action() {
+    void command_line_machine::quoted_param_found_action() {
         ts++;
         te--;
 
@@ -73,16 +73,16 @@ namespace zoal { namespace misc {
         }
     }
 
-    void command_line_parse_machine::init_machine() {
+    void command_line_machine::init_machine() {
         %% write init;
     }
 
-    const char *command_line_parse_machine::run_machine(const char *p, const char *pe) {
+    const char *command_line_machine::run_machine(const char *p, const char *pe) {
         %% write exec;
         return p;
     }
 
-    int command_line_parse_machine::start_state() const {
+    int command_line_machine::start_state() const {
         return fsm_name_start;
     }
 }}

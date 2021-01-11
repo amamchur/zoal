@@ -36,7 +36,6 @@ namespace zoal { namespace misc {
             break;
         case terminal_machine_event::right_key:
             cursor(cursor_ + 1);
-            ;
             break;
         case terminal_machine_event::left_key:
             cursor(cursor_ - 1);
@@ -61,11 +60,16 @@ namespace zoal { namespace misc {
             input_callback_(this, buffer_, end_);
             this->cursor_ = buffer_;
             this->end_ = buffer_;
-            new_line();
             break;
         default:
+            if (handle_v100_fn_) {
+                handle_v100_fn_(this, e);
+            }
             break;
         }
+    }
+    void terminal_input::handle_v100(terminal_input::handle_v100_fn fn) {
+        handle_v100_fn_ = fn;
     }
 
     void terminal_input::insert_char(char ch) {
@@ -208,5 +212,15 @@ namespace zoal { namespace misc {
             cursor_ = c;
             sync();
         }
+    }
+
+    void terminal_input::value(const char *str) {
+        auto src = str;
+        auto dst = buffer_;
+        while (*src) *dst++ = *src++;
+        end_ = dst;
+
+        cursor(cursor_ + size_);
+        sync();
     }
 }}

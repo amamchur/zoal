@@ -2,13 +2,14 @@
 #include "../misc/terminal_input.hpp"
 
 #include <avr/eeprom.h>
-#include <zoal/algorithm/kmp.hpp>
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/board/arduino_uno.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 #include <zoal/utils/vt100.hpp>
+
+#include <zoal/io/analog_keypad.hpp>
 
 volatile uint32_t milliseconds = 0;
 
@@ -33,7 +34,7 @@ using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
 
 scheduler_type scheduler;
 constexpr size_t terminal_str_size = 128;
-using command_line_parser = zoal::misc::command_line_parser<terminal_str_size>;
+using command_line_parser = zoal::misc::command_line_parser;
 char terminal_buffer[terminal_str_size];
 zoal::misc::terminal_input terminal(terminal_buffer, sizeof(terminal_buffer));
 auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
@@ -107,7 +108,7 @@ bool cmp_str_token(zoal::io::progmem_str_iter s1, const char *ss, const char *se
     return !*s1 && ss == se;
 }
 
-void cmd_select_callback(void *p, zoal::misc::command_line_event e) {
+void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
     if (e == zoal::misc::command_line_event::line_end) {
         return;
     }
@@ -143,9 +144,9 @@ void cmd_select_callback(void *p, zoal::misc::command_line_event e) {
 }
 
 void input_callback(const zoal::misc::terminal_input *t, const char *s, const char *e) {
-    command_line_parser p;
-    p.callback(cmd_select_callback);
-    p.push(s, e - s, e);
+    command_line_parser cmd_parser(nullptr, 0);
+    cmd_parser.callback(cmd_select_callback);
+    cmd_parser.scan(s, e, e);
 }
 
 int main() {

@@ -9,54 +9,57 @@
 #include "../gpio/pin_mode.hpp"
 #include "../utils/helpers.hpp"
 #include "../utils/method_invoker.hpp"
+#include "../utils/nop.hpp"
 #include "button_state_machine.hpp"
 
-#include <string.h>
-
 namespace zoal { namespace io {
-    template<class Tools, class... Rows>
+    template<class... Rows>
     class keypad_row_selector {
+    private:
+        template<int No, class T, class... Rest>
+        struct helper {
+            using next = helper<No + 1, Rest...>;
+
+            ZOAL_INLINE_IO static void to_ground(int index) {
+                if (index == No) {
+                    T::template mode<zoal::gpio::pin_mode::output_push_pull>();
+                    T::low();
+                } else {
+                    next::to_ground(index);
+                }
+            }
+        };
+
+        template<int No, class T>
+        struct helper<No, T> {
+            ZOAL_INLINE_IO static void to_ground(int index) {
+                if (index == No) {
+                    T::template mode<zoal::gpio::pin_mode::output_push_pull>();
+                    T::low();
+                }
+            }
+        };
     public:
         static_assert(!zoal::ct::has_same<Rows...>::value, "Duplicated row pins");
 
-        using tools = Tools;
         using high_impedance = typename zoal::gpio::api::optimize<zoal::gpio::api::mode<zoal::gpio::pin_mode::input_floating, Rows...>>;
         using pins = zoal::ct::type_list<Rows...>;
 
         static constexpr auto rows = pins::count;
 
-        class to_ground {
-        public:
-            explicit to_ground(size_t index)
-                : index(index) {}
-
-            template<class T>
-            void operator()(size_t idx) const {
-                using namespace zoal::gpio;
-                if (idx == index) {
-                    T::template mode<pin_mode::output_push_pull>();
-                    T::low();
-                }
-            }
-
-        private:
-            size_t index;
-        };
-
         static void select_row(size_t row) {
             high_impedance();
-            zoal::ct::type_list_index_iterator<pins>::for_each(to_ground(row));
+            helper<0, Rows...>::to_ground(row);
         }
     };
 
-    template<class Tools, class... Columns>
+    template<class... Columns>
     class keypad_column_reader {
     public:
         static_assert(!zoal::ct::has_same<Columns...>::value, "Duplicated column pins");
 
-        using tools = Tools;
-
         using pins = zoal::ct::type_list<Columns...>;
+        using cfg_gpio = zoal::gpio::api::optimize<zoal::gpio::api::mode<zoal::gpio::pin_mode::input_pull_up, Columns...>>;
 
         static constexpr auto columns = pins::count;
 
@@ -66,11 +69,13 @@ namespace zoal { namespace io {
                 : index(index) {}
 
             template<class T>
-            void operator()(size_t idx) const {
+            bool operator()(size_t idx) const {
                 using namespace zoal::gpio;
                 if (idx == index) {
                     value = T::read();
                 }
+
+                return idx == index;
             }
 
             mutable uint8_t value{0};
@@ -86,79 +91,61 @@ namespace zoal { namespace io {
 
     class keypad_config {
     public:
-        static constexpr uint16_t read_delay_us = 4;
-        static constexpr uint16_t debounce_delay_ms = 50;
-        static constexpr uint16_t press_delay_ms = 300;
+        static constexpr uint16_t debounce_delay = 5;
+        static constexpr uint16_t press_delay = 250;
+        using machine_type = button_state_machine;
     };
 
-    template<class Tools, class Selector, class Reader, class Config = keypad_config, class Machine = button_state_machine>
+    template<class TimeType, class Selector, class Reader, class Config = keypad_config>
     class matrix_keypad {
     public:
-        using delay = typename Tools::delay;
-        using counter = typename Tools::counter;
-        using counter_type = typename counter::value_type;
-
         static constexpr uint8_t rows = Selector::rows;
         static constexpr uint8_t columns = Reader::columns;
 
-        matrix_keypad() = delete;
+        using time_type = TimeType;
+        using machine_type = typename Config::machine_type;
 
-        template<class H>
-        static void handle(H handler) {
-            Machine machine(Config::debounce_delay_ms, Config::press_delay_ms);
-            counter_type now = counter::now();
-            counter_type dt = now - prevTime;
-            uint8_t allEvents = 0;
+        template<class H, class C>
+        void handle(H handler, time_type now, C capacity_delay) {
+            constexpr auto debounce_delay = static_cast<TimeType>(Config::debounce_delay);
+            constexpr auto press_delay = static_cast<TimeType>(Config::press_delay);
+
+            typename Reader::cfg_gpio();
 
             for (size_t r = 0; r < rows; r++) {
                 Selector::select_row(r);
-                delay::template us<Config::read_delay_us>();
+                capacity_delay();
 
                 for (size_t c = 0; c < columns; c++) {
+                    auto &m = machines[r][c];
                     uint8_t v = 1 - Reader::read_column(c);
-                    uint8_t state = machine.handle_button(dt, states[r][c], v);
-
-                    uint8_t events = state & button_state_trigger;
-                    allEvents |= events;
-
-                    if (events) {
-                        if ((events & button_state_trigger_down) != 0) {
-                            handler(r, c, button_event::down);
-                        }
-
-                        if ((events & button_state_trigger_press) != 0) {
-                            handler(r, c, button_event::press);
-                        }
-
-                        if ((events & button_state_trigger_up) != 0) {
-                            handler(r, c, button_event::up);
-                        }
+                    auto dt = now - prev_time[r][c];
+                    auto switched = m.handle(v, dt, debounce_delay, press_delay);
+                    if (switched) {
+                        prev_time[r][c] = now;
                     }
 
-                    states[r][c] = state & ~button_state_trigger;
+                    m.invoke_callback(handler, r, c);
                 }
-            }
-
-            if (allEvents != 0) {
-                prevTime = now;
             }
         }
 
+        template<class H>
+        void handle(H handler, TimeType now) {
+            handle(handler, now, [](){
+                asm volatile("nop \n");
+            });
+        }
+
         template<class T, class M>
-        static void handle(T *obj, M m) {
+        void handle(T *obj, M m) {
             handle(zoal::utils::method_invoker<T, size_t, size_t, button_event>(obj, m));
         }
 
     protected:
-        static counter_type prevTime;
-        static uint8_t states[Selector::rows][Reader::columns];
+        time_type prev_time[Selector::rows][Reader::columns];
+        machine_type machines[Selector::rows][Reader::columns];
     };
-
-    template<class Tools, class Selector, class Reader, class Config, class Machine>
-    typename matrix_keypad<Tools, Selector, Reader, Config, Machine>::counter_type matrix_keypad<Tools, Selector, Reader, Config, Machine>::prevTime = 0;
-
-    template<class tools, class Selector, class Reader, class Config, class Machine>
-    uint8_t matrix_keypad<tools, Selector, Reader, Config, Machine>::states[Selector::rows][Reader::columns] = {0};
 }}
 
 #endif
