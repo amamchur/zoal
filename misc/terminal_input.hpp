@@ -40,7 +40,6 @@ namespace zoal { namespace misc {
         void insert_char(char ch);
         void do_backspace();
         void do_delete();
-        void new_line() const;
 
         static void scanner_callback(void *parser, terminal_machine_event event);
         static void empty_callback(const self_type *t, const char *s, const char *e);

@@ -211,9 +211,6 @@ fs.readdirSync(mxProjectFolder).forEach(file => {
     }
 });
 
-processMxProject(path.join(mxProjectFolder, 'stm32f103_blue_pill'));
-
-
 let content = fs.readFileSync('CMakeLists.txt', "utf8");
 let lines = content.split(/\n/);
 let startPos = lines.indexOf('# Begin cubemx-proj variables');

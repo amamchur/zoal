@@ -13,7 +13,7 @@ namespace zoal { namespace freertos {
     public:
         using item_type = ItemType;
 
-        inline bool push(ItemType &item, TickType_t ticks_to_wait = 1) {
+        inline bool push(const ItemType &item, TickType_t ticks_to_wait = 1) {
             return xQueueSend(handle_, &item, ticks_to_wait) == pdTRUE;
         }
 

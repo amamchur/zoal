@@ -167,10 +167,6 @@ namespace zoal { namespace misc {
         greeting_ = g;
     }
 
-    void terminal_input::new_line() const {
-        send_cstr("\r\n");
-    }
-
     void terminal_input::move_to_word_end() {
         auto c = cursor_ + 1;
         auto r = buffer_ == end_ ? end_ + 1 : end_;
