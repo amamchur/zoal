@@ -41,12 +41,12 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+/* Definitions for main */
+osThreadId_t mainHandle;
+const osThreadAttr_t main_attributes = {
+  .name = "main",
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+  .stack_size = 256 * 4
 };
 /* USER CODE BEGIN PV */
 
@@ -120,8 +120,8 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of main */
+  mainHandle = osThreadNew(StartDefaultTask, NULL, &main_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
