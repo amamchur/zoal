@@ -10,10 +10,12 @@ namespace zoal { namespace misc {
         me->process_event(event);
     }
 
-    terminal_input::terminal_input() = default;
+    terminal_input::terminal_input() noexcept
+        : zoal::parser::ragel_scanner<terminal_machine>(scanner_buffer_, sizeof(scanner_buffer_)){};
 
-    terminal_input::terminal_input(char *buffer, size_t size) noexcept {
-        this->init_buffer(buffer, size);
+    terminal_input::terminal_input(void *buffer, size_t size) noexcept
+        : zoal::parser::ragel_scanner<terminal_machine>(scanner_buffer_, sizeof(scanner_buffer_)) {
+        this->init_buffer(reinterpret_cast<char *>(buffer), size);
     }
 
     void terminal_input::init_buffer(char *buffer, size_t size) {
@@ -21,7 +23,7 @@ namespace zoal { namespace misc {
         this->size_ = size;
         this->cursor_ = buffer_;
         this->end_ = buffer_;
-        this->callback(&scanner_callback);
+        this->callback(scanner_callback);
     }
 
     void terminal_input::process_event(terminal_machine_event e) {
@@ -60,7 +62,6 @@ namespace zoal { namespace misc {
             this->cursor_ = buffer_;
             this->end_ = buffer_;
             new_line();
-            sync();
             break;
         default:
             break;
@@ -125,7 +126,7 @@ namespace zoal { namespace misc {
         send_cstr("\033c");
     }
 
-    void terminal_input::vt100_callback(callback_fn fn) {
+    void terminal_input::vt100_feedback(callback_fn fn) {
         this->vt100_callback_ = fn;
     }
 

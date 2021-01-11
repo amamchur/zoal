@@ -101,6 +101,22 @@ namespace zoal { namespace arch { namespace stm32f1 {
             return true;
         }
 
+        template<class RxCallback>
+        static inline bool rx_handler(RxCallback rx_callback) {
+            auto rx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_RXNEIE;
+            if (!rx_enabled) {
+                return false;
+            }
+
+            auto rx_not_empty = USARTx_SR::ref() & USARTx_SR_bit_RXNE;
+            if (!rx_not_empty) {
+                return false;
+            }
+
+            rx_callback(USARTx_DR::ref());
+            return true;
+        }
+
         template<class Buffer>
         static bool tx_handler() {
             auto tx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_TXEIE;

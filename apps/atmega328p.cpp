@@ -32,10 +32,10 @@ using blink_pin = pcb::ard_d08;
 using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
 
 scheduler_type scheduler;
-constexpr size_t max_input_str = 128;
-using command_line_parser = zoal::misc::command_line_parser<max_input_str>;
-char terminal_buffer[max_input_str];
-zoal::misc::terminal_input term(terminal_buffer, sizeof(terminal_buffer));
+constexpr size_t terminal_str_size = 128;
+using command_line_parser = zoal::misc::command_line_parser<terminal_str_size>;
+char terminal_buffer[terminal_str_size];
+zoal::misc::terminal_input terminal(terminal_buffer, sizeof(terminal_buffer));
 auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
 
 const char help_msg[] PROGMEM = "\r\nMCU command list:";
@@ -151,18 +151,18 @@ void input_callback(const zoal::misc::terminal_input *t, const char *s, const ch
 int main() {
     initialize_hardware();
 
-    term.vt100_callback(&vt100_callback);
-    term.input_callback(&input_callback);
-    term.greeting(terminal_greeting);
-    term.clear();
-    term.sync();
+    terminal.vt100_feedback(&vt100_callback);
+    terminal.input_callback(&input_callback);
+    terminal.greeting(terminal_greeting);
+    terminal.clear();
+    terminal.sync();
 
     while (true) {
         uint8_t rx_byte = 0;
         auto result = rx_buffer::pop_front(rx_byte);
         if (result) {
             //            logger::info() << (int)rx_byte;
-            term.push(&rx_byte, 1);
+            terminal.push(&rx_byte, 1);
         }
         scheduler.handle();
     }

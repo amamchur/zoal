@@ -14,67 +14,13 @@
 
 namespace zoal { namespace mem {
     enum class reg_io { read, write, read_write };
-
-    template<uintptr_t Address, reg_io RegIO, class Type, Type Mask, uint32_t C, uint32_t S>
-    struct cas {
-        static constexpr auto address = Address;
-        static constexpr auto io = RegIO;
-        static constexpr auto mask = Mask;
-        static constexpr Type clear = C;
-        static constexpr Type set = S;
-        using type = Type;
-
-        cas() = delete;
-    };
-
-    using null_cas = cas<0, reg_io::read_write, uint8_t, 0xFF, 0, 0>;
-    using null_cas_list = zoal::ct::type_list<null_cas>;
-
     enum class cas_strategy_type { main, set, clear, assign, ignore };
 
-    template<cas_strategy_type type>
-    class cas_strategy {};
-
-    template<>
-    struct cas_strategy<cas_strategy_type::main> {
-        template<class T>
-        ZOAL_INLINE_IO static void apply(uintptr_t Address, T C, T S) {
-            *ZOAL_ADDRESS_CAST(T, Address) = (*ZOAL_ADDRESS_CAST(T, Address) & ~C) | S;
-        }
-    };
-
-    template<>
-    struct cas_strategy<cas_strategy_type::set> {
-        template<class T>
-        ZOAL_INLINE_IO static void apply(uintptr_t Address, T, T S) {
-            *ZOAL_ADDRESS_CAST(T, Address) |= S;
-        }
-    };
-
-    template<>
-    struct cas_strategy<cas_strategy_type::clear> {
-        template<class T>
-        ZOAL_INLINE_IO static void apply(uintptr_t Address, T C, T) {
-            *ZOAL_ADDRESS_CAST(T, Address) &= ~C;
-        }
-    };
-
-    template<>
-    struct cas_strategy<cas_strategy_type::assign> {
-        template<class T>
-        ZOAL_INLINE_IO static void apply(uintptr_t Address, T, T S) {
-            *ZOAL_ADDRESS_CAST(T, Address) = S;
-        }
-    };
-
-    template<>
-    struct cas_strategy<cas_strategy_type::ignore> {
-        template<class T>
-        ZOAL_INLINE_IO static void apply(uintptr_t Address, T, T) {}
-    };
+    template<cas_strategy_type Type>
+    class cas_strategy_implementation {};
 
     template<zoal::mem::reg_io RegIO, uint32_t Mask, uint32_t C, uint32_t S>
-    struct choose_strategy {
+    struct cas_strategy {
         static constexpr auto ignore = C == 0 && S == 0;
         static constexpr auto assign = ((C | S) & Mask) == Mask || RegIO == zoal::mem::reg_io::write;
         static constexpr auto clear = S == 0;
@@ -83,6 +29,66 @@ namespace zoal { namespace mem {
                                                              : (assign ? cas_strategy_type::assign
                                                                        : (clear ? cas_strategy_type::clear
                                                                                 : (set ? cas_strategy_type::set : cas_strategy_type::main)));
+        using impl = cas_strategy_implementation<strategy>;
+    };
+
+    template<uintptr_t Address, reg_io RegIO, class Type, Type Mask, uint32_t C, uint32_t S>
+    struct cas : public cas_strategy<RegIO, Mask, C, S>::impl {
+        using self_type = cas<Address, RegIO, Type, Mask, C, S>;
+        using type = Type;
+
+        static constexpr auto address = Address;
+        static constexpr auto io = RegIO;
+        static constexpr auto mask = Mask;
+        static constexpr Type clear = C;
+        static constexpr Type set = S;
+
+        ZOAL_INLINE_IO cas() noexcept {
+            self_type::template apply<typename cas::type>(cas::address, cas::clear, cas::set);
+        };
+
+        cas(const self_type &) = delete;
+    };
+
+    using null_cas = cas<0, reg_io::read_write, uint8_t, 0xFF, 0, 0>;
+    using null_cas_list = zoal::ct::type_list<null_cas>;
+
+    template<>
+    struct cas_strategy_implementation<cas_strategy_type::main> {
+        template<class T>
+        ZOAL_INLINE_IO static void apply(uintptr_t Address, T C, T S) {
+            *ZOAL_ADDRESS_CAST(T, Address) = (*ZOAL_ADDRESS_CAST(T, Address) & ~C) | S;
+        }
+    };
+
+    template<>
+    struct cas_strategy_implementation<cas_strategy_type::set> {
+        template<class T>
+        ZOAL_INLINE_IO static void apply(uintptr_t Address, T, T S) {
+            *ZOAL_ADDRESS_CAST(T, Address) |= S;
+        }
+    };
+
+    template<>
+    struct cas_strategy_implementation<cas_strategy_type::clear> {
+        template<class T>
+        ZOAL_INLINE_IO static void apply(uintptr_t Address, T C, T) {
+            *ZOAL_ADDRESS_CAST(T, Address) &= ~C;
+        }
+    };
+
+    template<>
+    struct cas_strategy_implementation<cas_strategy_type::assign> {
+        template<class T>
+        ZOAL_INLINE_IO static void apply(uintptr_t Address, T, T S) {
+            *ZOAL_ADDRESS_CAST(T, Address) = S;
+        }
+    };
+
+    template<>
+    struct cas_strategy_implementation<cas_strategy_type::ignore> {
+        template<class T>
+        ZOAL_INLINE_IO static void apply(uintptr_t Address, T, T) {}
     };
 
     template<class A, class B>
@@ -188,11 +194,9 @@ namespace zoal { namespace mem {
     class apply_cas_list {
     public:
         using cas = typename TypeList::type;
-        using ct = choose_strategy<cas::io, cas::mask, cas::clear, cas::set>;
-        using st = cas_strategy<ct::strategy>;
 
         ZOAL_INLINE_IO static void apply() {
-            st::template apply<typename cas::type>(cas::address, cas::clear, cas::set);
+            cas::template apply<typename cas::type>(cas::address, cas::clear, cas::set);
             apply_cas_list<typename TypeList::next>::apply();
         }
 

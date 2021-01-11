@@ -4,24 +4,27 @@
 #include "terminal_machine.hpp"
 
 namespace zoal { namespace misc {
-    class terminal_input : public zoal::parser::ragel_scanner<terminal_machine, 8> {
+    class terminal_input : public zoal::parser::ragel_scanner<terminal_machine> {
     public:
         using self_type = terminal_input;
 
         typedef void (*callback_fn)(const self_type *t, const char *s, const char *e);
 
         terminal_input() noexcept;
-        terminal_input(char *buffer, size_t size) noexcept;
+        terminal_input(void *buffer, size_t size) noexcept;
         void init_buffer(char *buffer, size_t size);
 
         const char *str_start() const;
         const char *str_end() const;
         void clear();
         void sync() const;
-        void vt100_callback(callback_fn fn);
+        void vt100_feedback(callback_fn fn);
         void input_callback(callback_fn fn);
         void greeting(const char *g);
+
     public:
+        char scanner_buffer_[8]{0};
+
         const char *greeting_{nullptr};
         char *buffer_{nullptr};
         char *cursor_{nullptr};
@@ -46,4 +49,5 @@ namespace zoal { namespace misc {
     };
 
 }}
+
 #endif

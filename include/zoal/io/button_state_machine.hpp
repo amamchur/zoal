@@ -3,95 +3,85 @@
 #ifndef ZOAL_IO_BUTTON_STATE_MACHINE_HPP
 #define ZOAL_IO_BUTTON_STATE_MACHINE_HPP
 
-#include <stdint.h>
 #include "button_state_machine.hpp"
 
-namespace zoal { namespace io {
-    enum class button_event : uint8_t {
-        down,
-        press,
-        up
-    };
+#include <stdint.h>
 
-    enum button_state : uint8_t {
-        button_state_trigger_down = 1u << 2u,
-        button_state_trigger_press = 1u << 3u,
-        button_state_trigger_up = 1u << 4u,
-        button_state_trigger = button_state_trigger_down | button_state_trigger_press | button_state_trigger_up,
-        button_state_pressing = 1u << 5u,
-        button_state_debounce = 1u << 6u,
-        button_state_pressed = 1u << 7u
-    };
+namespace zoal { namespace io {
+    enum class button_event : uint8_t { down, press, up };
 
     class button_state_machine {
     public:
-        button_state_machine(uint16_t debounceDelay, uint16_t pressDelay)
-                : debounce_delay(debounceDelay), press_delay(pressDelay) {
-        }
+        enum state_transition {
+            fl = 0 << 0, // transition from low (source state)
+            fh = 1 << 0, // transition from high (source state)
+            tl = 0 << 4, // transition to low (source signal)
+            th = 1 << 4, // transition to high (source signal)
+            debounce = 1 << 1, // debounce state will be reset after debounce_delay
+            pressing = 1 << 2, // pressing state repeat key_press event after press_delay
+
+            switched = 1 << 4, // machine was switched, calling party must reset dt timer value
+            key_down = 1 << 5,
+            key_press = 1 << 6,
+            key_up = 1 << 7,
+            all_events = switched | key_down | key_press | key_up
+        };
+
+        using state_type = uint8_t;
 
         template<class T>
-        uint8_t handle_button(T dt, uint8_t state, uint8_t value) {
-            state &= ~button_state_trigger;
-            if (state & button_state_debounce) {
-                return handle_debounce(dt, state);
+        bool handle(uint8_t signal, T dt, T debounce_delay, T press_delay) {
+            auto transition = static_cast<state_type>((state_ & 0x0Fu) | (signal << 4u));
+            auto next = state_ & ~all_events;
+
+            if ((transition & debounce) && (dt >= debounce_delay)) {
+                transition &= ~debounce;
             }
 
-            return handle_press(dt, state, value);
-        }
-
-    private:
-        uint16_t debounce_delay;
-        uint16_t press_delay;
-
-        template<class T>
-        inline uint8_t handle_press(T dt, uint8_t state, uint8_t value) {
-            auto transition = static_cast<uint8_t>(((state & 0x03u) << 4u) | value);
-            auto next = state;
             switch (transition) {
-            case 0x00:
-                // No changes. Idle state
-                return state;
-            case 0x01:
-                // Idle->Debounce->Down
-                next = button_state_debounce | 1u;
+            case (fl | th):
+                next = fh | debounce | key_down | switched;
                 break;
-            case 0x11:
-                // Debounce->Down
-                return button_state_trigger_down | button_state_pressing | 2u;
-            case 0x20:
-                // Down->Debounce->Pressed
-                next |= button_state_debounce | 3u;
-                break;
-            case 0x30:
-                // Pressed->Idle
-                if ((state & button_state_pressed) == 0) {
-                    return button_state_trigger_press | button_state_trigger_up;
+            case (fh | th):
+                next = fh | pressing | key_press | switched;
+            case (fh | th | pressing):
+                if (press_delay != 0 && dt >= press_delay) {
+                    next = fh | pressing | key_press | switched;
                 }
-                return button_state_trigger_up;
+                break;
+            case (fh | tl):
+            case (fh | tl | pressing):
+                next = fl | key_up | debounce | switched;
+                break;
             default:
                 break;
             }
 
-            if (press_delay == 0) {
-                return next;
-            }
-
-            bool pressing = (next & button_state_pressing) != 0;
-            bool condition = dt >= (T)press_delay && value == 1;
-            if (pressing && condition) {
-                next |= button_state_trigger_press | button_state_pressed;
-            }
-
-            return next;
+            state_ = next;
+            return (next & switched) != 0;
         }
 
-        template<class T>
-        inline uint8_t handle_debounce(T dt, uint8_t state) {
-            if (dt >= (T)debounce_delay) {
-                state &= ~button_state_debounce;
+        template<class Callback, class ...Args>
+        void invoke_callback(Callback callback, Args... args) {
+            if ((state_ & button_state_machine::key_down) != 0) {
+                callback(button_event::down, args...);
             }
-            return state;
+
+            if ((state_ & button_state_machine::key_press) != 0) {
+                callback(button_event::press, args...);
+            }
+
+            if ((state_ & button_state_machine::key_up) != 0) {
+                callback(button_event::up, args...);
+            }
         }
+
+        state_type state() const {
+            return state_;
+        }
+
+    protected:
+        state_type state_{0};
     };
 }}
 

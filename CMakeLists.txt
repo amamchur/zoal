@@ -114,6 +114,7 @@ set(STM32F103_BLUE_PILL_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
@@ -215,14 +216,72 @@ set(STM32F303_NUCLEO_INC
 set(STM32F303_NUCLEO_DEFS -DUSE_HAL_DRIVER -DSTM32F303xE)
 set(STM32F303_NUCLEO_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16)
 set(STM32F303_NUCLEO_FLASH_LD cubemx-proj/stm32f303_nucleo/STM32F303RETx_FLASH.ld)
+
+# STM32CubeMX project variables for cubemx-proj/usart
+set(USART_SRC 
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/list.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/port.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/queue.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/timers.c
+        cubemx-proj/usart/Src/freertos.c
+        cubemx-proj/usart/Src/main.c
+        cubemx-proj/usart/Src/stm32f1xx_hal_msp.c
+        cubemx-proj/usart/Src/stm32f1xx_hal_timebase_tim.c
+        cubemx-proj/usart/Src/stm32f1xx_it.c
+        cubemx-proj/usart/Src/system_stm32f1xx.c
+        cubemx-proj/usart/startup_stm32f103xb.s)
+set(USART_INC 
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/CMSIS/Device/ST/STM32F1xx/Include
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/CMSIS/Include
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Inc
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/include
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3
+        cubemx-proj/usart/Inc)
+set(USART_DEFS -DUSE_HAL_DRIVER -DSTM32F103xB)
+set(USART_OPT_MCU -mcpu=cortex-m3 -mthumb)
+set(USART_FLASH_LD cubemx-proj/usart/STM32F103C8Tx_FLASH.ld)
 # End cubemx-proj variables
 
-set(STM32F103_BLUE_PILL_DEFS ${STM32F103_BLUE_PILL_DEFS} -DZOAL_INLINE_LEVEL=0)
+# set(STM32F103_BLUE_PILL_DEFS ${STM32F103_BLUE_PILL_DEFS} -DZOAL_INLINE_LEVEL=0)
 
 add_mcu_executable(stm32f030 stm32 apps/stm32f030.cpp)
-add_mcu_executable(stm32f103_blue_pill stm32 apps/stm32f103c8.cpp)
+add_mcu_executable(stm32f103_blue_pill stm32
+        apps/stm32f103c8.cpp
+        misc/terminal_input.cpp
+        ${TERMINAL_STATE_MACHINE_SRC}
+        ${CMD_STATE_MACHINE_SRC}
+        )
 add_mcu_executable(stm32f303_discovery stm32 apps/stm32f303vctx.cpp)
 add_mcu_executable(stm32f303_nucleo stm32 apps/stm32f303retx.cpp)
+add_mcu_executable(usart stm32
+        apps/stm32f103_usart.cpp
+        misc/terminal_input.cpp
+        ${TERMINAL_STATE_MACHINE_SRC}
+        ${CMD_STATE_MACHINE_SRC}
+        ${LOOKUP_MACHINE_SRC}
+        )
 
 add_host_executable(host
         apps/host.cpp

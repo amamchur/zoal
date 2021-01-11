@@ -7,11 +7,7 @@
 
 namespace zoal { namespace io {
 
-    template<bool Active_Low,
-             uint8_t DebounceDelay = 5,
-             uint16_t PressDelay = 250,
-             uint16_t DecPressDelay = 5,
-             uint16_t MinPressDelay = 25>
+    template<bool Active_Low, uint8_t DebounceDelay = 5, uint16_t PressDelay = 250, uint16_t DecPressDelay = 25, uint16_t MinPressDelay = 25>
     class button_config {
     public:
         static constexpr bool active_low = Active_Low;
@@ -19,6 +15,8 @@ namespace zoal { namespace io {
         static constexpr uint16_t press_delay = PressDelay;
         static constexpr uint16_t dec_press_delay = DecPressDelay;
         static constexpr uint16_t min_press_delay = MinPressDelay;
+
+        using machine = button_state_machine;
     };
 
     using active_low_button = button_config<true, 5, 250>;
@@ -26,117 +24,103 @@ namespace zoal { namespace io {
     using active_low_no_press = button_config<true, 5, 0>;
     using active_high_no_press = button_config<false, 5, 0>;
 
-    template<class CounterType>
-    class button_base {
+    template<class TimeType, class Config>
+    class base_button {
+    public:
+        using machine_type = typename Config::machine;
+
+        machine_type& machine() {
+            return machine_;
+        }
     protected:
-        template<class Callback>
-        static void invokeCallback(Callback callback, uint8_t events) {
-            if ((events & button_state_trigger_down) != 0) {
-                callback(button_event::down);
-            }
-
-            if ((events & button_state_trigger_press) != 0) {
-                callback(button_event::press);
-            }
-
-            if ((events & button_state_trigger_up) != 0) {
-                callback(button_event::up);
-            }
-        }
-
-        CounterType prev_time{0};
-        uint8_t button_state{0};
+        machine_type machine_;
+        TimeType prev_time{0};
     };
 
-    template<class Tools, class Pin, class Config = active_low_button>
-    class button : public button_base<typename Tools::counter::value_type> {
+    template<class TimeType, class Pin, class Config = active_low_button>
+    class button : public base_button<TimeType, Config> {
     public:
         using pin = Pin;
-        using tools = Tools;
-        using counter = typename tools::counter;
+        using machine_type = typename Config::machine;
+        using state_type = typename machine_type::state_type;
 
-        uint8_t handle() {
+        void handle(TimeType current_time) {
             using namespace zoal::gpio;
 
-            button_state_machine machine(Config::debounce_delay, Config::press_delay);
-            auto now = counter::now();
-            auto dt = now - this->prev_time;
-            auto value = Config::active_low ? pin::read() ^ 1u : pin::read();
-            auto current = this->button_state;
-            auto next = machine.handle_button(dt, current, static_cast<uint8_t>(value));
+            auto dt = current_time - this->prev_time;
+            constexpr auto debounce = static_cast<typeof(dt)>(Config::debounce_delay);
+            constexpr auto press = static_cast<typeof(dt)>(Config::press_delay);
+            uint8_t value = Config::active_low ? pin::read() ^ 1u : pin::read();
+            auto switched = machine.handle(value, dt, debounce, press);
 
-            if (current != next) {
-                this->prev_time = now;
-                this->button_state = next;
-            }
-
-            return next;
-        }
-
-        template<class Callback>
-        void handle(Callback callback) {
-            auto events = handle();
-            if (events) {
-                button::invokeCallback(callback, events);
+            if (switched) {
+                this->prev_time = current_time;
             }
         }
 
-        template<class T, class M>
-        void handle(T *obj, M m) {
-            handle(zoal::utils::method_invoker<T, button_event>(obj, m));
+        template<class Callback, class ...Args>
+        void handle(TimeType current_time, Callback callback, Args... args) {
+            handle(current_time);
+            machine.invoke_callback(callback, args...);
         }
+
+        template<class T, class M, class ...Args>
+        void handle(TimeType current_time, T *obj, M m, Args... args) {
+            handle(current_time);
+            machine.invoke_callback(zoal::utils::method_invoker<T, button_event, Args...>(obj, m), args...);
+        }
+
+    protected:
+        machine_type machine;
     };
 
-    template<class Tools, class Pin, class Config = active_low_button>
-    class button_ext : public button_base<typename Tools::counter::value_type> {
+    template<class TimeType, class Pin, class Config = active_low_button>
+    class button_ext : public base_button<TimeType, Config> {
     public:
         using pin = Pin;
-        using tools = Tools;
-        using counter = typename tools::counter;
+        using machine_type = typename Config::machine;
+        using state_type = typename machine_type::state_type;
 
-        template<class Callback>
-        void handle(Callback callback) {
+        void handle(TimeType current_time) {
             using namespace zoal::gpio;
 
-            button_state_machine machine(Config::debounce_delay, press_delay_ms);
-            auto now = counter::now();
-            auto dt = now - this->prev_time;
+            auto dt = current_time - this->prev_time;
             auto value = Config::active_low ? pin::read() ^ 1u : pin::read();
-            auto current = this->button_state;
-            auto next = machine.handle_button(dt, current, static_cast<uint8_t>(value));
-            auto events = next & button_state_trigger;
-            this->button_state = next & ~button_state_trigger;
+            constexpr auto debounce = static_cast<typeof(dt)>(Config::debounce_delay);
+            auto switched = this->machine_.handle(static_cast<uint8_t>(value), dt, debounce, static_cast<typeof(dt)>(press_delay_ms));
 
-            if (current == next) {
-                return;
+            if (switched) {
+                this->prev_time = current_time;
             }
 
-            this->prev_time = now;
-            this->button_state = next;
-
-            if (events & button_state_trigger_down) {
-                callback(button_event::down);
-            }
-
-            if (events & button_state_trigger_press) {
-                callback(button_event::press);
-                if (press_delay_ms > Config::min_press_delay) {
-                    press_delay_ms -= Config::dec_press_delay;
+            this->machine_.invoke_callback([&](button_event e) {
+                switch (e) {
+                case button_event::press:
+                    if (press_delay_ms > Config::min_press_delay) {
+                        press_delay_ms -= Config::dec_press_delay;
+                    }
+                    break;
+                case button_event::up:
+                    press_delay_ms = Config::press_delay;
+                    break;
+                default:
+                    break;
                 }
-            }
+            });
+        }
 
-            if (events & button_state_trigger_up) {
-                callback(button_event::up);
-                press_delay_ms = Config::press_delay;
-            }
+        template<class Callback, class ...Args>
+        void handle(TimeType current_time, Callback callback, Args... args) {
+            handle();
+            this->machine_.invoke_callback(callback, args...);
         }
 
         template<class T, class M>
-        inline void handle(T *obj, M m) {
+        inline void handle(TimeType current_time, T *obj, M m) {
             handle(zoal::utils::method_invoker<T, button_event>(obj, m));
         }
 
-    private:
+    protected:
         uint16_t press_delay_ms{Config::press_delay};
     };
 }}

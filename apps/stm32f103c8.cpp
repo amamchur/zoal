@@ -26,27 +26,27 @@ using delay = zoal::utils::cmsis_os2::delay<mcu>;
 using api = zoal::gpio::api;
 using user_led = mcu::pc_13;
 
-constexpr size_t max_input_str = 128;
-using command_line_parser = zoal::misc::command_line_parser<max_input_str>;
-char terminal_buffer[max_input_str];
+constexpr size_t terminal_str_size = 128;
+using command_line_parser = zoal::misc::command_line_parser<terminal_str_size>;
+char terminal_buffer[terminal_str_size];
 auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
-zoal::misc::terminal_input term(terminal_buffer, sizeof(terminal_buffer));
+zoal::misc::terminal_input terminal(terminal_buffer, sizeof(terminal_buffer));
 command_line_parser cmd_parser;
 
 zoal::io::button<tools, mcu::pb_13> user_button_1;
 zoal::io::button<tools, mcu::pb_12> user_button_2;
 
-[[noreturn]] void zoal_input_handler(void *) {
+[[noreturn]] void zoal_input_processor(void *) {
     while (true) {
-        auto events = user_button_1.handle();
-        if ((events & zoal::io::button_state_trigger_press) != 0) {
-            logger::stream() << zoal::utils::vt100::ris();
-        }
-
-        events = user_button_2.handle();
-        if ((events & zoal::io::button_state_trigger_press) != 0) {
-            mcu::pc_13::toggle();
-        }
+//        auto events = user_button_1.handle();
+//        if ((events & zoal::io::button_state_trigger_press) != 0) {
+//            logger::stream() << zoal::utils::vt100::ris();
+//        }
+//
+//        events = user_button_2.handle();
+//        if ((events & zoal::io::button_state_trigger_press) != 0) {
+//            mcu::pc_13::toggle();
+//        }
 
         osDelay(1);
     }
@@ -71,7 +71,7 @@ extern "C" void zoal_init() {
 
     NVIC_EnableIRQ(USART1_IRQn);
 
-    xTaskCreate(zoal_input_handler, nullptr, 128, nullptr, osPriorityNormal, nullptr);
+    xTaskCreate(zoal_input_processor, nullptr, 128, nullptr, osPriorityNormal, nullptr);
 }
 
 void vt100_callback(const zoal::misc::terminal_input *t, const char *s, const char *) {
@@ -131,17 +131,17 @@ extern "C" [[noreturn]] void zoal_default_thread(void *argument) {
     zoal_init();
     logger::info() << "Started!";
 
-    term.vt100_callback(&vt100_callback);
-    term.input_callback(&input_callback);
-    term.greeting(terminal_greeting);
-    term.clear();
-    term.sync();
+    terminal.vt100_feedback(&vt100_callback);
+    terminal.input_callback(&input_callback);
+    terminal.greeting(terminal_greeting);
+    terminal.clear();
+    terminal.sync();
 
     for (;;) {
         uint8_t rx_byte = 0;
         auto result = usart_01_rx_buffer::pop_front(rx_byte);
         if (result) {
-            term.push(&rx_byte, 1);
+            terminal.push(&rx_byte, 1);
         }
         osThreadYield();
     }

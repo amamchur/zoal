@@ -114,7 +114,7 @@ namespace zoal { namespace utils {
         }
     };
 
-    template<class Transport, log_level MinLevel = log_level::info, class Prefixer = zoal::io::new_line_cr_lf, class Suffixer = zoal::io::stop_escape_sequence>
+    template<class Transport, log_level MinLevel = log_level::info, class Prefixer = void, class Suffixer = zoal::io::modesoff_cr_lf>
     class terminal_logger {
     public:
         static constexpr log_level min_level = MinLevel;

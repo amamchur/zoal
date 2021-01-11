@@ -59,7 +59,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
             using USARTx_CR3 = typename U::USARTx_CR3::template cas<0x300, 0>;
             using USARTx_BRR = typename U::USARTx_BRR::template cas<0, bbr>;
 
-            using cfg = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR2, USARTx_BRR>;
+            using cfg = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR3, USARTx_BRR>;
 
             static void apply() {
                 zoal::mem::apply_cas_list<cfg>();

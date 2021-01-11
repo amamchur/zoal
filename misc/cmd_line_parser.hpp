@@ -8,7 +8,7 @@
 namespace zoal { namespace misc {
     enum class command_line_event { token, line_end };
 
-    class command_line_parse_machine : public zoal::parser::scanner_machine<void*, command_line_event> {
+    class command_line_machine : public zoal::parser::scanner_machine<command_line_machine *, command_line_event> {
     public:
         void init_machine();
         int start_state() const;
@@ -17,7 +17,9 @@ namespace zoal { namespace misc {
         const char *run_machine(const char *p, const char *pe);
     };
 
-    template<size_t BufferSize>
-    class command_line_parser : public zoal::parser::ragel_scanner<command_line_parse_machine, BufferSize> {};
+    class command_line_parser : public zoal::parser::ragel_scanner<command_line_machine> {
+    public:
+        command_line_parser(void *buffer, size_t buffer_size);
+    };
 }}
 #endif

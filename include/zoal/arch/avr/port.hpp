@@ -67,12 +67,12 @@ namespace zoal { namespace arch { namespace avr {
 
         template<register_type Mask>
         ZOAL_INLINE_IO static void low() {
-            zoal::mem::apply_cas_list<low_cas<Mask>>();
+            zoal::mem::apply_cas_list<low_cas<Mask>>::apply();
         }
 
         template<register_type Mask>
         ZOAL_INLINE_IO static void high() {
-            zoal::mem::apply_cas_list<high_cas<Mask>>();
+            zoal::mem::apply_cas_list<high_cas<Mask>>::apply();
         }
 
         template<register_type Mask>
@@ -83,7 +83,7 @@ namespace zoal { namespace arch { namespace avr {
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
         ZOAL_INLINE_IO static void mode() {
-            zoal::mem::apply_cas_list<mode_cas<PinMode, Mask>>();
+            zoal::mem::apply_cas_list<mode_cas<PinMode, Mask>>::apply();
         }
     };
 }}}

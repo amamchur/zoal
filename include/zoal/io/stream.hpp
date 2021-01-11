@@ -47,12 +47,14 @@ namespace zoal { namespace io {
         }
     };
 
-    struct stop_escape_sequence {
+    struct modesoff_cr_lf {
         template<class T>
         static void write() {
             T::push_back_blocking('\033');
             T::push_back_blocking('[');
             T::push_back_blocking('m');
+            T::push_back_blocking('\r');
+            T::push_back_blocking('\n');
         }
     };
 

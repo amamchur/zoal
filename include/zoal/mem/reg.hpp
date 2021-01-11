@@ -6,13 +6,6 @@
 #include <stdint.h> /* NOLINT */
 
 namespace zoal { namespace mem {
-    template<class Register, uint32_t C, uint32_t S>
-    class reg_cas final {
-    public:
-        using cas = zoal::mem::cas<Register::address, Register::io, typename Register::type, Register::mask, C, S>;
-        reg_cas() = delete;
-    };
-
     template<uintptr_t Address, reg_io RegIO, class Type, Type Mask>
     class reg final {
     public:
@@ -22,8 +15,9 @@ namespace zoal { namespace mem {
         static constexpr auto mask = Mask;
 
         using self_type = reg<Address, RegIO, Type, Mask>;
+
         template<uint32_t C, uint32_t S>
-        using cas = typename zoal::mem::reg_cas<self_type, C, S>::cas;
+        using cas = typename zoal::mem::cas<Address, RegIO, Type, Mask, C, S>;
 
         ZOAL_INLINE_IO static volatile type &ref() {
             return *ZOAL_ADDRESS_CAST(Type, Address);

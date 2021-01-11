@@ -45,10 +45,12 @@ namespace zoal { namespace parser {
         const char *eof{nullptr};
     };
 
-    template<class Machine, size_t BufferSize>
+    template<class Machine>
     class ragel_scanner : public Machine {
     public:
-        ragel_scanner() noexcept {
+        ragel_scanner(void *buffer, size_t buffer_size)
+            : buffer_(reinterpret_cast<char *>(buffer))
+            , buffer_size_(buffer_size) {
             reset();
         }
 
@@ -58,13 +60,25 @@ namespace zoal { namespace parser {
             this->init_machine();
         }
 
+        void scan(const void *data, size_t size, const void *eof = nullptr) {
+            scan(data, reinterpret_cast<const char *>(data) + size, eof);
+        }
+
+        void scan(const void *start, const void *end, const void *eof = nullptr) {
+            auto dp = reinterpret_cast<const char *>(start);
+            auto be = reinterpret_cast<const char *>(end);
+            this->eof = reinterpret_cast<const char *>(eof);
+            this->run_machine(dp, be);
+            reset();
+        }
+
         void push(const void *data, size_t size, const void *eof = nullptr) {
             auto dp = reinterpret_cast<const char *>(data);
             auto de = reinterpret_cast<const char *>(eof);
             do {
                 this->eof = de ? this->buffer_ + (de - dp) : nullptr;
 
-                while (size > 0 && length_ < BufferSize) {
+                while (size > 0 && length_ < buffer_size_) {
                     this->buffer_[length_++] = *dp++;
                     size--;
                 }
@@ -94,7 +108,8 @@ namespace zoal { namespace parser {
 
     protected:
         size_t length_{0};
-        char buffer_[BufferSize]{0};
+        size_t buffer_size_{0};
+        char *buffer_{nullptr};
     };
 }}
 

@@ -57,7 +57,7 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             static void apply() {
                 T::disable();
 
-                zoal::mem::apply_cas_list<list>();
+                zoal::mem::apply_cas_list<list>::apply();
             }
         };
 

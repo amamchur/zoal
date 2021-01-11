@@ -30,7 +30,6 @@ namespace zoal { namespace misc {
         const char *run_machine(const char *p, const char *pe);
     };
 
-    template<size_t BufferSize>
-    class terminal_parser : public zoal::parser::ragel_scanner<terminal_machine, BufferSize> {};
+    class terminal_parser : public zoal::parser::ragel_scanner<terminal_machine> {};
 }}
 #endif
