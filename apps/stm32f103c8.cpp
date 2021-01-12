@@ -15,11 +15,6 @@ using usart_01 = mcu::usart_01;
 using usart_02 = mcu::usart_02;
 using usart_03 = mcu::usart_03;
 
-using usart_01_tx_buffer = usart_01::default_tx_buffer<128>;
-using usart_01_rx_buffer = usart_01::default_rx_buffer<128>;
-using logger = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
-using tools = zoal::utils::cmsis_os2::tool_set<mcu, logger>;
-using delay = zoal::utils::cmsis_os2::delay<mcu>;
 using api = zoal::gpio::api;
 using user_led = mcu::pc_13;
 
@@ -44,7 +39,7 @@ extern "C" void zoal_init() {
         >();
 
     api::optimize<api::enable<usart_01>>();
-    usart_01::enable_rx();
+//    usart_01::enable_rx();
 
     NVIC_EnableIRQ(USART1_IRQn);
 
@@ -55,15 +50,9 @@ extern "C" [[noreturn]] __unused void zoal_default_thread(void *) {
     zoal_init();
 
     for (;;) {
-        logger::info() << "Hello!!!";
         vTaskDelay(1000);
     }
 }
 
 extern "C" void USART1_IRQHandler() {
-    usart_01::tx_handler([](uint8_t &value) {
-        return  usart_01_tx_buffer::pop_front(value);
-    });
-
-    usart_01::rx_handler([](uint8_t value) { usart_01_rx_buffer::push_back(value);});
 }

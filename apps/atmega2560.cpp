@@ -20,19 +20,21 @@
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
+#include <zoal/arch/avr/utils/usart_transmitter.hpp>
 
 volatile uint32_t milliseconds = 0;
 
 using mcu = zoal::pcb::mcu;
 using timer = typename mcu::timer_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using irq_handler = typename counter::handler<mcu::frequency, 64, timer>;
+using counter_irq_handler = typename counter::handler<mcu::frequency, 64, timer>;
 using usart = mcu::usart_00;
-using tx_buffer = usart::default_tx_buffer<16>;
-using rx_buffer = usart::default_rx_buffer<16>;
+zoal::data::ring_buffer_ext<uint8_t, 16> rx_buffer;
+
+using usart_tx_transport = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;
 
 using adc = mcu::adc_00;
-using logger = zoal::utils::terminal_logger<tx_buffer, zoal::utils::log_level::info>;
+using logger = zoal::utils::terminal_logger<usart_tx_transport, zoal::utils::log_level::info>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
 using app1 = multi_function_shield<tools, zoal::pcb>;
@@ -83,13 +85,13 @@ int main() {
 }
 
 ISR(TIMER0_OVF_vect) {
-    irq_handler::increment();
+    counter_irq_handler::increment();
 }
 
 ISR(USART0_RX_vect) {
-    usart::rx_handler<rx_buffer>();
+    usart::rx_handler<>([](uint8_t value) { rx_buffer.push_back(value); });
 }
 
 ISR(USART0_UDRE_vect) {
-    usart::tx_handler<tx_buffer>();
+    usart::tx_handler([](uint8_t &value) { return usart_tx_transport::tx_buffer.pop_front(value); });
 }

@@ -42,19 +42,19 @@ namespace zoal { namespace io {
     struct new_line_cr_lf {
         template<class T>
         static void write() {
-            T::push_back_blocking('\r');
-            T::push_back_blocking('\n');
+            T::send_byte('\r');
+            T::send_byte('\n');
         }
     };
 
     struct modesoff_cr_lf {
         template<class T>
         static void write() {
-            T::push_back_blocking('\033');
-            T::push_back_blocking('[');
-            T::push_back_blocking('m');
-            T::push_back_blocking('\r');
-            T::push_back_blocking('\n');
+            T::send_byte('\033');
+            T::send_byte('[');
+            T::send_byte('m');
+            T::send_byte('\r');
+            T::send_byte('\n');
         }
     };
 
@@ -65,9 +65,7 @@ namespace zoal { namespace io {
 
         template<class T>
         void write() {
-            for (size_t i = 0; i < count; i++) {
-                T::push_back_blocking(buffer[i]);
-            }
+            T::send_data(buffer, count);
         }
 
         const uint8_t *buffer;

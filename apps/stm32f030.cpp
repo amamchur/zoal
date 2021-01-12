@@ -11,33 +11,27 @@ using counter = zoal::utils::ms_counter<uint32_t, &uwTick>;
 using mcu = zoal::mcu::stm32f030f4px<8000000, 6>; // 48 MHz
 
 using usart_01 = mcu::usart_01;
-using usart_01_tx_buffer = usart_01::default_tx_buffer<64>;
-//using usart_01_tx_buffer = zoal::periph::tx_ring_buffer<usart_01, 64>;
-using logger_01 = zoal::utils::terminal_logger<usart_01_tx_buffer, zoal::utils::log_level::trace>;
-
-using tools = zoal::utils::tool_set<mcu, counter, logger_01>;
+using tools = zoal::utils::tool_set<mcu, counter, void>;
 using delay = tools::delay;
 
 extern "C" [[noreturn]] void zoal_main() {
     using namespace zoal::gpio;
 
     SysTick_Config(SystemCoreClock / 1000);
+
     usart_01::power_on();
     mcu::port_a::power_on();
 
     mcu::mux::usart<usart_01, mcu::pa_03, mcu::pa_02>::on();
     mcu::cfg::usart<usart_01, 115200>::apply();
-    mcu::enable<usart_01>::on();
+//    mcu::enable<usart_01>::on();
 
-    NVIC_EnableIRQ(USART1_IRQn);
+    //NVIC_EnableIRQ(USART1_IRQn);
     zoal::utils::interrupts::on();
 
     mcu::pa_04::mode<pin_mode::output>();
 
-    logger_01::info() << "Start";
     while (true) {
-        logger_01::info() << "Loop";
-
         mcu::pa_04::low();
         ::delay::ms(500);
 
@@ -47,5 +41,4 @@ extern "C" [[noreturn]] void zoal_main() {
 }
 
 extern "C" void USART1_IRQHandler() {
-    usart_01::tx_handler<usart_01_tx_buffer>();
 }

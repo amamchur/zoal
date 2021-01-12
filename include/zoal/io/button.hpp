@@ -7,7 +7,8 @@
 
 namespace zoal { namespace io {
 
-    template<bool Active_Low, uint8_t DebounceDelay = 5, uint16_t PressDelay = 250, uint16_t DecPressDelay = 25, uint16_t MinPressDelay = 25>
+    template<bool Active_Low, uint8_t DebounceDelay = 5, uint16_t PressDelay = 100
+        , uint16_t DecPressDelay = 25, uint16_t MinPressDelay = 25>
     class button_config {
     public:
         static constexpr bool active_low = Active_Low;

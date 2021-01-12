@@ -18,35 +18,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     public:
         using self_type = usart<Address>;
 
-        class tx_fifo_control {
-        public:
-            using scope_lock = zoal::utils::interrupts_off;
-
-            static inline void item_added() {
-                self_type::enable_tx();
-            }
-
-            static inline void item_removed() {}
-        };
-
-        class rx_fifo_control {
-        public:
-            using scope_lock = zoal::utils::interrupts_off;
-
-            static inline void item_added() {}
-
-            static inline void item_removed() {}
-        };
-
-        template<size_t Size>
-        using default_tx_buffer = zoal::data::static_blocking_fifo_buffer<uint8_t, Size, tx_fifo_control>;
-
-        template<size_t Size>
-        using default_rx_buffer = zoal::data::static_blocking_fifo_buffer<uint8_t, Size, rx_fifo_control>;
-
-        using null_tx_buffer = zoal::data::null_fifo_buffer<uint8_t>;
-        using null_rx_buffer = zoal::data::null_fifo_buffer<uint8_t>;
-
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr auto address = Address;
 
@@ -83,21 +54,19 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             UCSRxB::ref() &= ~(1 << UDRIEx);
         }
 
-        static void flush() {}
-
-        template<class Buffer>
-        static void rx_handler() {
+        template<class TxCallback>
+        static void rx_handler(TxCallback callback) {
             if (UCSRxA::ref() & (1 << UPEx)) {
                 return;
             }
 
-            Buffer::push_back(UDRx::ref());
+            callback(UDRx::ref());
         }
 
-        template<class Buffer>
-        static void tx_handler() {
-            typename Buffer::value_type value;
-            if (Buffer::pop_front(value)) {
+        template<class TxCallback>
+        static void tx_handler(TxCallback callback) {
+            uint8_t value;
+            if (callback(value)) {
                 UDRx::ref() = value;
                 UCSRxA::ref() |= (1 << TXCx);
             } else {

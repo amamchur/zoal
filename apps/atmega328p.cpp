@@ -3,13 +3,12 @@
 
 #include <avr/eeprom.h>
 #include <zoal/arch/avr/stream.hpp>
+#include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_uno.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 #include <zoal/utils/vt100.hpp>
-
-#include <zoal/io/analog_keypad.hpp>
 
 volatile uint32_t milliseconds = 0;
 
@@ -19,13 +18,15 @@ using timer = mcu::timer_00;
 using usart = mcu::usart_00;
 using spi = mcu::spi_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using irq_handler = counter::handler<mcu::frequency, 64, timer>;
+using counter_irq_handler = counter::handler<mcu::frequency, 64, timer>;
 
-using tx_buffer = usart::default_tx_buffer<16>;
-using rx_buffer = usart::default_rx_buffer<16>;
-//using rx_buffer = usart::null_tx_buffer;
+zoal::data::ring_buffer_ext<uint8_t, 16> rx_buffer;
 
-using logger = zoal::utils::terminal_logger<tx_buffer, zoal::utils::log_level::trace>;
+using usart_tx_transport = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;
+using stream_type = zoal::io::output_stream<usart_tx_transport>;
+stream_type stream;
+
+using logger = zoal::utils::terminal_logger<usart_tx_transport, zoal::utils::log_level::trace>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 using delay = tools::delay;
 using api = zoal::gpio::api;
@@ -91,10 +92,8 @@ void led_off(void *) {
 #pragma ide diagnostic ignored "EndlessLoop"
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
-void vt100_callback(const zoal::misc::terminal_input *t, const char *s, const char *) {
-    for (auto ch = s; *ch; ch++) {
-        tx_buffer::push_back_blocking(*ch);
-    }
+void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
+    usart_tx_transport::send_data(s, e - s);
 }
 
 bool cmp_str_token(zoal::io::progmem_str_iter s1, const char *ss, const char *se) {
@@ -118,7 +117,6 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
     auto te = parser->token_end();
 
     if (cmp_str_token(zoal::io::progmem_str_iter(help_cmd), ts, te)) {
-        auto stream = logger::stream();
         stream << zoal::io::progmem_str(help_msg) << zoal::io::progmem_str(cmd_lookup);
         parser->callback(&command_line_parser::empty_callback);
         return;
@@ -143,11 +141,20 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
     logger::warn() << zoal::io::progmem_str(cmd_not_found_msg);
 }
 
-void input_callback(const zoal::misc::terminal_input *t, const char *s, const char *e) {
+void input_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
     command_line_parser cmd_parser(nullptr, 0);
     cmd_parser.callback(cmd_select_callback);
     cmd_parser.scan(s, e, e);
+    terminal.sync();
 }
+
+const char zoal_ascii_logo[] PROGMEM = "  __________          _\r\n"
+                                       " |___  / __ \\   /\\   | |\r\n"
+                                       "    / / |  | | /  \\  | |\r\n"
+                                       "   / /| |  | |/ /\\ \\ | |\r\n"
+                                       "  / /_| |__| / ____ \\| |____\r\n"
+                                       " /_____\\____/_/    \\_\\______|\r\n"
+                                       "\r\n";
 
 int main() {
     initialize_hardware();
@@ -156,15 +163,24 @@ int main() {
     terminal.input_callback(&input_callback);
     terminal.greeting(terminal_greeting);
     terminal.clear();
+
+    stream << zoal::io::progmem_str(zoal_ascii_logo);
     terminal.sync();
 
     while (true) {
         uint8_t rx_byte = 0;
-        auto result = rx_buffer::pop_front(rx_byte);
+        bool result;
+        {
+            zoal::utils::interrupts_off scope_off;
+            result = rx_buffer.pop_front(rx_byte);
+        }
+
         if (result) {
-            //            logger::info() << (int)rx_byte;
             terminal.push(&rx_byte, 1);
         }
+        //        blink_pin::toggle();
+        //        tools::delay::ms(500);
+        //        usart_tx_transport::send_byte('!');
         scheduler.handle();
     }
 }
@@ -172,13 +188,13 @@ int main() {
 #pragma clang diagnostic pop
 
 ISR(TIMER0_OVF_vect) {
-    irq_handler::increment();
+    counter_irq_handler::increment();
 }
 
 ISR(USART_RX_vect) {
-    usart::rx_handler<rx_buffer>();
+    usart::rx_handler<>([](uint8_t value) { rx_buffer.push_back(value); });
 }
 
 ISR(USART_UDRE_vect) {
-    usart::tx_handler<tx_buffer>();
+    usart::tx_handler([](uint8_t &value) { return usart_tx_transport::tx_buffer.pop_front(value); });
 }

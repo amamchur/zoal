@@ -269,7 +269,13 @@ add_mcu_executable(stm32f103_blue_pill stm32
 add_mcu_executable(stm32f303_discovery stm32 apps/stm32f303vctx.cpp)
 add_mcu_executable(stm32f303_nucleo stm32 apps/stm32f303retx.cpp)
 add_mcu_executable(stm32f103_freertos stm32
-        apps/stm32f103c8_freertos.cpp
+        apps/stm32f103c8_freertos/main.cpp
+        apps/stm32f103c8_freertos/constants.cpp
+        apps/stm32f103c8_freertos/hardware.cpp
+        apps/stm32f103c8_freertos/terminal.cpp
+        apps/stm32f103c8_freertos/command_queue.cpp
+        apps/stm32f103c8_freertos/input_processor.cpp
+        apps/stm32f103c8_freertos/command_processor.cpp
         misc/terminal_input.cpp
         ${TERMINAL_STATE_MACHINE_SRC}
         ${CMD_STATE_MACHINE_SRC}

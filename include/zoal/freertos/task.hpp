@@ -11,27 +11,23 @@ namespace zoal { namespace freertos {
     template<class Dummy = void>
     class freertos_task {
     public:
-        void suspend() {
-            if (handle_) {
-                vTaskSuspend(handle_);
-            }
+        inline void suspend() {
+            vTaskSuspend(handle_);
         }
 
-        void resume() {
-            if (handle_) {
-                vTaskResume(handle_);
-            }
+        inline void resume() {
+            vTaskResume(handle_);
         }
 
-        void priority(UBaseType_t priority) {
+        inline void priority(UBaseType_t priority) {
             vTaskPrioritySet(handle_, priority);
         }
 
-        UBaseType_t priority() const {
+        inline UBaseType_t priority() const {
             return uxTaskPriorityGet(handle_);
         }
 
-        explicit operator TaskHandle_t() const {
+        inline explicit operator TaskHandle_t() const {
             return handle_;
         }
 

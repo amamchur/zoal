@@ -35,37 +35,6 @@ namespace zoal { namespace arch { namespace stm32x {
 
         using self_type = usart<Address, Mixin...>;
 
-        class tx_fifo_control {
-        public:
-            using scope_lock = zoal::utils::interrupts_off;
-
-            static inline void item_added() {
-                self_type::enable_tx();
-            }
-
-            static inline void item_removed() {}
-        };
-
-        class rx_fifo_control {
-        public:
-            using scope_lock = zoal::utils::interrupts_off;
-
-            static inline void item_added() {
-                self_type::enable_rx();
-            }
-
-            static inline void item_removed() {}
-        };
-
-        template<size_t Size>
-        using default_tx_buffer = zoal::data::static_blocking_fifo_buffer<uint8_t, Size, tx_fifo_control>;
-
-        template<size_t Size>
-        using default_rx_buffer = zoal::data::static_blocking_fifo_buffer<uint8_t, Size, rx_fifo_control>;
-
-        using null_tx_buffer = zoal::data::null_fifo_buffer<uint8_t>;
-        using null_rx_buffer = zoal::data::null_fifo_buffer<uint8_t>;
-
         static void enable() {
             USARTx_CR1::ref() |= USARTx_CR1_bit_UE;
         }

@@ -92,7 +92,7 @@ namespace zoal { namespace io {
     class keypad_config {
     public:
         static constexpr uint16_t debounce_delay = 5;
-        static constexpr uint16_t press_delay = 250;
+        static constexpr uint16_t press_delay = 100;
         using machine_type = button_state_machine;
     };
 

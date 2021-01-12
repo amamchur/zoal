@@ -15,7 +15,7 @@ namespace zoal { namespace io {
             auto p = buffer;
             auto v = pgm_read_byte(p++);
             while (v != 0) {
-                T::push_back_blocking(static_cast<uint8_t>(v));
+                T::send_byte(static_cast<uint8_t>(v));
                 v = pgm_read_byte(p++);
             }
         }

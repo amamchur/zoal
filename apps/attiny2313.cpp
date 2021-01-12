@@ -26,7 +26,7 @@ using mcu = zoal::mcu::attiny2313a<F_CPU>;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
 using logger = zoal::utils::plain_logger<void>;
-using irq_handler = counter::handler<mcu::frequency, 64, timer>;
+using counter_irq_handler = counter::handler<mcu::frequency, 64, timer>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
 
 int main() {
@@ -50,5 +50,5 @@ int main() {
 }
 
 ISR(TIMER0_OVF_vect) {
-    irq_handler::increment();
+    counter_irq_handler::increment();
 }

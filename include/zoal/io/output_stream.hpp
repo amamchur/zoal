@@ -45,23 +45,25 @@ namespace zoal { namespace io {
         }
 
         output_stream &operator<<(const char *str) {
-            for (auto ptr = str; *ptr; ptr++) {
-                Transport::push_back_blocking(static_cast<uint8_t>(*ptr));
-            }
+            auto end = str;
+            while (*end) end++;
+            Transport::send_data(str, end - str);
             return *this;
         }
 
         output_stream &operator<<(const void *const ptr) {
-            Transport::push_back_blocking('0');
-            Transport::push_back_blocking('x');
+            constexpr auto size = sizeof(const void *const) * 2 + 2;
+            char buffer[size];
+            buffer[0] = '0';
+            buffer[1] = 'x';
 
             auto value = reinterpret_cast<uintptr_t>(ptr);
-
-            for (int i = sizeof(ptr) * 8 - 4; i >= 0; i -= 4) {
+            for (int i = sizeof(ptr) * 8 - 4, k = 2; i >= 0; i -= 4, k++) {
                 auto h = (value & (0xF << i)) >> i;
-                auto ascii = h < 10 ? ('0' + h) : ('A' + h - 10);
-                Transport::push_back_blocking(ascii);
+                buffer[k] = h < 10 ? ('0' + h) : ('A' + h - 10);
             }
+
+            Transport::send_data(buffer, sizeof(buffer));
 
             return *this;
         }
@@ -87,7 +89,7 @@ namespace zoal { namespace io {
             bool negative = value < 0;
             if (negative) {
                 value = -value;
-                Transport::push_back_blocking('-');
+                Transport::send_byte('-');
             }
 
             uint8_t buffer[32];
@@ -146,12 +148,6 @@ namespace zoal { namespace io {
         }
 
         template<uint8_t Value>
-        output_stream &operator<<(const stream_value<Value> &) {
-            Transport::push_back_blocking(Value);
-            return *this;
-        }
-
-        template<uint8_t Value>
         output_stream &operator<<(const radix_value<Value> &) {
             this->radix = Value;
             return *this;
@@ -163,11 +159,16 @@ namespace zoal { namespace io {
         }
 
         template<class F>
-        output_stream &operator<<(::zoal::io::output_stream_functor<F> &fn) {
+        inline output_stream &operator<<(::zoal::io::output_stream_functor<F> &fn) {
             static_cast<F &>(fn).template write<Transport>();
             return *this;
         }
 
+        template<class F>
+        inline output_stream &operator<<(::zoal::io::output_stream_functor<F> &&fn) {
+            static_cast<F &>(fn).template write<Transport>();
+            return *this;
+        }
     private:
         uint8_t *formatNumber(uint8_t *ptr, uint32_t value) {
             do {

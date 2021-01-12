@@ -27,6 +27,7 @@
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
+typedef StaticTask_t osStaticThreadDef_t;
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -43,10 +44,15 @@
 /* Private variables ---------------------------------------------------------*/
 /* Definitions for main */
 osThreadId_t mainHandle;
+uint32_t mainBuffer[ 256 ];
+osStaticThreadDef_t mainControlBlock;
 const osThreadAttr_t main_attributes = {
   .name = "main",
+  .stack_mem = &mainBuffer[0],
+  .stack_size = sizeof(mainBuffer),
+  .cb_mem = &mainControlBlock,
+  .cb_size = sizeof(mainControlBlock),
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 256 * 4
 };
 /* USER CODE BEGIN PV */
 
