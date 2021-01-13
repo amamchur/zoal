@@ -49,10 +49,12 @@ using check = compile_check<app0, app1, app2, app3, app4, app5, app6>;
 app6 app;
 
 void initialize_hardware() {
+    using usart_cfg = zoal::periph::usart_115200<F_CPU>;
+
     mcu::power<usart, timer, adc>::on();
 
     mcu::mux::usart<usart, mcu::pe_00, mcu::pe_01, mcu::pe_02>::connect();
-    mcu::cfg::usart<usart, 115200>::apply();
+    mcu::cfg::usart<usart, usart_cfg>::apply();
 
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
     mcu::irq::timer<timer>::enable_overflow_interrupt();

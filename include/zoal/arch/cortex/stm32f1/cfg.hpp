@@ -28,42 +28,31 @@ namespace zoal { namespace arch { namespace stm32f1 {
     public:
         using mcu = Microcontroller;
         using api = typename mcu::api;
-        static constexpr auto mcu_frequency = mcu::frequency;
 
-        template<class U,
-                 uint32_t BaudRate,
-                 uint8_t Bits = 8,
-                 zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
-                 zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1,
-                 uint32_t UsartFreq = mcu_frequency / zoal::metadata::stm32_bus_prescaler<U::bus>::value>
+        template<class U, class Cfg>
         class usart {
         public:
-            using dbc1 = zoal::metadata::stm32_data_bits_to_cr1<Bits>;
-            using ptc1 = zoal::metadata::stm32_parity_to_cr1<Parity>;
-            using sbc2 = zoal::metadata::stm32_stop_bits_to_cr2<StopBits>;
+            using dbc1 = zoal::metadata::stm32_data_bits_to_cr1<Cfg::word_length_bits>;
+            using ptc1 = zoal::metadata::stm32_parity_to_cr1<Cfg::parity>;
+            using sbc2 = zoal::metadata::stm32_stop_bits_to_cr2<Cfg::stop_bits>;
 
-            static constexpr auto enable_rx_tx = 0x0C;
+            static constexpr auto enable_rx_tx = U::USARTx_CR1_TE | U::USARTx_CR1_RE;
+            static constexpr auto cr1_clear = dbc1::clear_mask | ptc1::clear_mask;
+            static constexpr auto cr1_set = enable_rx_tx | dbc1::set_mask | ptc1::set_mask;
+            static constexpr auto cr2_clear = sbc2::clear_mask;
+            static constexpr auto cr2_set = sbc2::set_mask;
 
-            static constexpr auto c1_clear = dbc1::clear_mask | ptc1::clear_mask;
-            static constexpr auto c1_set = enable_rx_tx | dbc1::set_mask | ptc1::set_mask;
-            static constexpr auto c2_clear = sbc2::clear_mask;
-            static constexpr auto c2_set = sbc2::set_mask;
-
-            static constexpr double divider = UsartFreq / 16.0 / BaudRate;
+            static constexpr double divider = Cfg::clock_frequency / 16.0 / Cfg::baud_rate;
             static constexpr auto int_part = static_cast<uint16_t>(divider);
             static constexpr auto mantissa = static_cast<uint16_t>((divider - int_part) * 16);
-            static constexpr uint16_t bbr = (int_part << 4) + mantissa;
+            static constexpr uint16_t bbr_set = (int_part << 4) + mantissa;
 
-            using USARTx_CR1 = typename U::USARTx_CR1::template cas<c1_clear, c1_set>;
-            using USARTx_CR2 = typename U::USARTx_CR2::template cas<c2_clear, c2_set>;
+            using USARTx_CR1 = typename U::USARTx_CR1::template cas<cr1_clear, cr1_set>;
+            using USARTx_CR2 = typename U::USARTx_CR2::template cas<cr2_clear, cr2_set>;
             using USARTx_CR3 = typename U::USARTx_CR3::template cas<0x300, 0>;
-            using USARTx_BRR = typename U::USARTx_BRR::template cas<0, bbr>;
+            using USARTx_BRR = typename U::USARTx_BRR::template cas<0, bbr_set>;
 
-            using cfg = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR3, USARTx_BRR>;
-
-            static void apply() {
-                zoal::mem::apply_cas_list<cfg>();
-            }
+            using apply = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR3, USARTx_BRR>;
         };
     };
 }}}

@@ -13,15 +13,15 @@
 using row_selector = zoal::io::keypad_row_selector<mcu::pa_00, mcu::pa_01, mcu::pa_02, mcu::pa_03>;
 using column_reader = zoal::io::keypad_column_reader<mcu::pa_04, mcu::pa_05, mcu::pa_06>;
 using keypad_type = zoal::io::matrix_keypad<TickType_t, row_selector, column_reader>;
-keypad_type keypad;
 
-zoal::io::button<TickType_t, mcu::pb_12> user_button_1;
-zoal::io::button<TickType_t, mcu::pb_13> user_button_2;
+static keypad_type keypad;
+static zoal::io::button<TickType_t, mcu::pb_12> user_button_1;
+static zoal::io::button<TickType_t, mcu::pb_13> user_button_2;
 
 [[noreturn]] void zoal_input_processor(void *) {
     auto button_callback = [](zoal::io::button_event e, app_cmd cmd) {
         if (e == zoal::io::button_event::press) {
-            command_queue.push(cmd);
+            command_queue.push(command_msg(cmd));
         }
     };
 

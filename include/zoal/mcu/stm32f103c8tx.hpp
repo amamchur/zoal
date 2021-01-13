@@ -19,14 +19,9 @@
 #include <zoal/gpio/api.hpp>
 
 namespace zoal { namespace mcu {
-    template<uint32_t HighSpeedExternalOscillator = 8000000, uint8_t PhaseLockedLoop = 9>
     class stm32f103c8tx {
     public:
-        static constexpr auto hse = HighSpeedExternalOscillator;
-        static constexpr auto pll = PhaseLockedLoop;
-        static constexpr auto frequency = hse * pll;
-
-        using self_type = stm32f103c8tx<hse, pll>;
+        using self_type = stm32f103c8tx;
 
         using rcc = ::zoal::arch::stm32x::rcc<>;
 
@@ -48,6 +43,9 @@ namespace zoal { namespace mcu {
         using port_b = port<0x40010C00, clock_apb2<0x00000008>, 0xFFFF>;
         using port_c = port<0x40011000, clock_apb2<0x00000010>, 0xE000>;
         using port_d = port<0x40011400, clock_apb2<0x00000020>, 0x0003>;
+
+        using adc_01 = ::zoal::arch::stm32f1::adc<0x40012400, clock_apb2<0x00001000>>;
+        using adc_02 = ::zoal::arch::stm32f1::adc<0x40012800, clock_apb2<0x00002000>>;
 
         using usart_01 = typename ::zoal::arch::stm32f1::usart<0x40013800, clock_apb2<0x00004000>>;
 

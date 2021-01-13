@@ -68,9 +68,6 @@ namespace zoal { namespace misc {
             break;
         }
     }
-    void terminal_input::handle_v100(terminal_input::handle_v100_fn fn) {
-        handle_v100_fn_ = fn;
-    }
 
     void terminal_input::insert_char(char ch) {
         auto l = buffer_ + size_ - 1;
@@ -130,14 +127,6 @@ namespace zoal { namespace misc {
         send_cstr("\033c");
     }
 
-    void terminal_input::vt100_feedback(callback_fn fn) {
-        this->vt100_callback_ = fn;
-    }
-
-    void terminal_input::input_callback(callback_fn fn) {
-        this->input_callback_ = fn;
-    }
-
     void terminal_input::sync() const {
         send_cstr("\r\033[2K");
 
@@ -161,10 +150,6 @@ namespace zoal { namespace misc {
             p--;
         }
         send_cstr(move_cur);
-    }
-
-    void terminal_input::greeting(const char *g) {
-        greeting_ = g;
     }
 
     void terminal_input::move_to_word_end() {

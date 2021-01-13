@@ -107,9 +107,9 @@ namespace zoal { namespace parser {
         }
 
     protected:
-        size_t length_{0};
-        size_t buffer_size_{0};
         char *buffer_{nullptr};
+        size_t buffer_size_{0};
+        size_t length_{0};
     };
 }}
 

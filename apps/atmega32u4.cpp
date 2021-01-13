@@ -29,10 +29,12 @@ using logger = zoal::utils::plain_logger<usart_tx_transport, zoal::utils::log_le
 scheduler_type scheduler;
 
 void initialize_hardware() {
+    using usart_cfg = zoal::periph::usart_115200<F_CPU>;
+
     mcu::power<usart, timer, i2c, adc>::on();
 
     mcu::mux::usart<usart, zoal::pcb::ard_d00, zoal::pcb::ard_d01, mcu::pd_05>::connect();
-    mcu::cfg::usart<usart, 115200>::apply();
+    mcu::cfg::usart<usart, usart_cfg>::apply();
 
     mcu::mux::i2c<i2c, mcu::pd_01, mcu::pd_00>::connect();
     mcu::cfg::i2c<i2c>::apply();

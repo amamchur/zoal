@@ -94,7 +94,9 @@ const familyMap = {
         periphs: {
             usart1: {bus: 'apb2', address: 0x40013800, busClockMask: 0x00004000},
             usart2: {bus: 'apb1', address: 0x40004400, busClockMask: 0x00020000},
-            usart3: {bus: 'apb1', address: 0x40004800, busClockMask: 0x00040000}
+            usart3: {bus: 'apb1', address: 0x40004800, busClockMask: 0x00040000},
+            adc1: {bus: 'apb2', address: 0x40012400, busClockMask: 0x00001000},
+            adc2: {bus: 'apb2', address: 0x40012800, busClockMask: 0x00002000},
         }
     },
     'stm32f3': {
@@ -285,7 +287,7 @@ class STM32 extends BaseGenerator {
                 let address = STM32.toHex(data.address, 8);
                 let n = ("00" + no.toString(10)).substr(-2);
                 let m = STM32.toHex(data.busClockMask, 8);
-                result.push(`using ${name}_${n} = ::zoal::arch::${ns}::adc<${address}, ${no}, clock_${data.bus}<${m}>>;`);
+                result.push(`using ${name}_${n} = ::zoal::arch::${ns}::adc<${address}, clock_${data.bus}<${m}>>;`);
             },
 
             tim: function (name, no, data) {
@@ -316,6 +318,8 @@ class STM32 extends BaseGenerator {
             let fn = builders[nn[1]];
             if (fn) {
                 fn(nn[1], nn[2] - 0, pd);
+            } else {
+                console.log(nn[1]);
             }
         }
 
@@ -565,14 +569,9 @@ class STM32 extends BaseGenerator {
             data.includes.join('\n'),
             ``,
             `namespace zoal { namespace mcu {`,
-            `    template<uint32_t HighSpeedExternalOscillator = 8000000, uint8_t PhaseLockedLoop = 9>`,
             `    class ${nameLower} {`,
             `    public:`,
-            `        static constexpr auto hse = HighSpeedExternalOscillator;`,
-            `        static constexpr auto pll = PhaseLockedLoop;`,
-            `        static constexpr auto frequency = hse * pll;`,
-            ``,
-            `        using self_type = ${nameLower}<hse, pll>;`,
+            `        using self_type = ${nameLower};`,
             ``,
             this.buildClocks().join('\n'),
             ``,
@@ -585,7 +584,7 @@ class STM32 extends BaseGenerator {
             this.buildPinList().join('\n'),
             ``,
             this.buildPortChain().join('\n'),
-            `    using api = ::zoal::gpio::api<ports>;`,
+            `    using api = ::zoal::gpio::api;`,
             `    using mux = ::zoal::arch::${ns}::mux<self_type>;`,
             `    using cfg = ::zoal::arch::${ns}::cfg<self_type>;`,
             ``,

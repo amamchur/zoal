@@ -1,12 +1,8 @@
 #ifndef ZOAL_ARCH_STM32F1_USART_HPP
 #define ZOAL_ARCH_STM32F1_USART_HPP
 
-#include "../../../data/ring_buffer_ext.hpp"
 #include "../../../gpio/pin_mode.hpp"
-#include "../../../io/stream_functor.hpp"
 #include "../../../periph/usart.hpp"
-#include "../../../utils/interrupts.hpp"
-#include "../../../utils/nop.hpp"
 
 namespace zoal { namespace arch { namespace stm32f1 {
     template<uintptr_t Address, class... Mixin>
@@ -23,6 +19,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using USARTx_CR3 = zoal::mem::reg<Address + 0x14, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using USARTx_GTPR = zoal::mem::reg<Address + 0x18, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
 
+        static constexpr uint32_t USARTx_CR1_TE = 1 << 3; // Bit 3 TE: Transmitter enable
+        static constexpr uint32_t USARTx_CR1_RE = 1 << 2; // Bit 2 RE: Receiver enable
         static constexpr uint32_t USARTx_SR_bit_RXNE = 1 << 5; // Bit 5 RXNE: Read data register not empty
         static constexpr uint32_t USARTx_SR_bit_TXE = 1 << 7; // Bit 7 TXE: Transmit data register empty
         static constexpr uint32_t USARTx_CR1_bit_UE = 1 << 13; // Bit 13 UE: USART enable

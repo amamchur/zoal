@@ -1,94 +1,112 @@
-#include "../misc/terminal_input.hpp"
+#include "../misc/type_detector.hpp"
 
 #include <iostream>
-#include <zoal/algorithm/kmp.hpp>
-#include <zoal/mcu/stm32f103c8tx.hpp>
-#include <zoal/utils/scheduler.hpp>
+#include <string>
+#include <zoal/arch/bus.hpp>
 
 using namespace std;
 
-using mcu = zoal::mcu::stm32f103c8tx<>;
-using usart_01 = mcu::usart_01;
-using usart_02 = mcu::usart_02;
-using usart_03 = mcu::usart_03;
-using usart = usart_01;
+void callback(zoal::misc::type_detector_machine *pm, zoal::misc::value_type t) {
+    std::cout << std::string(pm->token_start(), pm->token_end()) << ": " << (int)t << std::endl;
+}
 
-using usart_tx_buffer = usart::default_tx_buffer<128>;
-using usart_rx_buffer = usart::default_rx_buffer<128>;
-using api = zoal::gpio::api;
+enum class clock_source { hsi, hse, lsi, lse, pll_clk };
 
-struct cas_print_functor {
-    template<class A>
-    void operator()() {
-        std::cout << "CAS: " << (void *)A::address << " | " << (void *)A::clear << ", " << (void *)A::set << std::endl;
-        //        std::cout << counter++ << " name: " << type_name<A>::name << std::endl;
-    }
+template<class C, clock_source src>
+struct pll_freq_calc {};
 
-    int counter{0};
+template<class C>
+struct pll_freq_calc<C, clock_source::hse> {
+    static constexpr uint32_t value = C::hse_freq / C::hse_pll_prescaler * C::pll_mul;
 };
 
-template<class N>
-class print_name {
+template<class C>
+struct pll_freq_calc<C, clock_source::hsi> {
+    static constexpr uint32_t value = C::hsi_freq / C::hsi_pll_prescaler * C::pll_mul;
+};
+
+template<clock_source src, uint32_t hsi_freq, uint32_t hse_freq, uint32_t pll_freq>
+struct sys_clock_mux {};
+
+template<uint32_t hsi_freq, uint32_t hse_freq, uint32_t pll_freq>
+struct sys_clock_mux<clock_source::hsi, hsi_freq, hse_freq, pll_freq> {
+    static constexpr uint32_t value = hsi_freq;
+};
+
+template<uint32_t hsi_freq, uint32_t hse_freq, uint32_t pll_freq>
+struct sys_clock_mux<clock_source::hse, hsi_freq, hse_freq, pll_freq> {
+    static constexpr uint32_t value = hse_freq;
+};
+
+template<uint32_t hsi_freq, uint32_t hse_freq, uint32_t pll_freq>
+struct sys_clock_mux<clock_source::pll_clk, hsi_freq, hse_freq, pll_freq> {
+    static constexpr uint32_t value = pll_freq;
+};
+
+template<class C>
+struct freq_calc {
+    static constexpr uint32_t pll_freq = pll_freq_calc<C, C::pll_mux_src>::value;
+    static constexpr uint32_t hsi_freq = C::hsi_freq;
+    static constexpr uint32_t hse_freq = C::hsi_freq;
+    static constexpr uint32_t lsi_freq = C::hsi_freq;
+    static constexpr uint32_t lse_freq = C::lse_freq;
+    static constexpr uint32_t sys_freq = sys_clock_mux<C::sys_clock_src, hsi_freq, hse_freq, pll_freq>::value;
+    static constexpr uint32_t ahb_freq = sys_freq / C::ahb_prescaler;
+    static constexpr uint32_t apb1_freq = sys_freq / C::apb1_prescaler;
+    static constexpr uint32_t apb2_freq = sys_freq / C::apb2_prescaler;
+};
+
+template<class Calc, zoal::arch::bus Type>
+struct bus_freq {};
+
+template<class Calc>
+struct bus_freq<Calc, zoal::arch::bus::cortex_ahb> {
+    static constexpr uint32_t value = Calc::ahb_freq;
+};
+
+template<class Calc>
+struct bus_freq<Calc, zoal::arch::bus::cortex_apb1> {
+    static constexpr uint32_t value = Calc::apb1_freq;
+};
+
+template<class Calc>
+struct bus_freq<Calc, zoal::arch::bus::cortex_apb2> {
+    static constexpr uint32_t value = Calc::apb2_freq;
+};
+
+class clock_config {
 public:
-    static void print() {
-        std::cout << "noname" << std::endl;
-    }
+    // High speed internal clock signal
+    static constexpr uint32_t hsi_freq = 8000000;
+
+    // High speed external clock signal
+    static constexpr uint32_t hse_freq = 8000000;
+
+    // Low speed internal clock signal
+    static constexpr uint32_t lsi_freq = 40000;
+
+    // Low speed external clock signal
+    static constexpr uint32_t lse_freq = 32768;
+
+    static constexpr uint32_t hsi_pll_prescaler = 2;
+    static constexpr uint32_t hse_pll_prescaler = 1;
+    static constexpr uint32_t ahb_prescaler = 1;
+    static constexpr uint32_t apb1_prescaler = 2;
+    static constexpr uint32_t apb2_prescaler = 1;
+
+    static constexpr clock_source pll_mux_src = clock_source::hse;
+    static constexpr uint32_t pll_mul = 9;
+    static constexpr clock_source sys_clock_src = clock_source::pll_clk;
 };
 
-template<>
-class print_name<int> {
-public:
-    static void print() {
-        std::cout << "int" << std::endl;
-    }
-};
-
-template<>
-class print_name<void> {
-public:
-    static void print() {
-        std::cout << "void" << std::endl;
-    }
-};
-
-template<>
-class print_name<float> {
-public:
-    static void print() {
-        std::cout << "float" << std::endl;
-    }
-};
-
-template<int No, class T, class... Rest>
-class test {
-public:
-    using next = test<No + 1, Rest...>;
-
-    static inline void print_at_index(int index) {
-        if (index == No) {
-            print_name<T>::print();
-        } else {
-            next::print_at_index(index);
-        }
-    }
-};
-
-template<int No, class T>
-class test<No, T> {
-public:
-    static inline void print_at_index(int index) {
-        if (index == No) {
-            print_name<T>::print();
-        }
-    }
-};
+using calc = freq_calc<clock_config>;
 
 int main() {
-    using namespace std;
-
-    for (int i = 0; i < 100; ++i) {
-        test<0, int, void, float>::print_at_index(i);
-    }
+    std::cout << "PLL Clock: " << calc::pll_freq << std::endl;
+    std::cout << "Sys Clock: " << calc::sys_freq << std::endl;
+    std::cout << "AHB Bus: " << bus_freq<calc, zoal::arch::bus::cortex_ahb>::value << std::endl;
+    std::cout << "APB1 Bus: " << bus_freq<calc, zoal::arch::bus::cortex_apb1>::value << std::endl;
+    std::cout << "APB2 Bus: " << bus_freq<calc, zoal::arch::bus::cortex_apb2>::value << std::endl;
 
     return 0;
 }

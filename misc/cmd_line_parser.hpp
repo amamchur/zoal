@@ -22,4 +22,5 @@ namespace zoal { namespace misc {
         command_line_parser(void *buffer, size_t buffer_size);
     };
 }}
+
 #endif

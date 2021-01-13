@@ -10,7 +10,7 @@
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/vt100.hpp>
 
-using mcu = zoal::mcu::stm32f103c8tx<>;
+using mcu = zoal::mcu::stm32f103c8tx;
 using usart_01 = mcu::usart_01;
 using usart_02 = mcu::usart_02;
 using usart_03 = mcu::usart_03;
@@ -25,13 +25,15 @@ using user_led = mcu::pc_13;
 }
 
 extern "C" void zoal_init() {
+    using usart_01_cfg = zoal::periph::usart_115200<72000000>;
+
     api::optimize<api::power_on<usart_01, mcu::port_a, mcu::port_c, mcu::port_b>>();
     api::optimize<api::disable<usart_01>>();
 
     api::optimize<
         //
         mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::connect,
-        mcu::cfg::usart<usart_01, 115200>::cfg,
+        mcu::cfg::usart<usart_01, usart_01_cfg>::apply,
         //
         api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12, mcu::pb_13>,
         api::mode<zoal::gpio::pin_mode::output, mcu::pc_13>

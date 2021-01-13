@@ -117,17 +117,12 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     public:
         static constexpr auto frequency = Frequency;
 
-        template<class U,
-                 uint32_t BaudRate,
-                 uint8_t Bits = 8,
-                 usart_parity Parity = usart_parity::none,
-                 usart_stop_bits StopBits = usart_stop_bits::stop_bits_1,
-                 uint32_t Freq = frequency>
+        template<class U, class Cfg>
         class usart {
         public:
             static constexpr uint8_t UCSRxA_bit_U2X = 1 << 1;
-            static constexpr auto value_x2 = (Freq / (8 * BaudRate)) - 1;
-            static constexpr auto value_x1 = (Freq / (16 * BaudRate)) - 1;
+            static constexpr auto value_x2 = (Cfg::clock_frequency / (8 * Cfg::baud_rate)) - 1;
+            static constexpr auto value_x1 = (Cfg::clock_frequency / (16 * Cfg::baud_rate)) - 1;
             static constexpr auto value = value_x2 > 4095 ? value_x1 : value_x2;
             static constexpr uint8_t UCSRxA_value = static_cast<const uint8_t>(value_x2 > 4095 ? 0u : UCSRxA_bit_U2X);
             static constexpr uint8_t UBRRxL_value = static_cast<uint8_t>(value & 0xFFu);
@@ -137,7 +132,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 type_list<typename U::UBRRxL::template cas<0xFF, UBRRxL_value>,
                           typename U::UBRRxH::template cas<0xFF, UBRRxH_value>,
                           typename U::UCSRxA::template cas<0xFF, UCSRxA_value>,
-                          typename U::UCSRxC::template cas<0xFF, usart_mode_cfg<Bits, Parity, StopBits>::UCSRxC_value>>>;
+                          typename U::UCSRxC::template cas<0xFF, usart_mode_cfg<Cfg::word_length_bits, Cfg::parity, Cfg::stop_bits>::UCSRxC_value>>>;
         };
 
         template<class T, zoal::periph::timer_mode Mode, uintptr_t ClockDivider, uintptr_t Prescale, uintptr_t Period>

@@ -35,6 +35,7 @@ include_directories(include)
 ragel_generate_cpp(apps/stepper_28byj_machine.rl STEPPER_STATE_MACHINE_SRC)
 ragel_generate_cpp(misc/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)
 ragel_generate_cpp(misc/terminal_machine.rl TERMINAL_STATE_MACHINE_SRC)
+ragel_generate_cpp(misc/type_detector.rl TYPE_DETECTOR_STATE_MACHINE_SRC)
 
 # --- atmega Projects ---
 add_mcu_executable(ATmega328p atmega328p
@@ -145,6 +146,8 @@ set(STM32F103_BLUE_PILL_FLASH_LD cubemx-proj/stm32f103_blue_pill/STM32F103C8Tx_F
 # STM32CubeMX project variables for cubemx-proj/stm32f103_freertos
 set(STM32F103_FREERTOS_SRC 
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c
@@ -155,6 +158,8 @@ set(STM32F103_FREERTOS_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rtc.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rtc_ex.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
@@ -167,8 +172,11 @@ set(STM32F103_FREERTOS_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/timers.c
+        cubemx-proj/stm32f103_freertos/Src/adc.c
         cubemx-proj/stm32f103_freertos/Src/freertos.c
+        cubemx-proj/stm32f103_freertos/Src/gpio.c
         cubemx-proj/stm32f103_freertos/Src/main.c
+        cubemx-proj/stm32f103_freertos/Src/rtc.c
         cubemx-proj/stm32f103_freertos/Src/stm32f1xx_hal_msp.c
         cubemx-proj/stm32f103_freertos/Src/stm32f1xx_hal_timebase_tim.c
         cubemx-proj/stm32f103_freertos/Src/stm32f1xx_it.c
@@ -279,7 +287,7 @@ add_mcu_executable(stm32f103_freertos stm32
         misc/terminal_input.cpp
         ${TERMINAL_STATE_MACHINE_SRC}
         ${CMD_STATE_MACHINE_SRC}
-        ${LOOKUP_MACHINE_SRC}
+        ${TYPE_DETECTOR_STATE_MACHINE_SRC}
         )
 
 add_host_executable(host
@@ -287,8 +295,7 @@ add_host_executable(host
         misc/terminal_input.cpp
         ${TERMINAL_STATE_MACHINE_SRC}
         ${CMD_STATE_MACHINE_SRC}
-        ${LOOKUP_MACHINE_SRC}
+        ${TYPE_DETECTOR_STATE_MACHINE_SRC}
         )
 
 add_zoal_tests()
-

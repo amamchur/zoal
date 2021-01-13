@@ -23,8 +23,8 @@ using counter_irq_handler = counter::handler<mcu::frequency, 64, timer>;
 zoal::data::ring_buffer_ext<uint8_t, 16> rx_buffer;
 
 using usart_tx_transport = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;
-using stream_type = zoal::io::output_stream<usart_tx_transport>;
-stream_type stream;
+using tx_stream_type = zoal::io::output_stream<usart_tx_transport>;
+tx_stream_type stream;
 
 using logger = zoal::utils::terminal_logger<usart_tx_transport, zoal::utils::log_level::trace>;
 using tools = zoal::utils::tool_set<mcu, counter, logger>;
@@ -59,7 +59,8 @@ void initialize_hardware() {
         mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::connect,
         mcu::mux::spi<spi, mcu::pb_03, mcu::pb_04, mcu::pb_05, mcu::pb_02>::connect,
         //
-        mcu::cfg::usart<usart, 115200>::apply,
+//        mcu::cfg::usart<usart, 115200>::apply,
+        mcu::cfg::usart<usart, zoal::periph::usart_115200<36000000>>::apply,
         mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply,
         //
         api::mode<zoal::gpio::pin_mode::output, blink_pin>,

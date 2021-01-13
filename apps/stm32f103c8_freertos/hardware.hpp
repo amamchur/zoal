@@ -1,5 +1,5 @@
-#ifndef ZOAL_STM32F103C8_FREERTOS__HARDWARE_HPP
-#define ZOAL_STM32F103C8_FREERTOS__HARDWARE_HPP
+#ifndef ZOAL_STM32F103C8_FREERTOS_HARDWARE_HPP
+#define ZOAL_STM32F103C8_FREERTOS_HARDWARE_HPP
 
 #include "board.hpp"
 
@@ -16,7 +16,9 @@ public:
     static void send_data(const void* data, size_t size);
 };
 
-using stream_type = zoal::io::output_stream<usart_01_tx_transport>;
-extern stream_type tx_stream;
+using tx_stream_type = zoal::io::output_stream<usart_01_tx_transport>;
+extern tx_stream_type tx_stream;
+
+void zoal_init_hardware();
 
 #endif

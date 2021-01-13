@@ -1,60 +1,66 @@
 #ifndef ZOAL_ARCH_STM32F1_A2D_CONVERTER_HPP
 #define ZOAL_ARCH_STM32F1_A2D_CONVERTER_HPP
 
+#include "../../../mem/reg.hpp"
+
 #include <stdint.h>
 
 namespace zoal { namespace arch { namespace stm32f1 {
-	template<uintptr_t Address, uint8_t N, class Clock>
-	class adc : public Clock {
-	public:
-		volatile uint32_t SR;
-		volatile uint32_t CR1;
-		volatile uint32_t CR2;
-		volatile uint32_t SMPR1;
-		volatile uint32_t SMPR2;
-		volatile uint32_t JOFR1;
-		volatile uint32_t JOFR2;
-		volatile uint32_t JOFR3;
-		volatile uint32_t JOFR4;
-		volatile uint32_t HTR;
-		volatile uint32_t LTR;
-		volatile uint32_t SQR1;
-		volatile uint32_t SQR2;
-		volatile uint32_t SQR3;
-		volatile uint32_t JSQR;
-		volatile uint32_t JDR1;
-		volatile uint32_t JDR2;
-		volatile uint32_t JDR3;
-		volatile uint32_t JDR4;
-		volatile uint32_t DR;
+    template<uintptr_t Address, class... Mixin>
+    class adc : public Mixin... {
+    public:
+        using self_type = adc<Address, Mixin...>;
+        static constexpr uintptr_t address = Address;
 
-		using Class = adc<Address, N, Clock>;
+        using ADCx_SR = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_CR1 = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_CR2 = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_SMPR1 = zoal::mem::reg<Address + 0x0C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_SMPR2 = zoal::mem::reg<Address + 0x10, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_JOFR1 = zoal::mem::reg<Address + 0x14, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_JOFR2 = zoal::mem::reg<Address + 0x18, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_JOFR3 = zoal::mem::reg<Address + 0x1C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_JOFR4 = zoal::mem::reg<Address + 0x20, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_HTR = zoal::mem::reg<Address + 0x24, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_LTR = zoal::mem::reg<Address + 0x28, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_SQR1 = zoal::mem::reg<Address + 0x2C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_SQR2 = zoal::mem::reg<Address + 0x30, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_SQR3 = zoal::mem::reg<Address + 0x34, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_JSQR = zoal::mem::reg<Address + 0x38, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_JDR1 = zoal::mem::reg<Address + 0x3C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_JDR2 = zoal::mem::reg<Address + 0x40, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_JDR3 = zoal::mem::reg<Address + 0x44, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_JDR4 = zoal::mem::reg<Address + 0x48, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using ADCx_DR = zoal::mem::reg<Address + 0x4C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
 
-		static constexpr uintptr_t Base = Address;
-		static constexpr uint8_t no = N;
-		static constexpr uint8_t resolution = 12;
+        static constexpr uint32_t ADCx_CR2_SWSTART = 1 << 22;
+        static constexpr uint32_t ADCx_CR2_EXTTRIG = 1 << 20;
+        static constexpr uint32_t ADCx_CR2_ADON = 1 << 0;
+        static constexpr uint32_t ADCx_SR_EOC = 1 << 1;
 
-	    static inline Class* instance() {
-	        return (Class*)Address;
-	    }
+        static inline void enable() {
+            ADCx_CR2::ref() |= ADCx_CR2_ADON;
+        }
 
-	    template <class Config>
-	    static void connect() {
-	    }
+        static inline void disable() {
+            ADCx_CR2::ref() &= ~ADCx_CR2_ADON;
+        }
 
-	    static uint16_t read() {
-	    	auto adc = Class::instance();
-	    	adc->CR2 |= 0x00500000 | 0x00000001;
-			while ((adc->SR & 0x2) == 0);
-			uint16_t value = adc->DR;
-			adc->CR2 &= 0xFFAFFFFF;
-			return value;
-	    }
+        static void start() {
+            ADCx_CR2::ref() |= ADCx_CR2_SWSTART | ADCx_CR2_EXTTRIG | ADCx_CR2_ADON;
+        }
 
-	    static void setup() {
-	    	Clock::enable();
-	    }
-	};
+        static inline void wait() {
+            while ((ADCx_SR::ref() & ADCx_SR_EOC) != ADCx_SR_EOC) {
+            }
+
+            adc::ADCx_SR::ref() &= ~ADCx_SR_EOC;
+        }
+
+        static uint32_t read() {
+            return ADCx_DR::ref();
+        }
+    };
 }}}
 
 #endif

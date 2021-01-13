@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="zoal" targetName="ATtiny85" />
+      <config projectName="zoal" targetName="ATmega2560.elf" />
+      <config projectName="zoal" targetName="ATtiny13" />
+      <config projectName="zoal" targetName="zoal_tests_atmega328" />
+      <config projectName="zoal" targetName="ATtiny2313" />
+      <config projectName="zoal" targetName="stm32f303_discovery" />
+      <config projectName="zoal" targetName="stm32l432kcu6" />
+      <config projectName="zoal" targetName="stm32f103_blue_pill" />
+      <config projectName="zoal" targetName="ATmega2560-upload" />
+      <config projectName="zoal" targetName="ATmega2560" />
+      <config projectName="zoal" targetName="ATmega32u4-upload" />
+      <config projectName="zoal" targetName="ATtiny85-upload" />
+      <config projectName="zoal" targetName="ATmega328p-upload" />
+      <config projectName="zoal" targetName="ATmega32u4" />
+      <config projectName="zoal" targetName="ATmega328p" />
+      <config projectName="zoal" targetName="stm32f103_freertos" />
+      <config projectName="zoal" targetName="stm32f303_nucleo" />
+      <config projectName="zoal" targetName="host" />
+      <config projectName="zoal" targetName="ATtiny13-upload" />
+      <config projectName="zoal" targetName="ATtiny2313-upload" />
+      <config projectName="zoal" targetName="stm32f030" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="DebugSTM32" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainSTM32.cmake" ENABLED="true" />
+      <configuration PROFILE_NAME="DebugHost" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainHost.cmake" ENABLED="true" />
+      <configuration PROFILE_NAME="ReleaseSTM32" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainSTM32.cmake" ENABLED="true" />
+      <configuration PROFILE_NAME="ReleaseAVR" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainAVR.cmake" ENABLED="true" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Simplify USART interface">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/adc.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/gpio.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/rtc.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/adc.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/gpio.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/rtc.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/misc/type_detector.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/misc/type_detector.rl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/board.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/board.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_processor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_queue.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_queue.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_queue.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_queue.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/constants.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/constants.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/input_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/input_processor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/input_processor.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/input_processor.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/terminal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/terminal.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/terminal.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/terminal.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/types.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/types.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/FreeRTOSConfig.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/FreeRTOSConfig.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_hal_conf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/freertos.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generator/STM32.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/STM32.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/adc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/adc.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/usart.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/usart.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/freertos/task.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/freertos/task.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/parser/ragel_scanner.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/parser/ragel_scanner.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/usart.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/usart.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/cmd_line_parser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/cmd_line_parser.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/terminal_input.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/terminal_input.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.hpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddedSvdWindowState">
+    <option name="columnWidths">
+      <list>
+        <option value="262" />
+        <option value="112" />
+        <option value="1278" />
+      </list>
+    </option>
+    <option name="columnOrder">
+      <list>
+        <option value="Name" />
+        <option value="Value" />
+        <option value="Description" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="1lQK3DU9OsqewWvrbdkSUM1ArgE" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="false" id="Update" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.advertisement.text.has.clang-format" value="true" />
+    <property name="cf.advertisement.text.overridden" value="true" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/stm32f103c8_freertos" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
+    <property name="settings.editor.splitter.proportion" value="0.18565089" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/apps/stm32f103c8_freertos" />
+      <recent name="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src" />
+      <recent name="$PROJECT_DIR$/include/zoal/parser" />
+      <recent name="$PROJECT_DIR$/misc" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/zoal/arch/avr/utils" />
+      <recent name="$PROJECT_DIR$/misc" />
+      <recent name="$PROJECT_DIR$/apps" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Node.js.cubemx-proj.js">
+    <configuration name="All in zoal_tests_atmega328" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests_atmega328" CONFIG_NAME="DebugHost" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests_atmega328" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega2560-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560-upload" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega2560" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega2560">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega328p-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p-upload" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega328p" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega328p">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega32u4-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4-upload" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega32u4" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega32u4">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny13-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13-upload" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny13" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATtiny13">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny2313-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313-upload" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny2313" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATtiny2313">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny85-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85-upload" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny85" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATtiny85">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" CONFIG_NAME="DebugHost" EXPLICIT_BUILD_TARGET_NAME="all">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="DebugHost" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="stm32f030" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f030" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f030">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="stm32f103_blue_pill" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f103_blue_pill" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f103_blue_pill">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="stm32f103_freertos" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f103_freertos" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f103_freertos">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="stm32f303_discovery" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_discovery" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_discovery">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="stm32f303_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_nucleo" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_nucleo">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <configuration name="gen stm32f103c8tx.hpp" type="NodeJSConfigurationType" temporary="true" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F103C(8-B)Tx.xml&quot; -o ./include/zoal/mcu/stm32f103c8tx.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <configuration name="stm32f103_blue_pill" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f103_blue_pill" CONFIG_NAME="ReleaseAVR" version="1" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f103_blue_pill">
+      <openocd version="1" gdb-port="3333" telnet-port="4444" board-config="board/stm32f103-generic.cfg" reset-type="INIT" download-type="UPDATED_ONLY">
+        <debugger kind="GDB" isBundled="true" />
+      </openocd>
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="stm32f103_freertos" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f103_freertos" CONFIG_NAME="ReleaseAVR" version="1" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f103_freertos">
+      <openocd version="1" gdb-port="3333" telnet-port="4444" board-config="board/stm32f103-generic.cfg" reset-type="INIT" download-type="UPDATED_ONLY">
+        <debugger kind="GDB" isBundled="true" />
+      </openocd>
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.All" />
+      <item itemvalue="CMake Application.ATmega2560" />
+      <item itemvalue="CMake Application.ATmega2560-upload" />
+      <item itemvalue="CMake Application.ATmega328p" />
+      <item itemvalue="CMake Application.ATmega328p-upload" />
+      <item itemvalue="CMake Application.ATmega32u4" />
+      <item itemvalue="CMake Application.ATmega32u4-upload" />
+      <item itemvalue="CMake Application.ATtiny13" />
+      <item itemvalue="CMake Application.ATtiny13-upload" />
+      <item itemvalue="CMake Application.ATtiny2313" />
+      <item itemvalue="CMake Application.ATtiny2313-upload" />
+      <item itemvalue="CMake Application.ATtiny85" />
+      <item itemvalue="CMake Application.ATtiny85-upload" />
+      <item itemvalue="CMake Application.host" />
+      <item itemvalue="CMake Application.stm32f030" />
+      <item itemvalue="CMake Application.stm32f103_blue_pill" />
+      <item itemvalue="CMake Application.stm32f103_freertos" />
+      <item itemvalue="CMake Application.stm32f303_discovery" />
+      <item itemvalue="CMake Application.stm32f303_nucleo" />
+      <item itemvalue="Google Test.All in zoal_tests_atmega328" />
+      <item itemvalue="Node.js.cubemx-proj.js" />
+      <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
+      <item itemvalue="OpenOCD Download &amp; Run.stm32f103_blue_pill" />
+      <item itemvalue="OpenOCD Download &amp; Run.stm32f103_freertos" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="" />
+      <created>1607523676256</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1607523676256</updated>
+      <workItem from="1607523679508" duration="191000" />
+      <workItem from="1607523886396" duration="138000" />
+      <workItem from="1609094406696" duration="342000" />
+      <workItem from="1609103179471" duration="1082000" />
+      <workItem from="1609104280276" duration="328000" />
+      <workItem from="1609104663596" duration="189000" />
+      <workItem from="1609136229921" duration="6479000" />
+      <workItem from="1609149814695" duration="42759000" />
+      <workItem from="1609228996287" duration="5115000" />
+      <workItem from="1609246432656" duration="1065000" />
+      <workItem from="1609918940904" duration="3186000" />
+      <workItem from="1609927981337" duration="3506000" />
+      <workItem from="1609935100293" duration="3020000" />
+      <workItem from="1609962241398" duration="538000" />
+      <workItem from="1609962948990" duration="11873000" />
+      <workItem from="1610099005467" duration="5297000" />
+      <workItem from="1610105193927" duration="294000" />
+      <workItem from="1610106995390" duration="1030000" />
+      <workItem from="1610112579735" duration="4403000" />
+      <workItem from="1610117177899" duration="60000" />
+      <workItem from="1610117959605" duration="38197000" />
+      <workItem from="1610187702507" duration="28594000" />
+      <workItem from="1610224673854" duration="9277000" />
+      <workItem from="1610308239189" duration="25473000" />
+      <workItem from="1610355924146" duration="1926000" />
+      <workItem from="1610359888924" duration="693000" />
+      <workItem from="1610365186466" duration="18944000" />
+      <workItem from="1610388767376" duration="14200000" />
+      <workItem from="1610403839826" duration="6779000" />
+      <workItem from="1610442872145" duration="178000" />
+      <workItem from="1610467746112" duration="30672000" />
+      <workItem from="1610524941781" duration="32516000" />
+    </task>
+    <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
+      <created>1609104248255</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1609104248256</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Add terminal input">
+      <created>1609174206795</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1609174206795</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Code cleanup">
+      <created>1609188085991</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1609188085991</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Add Knuth-Morris-Pratt search algorithm">
+      <created>1609247477676</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1609247477676</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Improved CAS applying strategies">
+      <created>1610145785780</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1610145785780</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added FreeRTOS support">
+      <created>1610333207976</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1610333207976</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Update matrix keypad">
+      <created>1610394484034</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1610394484034</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Improve terminal interface">
+      <created>1610404636320</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1610404636320</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Add missed project">
+      <created>1610405258627</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1610405258627</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Simplify USART interface">
+      <created>1610481432018</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1610481432018</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Update STM32 projects to latest firmware" />
+    <MESSAGE value="Add terminal input" />
+    <MESSAGE value="Code cleanup" />
+    <MESSAGE value="Add Knuth-Morris-Pratt search algorithm" />
+    <MESSAGE value="Improved CAS applying strategies" />
+    <MESSAGE value="Added FreeRTOS support" />
+    <MESSAGE value="Update matrix keypad" />
+    <MESSAGE value="Improve terminal interface" />
+    <MESSAGE value="Add missed project" />
+    <MESSAGE value="Simplify USART interface" />
+    <option name="LAST_COMMIT_MESSAGE" value="Simplify USART interface" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="CidrExceptionBreakpoint" />
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="../../../Documents/src/zoal/cmake-build-debughost" NAME="All in zoal_tests_atmega328 Coverage Results" MODIFIED="1609138231972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>
