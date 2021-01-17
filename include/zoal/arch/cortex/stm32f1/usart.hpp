@@ -21,47 +21,47 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
         static constexpr uint32_t USARTx_CR1_TE = 1 << 3; // Bit 3 TE: Transmitter enable
         static constexpr uint32_t USARTx_CR1_RE = 1 << 2; // Bit 2 RE: Receiver enable
-        static constexpr uint32_t USARTx_SR_bit_RXNE = 1 << 5; // Bit 5 RXNE: Read data register not empty
-        static constexpr uint32_t USARTx_SR_bit_TXE = 1 << 7; // Bit 7 TXE: Transmit data register empty
-        static constexpr uint32_t USARTx_CR1_bit_UE = 1 << 13; // Bit 13 UE: USART enable
-        static constexpr uint32_t USARTx_CR1_bit_RXNEIE = 1 << 5; // Bit 5 RXNE: Read data register not empty
-        static constexpr uint32_t USARTx_CR1_bit_TXEIE = 1 << 7; // Bit 7 TXEIE: interrupt enable
+        static constexpr uint32_t USARTx_SR_RXNE = 1 << 5; // Bit 5 RXNE: Read data register not empty
+        static constexpr uint32_t USARTx_SR_TXE = 1 << 7; // Bit 7 TXE: Transmit data register empty
+        static constexpr uint32_t USARTx_CR1_UE = 1 << 13; // Bit 13 UE: USART enable
+        static constexpr uint32_t USARTx_CR1_RXNEIE = 1 << 5; // Bit 5 RXNE: Read data register not empty
+        static constexpr uint32_t USARTx_CR1_TXEIE = 1 << 7; // Bit 7 TXEIE: interrupt enable
 
-        using enable_cas = zoal::ct::type_list<typename self_type::USARTx_CR1::template cas<0, USARTx_CR1_bit_UE>>;
-        using disable_cas = zoal::ct::type_list<typename self_type::USARTx_CR1::template cas<USARTx_CR1_bit_UE, 0>>;
+        using enable_cas = zoal::ct::type_list<typename USARTx_CR1::template cas<0, USARTx_CR1_UE>>;
+        using disable_cas = zoal::ct::type_list<typename USARTx_CR1::template cas<USARTx_CR1_UE, 0>>;
 
         static inline void enable() {
-            USARTx_CR1::ref() |= USARTx_CR1_bit_UE;
+            USARTx_CR1::ref() |= USARTx_CR1_UE;
         }
 
         static inline void disable() {
-            USARTx_CR1::ref() &= ~USARTx_CR1_bit_UE;
+            USARTx_CR1::ref() &= ~USARTx_CR1_UE;
         }
 
         static inline void enable_tx() {
-            USARTx_CR1::ref() |= USARTx_CR1_bit_TXEIE;
+            USARTx_CR1::ref() |= USARTx_CR1_TXEIE;
         }
 
         static inline void disable_tx() {
-            USARTx_CR1::ref() &= ~USARTx_CR1_bit_TXEIE;
+            USARTx_CR1::ref() &= ~USARTx_CR1_TXEIE;
         }
 
         static inline void enable_rx() {
-            USARTx_CR1::ref() |= USARTx_CR1_bit_RXNEIE;
+            USARTx_CR1::ref() |= USARTx_CR1_RXNEIE;
         }
 
         static inline void disable_rx() {
-            USARTx_CR1::ref() &= ~USARTx_CR1_bit_RXNEIE;
+            USARTx_CR1::ref() &= ~USARTx_CR1_RXNEIE;
         }
 
         template<class RxCallback>
         static inline void rx_handler(RxCallback rx_callback) {
-            auto rx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_RXNEIE;
+            auto rx_enabled = USARTx_CR1::ref() & USARTx_CR1_RXNEIE;
             if (!rx_enabled) {
                 return;
             }
 
-            auto rx_not_empty = USARTx_SR::ref() & USARTx_SR_bit_RXNE;
+            auto rx_not_empty = USARTx_SR::ref() & USARTx_SR_RXNE;
             if (!rx_not_empty) {
                 return;
             }
@@ -71,12 +71,12 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
         template<class TxCallback>
         static bool tx_handler(TxCallback callback) {
-            auto tx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_TXEIE;
+            auto tx_enabled = USARTx_CR1::ref() & USARTx_CR1_TXEIE;
             if (!tx_enabled) {
                 return false;
             }
 
-            auto tx_empty = USARTx_SR::ref() & USARTx_SR_bit_TXE;
+            auto tx_empty = USARTx_SR::ref() & USARTx_SR_TXE;
             if (!tx_empty) {
                 return false;
             }

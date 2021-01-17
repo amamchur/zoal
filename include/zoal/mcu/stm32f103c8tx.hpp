@@ -10,6 +10,7 @@
 #include <zoal/arch/cortex/stm32f1/cfg.hpp>
 #include <zoal/arch/cortex/stm32f1/mux.hpp>
 #include <zoal/arch/cortex/stm32f1/port.hpp>
+#include <zoal/arch/cortex/stm32f1/timer.hpp>
 #include <zoal/arch/cortex/stm32f1/usart.hpp>
 #include <zoal/arch/cortex/stm32x/bus_clock.hpp>
 #include <zoal/arch/cortex/stm32x/metadata.hpp>
@@ -47,10 +48,13 @@ namespace zoal { namespace mcu {
         using adc_01 = ::zoal::arch::stm32f1::adc<0x40012400, clock_apb2<0x00001000>>;
         using adc_02 = ::zoal::arch::stm32f1::adc<0x40012800, clock_apb2<0x00002000>>;
 
+        using timer_01 = zoal::arch::stm32f1::timer<0x40012C00, clock_apb1<0x00000004>>;
+        using timer_02 = zoal::arch::stm32f1::timer<0x40000000, clock_apb1<0x00000004>>;
+        using timer_03 = zoal::arch::stm32f1::timer<0x40000400, clock_apb1<0x00000004>>;
+        using timer_04 = zoal::arch::stm32f1::timer<0x40000800, clock_apb1<0x00000004>>;
+
         using usart_01 = typename ::zoal::arch::stm32f1::usart<0x40013800, clock_apb2<0x00004000>>;
-
         using usart_02 = typename ::zoal::arch::stm32f1::usart<0x40004400, clock_apb1<0x00020000>>;
-
         using usart_03 = typename ::zoal::arch::stm32f1::usart<0x40004800, clock_apb1<0x00040000>>;
 
         template<class Port, uint8_t Offset>
@@ -113,6 +117,62 @@ namespace zoal { namespace mcu {
 namespace zoal { namespace metadata {
     using zoal::ct::integral_constant;
 
+    template<> // TIM2_REMAP0 -> tim2
+    struct stm32_remap<0x40000000, 0x40010800, 0x00, signal::ch1> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM2_REMAP0 -> tim2
+    struct stm32_remap<0x40000000, 0x40010800, 0x00, signal::etr> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM2_REMAP0 -> tim2
+    struct stm32_remap<0x40000000, 0x40010800, 0x01, signal::ch2> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM2_REMAP0 -> tim2
+    struct stm32_remap<0x40000000, 0x40010800, 0x02, signal::ch3> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM2_REMAP0 -> tim2
+    struct stm32_remap<0x40000000, 0x40010800, 0x03, signal::ch4> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM2_REMAP1 -> tim2
+    struct stm32_remap<0x40000000, 0x40010800, 0x0F, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM2_REMAP1 -> tim2
+    struct stm32_remap<0x40000000, 0x40010800, 0x0F, signal::etr> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM2_REMAP1 -> tim2
+    struct stm32_remap<0x40000000, 0x40010C00, 0x03, signal::ch2> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM2_REMAP2 -> tim2
+    struct stm32_remap<0x40000000, 0x40010C00, 0x0A, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM2_REMAP2 -> tim2
+    struct stm32_remap<0x40000000, 0x40010C00, 0x0B, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM3_REMAP0 -> tim3
+    struct stm32_remap<0x40000400, 0x40010800, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM3_REMAP0 -> tim3
+    struct stm32_remap<0x40000400, 0x40010800, 0x07, signal::ch2> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM3_REMAP0 -> tim3
+    struct stm32_remap<0x40000400, 0x40010C00, 0x00, signal::ch3> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM3_REMAP0 -> tim3
+    struct stm32_remap<0x40000400, 0x40010C00, 0x01, signal::ch4> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM3_REMAP1 -> tim3
+    struct stm32_remap<0x40000400, 0x40010C00, 0x04, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM3_REMAP1 -> tim3
+    struct stm32_remap<0x40000400, 0x40010C00, 0x05, signal::ch2> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM3_REMAP2 -> tim3
+    struct stm32_remap<0x40000400, 0x40011000, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM3_REMAP2 -> tim3
+    struct stm32_remap<0x40000400, 0x40011000, 0x07, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM3_REMAP2 -> tim3
+    struct stm32_remap<0x40000400, 0x40011000, 0x08, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM3_REMAP2 -> tim3
+    struct stm32_remap<0x40000400, 0x40011000, 0x09, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM4_REMAP0 -> tim4
+    struct stm32_remap<0x40000800, 0x40010C00, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM4_REMAP0 -> tim4
+    struct stm32_remap<0x40000800, 0x40010C00, 0x07, signal::ch2> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM4_REMAP0 -> tim4
+    struct stm32_remap<0x40000800, 0x40010C00, 0x08, signal::ch3> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM4_REMAP0 -> tim4
+    struct stm32_remap<0x40000800, 0x40010C00, 0x09, signal::ch4> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM4_REMAP1 -> tim4
+    struct stm32_remap<0x40000800, 0x40011400, 0x0C, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM4_REMAP1 -> tim4
+    struct stm32_remap<0x40000800, 0x40011400, 0x0D, signal::ch2> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM4_REMAP1 -> tim4
+    struct stm32_remap<0x40000800, 0x40011400, 0x0E, signal::ch3> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM4_REMAP1 -> tim4
+    struct stm32_remap<0x40000800, 0x40011400, 0x0F, signal::ch4> : zoal::ct::integral_constant<int, 1> {};
     template<> // USART2_REMAP0 -> usart2
     struct stm32_remap<0x40004400, 0x40010800, 0x00, signal::cts> : zoal::ct::integral_constant<int, 0> {};
     template<> // USART2_REMAP0 -> usart2
@@ -159,6 +219,50 @@ namespace zoal { namespace metadata {
     struct stm32_remap<0x40004800, 0x40011400, 0x0B, signal::cts> : zoal::ct::integral_constant<int, 2> {};
     template<> // USART3_REMAP2 -> usart3
     struct stm32_remap<0x40004800, 0x40011400, 0x0C, signal::rts> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM1_REMAP1 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010800, 0x06, signal::bkin> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM1_REMAP1 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010800, 0x07, signal::ch1n> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM1_REMAP0 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010800, 0x08, signal::ch1> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM1_REMAP0 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010800, 0x09, signal::ch2> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM1_REMAP0 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010800, 0x0A, signal::ch3> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM1_REMAP0 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010800, 0x0B, signal::ch4> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM1_REMAP0 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010800, 0x0C, signal::etr> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM1_REMAP1 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010C00, 0x00, signal::ch2n> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM1_REMAP1 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010C00, 0x01, signal::ch3n> : zoal::ct::integral_constant<int, 1> {};
+    template<> // TIM1_REMAP0 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010C00, 0x0C, signal::bkin> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM1_REMAP0 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010C00, 0x0D, signal::ch1n> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM1_REMAP0 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010C00, 0x0E, signal::ch2n> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM1_REMAP0 -> tim1
+    struct stm32_remap<0x40012C00, 0x40010C00, 0x0F, signal::ch3n> : zoal::ct::integral_constant<int, 0> {};
+    template<> // TIM1_REMAP2 -> tim1
+    struct stm32_remap<0x40012C00, 0x40011800, 0x07, signal::etr> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM1_REMAP2 -> tim1
+    struct stm32_remap<0x40012C00, 0x40011800, 0x08, signal::ch1n> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM1_REMAP2 -> tim1
+    struct stm32_remap<0x40012C00, 0x40011800, 0x09, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM1_REMAP2 -> tim1
+    struct stm32_remap<0x40012C00, 0x40011800, 0x0A, signal::ch2n> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM1_REMAP2 -> tim1
+    struct stm32_remap<0x40012C00, 0x40011800, 0x0B, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM1_REMAP2 -> tim1
+    struct stm32_remap<0x40012C00, 0x40011800, 0x0C, signal::ch3n> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM1_REMAP2 -> tim1
+    struct stm32_remap<0x40012C00, 0x40011800, 0x0D, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM1_REMAP2 -> tim1
+    struct stm32_remap<0x40012C00, 0x40011800, 0x0E, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // TIM1_REMAP2 -> tim1
+    struct stm32_remap<0x40012C00, 0x40011800, 0x0F, signal::bkin> : zoal::ct::integral_constant<int, 2> {};
     template<> // USART1_REMAP0 -> usart1
     struct stm32_remap<0x40013800, 0x40010800, 0x09, signal::tx> : zoal::ct::integral_constant<int, 0> {};
     template<> // USART1_REMAP0 -> usart1

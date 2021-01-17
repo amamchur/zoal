@@ -75,6 +75,7 @@ const familyMap = {
             '#include <zoal/arch/cortex/stm32f1/adc.hpp>',
             '#include <zoal/arch/cortex/stm32f1/port.hpp>',
             '#include <zoal/arch/cortex/stm32f1/usart.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/timer.hpp>',
         ],
         classDeclaration: [
             `using afio = ::zoal::arch::stm32f1::afio<0x40010000, clock_apb2<0x00000001>>;`,
@@ -97,6 +98,21 @@ const familyMap = {
             usart3: {bus: 'apb1', address: 0x40004800, busClockMask: 0x00040000},
             adc1: {bus: 'apb2', address: 0x40012400, busClockMask: 0x00001000},
             adc2: {bus: 'apb2', address: 0x40012800, busClockMask: 0x00002000},
+
+            tim1: {bus: 'apb2', address: 0x40012C00, busClockMask: 0x00000800},
+            tim2: {bus: 'apb1', address: 0x40000000, busClockMask: 0x00000001},
+            tim3: {bus: 'apb1', address: 0x40000400, busClockMask: 0x00000002},
+            tim4: {bus: 'apb1', address: 0x40000800, busClockMask: 0x00000004},
+            tim5: {bus: 'apb1', address: 0x40000C00, busClockMask: 0x00000008},
+            tim6: {bus: 'apb1', address: 0x40001000, busClockMask: 0x00000010},
+            tim7: {bus: 'apb1', address: 0x40001400, busClockMask: 0x00000020},
+            tim8: {bus: 'apb2', address: 0x40013400, busClockMask: 0x00002000},
+            tim9: {bus: 'apb2', address: 0x40014C00, busClockMask: 0x00080000},
+            tim10: {bus: 'apb2', address: 0x40015000, busClockMask: 0x00100000},
+            tim11: {bus: 'apb2', address: 0x40015400, busClockMask: 0x00200000},
+            tim12: {bus: 'apb1', address: 0x40001800, busClockMask: 0x00000040},
+            tim13: {bus: 'apb1', address: 0x40001C00, busClockMask: 0x00000080},
+            tim14: {bus: 'apb1', address: 0x40002000, busClockMask: 0x00000100},
         }
     },
     'stm32f3': {
@@ -280,7 +296,6 @@ class STM32 extends BaseGenerator {
                 let n = ("00" + no.toString(10)).substr(-2);
                 let m = STM32.toHex(data.busClockMask, 8);
                 result.push(`using ${name}_${n} = typename ::zoal::arch::${ns}::usart<${address}, clock_${data.bus}<${m}>>;`);
-                result.push(``);
             },
 
             adc: function (name, no, data) {
@@ -294,7 +309,7 @@ class STM32 extends BaseGenerator {
                 let address = STM32.toHex(data.address, 8);
                 let n = ("00" + no.toString(10)).substr(-2);
                 let m = STM32.toHex(data.busClockMask, 8);
-                result.push(`using ${name}er_${n} = zoal::arch::stm32f3::general_purpose_timer<${address}, ${no}, clock_${data.bus}<${m}>>;`);
+                result.push(`using ${name}er_${n} = zoal::arch::${ns}::timer<${address}, clock_${data.bus}<${m}>>;`);
             }
         };
 
@@ -613,10 +628,7 @@ class STM32 extends BaseGenerator {
                 return console.log(err);
             }
 
-            let dir = path.dirname(outFile);
-
             exec(`clang-format --style=file -i ${outFile}`, {
-                cwd: dir
             });
         });
     }

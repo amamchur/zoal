@@ -46,11 +46,11 @@ namespace zoal { namespace arch { namespace stm32x {
         using clock_on_cas = typename power_cas::clock_on_cas;
         using clock_off_cas =  typename power_cas::clock_on_cas;
 
-        static inline void power_on() {
+        static inline void clock_on() {
             zoal::mem::apply_cas_list<typename power_cas::clock_on_cas>::apply();
         }
 
-        static inline void power_off() {
+        static inline void clock_off() {
             zoal::mem::apply_cas_list<typename power_cas::clock_off_cas>::apply();
         }
     };

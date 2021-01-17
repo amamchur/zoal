@@ -34,40 +34,21 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Simplify USART interface">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/timer.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/zoal/periph/timer.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_processor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_processor.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_processor.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/constants.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/constants.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/input_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/input_processor.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/adc.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/rtc.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/rtc.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_hal_conf.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_it.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_it.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/adc.c" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/gpio.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/gpio.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/rtc.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/rtc.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/stm32f1xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/stm32f1xx_it.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/adc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/adc.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/spi.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/spi.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/usart.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/usart.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/port.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/port.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/timer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/timer.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generator/STM32.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/STM32.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/usart.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/usart.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/bus_clock.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/bus_clock.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/gpio/api.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/api.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/button.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/button.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/button_state_machine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/button_state_machine.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/matrix_keypad.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/matrix_keypad.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/metadata.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -140,11 +121,6 @@
     </key>
   </component>
   <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f103_freertos">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="All in zoal_tests_atmega328" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests_atmega328" CONFIG_NAME="DebugHost" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests_atmega328" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -212,6 +188,11 @@
       </method>
     </configuration>
     <configuration name="All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" CONFIG_NAME="DebugHost" EXPLICIT_BUILD_TARGET_NAME="all">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -345,6 +326,7 @@
       <workItem from="1610442872145" duration="178000" />
       <workItem from="1610467746112" duration="30672000" />
       <workItem from="1610524941781" duration="32516000" />
+      <workItem from="1610843585522" duration="21422000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -416,7 +398,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610481432018</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Improve button/keypad UX">
+      <created>1610842646018</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1610842646018</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -443,7 +432,8 @@
     <MESSAGE value="Improve terminal interface" />
     <MESSAGE value="Add missed project" />
     <MESSAGE value="Simplify USART interface" />
-    <option name="LAST_COMMIT_MESSAGE" value="Simplify USART interface" />
+    <MESSAGE value="Improve button/keypad UX" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve button/keypad UX" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

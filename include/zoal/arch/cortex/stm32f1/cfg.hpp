@@ -6,6 +6,8 @@
 #include "../../../periph/usart.hpp"
 #include "../../bus.hpp"
 
+#include <zoal/periph/timer_mode.hpp>
+
 namespace zoal { namespace metadata {
     template<zoal::arch::bus Bus>
     struct stm32_bus_prescaler;
@@ -53,6 +55,19 @@ namespace zoal { namespace arch { namespace stm32f1 {
             using USARTx_BRR = typename U::USARTx_BRR::template cas<0, bbr_set>;
 
             using apply = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR3, USARTx_BRR>;
+        };
+
+        template<class T, class Cfg>
+        class timer {
+        public:
+            static constexpr uint32_t cr1_clear = T::TIMERx_CR1_DIR | T::TIMERx_CR1_CMS | T::TIMERx_CR1_OPM | T::TIMERx_CR1_CKD;
+            static constexpr uint32_t cr1_set = Cfg::mode == zoal::periph::timer_mode::down ? T::TIMERx_CR1_DIR : 0;
+
+            using TIMERx_CR1 = typename T::TIMERx_CR1::template cas<cr1_clear, cr1_set>;
+            using TIMERx_ARR = typename T::TIMERx_ARR::template cas<T::TIMERx_ARR::mask, Cfg::period>;
+            using TIMERx_PSC = typename T::TIMERx_PSC::template cas<T::TIMERx_PSC::mask, Cfg::prescaler>;
+            using TIMERx_EGR = typename T::TIMERx_EGR::template cas<0, T::TIMERx_EGR_UG>;
+            using apply = type_list<TIMERx_CR1, TIMERx_PSC, TIMERx_ARR, TIMERx_EGR>;
         };
     };
 }}}
