@@ -11,28 +11,6 @@
 #include <stdlib.h> /* NOLINT */
 
 namespace zoal { namespace io {
-    template<class Dummy = void>
-    class memory_transport {
-    public:
-        static void push_back_blocking(uint8_t ch) {
-            buffer[length++] = ch;
-        };
-
-        static void init(void *b) {
-            buffer = reinterpret_cast<uint8_t *>(b);
-            length = 0;
-        }
-
-        static uint8_t *buffer;
-        static size_t length;
-    };
-
-    template<class Dummy>
-    uint8_t *memory_transport<Dummy>::buffer = nullptr;
-
-    template<class Dummy>
-    size_t memory_transport<Dummy>::length = 0;
-
     template<class Transport>
     class output_stream {
     public:
@@ -40,7 +18,7 @@ namespace zoal { namespace io {
         uint8_t precision{2};
 
         output_stream &operator<<(char ch) {
-            Transport::push_back_blocking(static_cast<uint8_t>(ch));
+            Transport::send_byte(static_cast<uint8_t>(ch));
             return *this;
         }
 

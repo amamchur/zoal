@@ -1,6 +1,7 @@
 #include "hardware.hpp"
 
 #include "stm32f1xx_hal.h"
+
 #include <zoal/periph/usart.hpp>
 
 zoal::mem::reserve_mem<stream_buffer_type, 32> rx_stream_buffer(1);
@@ -12,17 +13,21 @@ void zoal_init_hardware() {
     using api = zoal::gpio::api;
     using usart_01_cfg = zoal::periph::usart_115200<72000000>;
 
-    api::optimize<api::power_on<usart_01, mcu::port_a, mcu::port_c, mcu::port_b>>();
+    api::optimize<api::clock_on<usart_01, mcu::port_a, mcu::port_b, mcu::port_c, mcu::port_d>>();
     api::optimize<api::disable<usart_01>>();
 
     api::optimize<
         //
         mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::connect,
         mcu::cfg::usart<usart_01, usart_01_cfg>::apply,
-        //
+
+        keypad_type::gpio_cfg,
+//        user_button_1_type::gpio_cfg,
+//        user_button_2_type::gpio_cfg,
+
         api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12, mcu::pb_13>,
-        api::mode<zoal::gpio::pin_mode::output, user_led>
-        //
+        api::mode<zoal::gpio::pin_mode::output_open_drain, user_led>
+
         >();
 
     api::optimize<api::enable<usart_01>>();

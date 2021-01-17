@@ -16,14 +16,14 @@ namespace zoal { namespace gpio {
         using list = typename Module::disable_cas;
     };
 
-    struct power_on_cas {
+    struct clock_on_cas {
         template<class Module>
-        using list = typename Module::power_on_cas;
+        using list = typename Module::clock_on_cas;
     };
 
-    struct power_off_cas {
+    struct clock_off_cas {
         template<class Module>
-        using list = typename Module::power_off_cas;
+        using list = typename Module::clock_off_cas;
     };
 
     struct low_cas {
@@ -56,10 +56,10 @@ namespace zoal { namespace gpio {
 
     struct api {
         template<class... Module>
-        using power_on = typename zoal::mem::merge_cas_in_list<typename collect_cas<power_on_cas, Module...>::result>::result;
+        using clock_on = typename zoal::mem::merge_cas_in_list<typename collect_cas<clock_on_cas, Module...>::result>::result;
 
         template<class... Module>
-        using power_off = typename zoal::mem::merge_cas_in_list<typename collect_cas<power_off_cas, Module...>::result>::result;
+        using clock_off = typename zoal::mem::merge_cas_in_list<typename collect_cas<clock_off_cas, Module...>::result>::result;
 
         template<class... Module>
         using enable = typename zoal::mem::merge_cas_in_list<typename collect_cas<enable_cas, Module...>::result>::result;

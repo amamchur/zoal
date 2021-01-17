@@ -15,7 +15,7 @@ static inline void format_byte(char *ptr, uint8_t v) {
     ptr[-1] = static_cast<char>(v / 10 + '0');
 }
 
-static void print_time() {
+void print_time() {
     RTC_TimeTypeDef time;
     char buffer[] = "00:00:00\r\n";
 

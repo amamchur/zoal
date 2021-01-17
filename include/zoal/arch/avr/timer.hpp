@@ -21,8 +21,8 @@ namespace zoal { namespace arch { namespace avr {
 
         using enable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
         using disable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-        using power_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-        using power_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using clock_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using clock_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
 
         static void power_on() {}
 

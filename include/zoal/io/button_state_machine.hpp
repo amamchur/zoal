@@ -19,6 +19,7 @@ namespace zoal { namespace io {
             th = 1 << 4, // transition to high (source signal)
             debounce = 1 << 1, // debounce state will be reset after debounce_delay
             pressing = 1 << 2, // pressing state repeat key_press event after press_delay
+            pause = 1 << 3,
 
             switched = 1 << 4, // machine was switched, calling party must reset dt timer value
             key_down = 1 << 5,
@@ -30,7 +31,7 @@ namespace zoal { namespace io {
         using state_type = uint8_t;
 
         template<class T>
-        bool handle(uint8_t signal, T dt, T debounce_delay, T press_delay) {
+        bool handle(uint8_t signal, T dt, T debounce_delay, T release_delay, T repeat_interval) {
             auto transition = static_cast<state_type>((state_ & 0x0Fu) | (signal << 4u));
             auto next = state_ & ~all_events;
 
@@ -40,12 +41,15 @@ namespace zoal { namespace io {
 
             switch (transition) {
             case (fl | th):
-                next = fh | debounce | key_down | switched;
+                next = fh | debounce | key_down | key_press | switched;
                 break;
             case (fh | th):
-                next = fh | pressing | key_press | switched;
+                if (release_delay != 0 && dt >= release_delay) {
+                    next = fh | pressing | key_press | switched;
+                }
+                break;
             case (fh | th | pressing):
-                if (press_delay != 0 && dt >= press_delay) {
+                if (repeat_interval != 0 && dt >= repeat_interval) {
                     next = fh | pressing | key_press | switched;
                 }
                 break;

@@ -73,8 +73,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
         using enable_cas = zoal::ct::type_list<typename self_type::TWCRx::template cas<0, 1 << TWENx | 1 << TWIEx | 1 << TWEAx>>;
         using disable_cas = zoal::ct::type_list<typename self_type::TWCRx::template cas<1 << TWENx | 1 << TWIEx | 1 << TWEAx, 0>>;
-        using power_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-        using power_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using clock_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using clock_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
 
         static void power_on() {}
 

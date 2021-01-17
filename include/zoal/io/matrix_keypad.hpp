@@ -92,7 +92,8 @@ namespace zoal { namespace io {
     class keypad_config {
     public:
         static constexpr uint16_t debounce_delay = 5;
-        static constexpr uint16_t press_delay = 100;
+        static constexpr uint16_t release_delay = 500;
+        static constexpr uint16_t press_delay = 50;
         using machine_type = button_state_machine;
     };
 
@@ -104,13 +105,13 @@ namespace zoal { namespace io {
 
         using time_type = TimeType;
         using machine_type = typename Config::machine_type;
+        using gpio_cfg = typename zoal::gpio::api::optimize<typename Reader::cfg_gpio, typename Selector::high_impedance>;
 
         template<class H, class C>
         void handle(H handler, time_type now, C capacity_delay) {
             constexpr auto debounce_delay = static_cast<TimeType>(Config::debounce_delay);
+            constexpr auto release_delay = static_cast<TimeType>(Config::release_delay);
             constexpr auto press_delay = static_cast<TimeType>(Config::press_delay);
-
-            typename Reader::cfg_gpio();
 
             for (size_t r = 0; r < rows; r++) {
                 Selector::select_row(r);
@@ -120,7 +121,7 @@ namespace zoal { namespace io {
                     auto &m = machines[r][c];
                     uint8_t v = 1 - Reader::read_column(c);
                     auto dt = now - prev_time[r][c];
-                    auto switched = m.handle(v, dt, debounce_delay, press_delay);
+                    auto switched = m.handle(v, dt, debounce_delay, release_delay, press_delay);
                     if (switched) {
                         prev_time[r][c] = now;
                     }

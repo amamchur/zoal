@@ -7,23 +7,24 @@
 
 namespace zoal { namespace io {
 
-    template<bool Active_Low, uint8_t DebounceDelay = 5, uint16_t PressDelay = 100
+    template<bool Active_Low, uint8_t DebounceDelay = 5, uint16_t ReleaseDelay = 500, uint16_t PressInterval = 30
         , uint16_t DecPressDelay = 25, uint16_t MinPressDelay = 25>
     class button_config {
     public:
         static constexpr bool active_low = Active_Low;
         static constexpr uint16_t debounce_delay = DebounceDelay;
-        static constexpr uint16_t press_delay = PressDelay;
-        static constexpr uint16_t dec_press_delay = DecPressDelay;
-        static constexpr uint16_t min_press_delay = MinPressDelay;
+        static constexpr uint16_t release_delay = ReleaseDelay;
+        static constexpr uint16_t repeat_interval = PressInterval;
+        static constexpr uint16_t dec_repeat_interval = DecPressDelay;
+        static constexpr uint16_t min_repeat_interval = MinPressDelay;
 
         using machine = button_state_machine;
     };
 
-    using active_low_button = button_config<true, 5, 250>;
-    using active_high_button = button_config<false, 5, 250>;
-    using active_low_no_press = button_config<true, 5, 0>;
-    using active_high_no_press = button_config<false, 5, 0>;
+    using active_low_button = button_config<true, 5, 500, 30>;
+    using active_high_button = button_config<false, 5, 500, 30>;
+    using active_low_no_press = button_config<true, 5, 0, 0>;
+    using active_high_no_press = button_config<false, 5, 0, 0>;
 
     template<class TimeType, class Config>
     class base_button {
@@ -50,9 +51,10 @@ namespace zoal { namespace io {
 
             auto dt = current_time - this->prev_time;
             constexpr auto debounce = static_cast<typeof(dt)>(Config::debounce_delay);
-            constexpr auto press = static_cast<typeof(dt)>(Config::press_delay);
+            constexpr auto release = static_cast<typeof(dt)>(Config::release_delay);
+            constexpr auto press = static_cast<typeof(dt)>(Config::repeat_interval);
             uint8_t value = Config::active_low ? pin::read() ^ 1u : pin::read();
-            auto switched = machine.handle(value, dt, debounce, press);
+            auto switched = machine.handle(value, dt, debounce, release, press);
 
             if (switched) {
                 this->prev_time = current_time;
@@ -88,7 +90,8 @@ namespace zoal { namespace io {
             auto dt = current_time - this->prev_time;
             auto value = Config::active_low ? pin::read() ^ 1u : pin::read();
             constexpr auto debounce = static_cast<typeof(dt)>(Config::debounce_delay);
-            auto switched = this->machine_.handle(static_cast<uint8_t>(value), dt, debounce, static_cast<typeof(dt)>(press_delay_ms));
+            constexpr auto release = static_cast<typeof(dt)>(Config::release_delay);
+            auto switched = this->machine_.handle(static_cast<uint8_t>(value), dt, debounce, release, static_cast<typeof(dt)>(repeat_interval));
 
             if (switched) {
                 this->prev_time = current_time;
@@ -97,12 +100,12 @@ namespace zoal { namespace io {
             this->machine_.invoke_callback([&](button_event e) {
                 switch (e) {
                 case button_event::press:
-                    if (press_delay_ms > Config::min_press_delay) {
-                        press_delay_ms -= Config::dec_press_delay;
+                    if (repeat_interval > Config::min_repeat_interval) {
+                        repeat_interval -= Config::dec_repeat_interval;
                     }
                     break;
                 case button_event::up:
-                    press_delay_ms = Config::press_delay;
+                    repeat_interval = Config::repeat_interval;
                     break;
                 default:
                     break;
@@ -122,7 +125,7 @@ namespace zoal { namespace io {
         }
 
     protected:
-        uint16_t press_delay_ms{Config::press_delay};
+        uint16_t repeat_interval{Config::press_delay};
     };
 }}
 

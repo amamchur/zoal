@@ -16,8 +16,7 @@ const char *help_message = "ZOAL FreeRTOS Demo Application\r\n"
                            "\t time\t\t\tprint RTC time\r\n"
                            "\t set-time [hh:mm::ss]\tset RTC time\r\n"
                            "\t heap\t\t\tFreeRTOS free heap size \r\n"
-                           "\t task-info [name]\tprint task info (name: main; input, command)\r\n"
-                           "\r\n";
+                           "\t task-info [name]\tprint task info (name: main; input, command)\r\n";
 
 const char key_map[][3] = { //
     {'1', '2', '3'},

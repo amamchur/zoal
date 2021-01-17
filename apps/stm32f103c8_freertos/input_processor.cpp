@@ -7,16 +7,10 @@
 #include "types.hpp"
 
 #include <FreeRTOS.h>
-#include <zoal/io/button.hpp>
-#include <zoal/io/matrix_keypad.hpp>
-
-using row_selector = zoal::io::keypad_row_selector<mcu::pa_00, mcu::pa_01, mcu::pa_02, mcu::pa_03>;
-using column_reader = zoal::io::keypad_column_reader<mcu::pa_04, mcu::pa_05, mcu::pa_06>;
-using keypad_type = zoal::io::matrix_keypad<TickType_t, row_selector, column_reader>;
 
 static keypad_type keypad;
-static zoal::io::button<TickType_t, mcu::pb_12> user_button_1;
-static zoal::io::button<TickType_t, mcu::pb_13> user_button_2;
+static user_button_1_type user_button_1;
+static user_button_2_type user_button_2;
 
 [[noreturn]] void zoal_input_processor(void *) {
     auto button_callback = [](zoal::io::button_event e, app_cmd cmd) {

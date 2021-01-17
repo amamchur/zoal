@@ -46,8 +46,8 @@ namespace zoal { namespace arch { namespace avr {
 
         using enable_cas = zoal::mem::null_cas_list;
         using disable_cas = zoal::mem::null_cas_list;
-        using power_on_cas = zoal::mem::null_cas_list;
-        using power_off_cas = mode_cas<::zoal::gpio::pin_mode::input_floating, PinMask>;
+        using clock_on_cas = zoal::mem::null_cas_list;
+        using clock_off_cas = mode_cas<::zoal::gpio::pin_mode::input_floating, PinMask>;
 
         template<register_type Mask>
         using low_cas = cas_list<typename PORTx::template cas<Mask, 0>>;

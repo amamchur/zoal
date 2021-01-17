@@ -146,8 +146,6 @@ set(STM32F103_BLUE_PILL_FLASH_LD cubemx-proj/stm32f103_blue_pill/STM32F103C8Tx_F
 # STM32CubeMX project variables for cubemx-proj/stm32f103_freertos
 set(STM32F103_FREERTOS_SRC 
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c
-        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc.c
-        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_adc_ex.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c
@@ -172,7 +170,6 @@ set(STM32F103_FREERTOS_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/timers.c
-        cubemx-proj/stm32f103_freertos/Src/adc.c
         cubemx-proj/stm32f103_freertos/Src/freertos.c
         cubemx-proj/stm32f103_freertos/Src/gpio.c
         cubemx-proj/stm32f103_freertos/Src/main.c
@@ -194,6 +191,38 @@ set(STM32F103_FREERTOS_INC
 set(STM32F103_FREERTOS_DEFS -DUSE_HAL_DRIVER -DSTM32F103xB)
 set(STM32F103_FREERTOS_OPT_MCU -mcpu=cortex-m3 -mthumb)
 set(STM32F103_FREERTOS_FLASH_LD cubemx-proj/stm32f103_freertos/STM32F103C8Tx_FLASH.ld)
+
+# STM32CubeMX project variables for cubemx-proj/stm32f103_test
+set(STM32F103_TEST_SRC 
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c
+        cubemx-proj/stm32f103_test/Src/main.c
+        cubemx-proj/stm32f103_test/Src/stm32f1xx_hal_msp.c
+        cubemx-proj/stm32f103_test/Src/stm32f1xx_hal_timebase_tim.c
+        cubemx-proj/stm32f103_test/Src/stm32f1xx_it.c
+        cubemx-proj/stm32f103_test/Src/system_stm32f1xx.c
+        cubemx-proj/stm32f103_test/startup_stm32f103xb.s)
+set(STM32F103_TEST_INC 
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/CMSIS/Include
+        cubemx-proj/Drivers/CMSIS/Device/ST/STM32F1xx/Include
+        cubemx-proj/Drivers/CMSIS/Include
+        cubemx-proj/Drivers/STM32F1xx_HAL_Driver/Inc
+        cubemx-proj/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy
+        cubemx-proj/stm32f103_test/Inc)
+set(STM32F103_TEST_DEFS -DUSE_HAL_DRIVER -DSTM32F103xB)
+set(STM32F103_TEST_OPT_MCU -mcpu=cortex-m3 -mthumb)
+set(STM32F103_TEST_FLASH_LD cubemx-proj/stm32f103_test/STM32F103C8Tx_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32f303_discovery
 set(STM32F303_DISCOVERY_SRC 

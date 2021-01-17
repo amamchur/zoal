@@ -5,38 +5,12 @@
 #include "constants.hpp"
 #include "hardware.hpp"
 #include "input_processor.hpp"
-#include "rtc.h"
 #include "stm32f1xx_hal.h"
-#include "stm32f1xx_ll_adc.h"
 #include "terminal.hpp"
+#include "rtc.h"
+#include "gpio.h"
 
-#include <algorithm>
-#include <zoal/arch/cortex/stm32f1/adc.hpp>
 #include <zoal/freertos/task.hpp>
-
-using adc = zoal::arch::stm32f1::adc<0x40012400>;
-
-volatile uint32_t adc_value;
-
-[[noreturn]] static void zoal_adc_read(void *) {
-    adc::enable();
-
-    int wait_loop_index = ((LL_ADC_DELAY_ENABLE_CALIB_ADC_CYCLES * 32) >> 1);
-    while (wait_loop_index != 0) {
-        wait_loop_index--;
-    }
-    LL_ADC_StartCalibration(ADC1);
-    while (LL_ADC_IsCalibrationOnGoing(ADC1) != 0) {
-    }
-
-    while (true) {
-        adc::start();
-        adc::wait();
-        adc_value = adc::read();
-        tx_stream << adc_value << "\r\n";
-        vTaskDelay(1000);
-    }
-}
 
 [[noreturn]] void zoal_default_thread(void *);
 
@@ -60,7 +34,14 @@ struct cas_print_functor {
     terminal.greeting(terminal_greeting);
     terminal.clear();
 
-    tx_stream << zoal_ascii_logo << help_message;
+    tx_stream << zoal_ascii_logo;
+    for (int i = 0; i < 60; ++i) {
+        tx_stream << '.';
+        vTaskDelay(20);
+    }
+
+    tx_stream << "\r\033[2K" << help_message << "Current time: ";
+    print_time();
 
     //    using cas = mcu::cfg::usart<usart_01, zoal::periph::usart_115200<36000000>>::apply;
     //    cas_print_functor fn;
@@ -83,6 +64,7 @@ int main() {
     HAL_Init();
     SystemClock_Config();
 
+    MX_GPIO_Init();
     MX_RTC_Init();
 
     zoal_init_hardware();
@@ -90,4 +72,3 @@ int main() {
     vTaskStartScheduler();
     return 0;
 }
-
