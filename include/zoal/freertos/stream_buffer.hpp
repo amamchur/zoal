@@ -20,6 +20,25 @@ namespace zoal { namespace freertos {
             return xStreamBufferSend(handle_, data, size, ticks_to_wait);
         }
 
+        template<class Yield>
+        void send_all(const void *data, size_t size, Yield yield) {
+            auto ptr = reinterpret_cast<const char *>(data);
+            while (true) {
+                auto sent = xStreamBufferSend(handle_, data, size, 0);
+                size -= sent;
+                ptr += sent;
+                if (size > 0) {
+                    yield();
+                } else {
+                    break;
+                }
+            }
+        }
+
+        void send_all(const void *data, size_t size) {
+            send_all(data, size, [](){});
+        }
+
         template<class T>
         inline size_t send_isr(T value) {
             BaseType_t xHigherPriorityTaskWoken = pdFALSE;

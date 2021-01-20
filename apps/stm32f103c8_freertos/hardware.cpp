@@ -7,34 +7,42 @@
 zoal::mem::reserve_mem<stream_buffer_type, 32> rx_stream_buffer(1);
 zoal::mem::reserve_mem<stream_buffer_type, 32> tx_stream_buffer(1);
 
-tx_stream_type tx_stream;
+usart_01_tx_transport transport;
+tx_stream_type tx_stream(transport);
 
 void zoal_init_hardware() {
     using api = zoal::gpio::api;
     using usart_01_cfg = zoal::periph::usart_115200<72000000>;
+    using usart_mux = mcu::mux::usart<usart_01, mcu::pb_07, mcu::pb_06>;
+    using usart_cfg = mcu::cfg::usart<usart_01, usart_01_cfg>;
 
-    api::optimize<api::clock_on<usart_01, mcu::port_a, mcu::port_b, mcu::port_c, mcu::port_d>>();
-    api::optimize<api::disable<usart_01>>();
-
+    // Enable bus clock for peripherals
     api::optimize<
         //
-        mcu::mux::usart<usart_01, mcu::pa_10, mcu::pa_09>::connect,
-        mcu::cfg::usart<usart_01, usart_01_cfg>::apply,
-
-        keypad_type::gpio_cfg,
-//        user_button_1_type::gpio_cfg,
-//        user_button_2_type::gpio_cfg,
-
-        api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12, mcu::pb_13>,
-        api::mode<zoal::gpio::pin_mode::output_open_drain, user_led>
-
+        usart_mux::periph_clock_on,
+        usart_cfg::periph_clock_on
+        //
         >();
 
+    // Disable peripherals before configuration
+    api::optimize<api::disable<usart_01>>();
+
+    // Configuring everything
+    api::optimize<
+        //
+        usart_mux::connect,
+        usart_cfg::apply,
+        user_led::gpio_cfg,
+        keypad_type::gpio_cfg,
+        api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12, mcu::pb_13>>();
+
+    // Enable peripherals after configuration
     api::optimize<api::enable<usart_01>>();
-    usart_01::enable_rx();
 
     HAL_NVIC_SetPriority(USART1_IRQn, 13, 0);
     HAL_NVIC_EnableIRQ(USART1_IRQn);
+
+    usart_01::enable_rx();
 }
 
 void usart_01_tx_transport::send_byte(uint8_t value) {
@@ -45,7 +53,7 @@ void usart_01_tx_transport::send_byte(uint8_t value) {
 void usart_01_tx_transport::send_data(const void *data, size_t size) {
     auto ptr = reinterpret_cast<const char *>(data);
     while (size > 0) {
-        auto sent = tx_stream_buffer.send(ptr, size, 1);
+        auto sent = tx_stream_buffer.send(ptr, size, 0);
         usart_01 ::enable_tx();
         size -= sent;
         ptr += sent;

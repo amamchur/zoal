@@ -9,14 +9,14 @@
 #include "scheduler.hpp"
 
 namespace zoal { namespace utils {
-    template<class Microcontroller, class Counter, class Logger, class... Mixin>
+    template<class Microcontroller, uint32_t Frequency, class Counter, class Logger, class... Mixin>
     class tool_set : public Mixin... {
     public:
         using mcu = Microcontroller;
         using counter = Counter;
         using logger = Logger;
         using counter_value_type = typename Counter::value_type;
-        using delay = utils::delay<mcu, counter>;
+        using delay = utils::delay<Frequency, counter>;
 
         template<size_t Capacity, class Token = void>
         using function_scheduler = typename ::zoal::utils::function_scheduler<counter, Capacity, Token>;

@@ -8,10 +8,10 @@
 extern volatile uint32_t uwTick;
 
 using counter = zoal::utils::ms_counter<uint32_t, &uwTick>;
-using mcu = zoal::mcu::stm32f030f4px<8000000, 6>; // 48 MHz
+using mcu = zoal::mcu::stm32f030f4px; // 48 MHz
 
 using usart_01 = mcu::usart_01;
-using tools = zoal::utils::tool_set<mcu, counter, void>;
+using tools = zoal::utils::tool_set<mcu, 48000000, counter, void>;
 using delay = tools::delay;
 
 extern "C" [[noreturn]] void zoal_main() {
@@ -19,11 +19,12 @@ extern "C" [[noreturn]] void zoal_main() {
 
     SysTick_Config(SystemCoreClock / 1000);
 
-    usart_01::power_on();
-    mcu::port_a::power_on();
+    usart_01::clock_on();
+    mcu::port_a::clock_on();
 
+    using usart_01_cfg = zoal::periph::usart_115200<48000000>;
     mcu::mux::usart<usart_01, mcu::pa_03, mcu::pa_02>::on();
-    mcu::cfg::usart<usart_01, 115200>::apply();
+    mcu::cfg::usart<usart_01, usart_01_cfg>::apply();
 //    mcu::enable<usart_01>::on();
 
     //NVIC_EnableIRQ(USART1_IRQn);

@@ -3,7 +3,8 @@
 
 #include "../ct/check.hpp"
 #include "../ct/type_list.hpp"
-#include "pin.hpp"
+#include "../mem/cas.hpp"
+#include "./pin_mode.hpp"
 
 namespace zoal { namespace gpio {
     struct enable_cas {

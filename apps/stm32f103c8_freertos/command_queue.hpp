@@ -18,7 +18,8 @@ struct command_msg {
 
     app_cmd command;
     union {
-        update_date_time_args update_time{};
+        update_date_time_args update_time{0};
+        char task_name[configMAX_TASK_NAME_LEN];
     };
 };
 

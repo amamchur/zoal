@@ -5,9 +5,9 @@
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 
-using mcu = zoal::mcu::stm32f303retx<>;
+using mcu = zoal::mcu::stm32f303retx;
 using counter = zoal::utils::ms_counter<uint32_t, &uwTick>;
-using tools = zoal::utils::tool_set<mcu, counter, void>;
+using tools = zoal::utils::tool_set<mcu, 72000000, counter, void>;
 using delay = typename tools::delay;
 using pcb = zoal::pcb;
 
@@ -17,7 +17,7 @@ extern "C" [[noreturn]] void zoal_main() {
 
     api::optimize<
         //
-        api::power_on<led::port>,
+        api::clock_on<led::port>,
         api::mode<zoal::gpio::pin_mode::output, led>
         //
         >();

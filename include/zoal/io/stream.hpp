@@ -58,39 +58,6 @@ namespace zoal { namespace io {
         }
     };
 
-    struct buffer_functor : public output_stream_functor<buffer_functor> {
-        buffer_functor(const void *buffer, size_t count)
-            : buffer((const uint8_t *)buffer)
-            , count(count) {}
-
-        template<class T>
-        void write() {
-            T::send_data(buffer, count);
-        }
-
-        const uint8_t *buffer;
-        size_t count;
-    };
-
-    struct ignore_functor : public input_stream_functor<ignore_functor> {
-        ignore_functor(int count, char ch)
-            : count(count)
-            , ch(ch) {}
-
-        bool operator()(uint8_t value) {
-            return !(--count <= 0 || value == ch);
-        }
-
-        int count;
-        char ch;
-    };
-
-    struct white_space_functor : public input_stream_functor<white_space_functor> {
-        bool operator()(uint8_t value) {
-            return isspace(value);
-        }
-    };
-
     using pos = cursor_position;
 
     const stream_value<'\n'> endl;
@@ -98,7 +65,6 @@ namespace zoal { namespace io {
     const radix_value<10> dec;
     const radix_value<8> oct;
     const precision_value<0> fixed;
-    const white_space_functor ws;
 }}
 
 #endif

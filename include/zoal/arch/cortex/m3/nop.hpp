@@ -1,39 +1,47 @@
 #ifndef ZOAL_ARCH_CORTEX_NOOP_CYCLES_HPP
 #define ZOAL_ARCH_CORTEX_NOOP_CYCLES_HPP
 
+#include "./dwt.hpp"
+
 #include <stdint.h>
 
 namespace zoal { namespace utils {
     template<int32_t Count>
     struct nop;
 
-    template<bool NoInlineLoop, int32_t Count>
-    struct nop_strategy {};
-
-    template<class Dummy>
-    __attribute__((noinline)) void noinline_loop(uint32_t q) {
-        asm volatile("1:	sub 	%[count],     #1		\n"
-                     "      cmp     %[count],     #0      \n"
-                     "   	bne     1b			    \n"
-        :
-        : [count] "r" (q)
-        : "r0", "cc");
-    }
+    template<int32_t Count, bool UseDataWatchpointTrigger>
+    struct nop_stragegy {
+    };
 
     template<int32_t Count>
-    struct nop_strategy<true, Count> {
-        static constexpr int32_t call_overhead = 5;
-        static constexpr int32_t loops = (Count - call_overhead) / 9;
-        static constexpr int32_t rest = Count - (loops * 9) - call_overhead;
+    struct nop_stragegy<Count, true> {
+        static constexpr uint32_t overhead = 32;
+        static constexpr uint32_t cycles = Count - overhead;
 
         static inline __attribute__((always_inline)) void place() {
-            nop<rest>::place();
-            noinline_loop<void>(static_cast<uint32_t >(loops));
+            zoal::arch::dwt::nop(cycles);
         }
     };
 
     template<int32_t Count>
-    struct nop : nop_strategy<(Count > 16), Count> {};
+    struct nop_stragegy<Count, false> {
+        static constexpr uint32_t part_3 = (Count >= 48) ? 16 : 0;
+        static constexpr uint32_t part_2 = (Count >= 32) ? 16 : 0;
+        static constexpr uint32_t part_1 = (Count >= 16) ? 16 : 0;
+        static constexpr uint32_t rest = Count % 16;
+
+        static inline __attribute__((always_inline)) void place() {
+            nop<part_3>::place();
+            nop<part_2>::place();
+            nop<part_1>::place();
+            nop<rest>::place();
+        }
+    };
+
+    template<int32_t Count>
+    struct nop : public nop_stragegy<Count, (Count >= 64)> {
+        nop() = delete;
+    };
 
     template<>
     struct nop<0> {
@@ -52,7 +60,8 @@ namespace zoal { namespace utils {
         static constexpr bool applicable = true;
 
         static inline __attribute__((always_inline)) void place() {
-            asm volatile("nop \n nop \n");
+            asm volatile("nop \n"
+                         "nop \n");
         }
     };
 
@@ -61,7 +70,9 @@ namespace zoal { namespace utils {
         static constexpr bool applicable = true;
 
         static inline __attribute__((always_inline)) void place() {
-            asm volatile("nop \n nop \n nop \n");
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 
@@ -70,7 +81,10 @@ namespace zoal { namespace utils {
         static constexpr bool applicable = true;
 
         static inline __attribute__((always_inline)) void place() {
-            asm volatile("nop \n nop \n nop \n nop \n");
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 
@@ -79,7 +93,11 @@ namespace zoal { namespace utils {
         static constexpr bool applicable = true;
 
         static inline __attribute__((always_inline)) void place() {
-            asm volatile("nop \n nop \n nop \n nop \n nop \n");
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 
@@ -88,7 +106,12 @@ namespace zoal { namespace utils {
         static constexpr bool applicable = true;
 
         static inline __attribute__((always_inline)) void place() {
-            asm volatile("nop \n nop \n nop \n nop \n nop \n nop \n");
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 
@@ -97,7 +120,13 @@ namespace zoal { namespace utils {
         static constexpr bool applicable = true;
 
         static inline __attribute__((always_inline)) void place() {
-            asm volatile("nop \n nop \n nop \n nop \n nop \n nop \n nop \n");
+            asm volatile("nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n"
+                         "nop \n");
         }
     };
 
@@ -134,50 +163,27 @@ namespace zoal { namespace utils {
 
     template<>
     struct nop<10> {
-        static inline __attribute__((always_inline)) void place() {
-            asm volatile("nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n");
+        static __attribute__((noinline)) void place() {
+            asm volatile("nop \n");
         }
     };
 
     template<>
     struct nop<11> {
-        static inline __attribute__((always_inline)) void place() {
+        nop() = delete;
+
+        static __attribute__((noinline)) void place() {
             asm volatile("nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
                          "nop \n");
         }
     };
 
     template<>
     struct nop<12> {
-        static inline __attribute__((always_inline)) void place() {
+        nop() = delete;
+
+        static __attribute__((noinline)) void place() {
             asm volatile("nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
                          "nop \n"
                          "nop \n");
         }
@@ -185,17 +191,10 @@ namespace zoal { namespace utils {
 
     template<>
     struct nop<13> {
-        static inline __attribute__((always_inline)) void place() {
+        nop() = delete;
+
+        static __attribute__((noinline)) void place() {
             asm volatile("nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
                          "nop \n"
                          "nop \n"
                          "nop \n");
@@ -204,17 +203,10 @@ namespace zoal { namespace utils {
 
     template<>
     struct nop<14> {
-        static inline __attribute__((always_inline)) void place() {
+        nop() = delete;
+
+        static __attribute__((noinline)) void place() {
             asm volatile("nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
                          "nop \n"
                          "nop \n"
                          "nop \n"
@@ -224,17 +216,10 @@ namespace zoal { namespace utils {
 
     template<>
     struct nop<15> {
-        static inline __attribute__((always_inline)) void place() {
+        nop() = delete;
+
+        static __attribute__((noinline)) void place() {
             asm volatile("nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
                          "nop \n"
                          "nop \n"
                          "nop \n"
@@ -245,17 +230,10 @@ namespace zoal { namespace utils {
 
     template<>
     struct nop<16> {
-        static inline __attribute__((always_inline)) void place() {
+        nop() = delete;
+
+        static __attribute__((noinline)) void place() {
             asm volatile("nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
-                         "nop \n"
                          "nop \n"
                          "nop \n"
                          "nop \n"

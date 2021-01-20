@@ -2,6 +2,7 @@
 #define ZOAL_ARCH_STM32F1_CFG_HPP
 
 #include "../../../ct/type_list.hpp"
+#include "../../../gpio/api.hpp"
 #include "../../../mem/cas.hpp"
 #include "../../../periph/usart.hpp"
 #include "../../bus.hpp"
@@ -24,12 +25,13 @@ namespace zoal { namespace metadata {
 
 namespace zoal { namespace arch { namespace stm32f1 {
     using zoal::ct::type_list;
+    using zoal::gpio::api;
+    using zoal::mem::callable_cas_list_variadic;
 
     template<class Microcontroller>
     class cfg {
     public:
         using mcu = Microcontroller;
-        using api = typename mcu::api;
 
         template<class U, class Cfg>
         class usart {
@@ -49,12 +51,16 @@ namespace zoal { namespace arch { namespace stm32f1 {
             static constexpr auto mantissa = static_cast<uint16_t>((divider - int_part) * 16);
             static constexpr uint16_t bbr_set = (int_part << 4) + mantissa;
 
+            using usart_clock_on = typename U::clock_on_cas;
+
             using USARTx_CR1 = typename U::USARTx_CR1::template cas<cr1_clear, cr1_set>;
             using USARTx_CR2 = typename U::USARTx_CR2::template cas<cr2_clear, cr2_set>;
             using USARTx_CR3 = typename U::USARTx_CR3::template cas<0x300, 0>;
             using USARTx_BRR = typename U::USARTx_BRR::template cas<0, bbr_set>;
 
-            using apply = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR3, USARTx_BRR>;
+            using cas_list = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR3, USARTx_BRR>;
+            using periph_clock_on = api::optimize<usart_clock_on>;
+            using apply = api::optimize<cas_list>;
         };
 
         template<class T, class Cfg>

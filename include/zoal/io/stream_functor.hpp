@@ -5,10 +5,6 @@ namespace zoal { namespace io {
     template<class T>
     struct output_stream_functor {
     };
-
-    template<class T>
-    struct input_stream_functor {
-    };
 }}
 
 #endif

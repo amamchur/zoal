@@ -14,8 +14,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
     struct pin_mode_to_gpio {};
 
     template<class P, uint32_t Mask>
-    struct pin_mode_to_gpio<P, pin_mode::input_floating, Mask>
-        : type_list<typename P::GPIOx_BSRR::template cas<0, 0>> {
+    struct pin_mode_to_gpio<P, pin_mode::input_floating, Mask> : type_list<typename P::GPIOx_BSRR::template cas<0, 0>> {
         static constexpr uint32_t crx = 0x4 | 0x0;
     };
 
@@ -41,32 +40,33 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
     template<class P, uint32_t CnfMode, uint32_t Mask>
     struct cnf_mode_to_cas {
-        static constexpr auto crx_c = 0x0F;
-        static constexpr auto crx_s = CnfMode;
+        static constexpr uint32_t zero = 0x00;
+        static constexpr uint32_t crx_c = 0x0F;
+        static constexpr uint32_t crx_s = CnfMode;
 
         template<uintptr_t V, uint8_t Shift = 0>
-        using crl_cas = typename P::GPIOx_CRL::template cas<(V != 0 ? crx_c : 0) << Shift, (V != 0 ? crx_s : 0) << Shift>;
+        using crl_cas = typename P::GPIOx_CRL::template cas<(V != zero ? crx_c : zero) << Shift, (V != zero ? crx_s : zero) << Shift>;
 
         template<uintptr_t V, uint8_t Shift = 0>
-        using crh_cas = typename P::GPIOx_CRH::template cas<(V != 0 ? crx_c : 0) << Shift, (V != 0 ? crx_s : 0) << Shift>;
+        using crh_cas = typename P::GPIOx_CRH::template cas<(V != zero ? crx_c : zero) << Shift, (V != zero ? crx_s : zero) << Shift>;
 
-        using p00 = crl_cas<(Mask & (1 << 0x0)), 0>;
-        using p01 = crl_cas<(Mask & (1 << 0x1)), 4>;
-        using p02 = crl_cas<(Mask & (1 << 0x2)), 8>;
-        using p03 = crl_cas<(Mask & (1 << 0x3)), 12>;
-        using p04 = crl_cas<(Mask & (1 << 0x4)), 16>;
-        using p05 = crl_cas<(Mask & (1 << 0x5)), 20>;
-        using p06 = crl_cas<(Mask & (1 << 0x6)), 24>;
-        using p07 = crl_cas<(Mask & (1 << 0x7)), 28>;
+        using p00 = crl_cas<(Mask & (1u << 0x0)), 0>;
+        using p01 = crl_cas<(Mask & (1u << 0x1)), 4>;
+        using p02 = crl_cas<(Mask & (1u << 0x2)), 8>;
+        using p03 = crl_cas<(Mask & (1u << 0x3)), 12>;
+        using p04 = crl_cas<(Mask & (1u << 0x4)), 16>;
+        using p05 = crl_cas<(Mask & (1u << 0x5)), 20>;
+        using p06 = crl_cas<(Mask & (1u << 0x6)), 24>;
+        using p07 = crl_cas<(Mask & (1u << 0x7)), 28>;
 
-        using p08 = crh_cas<(Mask & (1 << 0x8)), 0>;
-        using p09 = crh_cas<(Mask & (1 << 0x9)), 4>;
-        using p10 = crh_cas<(Mask & (1 << 0xA)), 8>;
-        using p11 = crh_cas<(Mask & (1 << 0xB)), 12>;
-        using p12 = crh_cas<(Mask & (1 << 0xC)), 16>;
-        using p13 = crh_cas<(Mask & (1 << 0xD)), 20>;
-        using p14 = crh_cas<(Mask & (1 << 0xE)), 24>;
-        using p15 = crh_cas<(Mask & (1 << 0xF)), 28>;
+        using p08 = crh_cas<(Mask & (1u << 0x8)), 0>;
+        using p09 = crh_cas<(Mask & (1u << 0x9)), 4>;
+        using p10 = crh_cas<(Mask & (1u << 0xA)), 8>;
+        using p11 = crh_cas<(Mask & (1u << 0xB)), 12>;
+        using p12 = crh_cas<(Mask & (1u << 0xC)), 16>;
+        using p13 = crh_cas<(Mask & (1u << 0xD)), 20>;
+        using p14 = crh_cas<(Mask & (1u << 0xE)), 24>;
+        using p15 = crh_cas<(Mask & (1u << 0xF)), 28>;
 
         using list = type_list<p00, p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13, p14, p15>;
         using all = typename zoal::gpio::api::optimize<list>;
@@ -87,7 +87,8 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
         static constexpr uintptr_t address = Address;
         static constexpr uint32_t pin_mask = PinMask;
-
+        static constexpr zoal::gpio::features feature = static_cast<zoal::gpio::features>(zoal::gpio::features::output_speed |
+                                                                                          zoal::gpio::features::output_open_drain);
         using GPIOx_CRL = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
         using GPIOx_CRH = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
         using GPIOx_IDR = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
@@ -102,17 +103,14 @@ namespace zoal { namespace arch { namespace stm32f1 {
         template<::zoal::gpio::pin_mode PinMode, uint32_t Mask>
         using port_pin_mode_cfg = pin_mode_cfg<self_type, PinMode, Mask>;
 
-        using enable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-        using disable_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
         using mode_cas = typename port_pin_mode_cfg<PinMode, Mask>::all;
 
         template<register_type Mask>
-        using low_cas = zoal::ct::type_list<typename GPIOx_BRR::template cas<0, Mask>>;
+        using low_cas = zoal::mem::callable_cas_list_variadic<typename GPIOx_BRR::template cas<0, Mask>>;
 
         template<register_type Mask>
-        using high_cas = zoal::ct::type_list<typename GPIOx_BSRR::template cas<0, Mask>>;
+        using high_cas = zoal::mem::callable_cas_list_variadic<typename GPIOx_BSRR::template cas<0, Mask>>;
 
         ZOAL_INLINE_IO static register_type read() {
             return GPIOx_IDR::ref();

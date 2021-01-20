@@ -38,7 +38,8 @@ const familyMap = {
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
-            '#include <zoal/gpio/api.hpp>'
+            '#include <zoal/gpio/api.hpp>',
+            '#include <zoal/gpio/pin.hpp>'
         ],
         classDeclaration: [
             ``,
@@ -76,6 +77,7 @@ const familyMap = {
             '#include <zoal/arch/cortex/stm32f1/port.hpp>',
             '#include <zoal/arch/cortex/stm32f1/usart.hpp>',
             '#include <zoal/arch/cortex/stm32f1/timer.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/metadata.hpp>',
         ],
         classDeclaration: [
             `using afio = ::zoal::arch::stm32f1::afio<0x40010000, clock_apb2<0x00000001>>;`,
@@ -131,11 +133,12 @@ const familyMap = {
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
-            '#include <zoal/gpio/api.hpp>'
+            '#include <zoal/gpio/api.hpp>',
+            '#include <zoal/gpio/pin.hpp>'
         ],
         classDeclaration: [
-            `template<uintptr_t Address, uint8_t N, class Clock>`,
-            `using adc = typename ::zoal::arch::stm32x::adc<Address, N, Clock>;`,
+            `template<uintptr_t Address, class Clock>`,
+            `using adc = typename ::zoal::arch::stm32x::adc<Address, Clock>;`,
             ``,
             `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
             `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
@@ -179,9 +182,6 @@ const familyMap = {
             tim15: null,
             tim16: null,
             tim17: null,
-            tim2: {bus: 'apb1', address: 0x40000000, busClockMask: 0x000000001},
-            tim3: {bus: 'apb1', address: 0x40000400, busClockMask: 0x000000002},
-            tim4: {bus: 'apb1', address: 0x40000800, busClockMask: 0x000000004},
             tim8: null,
             tsc_g1: null,
             tsc_g2: null,

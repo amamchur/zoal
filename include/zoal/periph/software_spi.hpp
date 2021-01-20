@@ -67,15 +67,15 @@ namespace zoal { namespace periph {
 
         static void enable() {
             using namespace zoal::gpio;
-            Mosi::template mode<pin_mode::output_push_pull>();
-            Clock::template mode<pin_mode::output_push_pull>();
-            Clock::template set<polarity>();
+            typename Mosi::template mode<pin_mode::output_push_pull>();
+            typename Clock::template mode<pin_mode::output_push_pull>();
+            typename Clock::template set<polarity>();
         }
 
         static void disable() {
             using namespace zoal::gpio;
-            Mosi::template mode<pin_mode::input_floating>();
-            Clock::template mode<pin_mode::input_floating>();
+            typename Mosi::template mode<pin_mode::input_floating>();
+            typename Clock::template mode<pin_mode::input_floating>();
         }
     };
 }}

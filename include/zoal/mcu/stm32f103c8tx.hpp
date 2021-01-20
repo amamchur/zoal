@@ -8,6 +8,7 @@
 #include <zoal/arch/cortex/stm32f1/adc.hpp>
 #include <zoal/arch/cortex/stm32f1/afio.hpp>
 #include <zoal/arch/cortex/stm32f1/cfg.hpp>
+#include <zoal/arch/cortex/stm32f1/metadata.hpp>
 #include <zoal/arch/cortex/stm32f1/mux.hpp>
 #include <zoal/arch/cortex/stm32f1/port.hpp>
 #include <zoal/arch/cortex/stm32f1/timer.hpp>
@@ -48,9 +49,9 @@ namespace zoal { namespace mcu {
         using adc_01 = ::zoal::arch::stm32f1::adc<0x40012400, clock_apb2<0x00001000>>;
         using adc_02 = ::zoal::arch::stm32f1::adc<0x40012800, clock_apb2<0x00002000>>;
 
-        using timer_01 = zoal::arch::stm32f1::timer<0x40012C00, clock_apb1<0x00000004>>;
-        using timer_02 = zoal::arch::stm32f1::timer<0x40000000, clock_apb1<0x00000004>>;
-        using timer_03 = zoal::arch::stm32f1::timer<0x40000400, clock_apb1<0x00000004>>;
+        using timer_01 = zoal::arch::stm32f1::timer<0x40012C00, clock_apb2<0x00000800>>;
+        using timer_02 = zoal::arch::stm32f1::timer<0x40000000, clock_apb1<0x00000001>>;
+        using timer_03 = zoal::arch::stm32f1::timer<0x40000400, clock_apb1<0x00000002>>;
         using timer_04 = zoal::arch::stm32f1::timer<0x40000800, clock_apb1<0x00000004>>;
 
         using usart_01 = typename ::zoal::arch::stm32f1::usart<0x40013800, clock_apb2<0x00004000>>;

@@ -6,8 +6,8 @@
 #include <stdint.h>
 
 namespace zoal { namespace arch { namespace stm32x {
-    template<uintptr_t Address, uint8_t N, class Clock>
-    class adc : public Clock {
+    template<uintptr_t Address, class... Mixin>
+    class adc : public Mixin... {
     private:
         enum A2DC_Flags : uint32_t { Enable = 0x00000001, StartRegularConversion = 0x00000004 };
 
@@ -42,7 +42,6 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr uintptr_t ADCx_CALFACT = 0xB4;
 
         static constexpr uintptr_t address = Address;
-        static constexpr uint8_t no = N;
         static constexpr uint8_t resolution = 12;
 
         static void enable() {

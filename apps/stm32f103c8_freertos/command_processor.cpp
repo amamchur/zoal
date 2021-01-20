@@ -4,11 +4,11 @@
 #include "command_queue.hpp"
 #include "constants.hpp"
 #include "hardware.hpp"
+#include "rtc.h"
 #include "stm32f1xx_hal.h"
 #include "task.h"
 #include "terminal.hpp"
 #include "types.hpp"
-#include "rtc.h"
 
 static inline void format_byte(char *ptr, uint8_t v) {
     ptr[0] = static_cast<char>(v % 10 + '0');
@@ -37,10 +37,10 @@ void print_time() {
         tx_stream << "\r\n";
         switch (msg.command) {
         case app_cmd_led_on:
-            user_led::low();
+            user_led::on();
             break;
         case app_cmd_led_off:
-            user_led::high();
+            user_led::off();
             break;
         case app_cmd_ticks:
             tx_stream << xTaskGetTickCount() << "\r\n";
@@ -66,15 +66,23 @@ void print_time() {
         case app_cmd_time_set:
             HAL_RTC_SetTime(&hrtc, &msg.update_time.time, RTC_FORMAT_BIN);
             break;
-        case app_cmd_task_info:
-            tx_stream << "pcTaskName:\t\t" << taskStatus.pcTaskName << "\r\n";
-            tx_stream << "eCurrentState:\t\t" << taskStatus.eCurrentState << "\r\n";
-            tx_stream << "uxCurrentPriority:\t" << taskStatus.uxCurrentPriority << "\r\n";
-            tx_stream << "uxBasePriority:\t\t" << taskStatus.uxBasePriority << "\r\n";
-            tx_stream << "ulRunTimeCounter:\t" << taskStatus.ulRunTimeCounter << "\r\n";
-            tx_stream << "pxStackBase:\t\t" << (void *)taskStatus.pxStackBase << "\r\n";
-            tx_stream << "usStackHighWaterMark\t" << taskStatus.usStackHighWaterMark << "\r\n";
+        case app_cmd_task_info: {
+            TaskHandle_t xTask = xTaskGetHandle(msg.task_name);
+            if (xTask) {
+                TaskStatus_t taskStatus;
+                vTaskGetInfo(xTask, &taskStatus, pdTRUE, eInvalid);
+                tx_stream << "pcTaskName:\t\t" << taskStatus.pcTaskName << "\r\n";
+                tx_stream << "eCurrentState:\t\t" << taskStatus.eCurrentState << "\r\n";
+                tx_stream << "uxCurrentPriority:\t" << taskStatus.uxCurrentPriority << "\r\n";
+                tx_stream << "uxBasePriority:\t\t" << taskStatus.uxBasePriority << "\r\n";
+                tx_stream << "ulRunTimeCounter:\t" << taskStatus.ulRunTimeCounter << "\r\n";
+                tx_stream << "pxStackBase:\t\t" << (void *)taskStatus.pxStackBase << "\r\n";
+                tx_stream << "usStackHighWaterMark\t" << taskStatus.usStackHighWaterMark << "\r\n";
+            } else {
+                tx_stream << "Task not found\r\n";
+            }
             break;
+        }
         default:
             break;
         }

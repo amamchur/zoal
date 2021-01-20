@@ -61,7 +61,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
             static_assert(channel >= 0, "Specified pin could not be connected to ADC");
 
-            using connect = zoal::mem::cas_list<
+            using connect = zoal::mem::callable_cas_list_variadic<
                 //
                 typename A::ADMUXx::template cas<0x0F, mux_set_mask>,
                 typename A::ADCSRBx::template cas<(1 << 3), mux5>>;
@@ -80,8 +80,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static constexpr auto set_mask = static_cast<uint8_t>(pwm_mode << mask_shift);
             static_assert((set_mask & clear_mask) == set_mask, "Ops, wrong metadata");
 
-            using connect = zoal::mem::cas_list<typename T::TCCRxA::template cas<clear_mask, set_mask>>;
-            using disconnect = zoal::mem::cas_list<typename T::TCCRxA::template cas<clear_mask, 0>>;
+            using connect = zoal::mem::callable_cas_list_variadic<typename T::TCCRxA::template cas<clear_mask, set_mask>>;
+            using disconnect = zoal::mem::callable_cas_list_variadic<typename T::TCCRxA::template cas<clear_mask, 0>>;
         };
 
         template<class S, class Mosi, class Miso, class Clock, class SlaveSelect>

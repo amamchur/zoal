@@ -35,7 +35,7 @@ using usart_tx_transport = zoal::utils::usart_transmitter<usart, 16, zoal::utils
 
 using adc = mcu::adc_00;
 using logger = zoal::utils::terminal_logger<usart_tx_transport, zoal::utils::log_level::info>;
-using tools = zoal::utils::tool_set<mcu, counter, logger>;
+using tools = zoal::utils::tool_set<mcu, F_CPU, counter, logger>;
 using app0 = neo_pixel<tools, zoal::pcb::ard_d13>;
 using app1 = multi_function_shield<tools, zoal::pcb>;
 using app2 = blink<tools, zoal::pcb::ard_d13>;

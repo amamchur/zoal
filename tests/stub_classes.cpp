@@ -39,9 +39,6 @@ TEST(StubClasses, null_pin_should_be_callable) { /* NOLINT */
 }
 
 TEST(StubClasses, null_port_should_be_callable) { /* NOLINT */
-    null_port::power_on();
-    null_port::enable();
-
     null_port::low<1>();
     null_port::high<1>();
     null_port::toggle<1>();
@@ -58,7 +55,4 @@ TEST(StubClasses, null_port_should_be_callable) { /* NOLINT */
         auto value = null_port::address;
         EXPECT_EQ(value, 0);
     }
-
-    null_port::disable();
-    null_port::power_off();
 }

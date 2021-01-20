@@ -11,7 +11,7 @@ namespace zoal { namespace arch { namespace avr {
     using zoal::ct::conditional_type;
     using zoal::ct::type_at_index;
     using zoal::ct::type_list;
-    using zoal::mem::cas_list;
+    using zoal::mem::callable_cas_list_variadic;
 
     template<uintptr_t Address>
     class timer_interrupt_flags_vector {
@@ -23,10 +23,10 @@ namespace zoal { namespace arch { namespace avr {
         using TIFRx = zoal::mem::reg<Address + No, zoal::mem::reg_io::read_write, uint8_t, 0x27>;
 
         template<uint8_t Timer>
-        using clear_counter_flag = cas_list<typename TIFRx<Timer>::template cas<1 << TOVx, 0>>;
+        using clear_counter_flag = callable_cas_list_variadic<typename TIFRx<Timer>::template cas<1 << TOVx, 0>>;
 
         template<uint8_t Timer, uint8_t Channel>
-        using clear_channel_flag = cas_list<typename type_at_index<
+        using clear_channel_flag = callable_cas_list_variadic<typename type_at_index<
             //
             Channel,
             zoal::mem::null_cas, // default

@@ -27,7 +27,7 @@ using user_led = mcu::pc_13;
 extern "C" void zoal_init() {
     using usart_01_cfg = zoal::periph::usart_115200<72000000>;
 
-    api::optimize<api::power_on<usart_01, mcu::port_a, mcu::port_c, mcu::port_b>>();
+    api::optimize<api::clock_on<usart_01, mcu::port_a, mcu::port_c, mcu::port_b>>();
     api::optimize<api::disable<usart_01>>();
 
     api::optimize<

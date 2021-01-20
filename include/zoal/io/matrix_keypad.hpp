@@ -22,8 +22,8 @@ namespace zoal { namespace io {
 
             ZOAL_INLINE_IO static void to_ground(int index) {
                 if (index == No) {
-                    T::template mode<zoal::gpio::pin_mode::output_push_pull>();
-                    T::low();
+                    typename T::template mode<zoal::gpio::pin_mode::output_push_pull>();
+                    typename T::low();
                 } else {
                     next::to_ground(index);
                 }
@@ -34,8 +34,8 @@ namespace zoal { namespace io {
         struct helper<No, T> {
             ZOAL_INLINE_IO static void to_ground(int index) {
                 if (index == No) {
-                    T::template mode<zoal::gpio::pin_mode::output_push_pull>();
-                    T::low();
+                    typename T::template mode<zoal::gpio::pin_mode::output_push_pull>();
+                    typename T::low();
                 }
             }
         };

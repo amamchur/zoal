@@ -4,10 +4,9 @@
 #include "../mcu/stm32f303retx.hpp"
 
 namespace zoal {
-    template<uint32_t HighSpeedExternalOscillator = 8000000, uint8_t PhaseLockedLoop = 9>
     class nucleo_f303re {
     public:
-        using mcu = typename mcu::stm32f303retx<HighSpeedExternalOscillator, PhaseLockedLoop>;
+        using mcu = zoal::mcu::stm32f303retx;
 
         using ard_d00 = typename mcu::pa_03;
         using ard_d01 = typename mcu::pa_02;
@@ -35,7 +34,7 @@ namespace zoal {
         using build_in_button = typename mcu::pc_13;
     };
 
-    using pcb = nucleo_f303re<>;
+    using pcb = nucleo_f303re;
 }
 
 #endif

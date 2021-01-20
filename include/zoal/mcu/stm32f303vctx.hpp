@@ -19,16 +19,12 @@
 #include <zoal/arch/enable.hpp>
 #include <zoal/arch/power.hpp>
 #include <zoal/gpio/api.hpp>
+#include <zoal/gpio/pin.hpp>
 
 namespace zoal { namespace mcu {
-    template<uint32_t HighSpeedExternalOscillator = 8000000, uint8_t PhaseLockedLoop = 9>
     class stm32f303vctx {
     public:
-        static constexpr auto hse = HighSpeedExternalOscillator;
-        static constexpr auto pll = PhaseLockedLoop;
-        static constexpr auto frequency = hse * pll;
-
-        using self_type = stm32f303vctx<hse, pll>;
+        using self_type = stm32f303vctx;
 
         using rcc = ::zoal::arch::stm32x::rcc<>;
 
@@ -41,8 +37,8 @@ namespace zoal { namespace mcu {
         template<uint32_t Mask>
         using clock_apb2 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_apb2, Mask>;
 
-        template<uintptr_t Address, uint8_t N, class Clock>
-        using adc = typename ::zoal::arch::stm32x::adc<Address, N, Clock>;
+        template<uintptr_t Address, class Clock>
+        using adc = typename ::zoal::arch::stm32x::adc<Address, Clock>;
 
         template<uintptr_t Address, class Clock, uint32_t PinMask>
         using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;
@@ -50,23 +46,17 @@ namespace zoal { namespace mcu {
         using port_a = port<0x48000000, clock_ahb<0x00020000>, 0xFFFF>;
         using port_b = port<0x48000400, clock_ahb<0x00040000>, 0xFFFF>;
         using port_c = port<0x48000800, clock_ahb<0x00080000>, 0xFFFF>;
-        using port_d = port<0x48000C00, clock_ahb<0x00100000>, 0xFFFF>;
-        using port_e = port<0x48001000, clock_ahb<0x00200000>, 0xFFFF>;
-        using port_f = port<0x48001400, clock_ahb<0x00400000>, 0x0657>;
+        using port_d = port<0x48000C00, clock_ahb<0x00100000>, 0xFE9F>;
+        using port_e = port<0x48001000, clock_ahb<0x00200000>, 0x19FF>;
+        using port_f = port<0x48001400, clock_ahb<0x00400000>, 0x0647>;
 
-        using adc_01 = ::zoal::arch::stm32x::adc<0x50000000, 1, clock_ahb<0x10000000>>;
-        using adc_02 = ::zoal::arch::stm32x::adc<0x50000100, 2, clock_ahb<0x10000000>>;
-        using adc_03 = ::zoal::arch::stm32x::adc<0x50000400, 3, clock_ahb<0x20000000>>;
-        using adc_04 = ::zoal::arch::stm32x::adc<0x50000500, 4, clock_ahb<0x20000000>>;
-
-        using timer_02 = zoal::arch::stm32f3::general_purpose_timer<0x40000000, 2, clock_apb1<0x00000001>>;
-        using timer_03 = zoal::arch::stm32f3::general_purpose_timer<0x40000400, 3, clock_apb1<0x00000002>>;
-        using timer_04 = zoal::arch::stm32f3::general_purpose_timer<0x40000800, 4, clock_apb1<0x00000004>>;
+        using adc_01 = ::zoal::arch::stm32x::adc<0x50000000, clock_ahb<0x10000000>>;
+        using adc_02 = ::zoal::arch::stm32x::adc<0x50000100, clock_ahb<0x10000000>>;
+        using adc_03 = ::zoal::arch::stm32x::adc<0x50000400, clock_ahb<0x20000000>>;
+        using adc_04 = ::zoal::arch::stm32x::adc<0x50000500, clock_ahb<0x20000000>>;
 
         using usart_01 = typename ::zoal::arch::stm32x::usart<0x40013800, clock_apb2<0x00004000>>;
-
         using usart_02 = typename ::zoal::arch::stm32x::usart<0x40004400, clock_apb1<0x00020000>>;
-
         using usart_03 = typename ::zoal::arch::stm32x::usart<0x40004800, clock_apb1<0x00040000>>;
 
         template<class Port, uint8_t Offset>
@@ -128,10 +118,7 @@ namespace zoal { namespace mcu {
         using pd_02 = pin<port_d, 0x02>;
         using pd_03 = pin<port_d, 0x03>;
         using pd_04 = pin<port_d, 0x04>;
-        using pd_05 = pin<port_d, 0x05>;
-        using pd_06 = pin<port_d, 0x06>;
         using pd_07 = pin<port_d, 0x07>;
-        using pd_08 = pin<port_d, 0x08>;
         using pd_09 = pin<port_d, 0x09>;
         using pd_10 = pin<port_d, 0x0A>;
         using pd_11 = pin<port_d, 0x0B>;
@@ -149,18 +136,12 @@ namespace zoal { namespace mcu {
         using pe_06 = pin<port_e, 0x06>;
         using pe_07 = pin<port_e, 0x07>;
         using pe_08 = pin<port_e, 0x08>;
-        using pe_09 = pin<port_e, 0x09>;
-        using pe_10 = pin<port_e, 0x0A>;
         using pe_11 = pin<port_e, 0x0B>;
         using pe_12 = pin<port_e, 0x0C>;
-        using pe_13 = pin<port_e, 0x0D>;
-        using pe_14 = pin<port_e, 0x0E>;
-        using pe_15 = pin<port_e, 0x0F>;
 
         using pf_00 = pin<port_f, 0x00>;
         using pf_01 = pin<port_f, 0x01>;
         using pf_02 = pin<port_f, 0x02>;
-        using pf_04 = pin<port_f, 0x04>;
         using pf_06 = pin<port_f, 0x06>;
         using pf_09 = pin<port_f, 0x09>;
         using pf_10 = pin<port_f, 0x0A>;
@@ -181,110 +162,6 @@ namespace zoal { namespace mcu {
 namespace zoal { namespace metadata {
     using zoal::ct::integral_constant;
 
-    template<> // PA0 -> TIM2_CH1
-    struct stm32_af<0x40000000, 0x48000000, 0x00, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA5 -> TIM2_CH1
-    struct stm32_af<0x40000000, 0x48000000, 0x05, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA15 -> TIM2_CH1
-    struct stm32_af<0x40000000, 0x48000000, 0x0F, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PD3 -> TIM2_CH1
-    struct stm32_af<0x40000000, 0x48000C00, 0x03, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA1 -> TIM2_CH2
-    struct stm32_af<0x40000000, 0x48000000, 0x01, signal::ch2> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PB3 -> TIM2_CH2
-    struct stm32_af<0x40000000, 0x48000400, 0x03, signal::ch2> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PD4 -> TIM2_CH2
-    struct stm32_af<0x40000000, 0x48000C00, 0x04, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA2 -> TIM2_CH3
-    struct stm32_af<0x40000000, 0x48000000, 0x02, signal::ch3> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA9 -> TIM2_CH3
-    struct stm32_af<0x40000000, 0x48000000, 0x09, signal::ch3> : zoal::ct::integral_constant<int, 10> {};
-    template<> // PB10 -> TIM2_CH3
-    struct stm32_af<0x40000000, 0x48000400, 0x0A, signal::ch3> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PD7 -> TIM2_CH3
-    struct stm32_af<0x40000000, 0x48000C00, 0x07, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA3 -> TIM2_CH4
-    struct stm32_af<0x40000000, 0x48000000, 0x03, signal::ch4> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA10 -> TIM2_CH4
-    struct stm32_af<0x40000000, 0x48000000, 0x0A, signal::ch4> : zoal::ct::integral_constant<int, 10> {};
-    template<> // PB11 -> TIM2_CH4
-    struct stm32_af<0x40000000, 0x48000400, 0x0B, signal::ch4> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PD6 -> TIM2_CH4
-    struct stm32_af<0x40000000, 0x48000C00, 0x06, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA0 -> TIM2_ETR
-    struct stm32_af<0x40000000, 0x48000000, 0x00, signal::etr> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA5 -> TIM2_ETR
-    struct stm32_af<0x40000000, 0x48000000, 0x05, signal::etr> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA15 -> TIM2_ETR
-    struct stm32_af<0x40000000, 0x48000000, 0x0F, signal::etr> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PD3 -> TIM2_ETR
-    struct stm32_af<0x40000000, 0x48000C00, 0x03, signal::etr> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA6 -> TIM3_CH1
-    struct stm32_af<0x40000400, 0x48000000, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PB4 -> TIM3_CH1
-    struct stm32_af<0x40000400, 0x48000400, 0x04, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PC6 -> TIM3_CH1
-    struct stm32_af<0x40000400, 0x48000800, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PE2 -> TIM3_CH1
-    struct stm32_af<0x40000400, 0x48001000, 0x02, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA4 -> TIM3_CH2
-    struct stm32_af<0x40000400, 0x48000000, 0x04, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA7 -> TIM3_CH2
-    struct stm32_af<0x40000400, 0x48000000, 0x07, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PB5 -> TIM3_CH2
-    struct stm32_af<0x40000400, 0x48000400, 0x05, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PC7 -> TIM3_CH2
-    struct stm32_af<0x40000400, 0x48000800, 0x07, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PE3 -> TIM3_CH2
-    struct stm32_af<0x40000400, 0x48001000, 0x03, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PB0 -> TIM3_CH3
-    struct stm32_af<0x40000400, 0x48000400, 0x00, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PC8 -> TIM3_CH3
-    struct stm32_af<0x40000400, 0x48000800, 0x08, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PE4 -> TIM3_CH3
-    struct stm32_af<0x40000400, 0x48001000, 0x04, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PB1 -> TIM3_CH4
-    struct stm32_af<0x40000400, 0x48000400, 0x01, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PB7 -> TIM3_CH4
-    struct stm32_af<0x40000400, 0x48000400, 0x07, signal::ch4> : zoal::ct::integral_constant<int, 10> {};
-    template<> // PC9 -> TIM3_CH4
-    struct stm32_af<0x40000400, 0x48000800, 0x09, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PE5 -> TIM3_CH4
-    struct stm32_af<0x40000400, 0x48001000, 0x05, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PB3 -> TIM3_ETR
-    struct stm32_af<0x40000400, 0x48000400, 0x03, signal::etr> : zoal::ct::integral_constant<int, 10> {};
-    template<> // PD2 -> TIM3_ETR
-    struct stm32_af<0x40000400, 0x48000C00, 0x02, signal::etr> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA11 -> TIM4_CH1
-    struct stm32_af<0x40000800, 0x48000000, 0x0B, signal::ch1> : zoal::ct::integral_constant<int, 10> {};
-    template<> // PB6 -> TIM4_CH1
-    struct stm32_af<0x40000800, 0x48000400, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PD12 -> TIM4_CH1
-    struct stm32_af<0x40000800, 0x48000C00, 0x0C, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA12 -> TIM4_CH2
-    struct stm32_af<0x40000800, 0x48000000, 0x0C, signal::ch2> : zoal::ct::integral_constant<int, 10> {};
-    template<> // PB7 -> TIM4_CH2
-    struct stm32_af<0x40000800, 0x48000400, 0x07, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PD13 -> TIM4_CH2
-    struct stm32_af<0x40000800, 0x48000C00, 0x0D, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA13 -> TIM4_CH3
-    struct stm32_af<0x40000800, 0x48000000, 0x0D, signal::ch3> : zoal::ct::integral_constant<int, 10> {};
-    template<> // PB8 -> TIM4_CH3
-    struct stm32_af<0x40000800, 0x48000400, 0x08, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PD14 -> TIM4_CH3
-    struct stm32_af<0x40000800, 0x48000C00, 0x0E, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PB9 -> TIM4_CH4
-    struct stm32_af<0x40000800, 0x48000400, 0x09, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PD15 -> TIM4_CH4
-    struct stm32_af<0x40000800, 0x48000C00, 0x0F, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PF6 -> TIM4_CH4
-    struct stm32_af<0x40000800, 0x48001400, 0x06, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PA8 -> TIM4_ETR
-    struct stm32_af<0x40000800, 0x48000000, 0x08, signal::etr> : zoal::ct::integral_constant<int, 10> {};
-    template<> // PB3 -> TIM4_ETR
-    struct stm32_af<0x40000800, 0x48000400, 0x03, signal::etr> : zoal::ct::integral_constant<int, 2> {};
-    template<> // PE0 -> TIM4_ETR
-    struct stm32_af<0x40000800, 0x48001000, 0x00, signal::etr> : zoal::ct::integral_constant<int, 2> {};
     template<> // PA8 -> USART1_CK
     struct stm32_af<0x40013800, 0x48000000, 0x08, signal::ck> : zoal::ct::integral_constant<int, 7> {};
     template<> // PA11 -> USART1_CTS

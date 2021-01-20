@@ -27,17 +27,12 @@ namespace zoal { namespace arch { namespace stm32x {
         using api = typename mcu::api;
         static constexpr auto mcu_frequency = mcu::frequency;
 
-        template<class U,
-                 uint32_t BaudRate,
-                 uint8_t Bits = 8,
-                 zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
-                 zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1,
-                 uint32_t UsartFreq = mcu_frequency / zoal::metadata::stm32_bus_prescaler<U::bus>::value>
+        template<class U, class Cfg>
         class usart {
         public:
-            using dbc1 = zoal::metadata::stm32_data_bits_to_cr1<Bits>;
-            using ptc1 = zoal::metadata::stm32_parity_to_cr1<Parity>;
-            using sbc2 = zoal::metadata::stm32_stop_bits_to_cr2<StopBits>;
+            using dbc1 = zoal::metadata::stm32_data_bits_to_cr1<Cfg::word_length_bits>;
+            using ptc1 = zoal::metadata::stm32_parity_to_cr1<Cfg::parity>;
+            using sbc2 = zoal::metadata::stm32_stop_bits_to_cr2<Cfg::stop_bits>;
 
             static constexpr auto enable_rx_tx = 0x0C;
             static constexpr auto c1_clear = dbc1::clear_mask | ptc1::clear_mask;
@@ -45,7 +40,7 @@ namespace zoal { namespace arch { namespace stm32x {
             static constexpr auto c2_clear = sbc2::clear_mask;
             static constexpr auto c2_set = sbc2::set_mask;
 
-            static constexpr double divider = UsartFreq / 16.0 / BaudRate;
+            static constexpr double divider = Cfg::clock_frequency / 16.0 / Cfg::baud_rate;
             static constexpr auto int_part = static_cast<uint16_t>(divider);
             static constexpr auto mantissa = static_cast<uint16_t>((divider - int_part) * 16);
             static constexpr uint16_t bbr = (int_part << 4) + mantissa;

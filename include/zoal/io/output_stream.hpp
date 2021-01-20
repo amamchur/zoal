@@ -6,26 +6,26 @@
 #include "../utils/defs.hpp"
 #include "stream.hpp"
 
-#include <math.h> /* NOLINT */
+#include <math.h>
 #include <stdint.h>
-#include <stdlib.h> /* NOLINT */
+#include <stdlib.h>
 
 namespace zoal { namespace io {
     template<class Transport>
     class output_stream {
     public:
-        uint8_t radix{10};
-        uint8_t precision{2};
+        output_stream(Transport &t)
+            : transport(t) {}
 
         output_stream &operator<<(char ch) {
-            Transport::send_byte(static_cast<uint8_t>(ch));
+            transport.send_byte(static_cast<uint8_t>(ch));
             return *this;
         }
 
         output_stream &operator<<(const char *str) {
             auto end = str;
             while (*end) end++;
-            Transport::send_data(str, end - str);
+            transport.send_data(str, end - str);
             return *this;
         }
 
@@ -41,7 +41,7 @@ namespace zoal { namespace io {
                 buffer[k] = h < 10 ? ('0' + h) : ('A' + h - 10);
             }
 
-            Transport::send_data(buffer, sizeof(buffer));
+            transport.send_data(buffer, sizeof(buffer));
 
             return *this;
         }
@@ -49,10 +49,11 @@ namespace zoal { namespace io {
         output_stream &operator<<(unsigned long value) {
             uint8_t buffer[32];
             uint8_t *ptr = buffer + sizeof(buffer);
-            ptr = formatNumber(ptr, value);
+            ptr = format_number(ptr, value);
+
             auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
-            buffer_functor bf(ptr, length);
-            return *this << bf;
+            transport.send_data(ptr, length);
+            return *this;
         }
 
         output_stream &operator<<(unsigned int value) {
@@ -67,16 +68,16 @@ namespace zoal { namespace io {
             bool negative = value < 0;
             if (negative) {
                 value = -value;
-                Transport::send_byte('-');
+                transport.send_byte('-');
             }
 
             uint8_t buffer[32];
             uint8_t *ptr = buffer + sizeof(buffer);
-            ptr = formatNumber(ptr, static_cast<uint32_t>(value));
+            ptr = format_number(ptr, static_cast<uint32_t>(value));
 
             auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
-            buffer_functor bf(ptr, length);
-            return *this << bf;
+            transport.send_data(ptr, length);
+            return *this;
         }
 
         output_stream &operator<<(int value) {
@@ -91,7 +92,7 @@ namespace zoal { namespace io {
             bool negative = value < 0.0;
             if (negative) {
                 value = -value;
-                Transport::push_back_blocking('-');
+                transport.send_byte('-');
             }
 
             auto int_part = static_cast<uint32_t>(value);
@@ -102,7 +103,7 @@ namespace zoal { namespace io {
                 return *this;
             }
 
-            Transport::push_back_blocking('.');
+            transport.send_byte('.');
 
             double e = 0.5;
             for (uint8_t i = 0; i < precision; i++) {
@@ -115,7 +116,7 @@ namespace zoal { namespace io {
                 fraction *= 10.0;
                 int_part = static_cast<uint32_t>(fraction);
                 fraction -= int_part;
-                Transport::push_back_blocking(static_cast<uint8_t>(int_part + '0'));
+                transport.send_byte(static_cast<uint8_t>(int_part + '0'));
             }
 
             return *this;
@@ -147,8 +148,13 @@ namespace zoal { namespace io {
             static_cast<F &>(fn).template write<Transport>();
             return *this;
         }
+
     private:
-        uint8_t *formatNumber(uint8_t *ptr, uint32_t value) {
+        uint8_t radix{10};
+        uint8_t precision{2};
+        Transport &transport;
+
+        uint8_t *format_number(uint8_t *ptr, uint32_t value) {
             do {
                 auto v = static_cast<uint8_t>(value % radix);
                 value /= radix;

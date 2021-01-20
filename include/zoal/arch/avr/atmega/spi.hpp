@@ -17,8 +17,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         using SPSRx = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
         using SPDRx = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
 
-        using enable_cas = zoal::mem::cas_list<typename self_type::SPCRx::template cas<0, 0x40>>;
-        using disable_cas = zoal::mem::cas_list<typename self_type::SPCRx::template cas<0x40, 0>>;
+        using enable_cas = zoal::mem::callable_cas_list_variadic<typename self_type::SPCRx::template cas<0, 0x40>>;
+        using disable_cas = zoal::mem::callable_cas_list_variadic<typename self_type::SPCRx::template cas<0x40, 0>>;
         using clock_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
         using clock_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
 

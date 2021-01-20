@@ -345,7 +345,7 @@ namespace zoal { namespace ic {
         class transaction {
         public:
             transaction() {
-                ChipSelect::low();
+                typename ChipSelect::low();
             }
 
             transaction(const transaction& t)  = delete;
@@ -367,7 +367,7 @@ namespace zoal { namespace ic {
             }
 
             ~transaction() {
-                ChipSelect::high();
+                typename ChipSelect::high();
             }
         };
 
@@ -376,8 +376,8 @@ namespace zoal { namespace ic {
         static void init(uint8_t devices) {
             using namespace zoal::gpio;
 
-            ChipSelect::template mode<pin_mode::output>();
-            ChipSelect::high();
+            typename ChipSelect::template mode<pin_mode::output>();
+            typename ChipSelect::high();
 
             send(devices, test_off);
             send(devices, scan_limit | 0x07u);
@@ -388,13 +388,13 @@ namespace zoal { namespace ic {
         template<size_t Devices>
         static void display(const max72xx_data<Devices> &matrix) {
             for (uint8_t row = 0; row < 8; row++) {
-                ChipSelect::low();
+                typename ChipSelect::low();
                 auto cmd = row + 1;
                 for (int device = Devices - 1; device >= 0; device--) {
                     spi::transfer_byte(cmd);
                     spi::transfer_byte(matrix.data[device][row]);
                 }
-                ChipSelect::high();
+                typename ChipSelect::high();
             }
         }
 

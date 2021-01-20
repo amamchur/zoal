@@ -27,7 +27,7 @@ using tx_stream_type = zoal::io::output_stream<usart_tx_transport>;
 tx_stream_type stream;
 
 using logger = zoal::utils::terminal_logger<usart_tx_transport, zoal::utils::log_level::trace>;
-using tools = zoal::utils::tool_set<mcu, counter, logger>;
+using tools = zoal::utils::tool_set<mcu, F_CPU, counter, logger>;
 using delay = tools::delay;
 using api = zoal::gpio::api;
 using blink_pin = pcb::ard_d08;
@@ -50,7 +50,7 @@ const char stop_blink_cmd[] PROGMEM = "stop-blink";
 
 void initialize_hardware() {
     // Power on modules
-    api::optimize<api::power_on<usart, timer, spi>>();
+    api::optimize<api::clock_on<usart, timer, spi>>();
 
     // Disable all modules before applying settings
     api::optimize<api::disable<usart, timer>>();

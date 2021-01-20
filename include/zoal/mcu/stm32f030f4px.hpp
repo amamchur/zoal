@@ -15,16 +15,12 @@
 #include <zoal/arch/enable.hpp>
 #include <zoal/arch/power.hpp>
 #include <zoal/gpio/api.hpp>
+#include <zoal/gpio/pin.hpp>
 
 namespace zoal { namespace mcu {
-    template<uint32_t HighSpeedExternalOscillator = 8000000, uint8_t PhaseLockedLoop = 9>
     class stm32f030f4px {
     public:
-        static constexpr auto hse = HighSpeedExternalOscillator;
-        static constexpr auto pll = PhaseLockedLoop;
-        static constexpr auto frequency = hse * pll;
-
-        using self_type = stm32f030f4px<hse, pll>;
+        using self_type = stm32f030f4px;
 
         using rcc = ::zoal::arch::stm32x::rcc<>;
 

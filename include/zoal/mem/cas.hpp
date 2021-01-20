@@ -50,9 +50,6 @@ namespace zoal { namespace mem {
         cas(const self_type &) = delete;
     };
 
-    using null_cas = cas<0, reg_io::read_write, uint8_t, 0xFF, 0, 0>;
-    using null_cas_list = zoal::ct::type_list<null_cas>;
-
     template<>
     struct cas_strategy_implementation<cas_strategy_type::main> {
         template<class T>
@@ -217,7 +214,10 @@ namespace zoal { namespace mem {
     };
 
     template<class... Rest>
-    using cas_list = callable_cas_list<zoal::ct::type_list<Rest...>>;
+    using callable_cas_list_variadic = callable_cas_list<zoal::ct::type_list<Rest...>>;
+
+    using null_cas = cas<0, reg_io::read_write, uint8_t, 0xFF, 0, 0>;
+    using null_cas_list = zoal::ct::type_list<null_cas>;
 }}
 
 #endif
