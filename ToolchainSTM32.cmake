@@ -16,7 +16,7 @@ set(CMAKE_CXX_FLAGS_INIT "${COMMON_FLAGS}")
 set(CMAKE_C_FLAGS_INIT "${COMMON_FLAGS}")
 
 function(add_zoal_tests)
-    add_executable(zoal_tests_atmega328 apps/_empty.cpp)
+    add_executable(zoal_tests apps/_empty.cpp)
 endfunction(add_zoal_tests)
 
 function(add_host_executable NAME)

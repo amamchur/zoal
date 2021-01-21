@@ -17,6 +17,7 @@
       <config projectName="zoal" targetName="ATmega32u4-eeprom" />
       <config projectName="zoal" targetName="ATtiny13-upload" />
       <config projectName="zoal" targetName="ATtiny85-eeprom" />
+      <config projectName="zoal" targetName="zoal_tests" />
       <config projectName="zoal" targetName="ATtiny2313-eeprom" />
       <config projectName="zoal" targetName="ATmega2560.elf" />
       <config projectName="zoal" targetName="ATtiny13" />
@@ -39,29 +40,35 @@
   </component>
   <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="DebugSTM32" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainSTM32.cmake" ENABLED="true" />
-      <configuration PROFILE_NAME="DebugHost" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainHost.cmake" ENABLED="true" />
-      <configuration PROFILE_NAME="ReleaseSTM32" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainSTM32.cmake" ENABLED="true" />
-      <configuration PROFILE_NAME="ReleaseAVR" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainAVR.cmake" ENABLED="true" />
+      <configuration PROFILE_NAME="Debug STM32" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainSTM32.cmake" ENABLED="true" />
+      <configuration PROFILE_NAME="Debug Host" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainHost.cmake" ENABLED="true" />
+      <configuration PROFILE_NAME="Release STM32" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainSTM32.cmake" ENABLED="true" />
+      <configuration PROFILE_NAME="Release AVR" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainAVR.cmake" ENABLED="true" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/gpio_api.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/utils/cas_collector.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ToolchainAVR.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainAVR.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ToolchainHost.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainHost.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ToolchainSTM32.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainSTM32.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/ic/hd44780.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/hd44780.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/mem/reg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/reg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/atmega328.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/clear_and_set.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/clear_and_set.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/pin_control.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/pin_control.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/static_assertion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/static_assertion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/stub_classes.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/stub_classes.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/address_cast.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/address_cast.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/address_cast.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/address_cast.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/button_machine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/io/button_machine.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/clear_and_set.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/mem/clear_and_set.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/gpio_api.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/gpio/gpio_api.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/pin_control.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/gpio/pin_control.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/static_assertion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ct/static_assertion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/stub_classes.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/gpio/stub_classes.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/address_cast.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/address_cast.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/address_cast.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/address_cast.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/cas_collector.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/cas_collector.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/ms_counter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/ms_counter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/ms_counter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/ms_counter.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/nop.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/nop.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/coverage-collect.sh" beforeDir="false" afterPath="$PROJECT_DIR$/tools/coverage-collect.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +91,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:ReleaseAVR" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug Host" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
@@ -117,7 +124,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.externalTools" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
     <property name="settings.editor.splitter.proportion" value="0.18565089" />
   </component>
   <component name="RecentsManager">
@@ -129,9 +136,11 @@
       <recent name="$PROJECT_DIR$/include/zoal/parser" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/tests/io" />
+      <recent name="$PROJECT_DIR$/tests/gpio" />
+      <recent name="$PROJECT_DIR$/tests/ct" />
+      <recent name="$PROJECT_DIR$/tests/mem" />
       <recent name="$PROJECT_DIR$/include/zoal/arch/avr/utils" />
-      <recent name="$PROJECT_DIR$/misc" />
-      <recent name="$PROJECT_DIR$/apps" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.ATmega328p">
@@ -140,133 +149,133 @@
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="All in zoal_tests_atmega328" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests_atmega328" CONFIG_NAME="DebugHost" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests_atmega328" TEST_MODE="SUITE_TEST">
+    <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
         <option name="BeforeTestRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega2560-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560-eeprom" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATmega2560-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560-eeprom" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega2560-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560-fuse" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATmega2560-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560-fuse" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega2560-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560-upload" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATmega2560-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560-upload" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega2560" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega2560">
+    <configuration name="ATmega2560" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega2560">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega328p-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p-eeprom" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATmega328p-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p-eeprom" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega328p-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p-fuse" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATmega328p-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p-fuse" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega328p-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p-upload" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATmega328p-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p-upload" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega328p" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega328p">
+    <configuration name="ATmega328p" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega328p">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega32u4-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4-eeprom" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATmega32u4-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4-eeprom" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega32u4-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4-fuse" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATmega32u4-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4-fuse" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega32u4-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4-upload" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATmega32u4-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4-upload" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATmega32u4" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega32u4">
+    <configuration name="ATmega32u4" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega32u4">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny13-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13-eeprom" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATtiny13-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13-eeprom" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny13-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13-fuse" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATtiny13-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13-fuse" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny13-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13-upload" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATtiny13-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13-upload" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny13" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATtiny13">
+    <configuration name="ATtiny13" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATtiny13">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny2313-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313-eeprom" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATtiny2313-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313-eeprom" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny2313-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313-fuse" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATtiny2313-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313-fuse" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny2313-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313-upload" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATtiny2313-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313-upload" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny2313" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATtiny2313">
+    <configuration name="ATtiny2313" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATtiny2313">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny85-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85-eeprom" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATtiny85-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85-eeprom" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny85-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85-fuse" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATtiny85-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85-fuse" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny85-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85-upload" CONFIG_NAME="ReleaseAVR">
+    <configuration name="ATtiny85-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85-upload" CONFIG_NAME="Release AVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ATtiny85" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATtiny85">
+    <configuration name="ATtiny85" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATtiny85">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" CONFIG_NAME="DebugHost" EXPLICIT_BUILD_TARGET_NAME="all">
+    <configuration name="All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug STM32" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -276,32 +285,32 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="DebugHost" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
+    <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="stm32f030" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f030" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f030">
+    <configuration name="stm32f030" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f030" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f030">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="stm32f103_blue_pill" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f103_blue_pill" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f103_blue_pill">
+    <configuration name="stm32f103_blue_pill" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f103_blue_pill" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f103_blue_pill">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="stm32f103_freertos" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f103_freertos" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f103_freertos">
+    <configuration name="stm32f103_freertos" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f103_freertos" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f103_freertos">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="stm32f303_discovery" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_discovery" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_discovery">
+    <configuration name="stm32f303_discovery" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_discovery" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_discovery">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="stm32f303_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_nucleo" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_nucleo">
+    <configuration name="stm32f303_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_nucleo" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_nucleo">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -372,7 +381,7 @@
       <item itemvalue="CMake Application.stm32f103_freertos" />
       <item itemvalue="CMake Application.stm32f303_discovery" />
       <item itemvalue="CMake Application.stm32f303_nucleo" />
-      <item itemvalue="Google Test.All in zoal_tests_atmega328" />
+      <item itemvalue="Google Test.zoal_tests" />
       <item itemvalue="Node.js.cubemx-proj.js" />
       <item itemvalue="Node.js.gen stm32f303retx.hpp" />
       <item itemvalue="Node.js.gen atmega328p" />
@@ -558,6 +567,9 @@
         <option value="Default.Subject" />
       </list>
     </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Update STM32 projects to latest firmware" />

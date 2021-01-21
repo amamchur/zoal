@@ -3,3 +3,5 @@ coverage
 node_modules
 cube-repo
 *.rl.cpp
+coverage.info
+coverage_full.info

@@ -267,7 +267,7 @@ namespace zoal { namespace ic {
         }
 
         void send_data(const void *data, size_t size) {
-            auto ptr = reinterpret_cast<const char *>(data);
+            auto ptr = reinterpret_cast<const uint8_t *>(data);
             while (size > 0) {
                 send_byte(*ptr);
                 ptr++;

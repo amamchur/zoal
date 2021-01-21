@@ -98,7 +98,7 @@ function(add_mcu_executable NAME MCU)
 endfunction(add_mcu_executable)
 
 function(add_zoal_tests)
-    add_executable(zoal_tests_atmega328 apps/_empty.cpp)
+    add_executable(zoal_tests apps/_empty.cpp)
 endfunction(add_zoal_tests)
 
 function(add_host_executable NAME)

@@ -20,7 +20,7 @@ namespace zoal { namespace mem {
         using cas = typename zoal::mem::cas<Address, RegIO, Type, Mask, C, S>;
 
         ZOAL_INLINE_IO static volatile type &ref() {
-            return *ZOAL_VOLATILE_ADDRESS_CAST(Type, Address);
+            return *ZOAL_ADDRESS_CAST(Type, Address);
         }
 
         reg() = delete;

@@ -1,4 +1,4 @@
-#include "utils/address_cast.hpp"
+#include "../test_utils/address_cast.hpp"
 
 #include "gtest/gtest.h"
 #include <zoal/mem/cas.hpp>

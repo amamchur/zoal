@@ -7,10 +7,9 @@
 #include "../utils/defs.hpp"
 
 #ifdef ZOAL_COVERAGE
-#include "../../../tests/utils/address_cast.hpp"
+#include "../../../tests/test_utils/address_cast.hpp"
 #else
-#define ZOAL_VOLATILE_ADDRESS_CAST(TYPE, ADDRESS) reinterpret_cast<volatile TYPE *>(ADDRESS)
-#define ZOAL_ADDRESS_CAST(TYPE, ADDRESS) reinterpret_cast<TYPE *>(ADDRESS)
+#define ZOAL_ADDRESS_CAST(TYPE, ADDRESS) reinterpret_cast<volatile TYPE *>(ADDRESS)
 #endif
 
 namespace zoal { namespace mem {
@@ -64,13 +63,13 @@ namespace zoal { namespace mem {
         static constexpr Type set = S;
 
         template<class R, class T>
-        ZOAL_INLINE_IO static void apply(R &ref, T, T) {}
+        ZOAL_INLINE_IO static void apply(volatile R &ref, T, T) {}
     };
 
     template<>
     struct cas_strategy_implementation<cas_strategy_type::main> {
         template<class R, class T>
-        ZOAL_INLINE_IO static void apply(R &ref, T c, T s) {
+        ZOAL_INLINE_IO static void apply(volatile R &ref, T c, T s) {
             ref = (ref & ~c) | s;
         }
     };
@@ -78,7 +77,7 @@ namespace zoal { namespace mem {
     template<>
     struct cas_strategy_implementation<cas_strategy_type::set> {
         template<class R, class T>
-        ZOAL_INLINE_IO static void apply(R &ref, T c, T s) {
+        ZOAL_INLINE_IO static void apply(volatile R &ref, T c, T s) {
             ref |= s;
         }
     };
@@ -86,7 +85,7 @@ namespace zoal { namespace mem {
     template<>
     struct cas_strategy_implementation<cas_strategy_type::clear> {
         template<class R, class T>
-        ZOAL_INLINE_IO static void apply(R &ref, T c, T s) {
+        ZOAL_INLINE_IO static void apply(volatile R &ref, T c, T s) {
             ref &= ~c;
         }
     };
@@ -94,7 +93,7 @@ namespace zoal { namespace mem {
     template<>
     struct cas_strategy_implementation<cas_strategy_type::assign> {
         template<class R, class T>
-        ZOAL_INLINE_IO static void apply(R &ref, T c, T s) {
+        ZOAL_INLINE_IO static void apply(volatile R &ref, T c, T s) {
             ref = s;
         }
     };
@@ -102,7 +101,7 @@ namespace zoal { namespace mem {
     template<>
     struct cas_strategy_implementation<cas_strategy_type::ignore> {
         template<class R, class T>
-        ZOAL_INLINE_IO static void apply(R &ref, T, T) {}
+        ZOAL_INLINE_IO static void apply(volatile R &ref, T, T) {}
     };
 
     template<class A, class B>
