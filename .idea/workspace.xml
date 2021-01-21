@@ -4,14 +4,14 @@
     <generated>
       <config projectName="zoal" targetName="ATtiny85" />
       <config projectName="zoal" targetName="ATtiny2313-fuse" />
-      <config projectName="zoal" targetName="ATtiny2313" />
       <config projectName="zoal" targetName="stm32f303_discovery" />
       <config projectName="zoal" targetName="ATmega328p-eeprom" />
+      <config projectName="zoal" targetName="ATtiny2313" />
       <config projectName="zoal" targetName="ATmega2560-upload" />
       <config projectName="zoal" targetName="ATmega32u4-upload" />
       <config projectName="zoal" targetName="stm32f103_freertos" />
-      <config projectName="zoal" targetName="stm32f303_nucleo" />
       <config projectName="zoal" targetName="ATmega2560-eeprom" />
+      <config projectName="zoal" targetName="stm32f303_nucleo" />
       <config projectName="zoal" targetName="ATmega328p-fuse" />
       <config projectName="zoal" targetName="host" />
       <config projectName="zoal" targetName="ATmega32u4-eeprom" />
@@ -26,11 +26,11 @@
       <config projectName="zoal" targetName="stm32f103_blue_pill" />
       <config projectName="zoal" targetName="ATtiny13-fuse" />
       <config projectName="zoal" targetName="ATmega2560" />
-      <config projectName="zoal" targetName="ATtiny85-upload" />
       <config projectName="zoal" targetName="ATmega328p-upload" />
       <config projectName="zoal" targetName="ATmega32u4" />
-      <config projectName="zoal" targetName="ATmega328p" />
+      <config projectName="zoal" targetName="ATtiny85-upload" />
       <config projectName="zoal" targetName="ATmega32u4-fuse" />
+      <config projectName="zoal" targetName="ATmega328p" />
       <config projectName="zoal" targetName="ATtiny13-eeprom" />
       <config projectName="zoal" targetName="ATmega2560-fuse" />
       <config projectName="zoal" targetName="ATtiny85-fuse" />
@@ -47,28 +47,17 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Add MCU signature concept">
+      <change afterPath="$PROJECT_DIR$/tests/arch/avr/atmega/usart.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/ic/hd44780.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_utils/delay.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ToolchainAVR.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainAVR.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ToolchainHost.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainHost.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ToolchainSTM32.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainSTM32.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_atmegaxx8.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_atmegaxx8.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_uno.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_uno.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/ic/hd44780.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/hd44780.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mem/reg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/reg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/button_machine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/io/button_machine.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/clear_and_set.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/mem/clear_and_set.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/gpio_api.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/gpio/gpio_api.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/pin_control.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/gpio/pin_control.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/static_assertion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ct/static_assertion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/stub_classes.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/gpio/stub_classes.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/address_cast.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/address_cast.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/address_cast.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/address_cast.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/cas_collector.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/cas_collector.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/ms_counter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/ms_counter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/ms_counter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/ms_counter.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/nop.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/nop.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/coverage-collect.sh" beforeDir="false" afterPath="$PROJECT_DIR$/tools/coverage-collect.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_utils/ms_counter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/ms_counter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_utils/ms_counter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/ms_counter.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -143,7 +132,7 @@
       <recent name="$PROJECT_DIR$/include/zoal/arch/avr/utils" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.ATmega328p">
+  <component name="RunManager" selected="Google Test.zoal_tests">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />

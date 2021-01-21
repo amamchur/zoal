@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-namespace tests { namespace utils {
+namespace zoal { namespace tests {
     class ms_counter {
     public:
         using value_type = uint32_t;

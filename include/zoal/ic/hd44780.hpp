@@ -108,7 +108,7 @@ namespace zoal { namespace ic {
 
         static void init() {
             pulse_enable();
-            delay::template us<5>();
+            delay::template ms<5>();
             pulse_enable();
             delay::template us<100>();
             pulse_enable();

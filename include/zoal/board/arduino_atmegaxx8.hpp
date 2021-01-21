@@ -4,7 +4,6 @@
 #include "../mcu/atmega328p.hpp"
 
 namespace zoal { namespace board {
-    template<uint32_t Frequency>
     class arduino_atmegaxx8 {
     public:
         using mcu = mcu::atmega328p;

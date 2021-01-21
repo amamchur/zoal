@@ -6,13 +6,7 @@
 #include "arduino_atmegaxx8.hpp"
 
 namespace zoal {
-    template<uint32_t Frequency>
-    using arduino_uno = board::arduino_atmegaxx8<Frequency>;
-
-#if defined(F_CPU)
-	using pcb = arduino_uno<F_CPU>;
-#endif
+	using pcb = board::arduino_atmegaxx8;
 }
 
 #endif
-
