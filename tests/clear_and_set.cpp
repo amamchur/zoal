@@ -29,9 +29,6 @@ TEST(ClearAndSet, static_type_checking) {
     cas<0, reg_io::write, uint8_t, 0xFF, 0, 4>();
     EXPECT_EQ(m[0], 0x04);
 
-    cas<0, reg_io::write, uint8_t, 0xFF, 4, 0>();
-    EXPECT_EQ(m[0], 0x04);
-
     cas<0, reg_io::read, uint8_t, 0xFF, 0, 0>();
     EXPECT_EQ(m[0], 0x04);
 }

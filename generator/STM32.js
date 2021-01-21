@@ -443,7 +443,7 @@ class STM32 extends BaseGenerator {
         })
     }
 
-    buildUSARTSsMetadata() {
+    buildUSARTSsMetadata(sign_name) {
         let result = [];
         let periphs = this.mcu.periphs;
         let keys = Object.keys(periphs);
@@ -481,7 +481,7 @@ class STM32 extends BaseGenerator {
                 sortKey: `${usartHex}${portHex}${offsetHex}`,
                 declaration: [
                     `template<> // ${name} -> ${periphName}`,
-                    `struct stm32_remap<${usartHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[2]}> {};`
+                    `struct stm32_remap<${sign_name}, ${usartHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[2]}> {};`
                 ]
             });
         }
@@ -528,7 +528,7 @@ class STM32 extends BaseGenerator {
                     sortKey: `${signalName}${portHex}${offsetHex}`,
                     declaration: [
                         `template<> // ${pinName} -> ${signalName}`,
-                        `struct stm32_af<${usartHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[1]}> {};`
+                        `struct stm32_af<${sign_name}, ${usartHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[1]}> {};`
                     ]
                 };
                 z.push(q);
@@ -569,7 +569,8 @@ class STM32 extends BaseGenerator {
     buildClass() {
         let nameUpper = this.className.toUpperCase();
         let nameLower = this.className.toLowerCase();
-
+        let sign = this.build_signature(nameLower);
+        let sign_name = `${nameLower}_sign`;
         let data = familyMap[this.mcu.family];
         let ns = data.ns;
 
@@ -582,11 +583,13 @@ class STM32 extends BaseGenerator {
             ``,
             `#include <stdint.h>`,
             data.includes.join('\n'),
+            `#include <zoal/ct/signature.hpp>`,
             ``,
             `namespace zoal { namespace mcu {`,
             `    class ${nameLower} {`,
             `    public:`,
             `        using self_type = ${nameLower};`,
+            `        using signature = ${sign};`,
             ``,
             this.buildClocks().join('\n'),
             ``,
@@ -613,8 +616,9 @@ class STM32 extends BaseGenerator {
             ``,
             'namespace zoal { namespace metadata {',
             '    using zoal::ct::integral_constant;',
+            `    using ${sign_name} = ${sign};`,
             '',
-            this.buildUSARTSsMetadata().join('\n'),
+            this.buildUSARTSsMetadata(sign_name).join('\n'),
             `}}`,
             '',
             `#endif`,
@@ -628,8 +632,7 @@ class STM32 extends BaseGenerator {
                 return console.log(err);
             }
 
-            exec(`clang-format --style=file -i ${outFile}`, {
-            });
+            exec(`clang-format --style=file -i ${outFile}`, {});
         });
     }
 }

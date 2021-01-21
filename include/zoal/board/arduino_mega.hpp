@@ -10,7 +10,7 @@ namespace zoal {
     template<uint32_t Frequency>
     class arduino_mega {
     public:
-        using mcu = zoal::mcu::atmega2560<Frequency>;
+        using mcu = zoal::mcu::atmega2560;
 
         using ard_d00 = typename mcu::pe_00;
         using ard_d01 = typename mcu::pe_01;

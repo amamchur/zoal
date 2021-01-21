@@ -20,7 +20,7 @@ TEST(StaticAssertion, static_pin_checking) {
     auto a = belongs_to_port<null_pin, null_port>::value;
     EXPECT_TRUE(a);
 
-    auto b = belongs_to_port<null_pin, zoal::mcu::atmega328p<16000000>>::value;
+    auto b = belongs_to_port<null_pin, zoal::mcu::atmega328p>::value;
     EXPECT_FALSE(b);
 }
 

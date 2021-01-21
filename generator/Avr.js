@@ -445,7 +445,7 @@ class Avr extends BaseGenerator {
         return result;
     }
 
-    buildTimersMetadata() {
+    buildTimersMetadata(signName) {
         let result = [];
         for (let i = 0; i < this.mcu.timers.length; i++) {
             let t = this.mcu.timers[i];
@@ -455,13 +455,13 @@ class Avr extends BaseGenerator {
                 let portHex = Avr.toHex(s.port.address, 4);
                 result.push(``);
                 result.push(`template<>`);
-                result.push(`struct pin_to_pwm_channel<${timerHex}, ${portHex}, ${s.offset}, ${s.channel}> : integral_constant<bool, true> {};`);
+                result.push(`struct pin_to_pwm_channel<${signName}, ${timerHex}, ${portHex}, ${s.offset}, ${s.channel}> : integral_constant<bool, true> {};`);
             }
         }
         return result;
     }
 
-    buildADCsMetadata() {
+    buildADCsMetadata(signName) {
         let result = [];
         let adc = this.mcu.adcs[0];
         if (!adc) {
@@ -476,7 +476,7 @@ class Avr extends BaseGenerator {
 
             result.push(``);
             result.push(`template<>`);
-            result.push(`struct pin_to_adc_channel<${adcHex}, ${portHex}, ${s.offset}> : integral_constant<int, ${s.channel}> {};`);
+            result.push(`struct pin_to_adc_channel<${signName},${adcHex}, ${portHex}, ${s.offset}> : integral_constant<int, ${s.channel}> {};`);
         }
         return result;
     }
@@ -532,7 +532,6 @@ class Avr extends BaseGenerator {
             exec(`clang-format --style=file -i ${outFile}`, {
                 // cwd: dir
             }, function () {
-                console.log(arguments)
             });
         });
     }

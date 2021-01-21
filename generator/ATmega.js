@@ -63,7 +63,7 @@ class ATmega extends Avr {
         return result;
     }
 
-    buildUSARTSsMetadata() {
+    buildUSARTSsMetadata(signName) {
         let result = [];
         for (let i = 0; i < this.mcu.usarts.length; i++) {
             let usart = this.mcu.usarts[i];
@@ -71,7 +71,7 @@ class ATmega extends Avr {
             let signals = usart.signals;
 
             result.push(`template<>`);
-            result.push(`struct usart_mapping<${usartHex}, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};`);
+            result.push(`struct usart_mapping<${signName}, ${usartHex}, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};`);
             result.push(``);
 
             for (let j = 0; j < signals.length; j++) {
@@ -86,14 +86,14 @@ class ATmega extends Avr {
 
                 result.push(``);
                 result.push(`template<>`);
-                result.push(`struct usart_mapping<${usartHex}, ${portHex}, ${s.offset}> : base_usart_mapping<${rx}, ${tx}, ${ck}> {`);
+                result.push(`struct usart_mapping<${signName}, ${usartHex}, ${portHex}, ${s.offset}> : base_usart_mapping<${rx}, ${tx}, ${ck}> {`);
                 result.push(`};`);
             }
         }
         return result;
     }
 
-    buildSPIsMetadata() {
+    buildSPIsMetadata(signName) {
         let result = [];
         for (let i = 0; i < this.mcu.spis.length; i++) {
             let spi = this.mcu.spis[i];
@@ -114,7 +114,7 @@ class ATmega extends Avr {
 
                 result.push(``);
                 result.push(`template<>`);
-                result.push(`struct spi_mapping<${address}, ${portHex}, ${s.offset}> : base_spi_mapping<${mosi}, ${miso}, ${clock}, ${ss}> {`);
+                result.push(`struct spi_mapping<${signName}, ${address}, ${portHex}, ${s.offset}> : base_spi_mapping<${mosi}, ${miso}, ${clock}, ${ss}> {`);
                 result.push(`};`);
             }
         }
@@ -123,7 +123,7 @@ class ATmega extends Avr {
     }
 
 
-    buildI2CsMetadata() {
+    buildI2CsMetadata(signName) {
         let result = [];
         for (let i = 0; i < this.mcu.i2cs.length; i++) {
             let spi = this.mcu.i2cs[i];
@@ -142,7 +142,7 @@ class ATmega extends Avr {
 
                 result.push(``);
                 result.push(`template<>`);
-                result.push(`struct i2c_mapping<${address}, ${portHex}, ${s.offset}> : base_i2c_mapping<${sda}, ${scl}> {`);
+                result.push(`struct i2c_mapping<${signName}, ${address}, ${portHex}, ${s.offset}> : base_i2c_mapping<${sda}, ${scl}> {`);
                 result.push(`};`);
             }
         }
@@ -196,6 +196,8 @@ class ATmega extends Avr {
         let name = this.device.$.name;
         let nameUpper = name.toUpperCase();
         let nameLower = name.toLowerCase();
+        let sign = this.build_signature(name);
+        let sign_name = `${nameLower}_sign`;
 
         this.buffer = [
             `/**`,
@@ -220,15 +222,15 @@ class ATmega extends Avr {
             `#include <zoal/arch/enable.hpp>`,
             `#include <zoal/gpio/api.hpp>`,
             `#include <zoal/gpio/pin.hpp>`,
-            `#include <zoal/mcu/base_mcu.hpp>`,
             `#include <zoal/ct/type_list.hpp>`,
+            `#include <zoal/ct/signature.hpp>`,
             ``,
             `namespace zoal { namespace mcu {`,
-            `    template<uint32_t Frequency>`,
-            `    class ${nameLower} : public base_mcu<Frequency, 1> {`,
+            `    class ${nameLower} {`,
             `    public:`,
-            // `    using self_type = ${nameLower}<Frequency>;`,
-            // ``,
+            `       using self_type = ${nameLower};`,
+            `       using signature = ${sign};`,
+            '',
             `    template<uintptr_t Address, uint8_t PinMask>`,
             `    using port = typename ::zoal::arch::avr::port<Address, PinMask>;`,
             `    `,
@@ -249,8 +251,8 @@ class ATmega extends Avr {
             this.buildPinAliases().join('\n'),
             ``,
             this.buildPortChain().join('\n'),
-            `    using mux = ::zoal::arch::avr::atmega::mux;`,
-            `    using cfg = ::zoal::arch::avr::atmega::cfg<Frequency>;`,
+            '    using mux = ::zoal::arch::avr::atmega::mux<self_type>;',
+            '    using cfg = ::zoal::arch::avr::atmega::cfg<self_type>;',
             `    using irq = ::zoal::arch::avr::atmega::irq;`,
             ``,
             `    template<class ... Module>`,
@@ -263,16 +265,17 @@ class ATmega extends Avr {
             ``,
             'namespace zoal { namespace metadata {',
             '    using zoal::ct::integral_constant;',
+            `    using ${sign_name} = ${sign};`,
             '',
-            this.buildTimersMetadata().join('\n'),
+            this.buildTimersMetadata(sign_name).join('\n'),
             '',
-            this.buildUSARTSsMetadata().join('\n'),
+            this.buildUSARTSsMetadata(sign_name).join('\n'),
             '',
-            this.buildSPIsMetadata().join('\n'),
+            this.buildSPIsMetadata(sign_name).join('\n'),
             '',
-            this.buildI2CsMetadata().join('\n'),
+            this.buildI2CsMetadata(sign_name).join('\n'),
             '',
-            this.buildADCsMetadata().join('\n'),
+            this.buildADCsMetadata(sign_name).join('\n'),
             `}}`,
             '',
             `#endif`,

@@ -7,13 +7,13 @@
 #include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace metadata {
-    template<uintptr_t UsartAddress, uint32_t PortAddress, uint8_t PinOffset>
+    template<class Sign, uintptr_t UsartAddress, uint32_t PortAddress, uint8_t PinOffset>
     struct usart_mapping;
 
-    template<class Adc, class Pin>
+    template<class Sign, class Adc, class Pin>
     struct adc_mapping;
 
-    template<class Timer, class Pin, uint8_t Channel>
+    template<class Sign, class Timer, class Pin, uint8_t Channel>
     struct pwm_channel_mapping;
 }}
 
@@ -22,13 +22,16 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
     using zoal::metadata::pwm_channel_mapping;
     using zoal::metadata::usart_mapping;
 
-    template<class Api>
+    template<class Microcontroller>
     class mux {
     public:
+        using mcu = Microcontroller;
+        using sign = typename mcu::signature;
+
         template<class A, class Pin>
         class adc {
         public:
-            static constexpr auto channel = adc_mapping<A, Pin>::value;
+            static constexpr auto channel = adc_mapping<sign, A, Pin>::value;
             static constexpr auto mux_set_mask = channel & 0x07;
             static constexpr auto mux5 = channel > 7 ? (1 << 3) : 0;
 
@@ -51,7 +54,7 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
         class timer {
         public:
             static_assert(Channel < 2, "Channel index if out of range");
-            static_assert(pwm_channel_mapping<T, Pin, Channel>::value, "Unsupported PWM connection");
+            static_assert(pwm_channel_mapping<sign, T, Pin, Channel>::value, "Unsupported PWM connection");
 
             static constexpr auto mask = static_cast<uint8_t>(Channel == 0 ? (1u << 7u) : (1u << 5u));
             using TCCRxA_cfg_on = typename T::TCCRxA::template cas<0, mask>;

@@ -67,6 +67,16 @@ function(add_avr_executable NAME MCU)
             DEPENDS ${NAME}
             VERBATIM
             )
+    add_custom_target(${NAME}-eeprom
+            COMMAND avrdude -p ${AVRDUDE_DEVICE} -c usbasp -Ueeprom:w:${NAME}:e
+            DEPENDS ${NAME}
+            VERBATIM
+            )
+    add_custom_target(${NAME}-fuse
+            COMMAND avrdude -p ${AVRDUDE_DEVICE} -c usbasp -Uefuse:w:${NAME}:e -Uhfuse:w:${NAME}:e -Ulfuse:w:${NAME}:e
+            DEPENDS ${NAME}
+            VERBATIM
+            )
 
     set_property(
             DIRECTORY

@@ -2,6 +2,7 @@
 #include "../misc/terminal_input.hpp"
 
 #include <avr/eeprom.h>
+#include <avr/io.h>
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_uno.hpp>
@@ -10,10 +11,14 @@
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
-#include <zoal/utils/vt100.hpp>
+
+FUSES = {
+    .low = 0xFF,
+    .high = 0xD7,
+    .extended = 0xFC
+};
 
 volatile uint32_t milliseconds = 0;
-volatile uint16_t prev_adc_value = 0;
 volatile uint16_t adc_value = 0;
 volatile bool process_adc = false;
 
@@ -24,7 +29,7 @@ using usart = mcu::usart_00;
 using spi = mcu::spi_00;
 using adc = mcu::adc_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using counter_irq_handler = counter::handler<mcu::frequency, 64, timer>;
+using counter_irq_handler = counter::handler<F_CPU, 64, timer>;
 
 zoal::data::ring_buffer_ext<uint8_t, 16> rx_buffer;
 
@@ -61,9 +66,7 @@ analog_keypad_type analog_keypad;
 using interface_type = zoal::ic::hd44780_interface_4bit<delay, pcb::ard_d08, pcb::ard_d09, pcb::ard_d04, pcb::ard_d05, pcb::ard_d06, pcb::ard_d07>;
 using address_selector = zoal::ic::hd44780_address_selector<16, 2>;
 using lcd_type = zoal::ic::hd44780<interface_type, address_selector>;
-
 lcd_type lcd;
-zoal::io::output_stream<lcd_type> lcd_stream(lcd);
 
 void initialize_hardware() {
     // Power on modules
@@ -211,12 +214,6 @@ void analog_keypad_handler(zoal::io::button_event e, int button) {
     stream << "Buttons press: " << button << "\r\n";
 }
 
-void print_buttons_adc_values() {
-    for (int i = 0; i < analog_keypad_type::button_count; i++) {
-        stream << "Button " << i << ": " << analog_keypad.adc_values[i] << "\r\n";
-    }
-}
-
 int main() {
     initialize_hardware();
 
@@ -226,8 +223,6 @@ int main() {
     terminal.clear();
 
     stream << zoal::io::progmem_str(zoal_ascii_logo);
-    print_buttons_adc_values();
-
     terminal.sync();
 
     adc::start();

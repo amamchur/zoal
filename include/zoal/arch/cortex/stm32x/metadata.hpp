@@ -11,7 +11,7 @@
 namespace zoal { namespace metadata {
     enum class signal { rx, cts, tx, ck, de, rts, ch1, ch2, ch3, ch4, etr, bkin, ch1n, ch2n, ch3n };
 
-    template<uintptr_t PeriphAddr, uintptr_t Port, uint8_t Pin, signal S>
+    template<class Sign, uintptr_t PeriphAddr, uintptr_t Port, uint8_t Pin, signal S>
     struct stm32_af : zoal::ct::integral_constant<int, -1> {};
 
     enum class stm32_remap_mode { no_remap, partial, full };
@@ -22,7 +22,7 @@ namespace zoal { namespace metadata {
     template<uintptr_t PeriphAddr, stm32_remap_mode mode>
     struct stm32_afio_mapr2 {};
 
-    template<uintptr_t PeriphAddr, uintptr_t Port, uint8_t Pin, signal S>
+    template<class Sign, uintptr_t PeriphAddr, uintptr_t Port, uint8_t Pin, signal S>
     struct stm32_remap : zoal::ct::integral_constant<int, -1> {};
 
     template<int v1, int v2>

@@ -32,6 +32,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
     class cfg {
     public:
         using mcu = Microcontroller;
+        using sign = typename mcu::signature;
 
         template<class U, class Cfg>
         class usart {

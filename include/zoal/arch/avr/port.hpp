@@ -44,8 +44,6 @@ namespace zoal { namespace arch { namespace avr {
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
         using mode_cas = pin_mode_cfg<self_type, PinMode, Mask>;
 
-        using enable_cas = zoal::mem::null_cas_list;
-        using disable_cas = zoal::mem::null_cas_list;
         using clock_on_cas = zoal::mem::null_cas_list;
         using clock_off_cas = mode_cas<::zoal::gpio::pin_mode::input_floating, PinMask>;
 
@@ -55,35 +53,14 @@ namespace zoal { namespace arch { namespace avr {
         template<register_type Mask>
         using high_cas = callable_cas_list_variadic<typename PORTx::template cas<0, Mask>>;
 
-        ZOAL_INLINE_IO static void power_on() {}
-
-        ZOAL_INLINE_IO static void power_off() {
-            mode<::zoal::gpio::pin_mode::input_floating, PinMask>();
-        }
-
         ZOAL_INLINE_IO static register_type read() {
             return PINx::ref();
-        }
-
-        template<register_type Mask>
-        ZOAL_INLINE_IO static void low() {
-            zoal::mem::apply_cas_list<low_cas<Mask>>::apply();
-        }
-
-        template<register_type Mask>
-        ZOAL_INLINE_IO static void high() {
-            zoal::mem::apply_cas_list<high_cas<Mask>>::apply();
         }
 
         template<register_type Mask>
         ZOAL_INLINE_IO static void toggle() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
             PORTx::ref() ^= Mask;
-        }
-
-        template<::zoal::gpio::pin_mode PinMode, register_type Mask>
-        ZOAL_INLINE_IO static void mode() {
-            zoal::mem::apply_cas_list<mode_cas<PinMode, Mask>>::apply();
         }
     };
 }}}

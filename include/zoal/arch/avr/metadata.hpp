@@ -30,13 +30,13 @@ namespace zoal { namespace metadata {
         static constexpr int scl = SerialClockLine;
     };
 
-    template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
+    template<class Sign, uintptr_t Address, uint32_t Port, uint8_t PinOffset>
     struct usart_mapping : base_usart_mapping<-1, -1, -1> {};
 
-    template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
+    template<class Sign, uintptr_t Address, uint32_t Port, uint8_t PinOffset>
     struct spi_mapping : base_spi_mapping<-1, -1, -1, -1> {};
 
-    template<uintptr_t Address, uint32_t Port, uint8_t PinOffset>
+    template<class Sign, uintptr_t Address, uint32_t Port, uint8_t PinOffset>
     struct i2c_mapping : base_i2c_mapping<-1, -1> {};
 
     template<class T, ::zoal::periph::timer_mode Mode>
@@ -50,19 +50,19 @@ namespace zoal { namespace metadata {
     template<class A, zoal::periph::adc_ref Ref>
     struct adc_ref {};
 
-    template<uintptr_t AdcAddress, uintptr_t PortAddress, uint8_t PinOffset>
+    template<class Sign, uintptr_t AdcAddress, uintptr_t PortAddress, uint8_t PinOffset>
     struct pin_to_adc_channel {
         static constexpr int channel = -1;
     };
 
-    template<class Adc, class Pin>
-    struct adc_mapping : pin_to_adc_channel<Adc::address, Pin::port::address, Pin::offset> {};
+    template<class Sign, class Adc, class Pin>
+    struct adc_mapping : pin_to_adc_channel<Sign, Adc::address, Pin::port::address, Pin::offset> {};
 
-    template<uintptr_t TimerAddress, uintptr_t PortAddress, uint8_t PinOffset, uint8_t Channel>
+    template<class Sign, uintptr_t TimerAddress, uintptr_t PortAddress, uint8_t PinOffset, uint8_t Channel>
     struct pin_to_pwm_channel : zoal::ct::integral_constant<bool, false> {};
 
-    template<class Timer, class Pin, uint8_t Channel>
-    struct pwm_channel_mapping : pin_to_pwm_channel<Timer::address, Pin::port::address, Pin::offset, Channel> {};
+    template<class Sign, class Timer, class Pin, uint8_t Channel>
+    struct pwm_channel_mapping : pin_to_pwm_channel<Sign, Timer::address, Pin::port::address, Pin::offset, Channel> {};
 }}
 
 #endif

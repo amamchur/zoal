@@ -1,6 +1,7 @@
 #ifndef ZOAL_IC_HD44780_HPP
 #define ZOAL_IC_HD44780_HPP
 
+#include "../gpio/api.hpp"
 #include "../gpio/pin_mode.hpp"
 #include "../io/stream.hpp"
 
@@ -106,14 +107,10 @@ namespace zoal { namespace ic {
         static constexpr uint8_t bit_mode = 8;
 
         static void init() {
-            using namespace zoal::gpio;
-
             pulse_enable();
             delay::template us<5>();
-
             pulse_enable();
             delay::template us<100>();
-
             pulse_enable();
             delay::template us<37>();
         }

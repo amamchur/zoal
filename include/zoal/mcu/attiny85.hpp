@@ -15,15 +15,18 @@
 #include <zoal/arch/avr/timer8.hpp>
 #include <zoal/arch/enable.hpp>
 #include <zoal/arch/power.hpp>
+#include <zoal/ct/signature.hpp>
 #include <zoal/ct/type_list.hpp>
 #include <zoal/gpio/api.hpp>
 #include <zoal/gpio/pin.hpp>
-#include <zoal/mcu/base_mcu.hpp>
 
 namespace zoal { namespace mcu {
     template<uint32_t Frequency>
-    class attiny85 : public base_mcu<Frequency, 1> {
+    class attiny85 {
     public:
+        using self_type = attiny85;
+        using signature = zoal::ct::signature<'A', 'T', 't', 'i', 'n', 'y', '8', '5'>;
+
         template<uintptr_t Address, uint8_t PinMask>
         using port = typename ::zoal::arch::avr::port<Address, PinMask>;
 
@@ -118,8 +121,8 @@ namespace zoal { namespace mcu {
 
         using ports = ::zoal::ct::type_list<port_b>;
         using api = ::zoal::gpio::api;
-        using mux = ::zoal::arch::avr::attiny::mux<api>;
-        using cfg = ::zoal::arch::avr::attiny::cfg<api, Frequency>;
+        using mux = ::zoal::arch::avr::attiny::mux<self_type>;
+        using cfg = ::zoal::arch::avr::attiny::cfg<self_type>;
         using irq = ::zoal::arch::avr::attiny::irq;
 
         template<class... Module>
@@ -132,36 +135,28 @@ namespace zoal { namespace mcu {
 
 namespace zoal { namespace metadata {
     using zoal::ct::integral_constant;
+    using attiny85_sign = zoal::ct::signature<'A', 'T', 't', 'i', 'n', 'y', '8', '5'>;
 
     template<>
-    struct pin_to_pwm_channel<0x0048, 0x0036, 1, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<attiny85_sign, 0x0048, 0x0036, 1, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct pin_to_pwm_channel<0x0048, 0x0036, 0, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<attiny85_sign, 0x0048, 0x0036, 0, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct pin_to_pwm_channel<0x0043, 0x0036, 4, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<attiny85_sign, 0x0043, 0x0036, 4, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct pin_to_pwm_channel<0x0043, 0x0036, 1, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<attiny85_sign, 0x0043, 0x0036, 1, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct pin_to_adc_channel<0x0023, 0x0036, 5> : integral_constant<int, 0> {};
+    struct pin_to_adc_channel<attiny85_sign, 0x0023, 0x0036, 5> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_adc_channel<0x0023, 0x0036, 2> : integral_constant<int, 1> {};
+    struct pin_to_adc_channel<attiny85_sign, 0x0023, 0x0036, 2> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_adc_channel<0x0023, 0x0036, 4> : integral_constant<int, 2> {};
-
-    template<class A>
-    struct adc_ref<A, zoal::periph::adc_ref::vcc> : type_list<typename A::ADMUXx::template cas<0xC0, 0xC0>> {};
-
-    template<class A>
-    struct adc_ref<A, zoal::periph::adc_ref::internal_1v1> : type_list<typename A::ADMUXx::template cas<0xD0, 0x80>> {};
-
-    template<class A>
-    struct adc_ref<A, zoal::periph::adc_ref::internal_2v56> : type_list<typename A::ADMUXx::template cas<0xD0, 0x90>> {};
+    struct pin_to_adc_channel<attiny85_sign, 0x0023, 0x0036, 4> : integral_constant<int, 2> {};
 }}
 
 #endif

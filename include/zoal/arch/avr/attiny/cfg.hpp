@@ -41,10 +41,11 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
     using zoal::periph::usart_parity;
     using zoal::periph::usart_stop_bits;
 
-    template<class Api, uint32_t Frequency>
+    template<class Microcontroller>
     class cfg {
     public:
-        static constexpr auto frequency = Frequency;
+        using mcu = Microcontroller;
+        using sign = typename mcu::signature;
 
         template<class T, zoal::periph::timer_mode Mode, uintptr_t ClockDivider, uintptr_t Prescale = 1, uintptr_t Period = 0xFF>
         class timer {

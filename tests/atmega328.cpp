@@ -7,7 +7,7 @@
 #include <zoal/mcu/atmega328p.hpp>
 
 using namespace zoal::gpio;
-using mcu = zoal::mcu::atmega328p<16000000>;
+using mcu = zoal::mcu::atmega328p;
 
 class ATmega328 : public ::testing::Test {
 protected:
@@ -33,26 +33,26 @@ TEST_F(ATmega328, port_api_checking) {
 
     uint8_t *m = zoal::test::mem<void>::avr();
 
-    port_b::high<0xAA>();
+    port_b::high_cas<0xAA>();
     EXPECT_EQ(m[portb_address], 0xAA);
 
-    port_b::mode<pin_mode::output_push_pull, 0x12>();
+    port_b::mode_cas<pin_mode::output_push_pull, 0x12>();
     EXPECT_EQ(m[ddrb_address], 0x12);
 
     m[pinb_address] = 0x3;
     EXPECT_EQ(port_b::read(), 0x3);
 
-    port_b::low<0x28>();
+    port_b::low_cas<0x28>();
     EXPECT_EQ(m[portb_address], 0x82);
 
     port_b::toggle<0x20>();
     EXPECT_EQ(m[portb_address], 0xA2);
 
-    port_b::power_off();
+    port_b::clock_off_cas();
     EXPECT_EQ(m[ddrb_address], 0x00);
     EXPECT_EQ(m[portb_address], 0x00);
 
-    port_b::power_on();
+    port_b::clock_on_cas();
     EXPECT_EQ(m[ddrb_address], 0x00);
     EXPECT_EQ(m[portb_address], 0x00);
 }
@@ -65,6 +65,7 @@ TEST_F(ATmega328, pin_api_checking) {
     auto portb_address = port_b::PORTx::address;
 
     uint8_t *m = zoal::test::mem<void>::avr();
+    m[pinb_address] = 0x0;
     mcu::pb_00::high();
     EXPECT_EQ(m[portb_address], 0x01);
 
@@ -84,6 +85,7 @@ TEST_F(ATmega328, pin_api_checking) {
     m[portb_address] = 0x0F;
     mcu::pb_01::set<0>();
     EXPECT_EQ(m[portb_address], 0x0D);
+
     mcu::pb_01::set<1>();
     EXPECT_EQ(m[portb_address], 0x0F);
 

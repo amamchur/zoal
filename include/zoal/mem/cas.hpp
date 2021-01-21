@@ -21,6 +21,7 @@ namespace zoal { namespace mem {
 
     template<zoal::mem::reg_io RegIO, uint32_t Mask, uint32_t C, uint32_t S>
     struct cas_strategy {
+        static_assert(RegIO != reg_io::write || C == 0, "Register is write only, clear not allowed");
         static constexpr auto ignore = C == 0 && S == 0;
         static constexpr auto assign = ((C | S) & Mask) == Mask || RegIO == zoal::mem::reg_io::write;
         static constexpr auto clear = S == 0;

@@ -25,7 +25,7 @@ using mcu = zoal::mcu::attiny85<F_CPU>;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
 using adc = mcu::adc_00;
-using ms_handler = counter::handler<mcu::frequency, 64, timer>;
+using ms_handler = counter::handler<F_CPU, 64, timer>;
 using sspi = zoal::periph::tx_software_spi<mcu::pb_03, mcu::pb_02>;
 using max7219 = zoal::ic::max72xx<sspi, mcu::pb_01>;
 

@@ -19,16 +19,17 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
     template<class Microcontroller>
     class mux {
-    private:
-        using afio = typename Microcontroller::afio;
-
     public:
+        using mcu = Microcontroller;
+        using sign = typename mcu::signature;
+        using afio = typename mcu::afio;
+
         template<class U, class PinRX, class PinTX>
         class usart {
         public:
             // Test remapping allowed
-            using rx_rm = zoal::metadata::stm32_remap<U::address, PinRX::port::address, PinRX::offset, signal::rx>;
-            using tx_rm = zoal::metadata::stm32_remap<U::address, PinTX::port::address, PinTX::offset, signal::tx>;
+            using rx_rm = zoal::metadata::stm32_remap<sign, U::address, PinRX::port::address, PinRX::offset, signal::rx>;
+            using tx_rm = zoal::metadata::stm32_remap<sign, U::address, PinTX::port::address, PinTX::offset, signal::tx>;
             static_assert(rx_rm::value >= 0, "Unsupported RX pin mapping");
             static_assert(tx_rm::value >= 0, "Unsupported TX pin mapping");
 
@@ -52,7 +53,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
             using clock_tx_on = typename PinRX::port::clock_on_cas;
             using clock_rx_on = typename PinRX::port::clock_on_cas;
 
-            // Final marge
+            // Final merge
             using periph_clock_on = zoal::gpio::api::optimize<clock_tx_on, clock_rx_on>;
             using connect = zoal::gpio::api::optimize<clock_tx_on, clock_rx_on, afio_connect, rx_in, tx_af>;
             using disconnect = zoal::gpio::api::optimize<rx_in, tx_in, afio_disconnect>;

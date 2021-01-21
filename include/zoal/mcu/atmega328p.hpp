@@ -18,15 +18,17 @@
 #include <zoal/arch/avr/port.hpp>
 #include <zoal/arch/enable.hpp>
 #include <zoal/arch/power.hpp>
+#include <zoal/ct/signature.hpp>
 #include <zoal/ct/type_list.hpp>
 #include <zoal/gpio/api.hpp>
 #include <zoal/gpio/pin.hpp>
-#include <zoal/mcu/base_mcu.hpp>
 
 namespace zoal { namespace mcu {
-    template<uint32_t Frequency>
-    class atmega328p : public base_mcu<Frequency, 1> {
+    class atmega328p {
     public:
+        using self_type = atmega328p;
+        using signature = zoal::ct::signature<'A', 'T', 'm', 'e', 'g', 'a', '3', '2', '8', 'P'>;
+
         template<uintptr_t Address, uint8_t PinMask>
         using port = typename ::zoal::arch::avr::port<Address, PinMask>;
 
@@ -85,8 +87,8 @@ namespace zoal { namespace mcu {
         using xck_00 = pd_04;
 
         using ports = ::zoal::ct::type_list<port_b, port_c, port_d>;
-        using mux = ::zoal::arch::avr::atmega::mux;
-        using cfg = ::zoal::arch::avr::atmega::cfg<Frequency>;
+        using mux = ::zoal::arch::avr::atmega::mux<self_type>;
+        using cfg = ::zoal::arch::avr::atmega::cfg<self_type>;
         using irq = ::zoal::arch::avr::atmega::irq;
 
         template<class... Module>
@@ -99,72 +101,73 @@ namespace zoal { namespace mcu {
 
 namespace zoal { namespace metadata {
     using zoal::ct::integral_constant;
+    using atmega328p_sign = zoal::ct::signature<'A', 'T', 'm', 'e', 'g', 'a', '3', '2', '8', 'P'>;
 
     template<>
-    struct pin_to_pwm_channel<0x0044, 0x0029, 5, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x0044, 0x0029, 5, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct pin_to_pwm_channel<0x0044, 0x0029, 6, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x0044, 0x0029, 6, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct pin_to_pwm_channel<0x0080, 0x0023, 1, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x0080, 0x0023, 1, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct pin_to_pwm_channel<0x0080, 0x0023, 2, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x0080, 0x0023, 2, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct pin_to_pwm_channel<0x00B0, 0x0023, 3, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x00B0, 0x0023, 3, 0> : integral_constant<bool, true> {};
 
     template<>
-    struct pin_to_pwm_channel<0x00B0, 0x0029, 3, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x00B0, 0x0029, 3, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<0x00C0, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
+    struct usart_mapping<atmega328p_sign, 0x00C0, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
 
     template<>
-    struct usart_mapping<0x00C0, 0x0029, 1> : base_usart_mapping<-1, 0, -1> {};
+    struct usart_mapping<atmega328p_sign, 0x00C0, 0x0029, 1> : base_usart_mapping<-1, 0, -1> {};
 
     template<>
-    struct usart_mapping<0x00C0, 0x0029, 0> : base_usart_mapping<0, -1, -1> {};
+    struct usart_mapping<atmega328p_sign, 0x00C0, 0x0029, 0> : base_usart_mapping<0, -1, -1> {};
 
     template<>
-    struct usart_mapping<0x00C0, 0x0029, 4> : base_usart_mapping<-1, -1, 0> {};
+    struct usart_mapping<atmega328p_sign, 0x00C0, 0x0029, 4> : base_usart_mapping<-1, -1, 0> {};
 
     template<>
-    struct spi_mapping<0x004C, 0x0023, 2> : base_spi_mapping<-1, -1, -1, 0> {};
+    struct spi_mapping<atmega328p_sign, 0x004C, 0x0023, 2> : base_spi_mapping<-1, -1, -1, 0> {};
 
     template<>
-    struct spi_mapping<0x004C, 0x0023, 3> : base_spi_mapping<0, -1, -1, -1> {};
+    struct spi_mapping<atmega328p_sign, 0x004C, 0x0023, 3> : base_spi_mapping<0, -1, -1, -1> {};
 
     template<>
-    struct spi_mapping<0x004C, 0x0023, 4> : base_spi_mapping<-1, 0, -1, -1> {};
+    struct spi_mapping<atmega328p_sign, 0x004C, 0x0023, 4> : base_spi_mapping<-1, 0, -1, -1> {};
 
     template<>
-    struct spi_mapping<0x004C, 0x0023, 5> : base_spi_mapping<-1, -1, 0, -1> {};
+    struct spi_mapping<atmega328p_sign, 0x004C, 0x0023, 5> : base_spi_mapping<-1, -1, 0, -1> {};
 
     template<>
-    struct i2c_mapping<0x00B8, 0x0026, 4> : base_i2c_mapping<0, -1> {};
+    struct i2c_mapping<atmega328p_sign, 0x00B8, 0x0026, 4> : base_i2c_mapping<0, -1> {};
 
     template<>
-    struct i2c_mapping<0x00B8, 0x0026, 5> : base_i2c_mapping<-1, 0> {};
+    struct i2c_mapping<atmega328p_sign, 0x00B8, 0x0026, 5> : base_i2c_mapping<-1, 0> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x0026, 0> : integral_constant<int, 0> {};
+    struct pin_to_adc_channel<atmega328p_sign, 0x0078, 0x0026, 0> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x0026, 1> : integral_constant<int, 1> {};
+    struct pin_to_adc_channel<atmega328p_sign, 0x0078, 0x0026, 1> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x0026, 2> : integral_constant<int, 2> {};
+    struct pin_to_adc_channel<atmega328p_sign, 0x0078, 0x0026, 2> : integral_constant<int, 2> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x0026, 3> : integral_constant<int, 3> {};
+    struct pin_to_adc_channel<atmega328p_sign, 0x0078, 0x0026, 3> : integral_constant<int, 3> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x0026, 4> : integral_constant<int, 4> {};
+    struct pin_to_adc_channel<atmega328p_sign, 0x0078, 0x0026, 4> : integral_constant<int, 4> {};
 
     template<>
-    struct pin_to_adc_channel<0x0078, 0x0026, 5> : integral_constant<int, 5> {};
+    struct pin_to_adc_channel<atmega328p_sign, 0x0078, 0x0026, 5> : integral_constant<int, 5> {};
 }}
 
 #endif

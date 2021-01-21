@@ -16,7 +16,7 @@ using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
 
 using timer = zoal::pcb::mcu::timer_00;
-using counter_irq_handler = counter::handler<zoal::pcb::mcu::frequency, 64, timer>;
+using counter_irq_handler = counter::handler<F_CPU, 64, timer>;
 using usart = mcu::usart_01;
 
 zoal::data::ring_buffer_ext<uint8_t, 16> rx_buffer;
@@ -37,7 +37,7 @@ void initialize_hardware() {
     mcu::cfg::usart<usart, usart_cfg>::apply();
 
     mcu::mux::i2c<i2c, mcu::pd_01, mcu::pd_00>::connect();
-    mcu::cfg::i2c<i2c>::apply();
+    mcu::cfg::i2c<i2c, F_CPU>::apply();
 
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
     mcu::irq::timer<timer>::enable_overflow_interrupt();

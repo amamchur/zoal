@@ -3,24 +3,36 @@
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
       <config projectName="zoal" targetName="ATtiny85" />
+      <config projectName="zoal" targetName="ATtiny2313-fuse" />
+      <config projectName="zoal" targetName="ATtiny2313" />
+      <config projectName="zoal" targetName="stm32f303_discovery" />
+      <config projectName="zoal" targetName="ATmega328p-eeprom" />
+      <config projectName="zoal" targetName="ATmega2560-upload" />
+      <config projectName="zoal" targetName="ATmega32u4-upload" />
+      <config projectName="zoal" targetName="stm32f103_freertos" />
+      <config projectName="zoal" targetName="stm32f303_nucleo" />
+      <config projectName="zoal" targetName="ATmega2560-eeprom" />
+      <config projectName="zoal" targetName="ATmega328p-fuse" />
+      <config projectName="zoal" targetName="host" />
+      <config projectName="zoal" targetName="ATmega32u4-eeprom" />
+      <config projectName="zoal" targetName="ATtiny13-upload" />
+      <config projectName="zoal" targetName="ATtiny85-eeprom" />
+      <config projectName="zoal" targetName="ATtiny2313-eeprom" />
       <config projectName="zoal" targetName="ATmega2560.elf" />
       <config projectName="zoal" targetName="ATtiny13" />
       <config projectName="zoal" targetName="zoal_tests_atmega328" />
-      <config projectName="zoal" targetName="ATtiny2313" />
-      <config projectName="zoal" targetName="stm32f303_discovery" />
       <config projectName="zoal" targetName="stm32l432kcu6" />
       <config projectName="zoal" targetName="stm32f103_blue_pill" />
-      <config projectName="zoal" targetName="ATmega2560-upload" />
+      <config projectName="zoal" targetName="ATtiny13-fuse" />
       <config projectName="zoal" targetName="ATmega2560" />
-      <config projectName="zoal" targetName="ATmega32u4-upload" />
       <config projectName="zoal" targetName="ATtiny85-upload" />
       <config projectName="zoal" targetName="ATmega328p-upload" />
       <config projectName="zoal" targetName="ATmega32u4" />
       <config projectName="zoal" targetName="ATmega328p" />
-      <config projectName="zoal" targetName="stm32f103_freertos" />
-      <config projectName="zoal" targetName="stm32f303_nucleo" />
-      <config projectName="zoal" targetName="host" />
-      <config projectName="zoal" targetName="ATtiny13-upload" />
+      <config projectName="zoal" targetName="ATmega32u4-fuse" />
+      <config projectName="zoal" targetName="ATtiny13-eeprom" />
+      <config projectName="zoal" targetName="ATmega2560-fuse" />
+      <config projectName="zoal" targetName="ATtiny85-fuse" />
       <config projectName="zoal" targetName="ATtiny2313-upload" />
       <config projectName="zoal" targetName="stm32f030" />
     </generated>
@@ -35,18 +47,55 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/include/zoal/ct/signature.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/zoal/gpio/pin_outout_speed.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ToolchainAVR.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainAVR.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/attiny13.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny13.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/attiny2313.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny2313.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/adc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/adc.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/gpio/null_port.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/null_port.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/attiny85.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny85.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen-mcus.sh" beforeDir="false" afterPath="$PROJECT_DIR$/gen-mcus.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generator/ATmega.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/ATmega.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generator/ATtiny.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/ATtiny.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generator/Avr.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/Avr.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generator/BaseGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/BaseGenerator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generator/STM32.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/STM32.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/cfg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/metadata.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/port.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/port.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/port.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/port.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/metadata.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_atmegaxx8.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_atmegaxx8.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_leonardo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_leonardo.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_mega.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_mega.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/gpio/api.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/api.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/gpio/pin.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/pin.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/ic/hd44780.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/hd44780.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/analog_keypad.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/analog_keypad.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/stream_functor.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/stream_functor.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/utils/logger.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/logger.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_input.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega2560.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega2560.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega328p.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega328p.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega32u4.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega32u4.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/attiny13a.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/attiny13a.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/attiny2313a.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/attiny2313a.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/attiny85.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/attiny85.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/base_mcu.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f030f4px.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f030f4px.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/atmega328.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/atmega328.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/clear_and_set.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/clear_and_set.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/static_assertion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/static_assertion.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +118,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:ReleaseAVR" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:ReleaseSTM32" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
@@ -98,7 +147,7 @@
     <property name="cf.advertisement.text.has.clang-format" value="true" />
     <property name="cf.advertisement.text.overridden" value="true" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/include/zoal/arch/cortex/m3" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/include/zoal/gpio" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
@@ -107,11 +156,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/zoal/gpio" />
       <recent name="$PROJECT_DIR$/include/zoal/arch/cortex/m3" />
       <recent name="$PROJECT_DIR$/apps/stm32f103c8_freertos" />
       <recent name="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src" />
       <recent name="$PROJECT_DIR$/include/zoal/parser" />
-      <recent name="$PROJECT_DIR$/misc" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/include/zoal/arch/avr/utils" />
@@ -119,11 +168,26 @@
       <recent name="$PROJECT_DIR$/apps" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.ATmega328p">
+  <component name="RunManager" selected="CMake Application.All">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="All in zoal_tests_atmega328" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests_atmega328" CONFIG_NAME="DebugHost" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests_atmega328" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
         <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega2560-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560-eeprom" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega2560-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560-fuse" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="ATmega2560-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560-upload" CONFIG_NAME="ReleaseAVR">
@@ -132,6 +196,16 @@
       </method>
     </configuration>
     <configuration name="ATmega2560" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega2560" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega2560">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega328p-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p-eeprom" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega328p-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega328p-fuse" CONFIG_NAME="ReleaseAVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -146,12 +220,32 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ATmega32u4-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4-eeprom" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATmega32u4-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4-fuse" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ATmega32u4-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4-upload" CONFIG_NAME="ReleaseAVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="ATmega32u4" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATmega32u4" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATmega32u4">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny13-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13-eeprom" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny13-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny13-fuse" CONFIG_NAME="ReleaseAVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -166,12 +260,32 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ATtiny2313-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313-eeprom" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny2313-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313-fuse" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ATtiny2313-upload" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313-upload" CONFIG_NAME="ReleaseAVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="ATtiny2313" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny2313" CONFIG_NAME="ReleaseAVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="ATtiny2313">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny85-eeprom" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85-eeprom" CONFIG_NAME="ReleaseAVR">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ATtiny85-fuse" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="ATtiny85-fuse" CONFIG_NAME="ReleaseAVR">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -229,6 +343,9 @@
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
+    <configuration name="gen atmega328p" type="NodeJSConfigurationType" application-parameters="-f atmega -m $PROJECT_DIR$/../zoal-mcu-metadata/ATmega_DFP/1.2.209/atdf/ATmega328P.atdf -o include/zoal/mcu/atmega328p.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
     <configuration name="gen stm32f030f4px" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F030F4Px.xml&quot; -o ./include/zoal/mcu/stm32f030f4px.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
@@ -260,16 +377,28 @@
     <list>
       <item itemvalue="CMake Application.All" />
       <item itemvalue="CMake Application.ATmega2560" />
+      <item itemvalue="CMake Application.ATmega2560-eeprom" />
+      <item itemvalue="CMake Application.ATmega2560-fuse" />
       <item itemvalue="CMake Application.ATmega2560-upload" />
       <item itemvalue="CMake Application.ATmega328p" />
+      <item itemvalue="CMake Application.ATmega328p-eeprom" />
+      <item itemvalue="CMake Application.ATmega328p-fuse" />
       <item itemvalue="CMake Application.ATmega328p-upload" />
       <item itemvalue="CMake Application.ATmega32u4" />
+      <item itemvalue="CMake Application.ATmega32u4-eeprom" />
+      <item itemvalue="CMake Application.ATmega32u4-fuse" />
       <item itemvalue="CMake Application.ATmega32u4-upload" />
       <item itemvalue="CMake Application.ATtiny13" />
+      <item itemvalue="CMake Application.ATtiny13-eeprom" />
+      <item itemvalue="CMake Application.ATtiny13-fuse" />
       <item itemvalue="CMake Application.ATtiny13-upload" />
       <item itemvalue="CMake Application.ATtiny2313" />
+      <item itemvalue="CMake Application.ATtiny2313-eeprom" />
+      <item itemvalue="CMake Application.ATtiny2313-fuse" />
       <item itemvalue="CMake Application.ATtiny2313-upload" />
       <item itemvalue="CMake Application.ATtiny85" />
+      <item itemvalue="CMake Application.ATtiny85-eeprom" />
+      <item itemvalue="CMake Application.ATtiny85-fuse" />
       <item itemvalue="CMake Application.ATtiny85-upload" />
       <item itemvalue="CMake Application.host" />
       <item itemvalue="CMake Application.stm32f030" />
@@ -280,6 +409,7 @@
       <item itemvalue="Google Test.All in zoal_tests_atmega328" />
       <item itemvalue="Node.js.cubemx-proj.js" />
       <item itemvalue="Node.js.gen stm32f303retx.hpp" />
+      <item itemvalue="Node.js.gen atmega328p" />
       <item itemvalue="Node.js.gen stm32f030f4px" />
       <item itemvalue="Node.js.gen stm32f303vctx" />
       <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
@@ -340,7 +470,7 @@
       <workItem from="1611143255298" duration="1574000" />
       <workItem from="1611145558942" duration="4334000" />
       <workItem from="1611213927236" duration="4672000" />
-      <workItem from="1611219406103" duration="3157000" />
+      <workItem from="1611219406103" duration="20801000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -433,7 +563,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611104222246</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Fix HD44780 &amp; analog keypad">
+      <created>1611224333656</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1611224333656</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -463,16 +600,12 @@
     <MESSAGE value="Improve button/keypad UX" />
     <MESSAGE value="Add STM32F1xx timer" />
     <MESSAGE value="Remove unused classes, update common interface." />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove unused classes, update common interface." />
+    <MESSAGE value="Fix HD44780 &amp; analog keypad" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix HD44780 &amp; analog keypad" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/generator/STM32.js</url>
-          <line>475</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/zoal/gpio/features.hpp</url>
           <option name="timeStamp" value="10" />

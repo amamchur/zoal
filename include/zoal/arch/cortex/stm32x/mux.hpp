@@ -11,7 +11,7 @@ namespace zoal { namespace metadata {
     template<uintptr_t Usart, uintptr_t Port, uint8_t PinOffset>
     struct stm32_usart_af_mapping;
 
-    template<uintptr_t A, uintptr_t Port, uint8_t Pin, signal s>
+    template<class Sign, uintptr_t A, uintptr_t Port, uint8_t Pin, signal s>
     struct stm32_af;
 }}
 
@@ -19,11 +19,14 @@ namespace zoal { namespace arch { namespace stm32x {
     template<class Microcontroller>
     class mux {
     public:
+        using mcu = Microcontroller;
+        using sign = typename mcu::signature;
+
         template<class U, class PinRX, class PinTX>
         class usart {
         public:
-            using rx_af = zoal::metadata::stm32_af<U::address, PinRX::port::address, PinRX::offset, zoal::metadata::signal::rx>;
-            using tx_af = zoal::metadata::stm32_af<U::address, PinTX::port::address, PinTX::offset, zoal::metadata::signal::tx>;
+            using rx_af = zoal::metadata::stm32_af<sign, U::address, PinRX::port::address, PinRX::offset, zoal::metadata::signal::rx>;
+            using tx_af = zoal::metadata::stm32_af<sign, U::address, PinTX::port::address, PinTX::offset, zoal::metadata::signal::tx>;
 
             static_assert(rx_af::value >= 0, "Unsupported RX pin mapping");
             static_assert(tx_af::value >= 0, "Unsupported TX pin mapping");

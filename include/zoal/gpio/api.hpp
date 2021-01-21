@@ -5,6 +5,7 @@
 #include "../ct/type_list.hpp"
 #include "../mem/cas.hpp"
 #include "./pin_mode.hpp"
+#include "./pin_outout_speed.hpp"
 
 namespace zoal { namespace gpio {
     struct enable_cas {
@@ -43,6 +44,12 @@ namespace zoal { namespace gpio {
         using list = typename Pin::port::template mode_cas<PinMode, Pin::mask>;
     };
 
+    template<zoal::gpio::pin_output_speed Speed>
+    struct speed_cas {
+        template<class Pin>
+        using list = typename Pin::port::template output_speed_cas<Speed, Pin::mask>;
+    };
+
     template<class Selector, class T, class... Rest>
     struct collect_cas {
         using current = typename Selector::template list<T>;
@@ -76,6 +83,9 @@ namespace zoal { namespace gpio {
 
         template<zoal::gpio::pin_mode PinMode, class... Pins>
         using mode = typename zoal::mem::merge_cas_in_list<typename collect_cas<mode_cas<PinMode>, Pins...>::result>::result;
+
+        template<zoal::gpio::pin_output_speed Speed, class... Pins>
+        using output_speed = typename zoal::mem::merge_cas_in_list<typename collect_cas<speed_cas<Speed>, Pins...>::result>::result;
 
         template<class L, class... Rest>
         struct perform_cas_optimization {

@@ -35,9 +35,9 @@ namespace zoal { namespace gpio {
 
         ZOAL_INLINE_IO static void write(uint8_t value) {
             if (value) {
-                port::template high<mask>();
+                typename port::template high_cas<mask>();
             } else {
-                port::template low<mask>();
+                typename port::template low_cas<mask>();
             }
         }
 
@@ -51,7 +51,7 @@ namespace zoal { namespace gpio {
         using high = typename port::template high_cas<mask>;
 
         template<uint8_t Value>
-        using set = zoal::ct::conditional_type<Value == 0, _0, _1>;
+        using set = typename zoal::ct::conditional_type<Value == 0, _0, _1>::type;
 
         template<pin_mode PinMode>
         using mode = typename port::template mode_cas<PinMode, mask>;

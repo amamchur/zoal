@@ -7,7 +7,7 @@ namespace zoal { namespace board {
     template<uint32_t Frequency>
     class arduino_atmegaxx8 {
     public:
-        using mcu = typename mcu::atmega328p<Frequency>;
+        using mcu = mcu::atmega328p;
 
         using ard_d00 = typename mcu::pd_00;
         using ard_d01 = typename mcu::pd_01;

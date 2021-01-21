@@ -112,10 +112,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     template<class S>
     struct spi_mode_cfg<S, spi_mode::slave> : type_list<typename S::SPCRx::template cas<0x01 << 4, 0x03 << 4>> {};
 
-    template<uint32_t Frequency>
+    template <class Microcontroller>
     class cfg {
     public:
-        static constexpr auto frequency = Frequency;
+        using mcu = Microcontroller;
+        using sign = typename mcu::signature;
 
         template<class U, class Cfg>
         class usart {
@@ -169,10 +170,10 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using apply = typename zoal::gpio::api::optimize<clock_divider, order, cpol_cpha, mode>::result;
         };
 
-        template<class I, uint32_t Freq = 400000>
+        template<class I, uint32_t SysFreq, uint32_t I2CFreq = 400000>
         class i2c {
         public:
-            static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)Frequency / (double)Freq) - 16.0) / 2.0);
+            static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)SysFreq / (double)I2CFreq) - 16.0) / 2.0);
             using apply = typename zoal::gpio::api::optimize<
                 type_list<typename I::TWSRx::template cas<0xFF, 0>, typename I::TWBRx::template cas<0xFF, TWBRx_value>>>;
         };

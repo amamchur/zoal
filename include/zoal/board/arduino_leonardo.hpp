@@ -7,7 +7,7 @@ namespace zoal {
     template<uint32_t Frequency>
     class arduino_leonardo {
     public:
-        using mcu = typename mcu::atmega32u4<Frequency>;
+        using mcu = mcu::atmega32u4;
 
         using ard_d00 = typename mcu::pd_02;
         using ard_d01 = typename mcu::pd_03;
