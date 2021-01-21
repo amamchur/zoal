@@ -8,8 +8,7 @@ namespace zoal { namespace utils {
     enum class log_level { trace, debug, info, warn, error, highest };
 
     template<class Pattern>
-    class placer : public Pattern {
-    };
+    class placer : public Pattern {};
 
     template<>
     class placer<void> {
@@ -25,11 +24,13 @@ namespace zoal { namespace utils {
         using sp_class = placer<Suffixer>;
         using os_class = zoal::io::output_stream<Transport>;
 
-        log_stream() {
-            pp_class:: template write<Transport>();
+        log_stream(Transport &t)
+            : zoal::io::output_stream<Transport>(t) {
+            pp_class::template write<Transport>();
         }
 
-        log_stream(const log_stream &log) {
+        log_stream(const log_stream &log)
+            : zoal::io::output_stream<Transport>(log.transport) {
             log.final = false;
             this->precision = log.precision;
             this->radix = log.radix;
@@ -37,13 +38,13 @@ namespace zoal { namespace utils {
 
         template<class T>
         log_stream &operator<<(T value) {
-            static_cast<os_class&>(*this) << value;
+            static_cast<os_class &>(*this) << value;
             return *this;
         }
 
         ~log_stream() {
             if (final) {
-                sp_class:: template write<Transport>();
+                sp_class::template write<Transport>();
             }
         }
 
@@ -87,32 +88,37 @@ namespace zoal { namespace utils {
         using ls = typename zoal::utils::log_stream<Transport, Prefixer, Suffixer, enabled>;
         using hs = typename zoal::utils::log_stream<Transport, void, void, true>;
 
+        static Transport *transport;
+
         ZOAL_INLINE_IO static hs stream() {
-            return hs();
+            return hs(*transport);
         }
 
         ZOAL_INLINE_IO static void clear() {}
 
         ZOAL_INLINE_IO static ls<log_level::trace >= MinLevel> trace() {
-            return ls<log_level::trace >= MinLevel>();
+            return ls<log_level::trace >= MinLevel>(*transport);
         }
 
         ZOAL_INLINE_IO static ls<log_level::info >= MinLevel> info() {
-            return ls<log_level::info >= MinLevel>();
+            return ls<log_level::info >= MinLevel>(*transport);
         }
 
         ZOAL_INLINE_IO static ls<log_level::debug >= MinLevel> debug() {
-            return ls<log_level::debug >= MinLevel>();
+            return ls<log_level::debug >= MinLevel>(*transport);
         }
 
         ZOAL_INLINE_IO static ls<log_level::warn >= MinLevel> warn() {
-            return ls<log_level::warn >= MinLevel>();
+            return ls<log_level::warn >= MinLevel>(*transport);
         }
 
         ZOAL_INLINE_IO static ls<log_level::error >= MinLevel> error() {
-            return ls<log_level::error >= MinLevel>();
+            return ls<log_level::error >= MinLevel>(*transport);
         }
     };
+
+    template<class Transport, log_level MinLevel, class Prefixer, class Suffixer>
+    Transport *plain_logger<Transport, MinLevel, Prefixer, Suffixer>::transport = nullptr;
 
     template<class Transport, log_level MinLevel = log_level::info, class Prefixer = void, class Suffixer = zoal::io::modesoff_cr_lf>
     class terminal_logger {
@@ -123,6 +129,8 @@ namespace zoal { namespace utils {
         using ls = typename zoal::utils::log_stream<Transport, Prefixer, Suffixer, enabled>;
         using hs = typename zoal::utils::log_stream<Transport, void, void, true>;
 
+        static Transport *transport;
+
         ZOAL_INLINE_IO static hs stream() {
             return hs();
         }
@@ -132,25 +140,28 @@ namespace zoal { namespace utils {
         }
 
         ZOAL_INLINE_IO static ls<log_level::trace >= MinLevel> trace() {
-            return ls<log_level::trace >= MinLevel>() << "\033[0;36mTRACE ";
+            return ls<log_level::trace >= MinLevel>(*transport) << "\033[0;36mTRACE ";
         }
 
         ZOAL_INLINE_IO static ls<log_level::debug >= MinLevel> debug() {
-            return ls<log_level::debug >= MinLevel>() << "\033[0;37mDEBUG ";
+            return ls<log_level::debug >= MinLevel>(*transport) << "\033[0;37mDEBUG ";
         }
 
         ZOAL_INLINE_IO static ls<log_level::info >= MinLevel> info() {
-            return ls<log_level::info >= MinLevel>() << "\033[0;32mINFO  ";
+            return ls<log_level::info >= MinLevel>(*transport) << "\033[0;32mINFO  ";
         }
 
         ZOAL_INLINE_IO static ls<log_level::warn >= MinLevel> warn() {
-            return ls<log_level::warn >= MinLevel>() << "\033[0;33mWARN  ";
+            return ls<log_level::warn >= MinLevel>(*transport) << "\033[0;33mWARN  ";
         }
 
         ZOAL_INLINE_IO static ls<log_level::error >= MinLevel> error() {
-            return ls<log_level::error >= MinLevel>() << "\033[0;31mERROR ";
+            return ls<log_level::error >= MinLevel>(*transport) << "\033[0;31mERROR ";
         }
     };
+
+    template<class Transport, log_level MinLevel, class Prefixer, class Suffixer>
+    Transport *terminal_logger<Transport, MinLevel, Prefixer, Suffixer>::transport = nullptr;
 
     template<class Logger>
     struct cas_print_functor {

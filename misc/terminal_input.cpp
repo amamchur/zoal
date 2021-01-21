@@ -55,12 +55,14 @@ namespace zoal { namespace misc {
         case terminal_machine_event::ascii:
             insert_char(*token_start());
             break;
-        case terminal_machine_event::carriage_return:
+        case terminal_machine_event::carriage_return: {
+            auto ep = end_;
             *end_ = 0;
-            input_callback_(this, buffer_, end_);
             this->cursor_ = buffer_;
             this->end_ = buffer_;
+            input_callback_(this, buffer_, ep);
             break;
+        }
         default:
             if (handle_v100_fn_) {
                 handle_v100_fn_(this, e);

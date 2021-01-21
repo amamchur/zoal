@@ -8,7 +8,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     template<uint32_t Address>
     class adc_mem_model {
     public:
-        using ADCx = zoal::mem::reg<Address + 0, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using ADCx = zoal::mem::reg<Address + 0, zoal::mem::reg_io::read_write, uint16_t, 0xFF>;
         using ADCLx = zoal::mem::reg<Address + 0, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
         using ADCHx = zoal::mem::reg<Address + 1, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
         using ADCSRAx = zoal::mem::reg<Address + 2, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;

@@ -10,7 +10,6 @@
 #include <zoal/ic/max72xx.hpp>
 #include <zoal/io/analog_keypad.hpp>
 #include <zoal/io/button.hpp>
-#include <zoal/io/input_stream.hpp>
 #include <zoal/io/ir_remote_receiver.hpp>
 #include <zoal/io/rotary_encoder.hpp>
 #include <zoal/mcu/attiny2313a.hpp>

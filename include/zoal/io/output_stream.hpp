@@ -14,7 +14,7 @@ namespace zoal { namespace io {
     template<class Transport>
     class output_stream {
     public:
-        output_stream(Transport &t)
+        explicit output_stream(Transport &t)
             : transport(t) {}
 
         output_stream &operator<<(char ch) {
@@ -149,10 +149,11 @@ namespace zoal { namespace io {
             return *this;
         }
 
-    private:
-        uint8_t radix{10};
-        uint8_t precision{2};
-        Transport &transport;
+        template<class F>
+        inline output_stream &operator<<(::zoal::io::transport_functor<F> &&fn) {
+            transport.apply_functor(fn);
+            return *this;
+        }
 
         uint8_t *format_number(uint8_t *ptr, uint32_t value) {
             do {
@@ -164,6 +165,10 @@ namespace zoal { namespace io {
 
             return ptr;
         }
+
+        uint8_t radix{10};
+        uint8_t precision{2};
+        Transport &transport;
     };
 }}
 

@@ -7,19 +7,29 @@
 #include <stdint.h>
 
 namespace zoal { namespace ic {
-    template<class Tools,
-             class RegisterSelect,
-             class Enable,
-             class DataBus4,
-             class DataBus5,
-             class DataBus6,
-             class DataBus7>
+    using zoal::gpio::api;
+    using zoal::gpio::pin_mode;
+
+    template<class Delay, class RegisterSelect, class Enable, class DataBus4, class DataBus5, class DataBus6, class DataBus7>
     class hd44780_interface_4bit {
     public:
-        using tools = Tools;
-        using delay = typename tools::delay;
+        using delay = Delay;
 
         static constexpr uint8_t bit_mode = 4;
+
+        using gpio_cfg = api::optimize<
+            //
+            api::clock_on<
+                //
+                typename RegisterSelect::port,
+                typename Enable::port,
+                typename DataBus4::port,
+                typename DataBus5::port,
+                typename DataBus6::port,
+                typename DataBus7::port>,
+            api::mode<pin_mode::output_push_pull, RegisterSelect, Enable, DataBus4, DataBus5, DataBus6, DataBus7>,
+            api::low<RegisterSelect, Enable, DataBus6, DataBus7>,
+            api::high<DataBus4, DataBus4>>;
 
         static void init() {
             using namespace zoal::gpio;
@@ -30,7 +40,7 @@ namespace zoal { namespace ic {
             pulse_enable();
             delay::template us<100>();
 
-            DataBus4::low();
+            typename DataBus4::low();
             pulse_enable();
             delay::template us<37>();
         }
@@ -53,15 +63,15 @@ namespace zoal { namespace ic {
 
     protected:
         static void pulse_enable() {
-            Enable::low();
+            typename Enable::low();
             delay::template us<1>();
-            Enable::high();
+            typename Enable::high();
             delay::template us<1>();
-            Enable::low();
+            typename Enable::low();
         }
     };
 
-    template<class Tools,
+    template<class Delay,
              class RegisterSelect,
              class Enable,
              class DataBus0,
@@ -74,23 +84,24 @@ namespace zoal { namespace ic {
              class DataBus7>
     class hd44780_interface_8bit {
     public:
-        using tools = Tools;
-        using api = typename tools::api;
-        using delay = typename tools::delay;
-        using gpio_cfg = typename api::template merge_actions<
-                typename api::template mode<zoal::gpio::pin_mode::output_push_pull,
-                        RegisterSelect,
-                        Enable,
-                        DataBus0,
-                        DataBus1,
-                        DataBus2,
-                        DataBus3,
-                        DataBus4,
-                        DataBus5,
-                        DataBus6,
-                        DataBus7>,
-                typename api::template low<RegisterSelect, Enable, DataBus6, DataBus7>,
-                typename api::template high<DataBus4, DataBus5>>;
+        using delay = Delay;
+        using gpio_cfg = api::optimize<
+            //
+            api::clock_on<
+                //
+                typename RegisterSelect::port,
+                typename Enable::port,
+                typename DataBus0::port,
+                typename DataBus1::port,
+                typename DataBus2::port,
+                typename DataBus3::port,
+                typename DataBus4::port,
+                typename DataBus5::port,
+                typename DataBus6::port,
+                typename DataBus7::port>,
+            api::mode<pin_mode::output_push_pull, RegisterSelect, Enable, DataBus0, DataBus1, DataBus2, DataBus3, DataBus4, DataBus5, DataBus6, DataBus7>,
+            api::low<RegisterSelect, Enable, DataBus6, DataBus7>,
+            api::high<DataBus4, DataBus4>>;
 
         static constexpr uint8_t bit_mode = 8;
 
@@ -156,12 +167,36 @@ namespace zoal { namespace ic {
         }
     };
 
+    struct hd44780_move_cursor_functor : zoal::io::transport_functor<hd44780_move_cursor_functor> {
+        hd44780_move_cursor_functor(uint8_t r, uint8_t c)
+            : row(r)
+            , column(c) {}
+
+        template<class L>
+        inline void apply(L &lcd) {
+            lcd.move(row, column);
+        }
+
+        uint8_t row;
+        uint8_t column;
+    };
+
+    struct hd44780_clear_functor : zoal::io::transport_functor<hd44780_clear_functor> {
+        template<class L>
+        inline void apply(L &lcd) {
+            lcd.clear();
+        }
+    };
+
     template<class Interface, class AddressSelector>
     class hd44780 {
     public:
         using iface = Interface;
         using address_selector = AddressSelector;
-        using delay = typename iface::tools::delay;
+        using delay = typename iface::delay;
+        using gpio_cfg = typename iface::gpio_cfg;
+        using mc = hd44780_move_cursor_functor;
+        using cls = hd44780_clear_functor;
 
         enum : uint8_t {
             cmd_clear_display = 0x01,
@@ -175,9 +210,7 @@ namespace zoal { namespace ic {
 
         using self_type = hd44780<iface, address_selector>;
 
-        hd44780() = delete;
-
-        static void init() {
+        void init() {
             iface::init();
 
             auto cfg = static_cast<uint8_t>(iface::bit_mode == 8 ? 0x10 : 0);
@@ -190,17 +223,17 @@ namespace zoal { namespace ic {
             clear();
         }
 
-        static void clear() {
+        void clear() {
             iface::send(cmd_clear_display, 0);
-            delay::ms(5);
+            delay::ms(2);
         }
 
-        static void home() {
+        void home() {
             iface::send(cmd_cursor_home, 0);
             delay::ms(2);
         }
 
-        static void display(bool on = true, bool cursor = false, bool blink = false) {
+        void display(bool on = true, bool cursor = false, bool blink = false) {
             uint8_t cmd = cmd_display_ctrl;
             if (on) {
                 cmd |= 1 << 2;
@@ -218,55 +251,56 @@ namespace zoal { namespace ic {
             delay::template us<37>();
         }
 
-        static void move(uint8_t row, uint8_t column) {
+        void move(uint8_t row, uint8_t column) {
             uint8_t cmd = cmd_set_ddram_addr;
             cmd |= address_selector::get_address(row, column);
             iface::send(cmd, 0);
             delay::template us<37>();
         }
 
-        static void ddram_addr(uint8_t address) {
+        void ddram_addr(uint8_t address) {
             uint8_t cmd = cmd_set_ddram_addr + address;
             iface::send(cmd, 0);
             delay::template us<37>();
         }
 
-        static void write_byte(uint8_t char_code) {
-            iface::send(char_code, 1);
+        void send_byte(uint8_t value) {
+            iface::send(value, 1);
             delay::template us<37>();
         }
 
-        static void push_back_blocking(uint8_t char_code) {
-            iface::send(char_code, 1);
-            delay::template us<37>();
+        void send_data(const void *data, size_t size) {
+            auto ptr = reinterpret_cast<const char *>(data);
+            while (size > 0) {
+                send_byte(*ptr);
+                ptr++;
+                size--;
+            }
         }
 
-        static void write(const char *str) {
+        template<class F>
+        inline void apply_functor(::zoal::io::transport_functor<F> &fn) {
+            static_cast<F &>(fn).apply(*this);
+        }
+
+        void write(const char *str) {
             while (*str) {
                 iface::send(*str++, 1);
                 delay::template us<37>();
             }
         }
 
-        template<class F>
-        static void write(::zoal::io::output_stream_functor<F> &fn) {
-            uint8_t data = 0;
-            while (static_cast<F &>(fn)(data)) {
-                write_byte(data);
-            }
-        }
-
-        static void create_char(uint8_t pos, const uint8_t *data) {
+        void create_char(uint8_t pos, const uint8_t *data) {
             uint8_t cmd = cmd_set_cgram_addr | pos << 3;
             iface::send(cmd, 0);
             delay::template us<37>();
 
             for (int i = 0; i < 8; i++) {
-                write_byte(data[i]);
+                send_byte(data[i]);
             }
         }
 
-        static void entry_mode(bool increment = true, bool shift = false) {
+        void entry_mode(bool increment = true, bool shift = false) {
             uint8_t cmd = cmd_entry_mode_set;
             if (increment) {
                 cmd |= 2;

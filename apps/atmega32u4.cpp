@@ -3,7 +3,7 @@
 #include <avr/io.h>
 #include <zoal/arch/avr/atmega/i2c.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
-#include <zoal/board/arduino_leonardo.hpp>>
+#include <zoal/board/arduino_leonardo.hpp>
 #include <zoal/shield/uno_lcd.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
