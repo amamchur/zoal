@@ -225,6 +225,9 @@ int main() {
     stream << zoal::io::progmem_str(zoal_ascii_logo);
     terminal.sync();
 
+    lcd.clear();
+    lcd.home();
+
     adc::start();
     while (true) {
         uint8_t rx_byte = 0;

@@ -17,9 +17,9 @@ function(add_zoal_tests)
             tests/static_assertion.cpp
             tests/stub_classes.cpp
             tests/pin_control.cpp
+            tests/gpio_api.cpp
             tests/clear_and_set.cpp
             tests/button_machine.cpp
-            tests/atmega328.cpp
             )
     add_executable(zoal_tests_atmega328 ${TEST_CASES_FILES})
     target_compile_definitions(zoal_tests_atmega328 PRIVATE -DZOAL_COVERAGE)

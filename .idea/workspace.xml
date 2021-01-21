@@ -47,55 +47,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/include/zoal/ct/signature.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/gpio/pin_outout_speed.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/gpio_api.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/utils/cas_collector.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ToolchainAVR.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainAVR.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ToolchainHost.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainHost.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny13.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny13.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny2313.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny2313.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny85.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny85.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen-mcus.sh" beforeDir="false" afterPath="$PROJECT_DIR$/gen-mcus.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/ATmega.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/ATmega.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/ATtiny.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/ATtiny.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/Avr.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/Avr.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/BaseGenerator.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/BaseGenerator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/STM32.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/STM32.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/mux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/cfg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/mux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/metadata.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/port.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/port.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/mux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/port.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/port.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/metadata.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/mux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_atmegaxx8.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_atmegaxx8.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_leonardo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_leonardo.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_mega.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_mega.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/gpio/api.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/api.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/gpio/pin.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/pin.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/ic/hd44780.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/hd44780.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega2560.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega2560.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega328p.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega328p.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega32u4.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega32u4.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/attiny13a.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/attiny13a.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/attiny2313a.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/attiny2313a.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/attiny85.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/attiny85.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/base_mcu.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f030f4px.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f030f4px.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/atmega328.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/atmega328.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mem/reg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/reg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/atmega328.cpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/clear_and_set.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/clear_and_set.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/pin_control.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/pin_control.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/static_assertion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/static_assertion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/stub_classes.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/stub_classes.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/address_cast.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/address_cast.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/address_cast.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/address_cast.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +84,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:ReleaseSTM32" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:ReleaseAVR" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
@@ -168,7 +134,7 @@
       <recent name="$PROJECT_DIR$/apps" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.All">
+  <component name="RunManager" selected="CMake Application.ATmega328p">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
@@ -470,7 +436,7 @@
       <workItem from="1611143255298" duration="1574000" />
       <workItem from="1611145558942" duration="4334000" />
       <workItem from="1611213927236" duration="4672000" />
-      <workItem from="1611219406103" duration="20801000" />
+      <workItem from="1611219406103" duration="32815000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -570,7 +536,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611224333656</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Add MCU signature concept">
+      <created>1611242174534</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1611242174534</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -601,7 +574,8 @@
     <MESSAGE value="Add STM32F1xx timer" />
     <MESSAGE value="Remove unused classes, update common interface." />
     <MESSAGE value="Fix HD44780 &amp; analog keypad" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix HD44780 &amp; analog keypad" />
+    <MESSAGE value="Add MCU signature concept" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add MCU signature concept" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

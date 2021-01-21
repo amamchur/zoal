@@ -5,7 +5,7 @@
 using namespace zoal::gpio;
 using namespace zoal::ct;
 
-TEST(StubClasses, null_pin_should_be_callable) { /* NOLINT */
+TEST(null_classes, null_pin_should_be_callable) { /* NOLINT */
     null_pin::low();
     null_pin::high();
     null_pin::toggle();
@@ -38,7 +38,7 @@ TEST(StubClasses, null_pin_should_be_callable) { /* NOLINT */
     }
 }
 
-TEST(StubClasses, null_port_should_be_callable) { /* NOLINT */
+TEST(null_classes, null_port_should_be_callable) { /* NOLINT */
     null_port::low<1>();
     null_port::high<1>();
     null_port::toggle<1>();

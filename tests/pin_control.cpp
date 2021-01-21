@@ -3,7 +3,7 @@
 
 using namespace zoal::gpio;
 
-TEST(PinControl, pin_active_drain) {
+TEST(pin_control, pin_active_drain) {
     using namespace ::zoal::gpio;
     using ad = active_drain<null_pin>;
     using ah = active_high<null_pin>;

@@ -222,7 +222,7 @@ namespace zoal { namespace ic {
 
         void clear() {
             iface::send(cmd_clear_display, 0);
-            delay::ms(2);
+            delay::ms(5);
         }
 
         void home() {

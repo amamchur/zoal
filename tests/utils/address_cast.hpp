@@ -6,17 +6,12 @@
 #include <memory.h>
 #include <stdint.h>
 
-#define ZOAL_ADDRESS_CAST(TYPE, ADDRESS) zoal::test::mem<TYPE>::get_ptr(ADDRESS) //reinterpret_cast<volatile TYPE *>(ADDRESS)
+#define ZOAL_VOLATILE_ADDRESS_CAST(TYPE, ADDRESS) zoal::test::mem<TYPE>::get_ptr(ADDRESS)
+#define ZOAL_ADDRESS_CAST(TYPE, ADDRESS) zoal::test::mem<TYPE>::get_ptr(ADDRESS)
 
 namespace zoal { namespace test {
     extern uint8_t avr_mcu_mem[0x200];
-
-    struct cas_print_functor {
-        template<class A>
-        void operator()() {
-            std::cout << "CAS: *" << (void *)A::address << " & ~" << (void *)A::clear << " | " << (void *)A::set << std::endl;
-        }
-    };
+    extern uint32_t cortex_periph_mem[0x30000 / sizeof(uint32_t)];
 
     template<class T>
     class mem {
@@ -25,26 +20,12 @@ namespace zoal { namespace test {
             if (address < 0x200) {
                 return reinterpret_cast<T *>(avr_mcu_mem + address);
             }
-            return nullptr;
-        }
-
-        static void print(uintptr_t address) {
-            size_t size = 0;
-            T *ptr = nullptr;
-            if (address < 0x200) {
-                ptr = reinterpret_cast<T *>(avr_mcu_mem + address);
-                size = sizeof(avr_mcu_mem);
+            if (address >= 0x40000000 && address < 0x40030000) {
+                auto mp = reinterpret_cast<uint8_t *>(cortex_periph_mem);
+                auto offset = address - 0x40000000;
+                return reinterpret_cast<T *>(mp + offset);
             }
-
-            T *e = ptr + size / sizeof(T);
-            auto w = sizeof(T) * 4;
-            auto rel = address;
-            while (ptr < e) {
-                std::cout << "0x" << std::setw(w) << std::setfill('0') << std::hex << (uintptr_t)rel << " 0x" << std::setw(w) << std::setfill('0') << std::hex
-                          << (uintptr_t)*ptr << std::endl;
-                ptr++;
-                rel += sizeof(T);
-            }
+            return reinterpret_cast<T *>(address);
         }
 
         static uint8_t *avr() {

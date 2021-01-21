@@ -6,7 +6,7 @@
 using namespace zoal::ct;
 using namespace zoal::gpio;
 
-TEST(StaticAssertion, static_type_checking) {
+TEST(static_assertion, static_type_checking) {
     auto a = is_same<int, int>::value;
     EXPECT_TRUE(a);
 
@@ -14,7 +14,7 @@ TEST(StaticAssertion, static_type_checking) {
     EXPECT_FALSE(b);
 }
 
-TEST(StaticAssertion, static_pin_checking) {
+TEST(static_assertion, static_pin_checking) {
     using namespace ::zoal::gpio;
 
     auto a = belongs_to_port<null_pin, null_port>::value;
@@ -24,7 +24,7 @@ TEST(StaticAssertion, static_pin_checking) {
     EXPECT_FALSE(b);
 }
 
-TEST(StaticAssertion, static_list_checking) {
+TEST(static_assertion, static_list_checking) {
     using namespace ::zoal::gpio;
 
     auto a = has_same<int, float, char, double>::value;
