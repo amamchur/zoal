@@ -31,7 +31,7 @@ using adc = mcu::adc_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using counter_irq_handler = counter::handler<F_CPU, 64, timer>;
 
-zoal::data::ring_buffer_ext<uint8_t, 16> rx_buffer;
+zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 
 using usart_tx_transport = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;
 usart_tx_transport transport;
@@ -42,6 +42,7 @@ using tools = zoal::utils::tool_set<mcu, F_CPU, counter, void>;
 using delay = tools::delay;
 using api = zoal::gpio::api;
 using blink_pin = pcb::ard_d08;
+using lcd_back_light = pcb::ard_d10;
 using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
 
 scheduler_type scheduler;
@@ -51,15 +52,23 @@ char terminal_buffer[terminal_str_size];
 zoal::misc::terminal_input terminal(terminal_buffer, sizeof(terminal_buffer));
 auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
 
-const char help_msg[] PROGMEM = "MCU command list:";
-const char cmd_lookup[] PROGMEM = "\thelp\r\n\tstart-blink\r\n\tstop-blink";
+const char help_msg[] PROGMEM =
+    "ZOAL Demo Application\r\n"
+    "Commands: \r\n"
+    "\t lcd-on\t\tturn lcd back light on\r\n"
+    "\t lcd-off\tturn lcd back light off\r\n"
+    "\t lcd [msg]\tdisplay message on lcd\r\n"
+    "\t start-blink\tstart blinking\r\n"
+    "\t stop-blink\tstop blinking\r\n";
 const char help_cmd[] PROGMEM = "help";
 const char lcd_cmd[] PROGMEM = "lcd";
+const char lcd_on_cmd[] PROGMEM = "lcd-on";
+const char lcd_off_cmd[] PROGMEM = "lcd-off";
 const char adc_cmd[] PROGMEM = "adc";
 const char start_blink_cmd[] PROGMEM = "start-blink";
 const char stop_blink_cmd[] PROGMEM = "stop-blink";
 
-using analog_keypad_type = zoal::io::analog_keypad<tools, 5>;
+using analog_keypad_type = zoal::io::analog_keypad<uint32_t, 5>;
 const analog_keypad_type::button_value_type buttons_adc_values[] __attribute__((section(".eeprom"))) = {0, 131, 308, 481, 722};
 analog_keypad_type analog_keypad;
 
@@ -85,9 +94,9 @@ void initialize_hardware() {
         mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply,
         //
         lcd_type::gpio_cfg,
-        api::mode<zoal::gpio::pin_mode::output, blink_pin>,
+        api::mode<zoal::gpio::pin_mode::output, blink_pin, lcd_back_light>,
+        api::_1<lcd_back_light>,
         mcu::irq::timer<timer>::enable_overflow_interrupt
-        //        mcu::irq::adc<adc>::
         //
         >();
 
@@ -155,12 +164,12 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
 
     auto ts = p->token_start();
     auto te = p->token_end();
+    p->callback(&command_line_parser::empty_callback);
 
     stream << "\r\n";
 
     if (cmp_str_token(zoal::io::progmem_str_iter(help_cmd), ts, te)) {
-        stream << zoal::io::progmem_str(help_msg) << zoal::io::progmem_str(cmd_lookup);
-        p->callback(&command_line_parser::empty_callback);
+        stream << zoal::io::progmem_str(help_msg);
     }
 
     if (cmp_str_token(zoal::io::progmem_str_iter(lcd_cmd), ts, te)) {
@@ -168,26 +177,30 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
         return;
     }
 
+    if (cmp_str_token(zoal::io::progmem_str_iter(lcd_on_cmd), ts, te)) {
+        lcd_back_light::_1();
+    }
+
+    if (cmp_str_token(zoal::io::progmem_str_iter(lcd_off_cmd), ts, te)) {
+        lcd_back_light::_0();
+    }
+
     if (cmp_str_token(zoal::io::progmem_str_iter(adc_cmd), ts, te)) {
         auto v = adc::read();
         stream << "ADC: " << v << "\r\n";
-        p->callback(&command_line_parser::empty_callback);
     }
 
     if (cmp_str_token(zoal::io::progmem_str_iter(start_blink_cmd), ts, te)) {
         scheduler.clear_handle(led_on);
         scheduler.clear_handle(led_off);
         scheduler.schedule(0, led_on);
-        p->callback(&command_line_parser::empty_callback);
     }
 
     if (cmp_str_token(zoal::io::progmem_str_iter(stop_blink_cmd), ts, te)) {
         scheduler.clear_handle(led_on);
         scheduler.clear_handle(led_off);
-        p->callback(&command_line_parser::empty_callback);
     }
 
-    p->callback(&command_line_parser::empty_callback);
     terminal.sync();
 }
 
@@ -222,13 +235,14 @@ int main() {
     terminal.greeting(terminal_greeting);
     terminal.clear();
 
-    stream << zoal::io::progmem_str(zoal_ascii_logo);
+    stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
     terminal.sync();
 
     lcd.clear();
     lcd.home();
 
     adc::start();
+
     while (true) {
         uint8_t rx_byte = 0;
         bool result;
@@ -242,7 +256,7 @@ int main() {
         }
 
         if (process_adc) {
-            analog_keypad.handle(analog_keypad_handler, adc_value);
+            analog_keypad.handle(analog_keypad_handler, counter::now(), adc_value);
             adc::start();
         }
 

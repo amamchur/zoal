@@ -47,17 +47,51 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Add MCU signature concept">
-      <change afterPath="$PROJECT_DIR$/tests/arch/avr/atmega/usart.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/ic/hd44780.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_utils/delay.hpp" afterDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/tests/arch/avr/atmega/adc.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/arch/avr/atmega/port.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/data/ring_buffer.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/io/analog_keypad.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ToolchainHost.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainHost.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_atmegaxx8.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_atmegaxx8.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_uno.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_uno.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/hd44780.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/hd44780.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_utils/ms_counter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/ms_counter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_utils/ms_counter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/ms_counter.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f030.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f030.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/usart.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/usart.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/port.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/port.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/utils/usart_transmitter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/utils/usart_transmitter.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/usart.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/usart.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/auto.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/data/ring_buffer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/data/ring_buffer.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/data/ring_buffer_ext.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/data/rx_tx_buffer.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/gpio/api.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/api.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/io/analog_keypad.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/analog_keypad.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/rx_null_buffer.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/rx_ring_buffer.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/tx_ring_buffer.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/arch/avr/atmega/usart.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/arch/avr/atmega/usart.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_HIGH.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_INPUT.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_INPUT_PULLUP.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_LOW.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_OUTPUT.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_WRITE.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_WRITE_B_HIGH.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_WRITE_B_LOW.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_WRITE_C_HIGH.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_WRITE_C_LOW.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_WRITE_D_HIGH.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_ALL_WRITE_D_LOW.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_CLEAR.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_PIN_0.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data/ATmegaxx8_GPIO_PIN_1.mem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/gpio/gpio_api.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/gpio/gpio_api.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/hd44780.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/hd44780.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_utils/address_cast.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/address_cast.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_utils/cas_collector.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/cas_collector.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,11 +167,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Google Test.zoal_tests">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -304,6 +333,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
@@ -435,6 +469,9 @@
       <workItem from="1611145558942" duration="4334000" />
       <workItem from="1611213927236" duration="4672000" />
       <workItem from="1611219406103" duration="32815000" />
+      <workItem from="1611299256032" duration="1418000" />
+      <workItem from="1611301017801" duration="7758000" />
+      <workItem from="1611310887661" duration="8969000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -541,7 +578,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611242174534</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Add additional unit tests">
+      <created>1611272068455</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1611272068455</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -558,6 +602,15 @@
     </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="1">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
@@ -576,7 +629,8 @@
     <MESSAGE value="Remove unused classes, update common interface." />
     <MESSAGE value="Fix HD44780 &amp; analog keypad" />
     <MESSAGE value="Add MCU signature concept" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add MCU signature concept" />
+    <MESSAGE value="Add additional unit tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add additional unit tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

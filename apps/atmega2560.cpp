@@ -9,18 +9,16 @@
 #include "templates/uno_lcd_shield.hpp"
 
 #include <avr/eeprom.h>
+#include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_mega.hpp>
-#include <zoal/data/rx_tx_buffer.hpp>
+#include <zoal/data/ring_buffer.hpp>
 #include <zoal/ic/max72xx.hpp>
 #include <zoal/io/analog_keypad.hpp>
 #include <zoal/io/button.hpp>
 #include <zoal/periph/software_spi.hpp>
-#include <zoal/periph/tx_ring_buffer.hpp>
-#include <zoal/shield/uno_lcd.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
-#include <zoal/arch/avr/utils/usart_transmitter.hpp>
 
 volatile uint32_t milliseconds = 0;
 
@@ -29,7 +27,7 @@ using timer = typename mcu::timer_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using counter_irq_handler = typename counter::handler<F_CPU, 64, timer>;
 using usart = mcu::usart_00;
-zoal::data::ring_buffer_ext<uint8_t, 16> rx_buffer;
+zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 
 using usart_tx_transport = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;
 

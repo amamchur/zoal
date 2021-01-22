@@ -13,7 +13,7 @@ namespace zoal { namespace arch { namespace avr {
     using zoal::mem::callable_cas_list_variadic;
 
     template<class Port, ::zoal::gpio::pin_mode PinMode, uint8_t Mask>
-    struct pin_mode_cfg : callable_cas_list_variadic<typename Port::DDRx::template cas<0, 0>, typename Port::PORTx::template cas<0, 0>> {};
+    struct pin_mode_cfg : callable_cas_list_variadic<typename Port::DDRx::template cas<0, 0>> {};
 
     template<class Port, uint8_t Mask>
     struct pin_mode_cfg<Port, ::zoal::gpio::pin_mode::input_floating, Mask>
@@ -25,7 +25,7 @@ namespace zoal { namespace arch { namespace avr {
 
     template<class Port, uint8_t Mask>
     struct pin_mode_cfg<Port, ::zoal::gpio::pin_mode::output_push_pull, Mask>
-        : callable_cas_list_variadic<typename Port::DDRx::template cas<0, Mask>, typename Port::PORTx::template cas<0, 0>> {};
+        : callable_cas_list_variadic<typename Port::DDRx::template cas<0, Mask>> {};
 
     template<uintptr_t Address, uint8_t PinMask = 0xFF>
     class port {

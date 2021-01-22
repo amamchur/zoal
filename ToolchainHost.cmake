@@ -13,16 +13,20 @@ function(add_zoal_tests)
     find_package(GTest)
 
     set(TEST_CASES_FILES
+            tests/arch/avr/atmega/adc.cpp
+            tests/arch/avr/atmega/port.cpp
             tests/arch/avr/atmega/usart.cpp
+            tests/ct/static_assertion.cpp
+            tests/data/ring_buffer.cpp
+            tests/gpio/gpio_api.cpp
+            tests/gpio/pin_control.cpp
+            tests/gpio/stub_classes.cpp
+            tests/ic/hd44780.cpp
+            tests/io/analog_keypad.cpp
+            tests/io/button_machine.cpp
+            tests/mem/clear_and_set.cpp
             tests/test_utils/address_cast.cpp
             tests/test_utils/ms_counter.cpp
-            tests/ct/static_assertion.cpp
-            tests/ic/hd44780.cpp
-            tests/gpio/stub_classes.cpp
-            tests/gpio/pin_control.cpp
-            tests/gpio/gpio_api.cpp
-            tests/mem/clear_and_set.cpp
-            tests/io/button_machine.cpp
             )
     add_executable(zoal_tests ${TEST_CASES_FILES})
     target_compile_definitions(zoal_tests PRIVATE -DZOAL_COVERAGE)

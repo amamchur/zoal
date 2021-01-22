@@ -2,7 +2,6 @@
 #include "stm32f1xx_hal.h"
 #include "task.h"
 
-#include <zoal/data/rx_tx_buffer.hpp>
 #include <zoal/io/button.hpp>
 #include <zoal/mcu/stm32f103c8tx.hpp>
 #include <zoal/utils/cmsis_os2/delay.hpp>

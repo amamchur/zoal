@@ -1,7 +1,6 @@
 #include "stm32f0xx.h"
 
 #include <zoal/mcu/stm32f030f4px.hpp>
-#include <zoal/periph/tx_ring_buffer.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 

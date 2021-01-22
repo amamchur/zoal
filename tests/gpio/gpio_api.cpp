@@ -8,6 +8,7 @@
 
 using namespace zoal::gpio;
 using namespace zoal::ct;
+using namespace zoal::tests;
 using mcu = zoal::mcu::atmega328p;
 
 TEST(gpio_api, optimize_cas_ingore_duplicates) {
@@ -28,7 +29,7 @@ TEST(gpio_api, optimize_cas_ingore_duplicates) {
     type_list_iterator<cas_list>::for_each(c);
 
     EXPECT_EQ(c.values.size(), 1);
-    EXPECT_EQ(c.values[0], cas_value(0x24, 0x00, 0x01));
+    EXPECT_EQ(c.values[0], cas_value(0x24, 0x00, 0x01, sizeof(uint8_t)));
 }
 
 TEST(gpio_api, optimize_cas_aggregate) {
@@ -49,7 +50,7 @@ TEST(gpio_api, optimize_cas_aggregate) {
     type_list_iterator<cas_list>::for_each(c);
 
     EXPECT_EQ(c.values.size(), 1);
-    EXPECT_EQ(c.values[0], cas_value(0x24, 0x00, 0xff));
+    EXPECT_EQ(c.values[0], cas_value(0x24, 0x00, 0xff, sizeof(uint8_t)));
 }
 
 TEST(gpio_api, optimize_cas_keep_order_1) {
@@ -61,8 +62,8 @@ TEST(gpio_api, optimize_cas_keep_order_1) {
     type_list_iterator<cas_list>::for_each(c);
 
     EXPECT_EQ(c.values.size(), 2);
-    EXPECT_EQ(c.values[0], cas_value(0x24, 0x00, 0x01));
-    EXPECT_EQ(c.values[1], cas_value(0x27, 0x00, 0x02));
+    EXPECT_EQ(c.values[0], cas_value(0x24, 0x00, 0x01, sizeof(uint8_t)));
+    EXPECT_EQ(c.values[1], cas_value(0x27, 0x00, 0x02, sizeof(uint8_t)));
 }
 
 TEST(gpio_api, optimize_cas_keep_order_2) {
@@ -74,6 +75,6 @@ TEST(gpio_api, optimize_cas_keep_order_2) {
     type_list_iterator<cas_list>::for_each(c);
 
     EXPECT_EQ(c.values.size(), 2);
-    EXPECT_EQ(c.values[0], cas_value(0x27, 0x00, 0x02));
-    EXPECT_EQ(c.values[1], cas_value(0x24, 0x00, 0x01));
+    EXPECT_EQ(c.values[0], cas_value(0x27, 0x00, 0x02, sizeof(uint8_t)));
+    EXPECT_EQ(c.values[1], cas_value(0x24, 0x00, 0x01, sizeof(uint8_t)));
 }

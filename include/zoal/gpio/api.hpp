@@ -79,10 +79,19 @@ namespace zoal { namespace gpio {
         using low = typename zoal::mem::merge_cas_in_list<typename collect_cas<low_cas, Pins...>::result>::result;
 
         template<class... Pins>
+        using _0 = low<Pins...>;
+
+        template<class... Pins>
         using high = typename zoal::mem::merge_cas_in_list<typename collect_cas<high_cas, Pins...>::result>::result;
+
+        template<class... Pins>
+        using _1 = high<Pins...>;
 
         template<zoal::gpio::pin_mode PinMode, class... Pins>
         using mode = typename zoal::mem::merge_cas_in_list<typename collect_cas<mode_cas<PinMode>, Pins...>::result>::result;
+
+        template<zoal::gpio::pin_mode PinMode, class... Pins>
+        using _m = mode<PinMode, Pins...>;
 
         template<zoal::gpio::pin_output_speed Speed, class... Pins>
         using output_speed = typename zoal::mem::merge_cas_in_list<typename collect_cas<speed_cas<Speed>, Pins...>::result>::result;

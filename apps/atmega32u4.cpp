@@ -19,7 +19,7 @@ using timer = zoal::pcb::mcu::timer_00;
 using counter_irq_handler = counter::handler<F_CPU, 64, timer>;
 using usart = mcu::usart_01;
 
-zoal::data::ring_buffer_ext<uint8_t, 16> rx_buffer;
+zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 using usart_tx_transport = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;
 
 using adc = mcu::adc_00;

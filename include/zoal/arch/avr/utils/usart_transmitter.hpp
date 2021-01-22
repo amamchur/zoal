@@ -1,15 +1,14 @@
 #ifndef ZOAL_ARCH_AVR_UTILS_USART_TX_TRANSPORT_HPP
 #define ZOAL_ARCH_AVR_UTILS_USART_TX_TRANSPORT_HPP
 
-#include "../../../data/ring_buffer_ext.hpp"
+#include "../../../data/ring_buffer.hpp"
 #include "../../../utils/interrupts.hpp"
 
 namespace zoal { namespace utils {
     template<class U, size_t Size, class ScopeLock = zoal::utils::interrupts_off>
     class usart_transmitter {
     public:
-        using tx_buffer_type = zoal::data::ring_buffer_ext<uint8_t, 16>;
-        ;
+        using tx_buffer_type = zoal::data::ring_buffer<uint8_t, 16>;
 
         static void send_byte(uint8_t value) {
             bool done = false;

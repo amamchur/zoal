@@ -6,7 +6,6 @@
 #include <memory.h>
 #include <stdint.h>
 
-#define ZOAL_VOLATILE_ADDRESS_CAST(TYPE, ADDRESS) zoal::test::mem<TYPE>::get_ptr(ADDRESS)
 #define ZOAL_ADDRESS_CAST(TYPE, ADDRESS) zoal::test::mem<TYPE>::get_ptr(ADDRESS)
 
 namespace zoal { namespace test {
@@ -34,6 +33,7 @@ namespace zoal { namespace test {
 
         static void clear_mem() {
             memset(avr_mcu_mem, 0, sizeof(avr_mcu_mem));
+            memset(cortex_periph_mem, 0, sizeof(cortex_periph_mem));
         }
     };
 }}

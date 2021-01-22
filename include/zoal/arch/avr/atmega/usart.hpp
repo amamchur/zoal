@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_USART_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_USART_HPP
 
-#include "../../../data/ring_buffer_ext.hpp"
+#include "../../../data/ring_buffer.hpp"
 #include "../../../io/stream_functor.hpp"
 #include "../../../periph/usart.hpp"
 #include "../../../utils/interrupts.hpp"

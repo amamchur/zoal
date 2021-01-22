@@ -6,22 +6,18 @@
 #include <stdint.h>
 
 namespace zoal { namespace io {
-    template<class Tools, uint8_t Count, int Threshold = 10>
+    template<class TimeType, uint8_t Count, int Threshold = 50>
     class analog_keypad {
     public:
         static constexpr auto button_count = Count;
 
         using button_value_type = uint16_t;
-        using counter = typename Tools::counter;
-        using delay = typename Tools::delay;
-        using logger = typename Tools::logger;
-        using counter_value_type = typename counter::value_type;
+        using counter_value_type = TimeType;
 
         template<class H, class ...Args>
-        void handle(H handler, int16_t value, Args... args) {
+        void handle(H handler, TimeType current_time, int16_t value, Args... args) {
             using namespace zoal::io;
 
-            counter_value_type current_time = counter::now();
             for (int i = 0; i < button_count; i++) {
                 uint8_t dv = 0;
                 int buttonValue = adc_values[i];
