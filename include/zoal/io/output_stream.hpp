@@ -139,13 +139,13 @@ namespace zoal { namespace io {
 
         template<class F>
         inline output_stream &operator<<(::zoal::io::output_stream_functor<F> &fn) {
-            static_cast<F &>(fn).template write<Transport>();
+            static_cast<F &>(fn).template write<Transport>(transport);
             return *this;
         }
 
         template<class F>
         inline output_stream &operator<<(::zoal::io::output_stream_functor<F> &&fn) {
-            static_cast<F &>(fn).template write<Transport>();
+            static_cast<F &>(fn).template write<Transport>(transport);
             return *this;
         }
 

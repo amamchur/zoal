@@ -16,7 +16,9 @@ class BaseGenerator {
     }
 
     static toHex(value, padding) {
-        return '0x' + ("00000000" + value.toString(16)).substr(-padding).toUpperCase();
+        const str = ("00000000" + value.toString(16));
+        const hex = str.substr(-padding).toUpperCase();
+        return `0x${hex}`;
     }
 }
 

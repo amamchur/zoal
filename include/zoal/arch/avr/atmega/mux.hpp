@@ -50,7 +50,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
             static_assert(rxm::rx >= 0, "Specified RX pin could not be connected to USART");
             static_assert(txm::tx >= 0, "Specified TX pin could not be connected to USART");
-            static_assert(ckm::ck >= 0, "Specified CX pin could not be connected to USART");
+            static_assert(Ck::not_pin || ckm::ck >= 0, "Specified CX pin could not be connected to USART");
 
             using connect = zoal::ct::type_list<zoal::mem::null_cas>;
             using disconnect = zoal::ct::type_list<zoal::mem::null_cas>;

@@ -271,7 +271,8 @@ class Avr extends BaseGenerator {
             let address = Avr.registerOffset(u.register, /UCSR\dA/);
             let n = name.replace(/USART(\d+)/, '$1');
             let periph = Avr.getByName(root.devices[0].device[0].peripherals[0].module, /^USART/)[0];
-            let signalNodes = (periph.instance[0].signals || [{}])[0].signal;
+            let usartInstance = Avr.getByName(periph.instance, new RegExp('^' + name + ''));
+            let signalNodes = (usartInstance[0].signals || [{}])[0].signal;
             if (!signalNodes) {
                 continue;
             }

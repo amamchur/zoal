@@ -1,68 +1,73 @@
 #include "templates/uno_lcd_shield.hpp"
 
-#include <avr/io.h>
-#include <zoal/arch/avr/atmega/i2c.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_leonardo.hpp>
 #include <zoal/shield/uno_lcd.hpp>
-#include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 
 volatile uint32_t milliseconds = 0;
 
 using mcu = zoal::pcb::mcu;
-using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
-
-using timer = zoal::pcb::mcu::timer_00;
-using counter_irq_handler = counter::handler<F_CPU, 64, timer>;
 using usart = mcu::usart_01;
+using timer = zoal::pcb::mcu::timer_00;
+using blink_pin = zoal::pcb::ard_d13;
+using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
+using counter_irq_handler = counter::handler<F_CPU, 64, timer>;
+using delay = zoal::utils::delay<F_CPU, counter>;;
 
 zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 using usart_tx_transport = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;
+using tx_stream_type = zoal::io::output_stream<usart_tx_transport>;
 
-using adc = mcu::adc_00;
-using i2c = mcu::i2c_00;
-using logger = zoal::utils::plain_logger<usart_tx_transport, zoal::utils::log_level::trace>;
+usart_tx_transport transport;
+tx_stream_type stream(transport);
 
-scheduler_type scheduler;
+//using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
+//scheduler_type scheduler;
 
 void initialize_hardware() {
+    using namespace zoal::gpio;
     using usart_cfg = zoal::periph::usart_115200<F_CPU>;
 
-    mcu::power<usart, timer, i2c, adc>::on();
+    api::optimize<api::disable<usart, timer>>();
+    api::optimize<
+        //
+        mcu::mux::usart<usart, mcu::pd_02, mcu::pd_03>::connect,
+        mcu::cfg::usart<usart, usart_cfg>::apply,
 
-    mcu::mux::usart<usart, zoal::pcb::ard_d00, zoal::pcb::ard_d01, mcu::pd_05>::connect();
-    mcu::cfg::usart<usart, usart_cfg>::apply();
+        mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply,
+        mcu::irq::timer<timer>::enable_overflow_interrupt,
 
-    mcu::mux::i2c<i2c, mcu::pd_01, mcu::pd_00>::connect();
-    mcu::cfg::i2c<i2c, F_CPU>::apply();
+        api::mode<zoal::gpio::pin_mode::output, blink_pin>
+        //
+        >();
 
-    mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
-    mcu::irq::timer<timer>::enable_overflow_interrupt();
-
-    mcu::cfg::adc<adc>::apply();
-    adc::enable_interrupt();
-
-    mcu::enable<usart, timer, i2c, adc>::on();
+    api::optimize<api::enable<usart, timer>>();
 
     zoal::utils::interrupts::on();
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
 int main() {
     initialize_hardware();
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-    logger::info() << "--- Start ---";
 
+    stream << "Hello\r\n";
+    int step = 0;
     while (true) {
-        scheduler.handle();
+        blink_pin::_0();
+        delay::ms(500);
+
+        blink_pin::_1();
+        delay::ms(500);
+
+        stream << "Step: " << step++ << "\r\n";
     }
 
     return 0;
-#pragma clang diagnostic pop
 }
+#pragma clang diagnostic pop
 
 ISR(TIMER0_OVF_vect) {
     counter_irq_handler::increment();
@@ -74,8 +79,4 @@ ISR(USART1_RX_vect) {
 
 ISR(USART1_UDRE_vect) {
     usart::tx_handler([](uint8_t &value) { return usart_tx_transport::tx_buffer.pop_front(value); });
-}
-
-ISR(TWI_vect) {
-    i2c::handle_irq();
 }

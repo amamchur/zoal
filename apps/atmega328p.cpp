@@ -41,7 +41,7 @@ tx_stream_type stream(transport);
 using tools = zoal::utils::tool_set<mcu, F_CPU, counter, void>;
 using delay = tools::delay;
 using api = zoal::gpio::api;
-using blink_pin = pcb::ard_d08;
+using blink_pin = pcb::ard_d13;
 using lcd_back_light = pcb::ard_d10;
 using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
 

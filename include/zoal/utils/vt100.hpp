@@ -28,18 +28,18 @@ namespace zoal { namespace utils { namespace vt100 {
             return ptr;
         }
 
-        static void output(uint8_t *ptr) {
+        static void output(T &t, uint8_t *ptr) {
             while (*ptr) {
-                T::push_back_blocking(*ptr++);
+                t.send_byte(*ptr++);
             }
         }
     };
 
     struct cr_lf : public zoal::io::output_stream_functor<cr_lf> {
         template<class T>
-        void write() {
-            T::push_back_blocking('\r');
-            T::push_back_blocking('\n');
+        void write(T &t) {
+            t.send_byte('\r');
+            t.send_byte('\n');
         }
     };
 
@@ -48,8 +48,8 @@ namespace zoal { namespace utils { namespace vt100 {
     struct ris : public zoal::io::output_stream_functor<ris> {
         template<class T>
         void write() {
-            T::push_back_blocking('\033');
-            T::push_back_blocking('c');
+            t.send_byte('\033');
+            t.send_byte('c');
         }
     };
 
@@ -57,9 +57,9 @@ namespace zoal { namespace utils { namespace vt100 {
     struct sgr0 : public zoal::io::output_stream_functor<sgr0> {
         template<class T>
         void write() {
-            T::push_back_blocking('\033');
-            T::push_back_blocking('[');
-            T::push_back_blocking('m');
+            t.send_byte('\033');
+            t.send_byte('[');
+            t.send_byte('m');
         }
     };
 
@@ -67,10 +67,10 @@ namespace zoal { namespace utils { namespace vt100 {
     struct el2 : public zoal::io::output_stream_functor<el2> {
         template<class T>
         void write() {
-            T::push_back_blocking('\033');
-            T::push_back_blocking('[');
-            T::push_back_blocking('2');
-            T::push_back_blocking('k');
+            t.send_byte('\033');
+            t.send_byte('[');
+            t.send_byte('2');
+            t.send_byte('k');
         }
     };
 #else
@@ -120,21 +120,21 @@ namespace zoal { namespace utils { namespace vt100 {
         }
 
         template<class T>
-        void write() {
+        void write(T &t) {
             uint8_t buffer[4] = {0};
-            T::push_back_blocking('\033');
-            T::push_back_blocking('[');
+            t.send_byte('\033');
+            t.send_byte('[');
 
             auto p = buffer + sizeof(buffer) - 1;
             p = helper<T>::format(p, background != none ? 40 + background : 0);
-            helper<T>::output(p);
+            helper<T>::output(t, p);
 
-            T::push_back_blocking(';');
+            t.send_byte(';');
             p = buffer + sizeof(buffer) - 1;
             p = helper<T>::format(p, foreground != none ? 30 + foreground : 0);
-            helper<T>::output(p);
+            helper<T>::output(t, p);
 
-            T::push_back_blocking('m');
+            t.send_byte('m');
         }
 
         int8_t foreground{none};
@@ -150,21 +150,21 @@ namespace zoal { namespace utils { namespace vt100 {
             , hor(h) {}
 
         template<class T>
-        void write() {
+        void write(T &t) {
             uint8_t buffer[4] = {0};
-            T::push_back_blocking('\033');
-            T::push_back_blocking('[');
+            t.send_byte('\033');
+            t.send_byte('[');
 
             auto p = buffer + sizeof(buffer) - 1;
             p = helper<T>::format(p, vert);
             helper<T>::output(p);
 
-            T::push_back_blocking(';');
+            t.send_byte(';');
             p = buffer + sizeof(buffer) - 1;
             p = helper<T>::format(p, hor);
             helper<T>::output(p);
 
-            T::push_back_blocking('H');
+            t.send_byte('H');
         }
 
         int8_t vert{0};

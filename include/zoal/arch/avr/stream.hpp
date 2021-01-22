@@ -11,11 +11,11 @@ namespace zoal { namespace io {
             : buffer(str) {}
 
         template<class T>
-        void write() {
+        void write(T &t) {
             auto p = buffer;
             auto v = pgm_read_byte(p++);
             while (v != 0) {
-                T::send_byte(static_cast<uint8_t>(v));
+                t.send_byte(static_cast<uint8_t>(v));
                 v = pgm_read_byte(p++);
             }
         }
@@ -24,32 +24,32 @@ namespace zoal { namespace io {
     };
 
     struct progmem_str_iter {
-        progmem_str_iter(const char *str)
+        explicit progmem_str_iter(const char *str)
             : ptr_(str) {}
 
-        char operator *() const {
+        inline char operator *() const {
             auto v = pgm_read_byte(ptr_);
             return static_cast<char>(v);
         }
 
-        bool operator==(const progmem_str_iter& iter) const {
+        inline bool operator==(const progmem_str_iter& iter) const {
             return ptr_ == iter.ptr_;
         }
 
-        bool operator!=(const progmem_str_iter& iter) const {
+        inline bool operator!=(const progmem_str_iter& iter) const {
             return ptr_ != iter.ptr_;
         }
 
-        progmem_str_iter& operator++() {
+        inline progmem_str_iter& operator++() {
             ptr_++;
             return *this;
         }
 
-        progmem_str_iter operator+(intptr_t d) const {
-            return {ptr_ + d};
+        inline progmem_str_iter operator+(intptr_t d) const {
+            return progmem_str_iter(ptr_ + d);
         }
 
-        intptr_t operator-(progmem_str_iter iter) const {
+        inline intptr_t operator-(progmem_str_iter iter) const {
             return ptr_ - iter.ptr_;
         }
 

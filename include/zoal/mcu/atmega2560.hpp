@@ -173,15 +173,15 @@ namespace zoal { namespace mcu {
         using txd_00 = pe_01;
         using rxd_00 = pe_00;
         using xck_00 = pe_02;
-        using txd_01 = pe_01;
-        using rxd_01 = pe_00;
-        using xck_01 = pe_02;
-        using txd_02 = pe_01;
-        using rxd_02 = pe_00;
-        using xck_02 = pe_02;
-        using txd_03 = pe_01;
-        using rxd_03 = pe_00;
-        using xck_03 = pe_02;
+        using txd_01 = pd_03;
+        using rxd_01 = pd_02;
+        using xck_01 = pd_05;
+        using txd_02 = ph_01;
+        using rxd_02 = ph_00;
+        using xck_02 = ph_02;
+        using txd_03 = pj_01;
+        using rxd_03 = pj_00;
+        using xck_03 = pj_02;
 
         using ports = ::zoal::ct::type_list<port_a, port_b, port_c, port_d, port_e, port_f, port_g, port_h, port_j, port_k, port_l>;
         using mux = ::zoal::arch::avr::atmega::mux<self_type>;
@@ -237,9 +237,6 @@ namespace zoal { namespace metadata {
     struct pin_to_pwm_channel<atmega2560_sign, 0x0120, 0x0109, 4, 1> : integral_constant<bool, true> {};
 
     template<>
-    struct usart_mapping<atmega2560_sign, 0x00C0, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
-
-    template<>
     struct usart_mapping<atmega2560_sign, 0x00C0, 0x002C, 1> : base_usart_mapping<-1, 0, -1> {};
 
     template<>
@@ -247,39 +244,33 @@ namespace zoal { namespace metadata {
 
     template<>
     struct usart_mapping<atmega2560_sign, 0x00C0, 0x002C, 2> : base_usart_mapping<-1, -1, 0> {};
-    template<>
-    struct usart_mapping<atmega2560_sign, 0x00C8, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
 
     template<>
-    struct usart_mapping<atmega2560_sign, 0x00C8, 0x002C, 1> : base_usart_mapping<-1, 0, -1> {};
+    struct usart_mapping<atmega2560_sign, 0x00C8, 0x0029, 3> : base_usart_mapping<-1, 0, -1> {};
 
     template<>
-    struct usart_mapping<atmega2560_sign, 0x00C8, 0x002C, 0> : base_usart_mapping<0, -1, -1> {};
+    struct usart_mapping<atmega2560_sign, 0x00C8, 0x0029, 2> : base_usart_mapping<0, -1, -1> {};
 
     template<>
-    struct usart_mapping<atmega2560_sign, 0x00C8, 0x002C, 2> : base_usart_mapping<-1, -1, 0> {};
-    template<>
-    struct usart_mapping<atmega2560_sign, 0x00D0, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
+    struct usart_mapping<atmega2560_sign, 0x00C8, 0x0029, 5> : base_usart_mapping<-1, -1, 0> {};
 
     template<>
-    struct usart_mapping<atmega2560_sign, 0x00D0, 0x002C, 1> : base_usart_mapping<-1, 0, -1> {};
+    struct usart_mapping<atmega2560_sign, 0x00D0, 0x0100, 1> : base_usart_mapping<-1, 0, -1> {};
 
     template<>
-    struct usart_mapping<atmega2560_sign, 0x00D0, 0x002C, 0> : base_usart_mapping<0, -1, -1> {};
+    struct usart_mapping<atmega2560_sign, 0x00D0, 0x0100, 0> : base_usart_mapping<0, -1, -1> {};
 
     template<>
-    struct usart_mapping<atmega2560_sign, 0x00D0, 0x002C, 2> : base_usart_mapping<-1, -1, 0> {};
-    template<>
-    struct usart_mapping<atmega2560_sign, 0x0130, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};
+    struct usart_mapping<atmega2560_sign, 0x00D0, 0x0100, 2> : base_usart_mapping<-1, -1, 0> {};
 
     template<>
-    struct usart_mapping<atmega2560_sign, 0x0130, 0x002C, 1> : base_usart_mapping<-1, 0, -1> {};
+    struct usart_mapping<atmega2560_sign, 0x0130, 0x0103, 1> : base_usart_mapping<-1, 0, -1> {};
 
     template<>
-    struct usart_mapping<atmega2560_sign, 0x0130, 0x002C, 0> : base_usart_mapping<0, -1, -1> {};
+    struct usart_mapping<atmega2560_sign, 0x0130, 0x0103, 0> : base_usart_mapping<0, -1, -1> {};
 
     template<>
-    struct usart_mapping<atmega2560_sign, 0x0130, 0x002C, 2> : base_usart_mapping<-1, -1, 0> {};
+    struct usart_mapping<atmega2560_sign, 0x0130, 0x0103, 2> : base_usart_mapping<-1, -1, 0> {};
 
     template<>
     struct spi_mapping<atmega2560_sign, 0x004C, 0x0023, 0> : base_spi_mapping<-1, -1, -1, 0> {};

@@ -70,10 +70,6 @@ class ATmega extends Avr {
             let usartHex = ATmega.toHex(usart.address, 4);
             let signals = usart.signals;
 
-            result.push(`template<>`);
-            result.push(`struct usart_mapping<${signName}, ${usartHex}, 0x0000, 0> : base_usart_mapping<0, 0, 0> {};`);
-            result.push(``);
-
             for (let j = 0; j < signals.length; j++) {
                 let s = signals[j];
                 let portHex = ATmega.toHex(s.port.address, 4);
