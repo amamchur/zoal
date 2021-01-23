@@ -11,10 +11,10 @@ namespace zoal { namespace misc {
     }
 
     terminal_input::terminal_input() noexcept
-        : zoal::parser::ragel_scanner<terminal_machine>(scanner_buffer_, sizeof(scanner_buffer_)){};
+        : zoal::parse::ragel_scanner<terminal_machine>(scanner_buffer_, sizeof(scanner_buffer_)){};
 
     terminal_input::terminal_input(void *buffer, size_t size) noexcept
-        : zoal::parser::ragel_scanner<terminal_machine>(scanner_buffer_, sizeof(scanner_buffer_)) {
+        : zoal::parse::ragel_scanner<terminal_machine>(scanner_buffer_, sizeof(scanner_buffer_)) {
         this->init_buffer(reinterpret_cast<char *>(buffer), size);
     }
 

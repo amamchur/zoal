@@ -5,7 +5,7 @@
 
 #include <stddef.h>
 
-namespace zoal { namespace parser {
+namespace zoal { namespace parse {
     template<class T = void *, class E = int>
     class scanner_callback {
     public:

@@ -5,9 +5,26 @@
     hours =  ([0-1] . digit) | ('2' . [0-3]);
     min_sec = ([0-5] . digit);
     time = hours . ':' . min_sec . ':' min_sec;
-	main := |*
+
+    year = ('0') | ('1'..'9' . digit*);
+    month = ('0' . digit) | ('1' . '0..2');
+    day = ('3' . '0'..'1') | ('0'..'2' . digit);
+    date = year . '.' . month . '.' day;
+
+    date_time = date . space . time;
+
+    main := |*
+    date_time => {
+        handler_(this, value_type::date_time);
+        fbreak;
+    };
+    date => {
+        handler_(this, value_type::date);
+        fbreak;
+    };
     time => {
         handler_(this, value_type::time);
+        fbreak;
     };
     space;
     any => {

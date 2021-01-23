@@ -6,8 +6,9 @@
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_uno.hpp>
-#include <zoal/ic/hd44780.hpp>
+#include <zoal/ic/lm75.hpp>
 #include <zoal/io/analog_keypad.hpp>
+#include <zoal/periph/i2c_request.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
@@ -28,6 +29,7 @@ using timer = mcu::timer_00;
 using usart = mcu::usart_00;
 using spi = mcu::spi_00;
 using adc = mcu::adc_00;
+using i2c = mcu::i2c_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using counter_irq_handler = counter::handler<F_CPU, 64, timer>;
 
@@ -55,45 +57,32 @@ auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
 const char help_msg[] PROGMEM =
     "ZOAL Demo Application\r\n"
     "Commands: \r\n"
-    "\t lcd-on\t\tturn lcd back light on\r\n"
-    "\t lcd-off\tturn lcd back light off\r\n"
-    "\t lcd [msg]\tdisplay message on lcd\r\n"
     "\t start-blink\tstart blinking\r\n"
     "\t stop-blink\tstop blinking\r\n";
 const char help_cmd[] PROGMEM = "help";
-const char lcd_cmd[] PROGMEM = "lcd";
-const char lcd_on_cmd[] PROGMEM = "lcd-on";
-const char lcd_off_cmd[] PROGMEM = "lcd-off";
 const char adc_cmd[] PROGMEM = "adc";
 const char start_blink_cmd[] PROGMEM = "start-blink";
 const char stop_blink_cmd[] PROGMEM = "stop-blink";
-
-using analog_keypad_type = zoal::io::analog_keypad<uint32_t, 5>;
-const analog_keypad_type::button_value_type buttons_adc_values[] __attribute__((section(".eeprom"))) = {0, 131, 308, 481, 722};
-analog_keypad_type analog_keypad;
-
-using interface_type = zoal::ic::hd44780_interface_4bit<delay, pcb::ard_d08, pcb::ard_d09, pcb::ard_d04, pcb::ard_d05, pcb::ard_d06, pcb::ard_d07>;
-using address_selector = zoal::ic::hd44780_address_selector<16, 2>;
-using lcd_type = zoal::ic::hd44780<interface_type, address_selector>;
-lcd_type lcd;
 
 void initialize_hardware() {
     // Power on modules
     api::optimize<api::clock_on<usart, timer>>();
 
     // Disable all modules before applying settings
-    api::optimize<api::disable<usart, timer, adc>>();
+    api::optimize<api::disable<usart, timer, adc, i2c>>();
     api::optimize<
         //
         mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::connect,
         mcu::cfg::usart<usart, zoal::periph::usart_115200<F_CPU>>::apply,
         //
         mcu::mux::adc<adc, pcb::ard_a00>::connect,
-        mcu::cfg::adc<adc>::apply,
+        mcu::cfg::adc<adc, zoal::periph::adc_config<>>::apply,
         //
         mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply,
         //
-        lcd_type::gpio_cfg,
+        mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::connect,
+        mcu::cfg::i2c<i2c, F_CPU>::apply,
+        //
         api::mode<zoal::gpio::pin_mode::output, blink_pin, lcd_back_light>,
         api::_1<lcd_back_light>,
         mcu::irq::timer<timer>::enable_overflow_interrupt
@@ -104,14 +93,10 @@ void initialize_hardware() {
     zoal::utils::interrupts::on();
 
     // Enable all modules
-    api::optimize<api::enable<usart, timer, adc>>();
+    api::optimize<api::enable<usart, timer, adc, i2c>>();
 
     adc::enable();
     adc::enable_interrupt();
-
-    eeprom_read_block(analog_keypad.adc_values, buttons_adc_values, sizeof(analog_keypad.adc_values));
-
-    lcd.init();
 }
 
 void led_on(void *);
@@ -136,27 +121,6 @@ void vt100_callback(const zoal::misc::terminal_input *, const char *s, const cha
     usart_tx_transport::send_data(s, e - s);
 }
 
-bool cmp_str_token(zoal::io::progmem_str_iter s1, const char *ss, const char *se) {
-    while (*s1 && ss < se) {
-        if (*s1 != *ss) {
-            return false;
-        }
-        ++s1;
-        ++ss;
-    }
-    return !*s1 && ss == se;
-}
-
-void lcd_display(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
-    p->callback(&command_line_parser::empty_callback);
-
-    auto ts = p->token_start();
-    auto te = p->token_end();
-    lcd.clear();
-    lcd.send_data(ts, te - ts);
-    terminal.sync();
-}
-
 void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
     if (e == zoal::misc::command_line_event::line_end) {
         return;
@@ -168,35 +132,22 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
 
     stream << "\r\n";
 
-    if (cmp_str_token(zoal::io::progmem_str_iter(help_cmd), ts, te)) {
+    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(help_cmd), ts, te)) {
         stream << zoal::io::progmem_str(help_msg);
     }
 
-    if (cmp_str_token(zoal::io::progmem_str_iter(lcd_cmd), ts, te)) {
-        p->callback(&lcd_display);
-        return;
-    }
-
-    if (cmp_str_token(zoal::io::progmem_str_iter(lcd_on_cmd), ts, te)) {
-        lcd_back_light::_1();
-    }
-
-    if (cmp_str_token(zoal::io::progmem_str_iter(lcd_off_cmd), ts, te)) {
-        lcd_back_light::_0();
-    }
-
-    if (cmp_str_token(zoal::io::progmem_str_iter(adc_cmd), ts, te)) {
+    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(adc_cmd), ts, te)) {
         auto v = adc::read();
         stream << "ADC: " << v << "\r\n";
     }
 
-    if (cmp_str_token(zoal::io::progmem_str_iter(start_blink_cmd), ts, te)) {
+    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(start_blink_cmd), ts, te)) {
         scheduler.clear_handle(led_on);
         scheduler.clear_handle(led_off);
         scheduler.schedule(0, led_on);
     }
 
-    if (cmp_str_token(zoal::io::progmem_str_iter(stop_blink_cmd), ts, te)) {
+    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(stop_blink_cmd), ts, te)) {
         scheduler.clear_handle(led_on);
         scheduler.clear_handle(led_off);
     }
@@ -238,11 +189,6 @@ int main() {
     stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
     terminal.sync();
 
-    lcd.clear();
-    lcd.home();
-
-    adc::start();
-
     while (true) {
         uint8_t rx_byte = 0;
         bool result;
@@ -253,11 +199,6 @@ int main() {
 
         if (result) {
             terminal.push(&rx_byte, 1);
-        }
-
-        if (process_adc) {
-            analog_keypad.handle(analog_keypad_handler, counter::now(), adc_value);
-            adc::start();
         }
 
         scheduler.handle();
@@ -279,6 +220,7 @@ ISR(USART_UDRE_vect) {
 }
 
 ISR(ADC_vect) {
-    adc_value = adc::value();
-    process_adc = true;
+}
+
+ISR(TWI_vect) {
 }

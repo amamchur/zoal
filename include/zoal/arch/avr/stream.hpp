@@ -27,20 +27,20 @@ namespace zoal { namespace io {
         explicit progmem_str_iter(const char *str)
             : ptr_(str) {}
 
-        inline char operator *() const {
+        inline char operator*() const {
             auto v = pgm_read_byte(ptr_);
             return static_cast<char>(v);
         }
 
-        inline bool operator==(const progmem_str_iter& iter) const {
+        inline bool operator==(const progmem_str_iter &iter) const {
             return ptr_ == iter.ptr_;
         }
 
-        inline bool operator!=(const progmem_str_iter& iter) const {
+        inline bool operator!=(const progmem_str_iter &iter) const {
             return ptr_ != iter.ptr_;
         }
 
-        inline progmem_str_iter& operator++() {
+        inline progmem_str_iter &operator++() {
             ptr_++;
             return *this;
         }
@@ -55,6 +55,17 @@ namespace zoal { namespace io {
 
         const char *ptr_;
     };
+
+    bool cmp_progmem_str_token(zoal::io::progmem_str_iter s1, const char *ss, const char *se) {
+        while (*s1 && ss < se) {
+            if (*s1 != *ss) {
+                return false;
+            }
+            ++s1;
+            ++ss;
+        }
+        return !*s1 && ss == se;
+    }
 }}
 
 #endif

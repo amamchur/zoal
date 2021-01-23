@@ -1,8 +1,9 @@
 #ifndef ZOAL_IC_SSD1306_HPP
 #define ZOAL_IC_SSD1306_HPP
 
+#include "../gpio/api.hpp"
 #include "../gpio/pin.hpp"
-#include "../periph/i2c_stream.hpp"
+#include "../periph/i2c_request.hpp"
 
 #include <stdint.h>
 #include <string.h>
@@ -135,80 +136,93 @@ namespace zoal { namespace ic {
         using i2c = IICircuit;
         using rst = Reset;
         using sas = SlaveAddressSelect;
-        using stream_type = zoal::periph::i2c_stream<IICircuit>;
         static constexpr uint8_t address = Address;
 
-        explicit ssd1306_interface_i2c(stream_type *stream)
-                : stream_(stream) {}
+        using gpio_cfg = typename zoal::gpio::api::optimize<
+            //
+            zoal::gpio::api::mode<zoal::gpio::pin_mode::output, rst, sas>>;
+
+        explicit ssd1306_interface_i2c(zoal::periph::i2c_request &req)
+            : request(req) {}
 
         void init() {
-            rst::template mode<zoal::gpio::pin_mode::output>();
-            sas::template mode<zoal::gpio::pin_mode::output>();
-
             if (address == 0x3C) {
-                sas::low();
+                typename sas::low();
             } else {
-                sas::high();
+                typename sas::high();
             }
 
-            rst::high();
+            typename rst::high();
             delay::ms(1);
-            rst::low();
+            typename rst::low();
             delay::ms(10);
-            rst::high();
+            typename rst::high();
         }
 
         void command(uint8_t cmd) {
-            i2c::wait();
-            stream_->write(address).value(0x00).value(cmd);
-            i2c::transmit(stream_);
-            i2c::wait();
+            request.initiator = this;
+            request.token = 0;
+            reg_addr[0] = 0x00;
+            reg_addr[1] = cmd;
+            request.write(address, reg_addr, reg_addr + sizeof(reg_addr));
+            zoal::periph::process_i2c_request_sync<i2c>(request, *this);
+        }
+
+        zoal::periph::i2c_request_completion_result complete_request(zoal::periph::i2c_request &req) {
+            if (request.initiator != this || request.result != zoal::periph::i2c_result::ok) {
+                return zoal::periph::i2c_request_completion_result::ignored;
+            }
+
+            return zoal::periph::i2c_request_completion_result::finished;
         }
 
         void data(uint8_t *graphic_buffer, size_t size) {
-            busy_ = true;
-            buffer_ = graphic_buffer;
-            buffer_pos_ = 0;
-            buffer_size_ = size;
-            send_next_data();
+            request.initiator = this;
+            request.token = 0;
+            reg_addr[0] = 0x00;
+            reg_addr[1] = 0x40;
+            request.write(address, reg_addr, reg_addr + sizeof(reg_addr));
+            zoal::periph::process_i2c_request_sync<i2c>(request, *this);
         }
 
-        void send_next_data() {
-            if (buffer_pos_ >= buffer_size_) {
-                busy_ = false;
-                return;
-            }
+//        void data(uint8_t *graphic_buffer, size_t size) {
+//            busy_ = true;
+//            buffer_ = graphic_buffer;
+//            buffer_pos_ = 0;
+//            buffer_size_ = size;
+//            send_next_data();
+//        }
+//
+//        void send_next_data() {
+//            if (buffer_pos_ >= buffer_size_) {
+//                busy_ = false;
+//                return;
+//            }
+//
+//            busy_ = true;
+//            stream_->callback = &chunk_sent;
+//            stream_->token = this;
+//            stream_->write(address).value(0x40);
+//
+//            auto count = stream_->copy(buffer_ + buffer_pos_, buffer_size_ - buffer_pos_);
+//            buffer_pos_ += count;
+//
+//            i2c::transmit(stream_);
+//        }
+//
+//        static void chunk_sent(stream_type *stream, void *token) {
+//            auto *obj = reinterpret_cast<self_type *>(token);
+//            obj->send_next_data();
+//        }
 
-            busy_ = true;
-            stream_->callback = &chunk_sent;
-            stream_->token = this;
-            stream_->write(address).value(0x40);
-
-            auto count = stream_->copy(buffer_ + buffer_pos_, buffer_size_ - buffer_pos_);
-            buffer_pos_ += count;
-
-            i2c::transmit(stream_);
-        }
-
-        static void chunk_sent(stream_type *stream, void *token) {
-            auto *obj = reinterpret_cast<self_type *>(token);
-            obj->send_next_data();
-        }
-
-        volatile bool busy_{false};
-        uint8_t *buffer_;
-        size_t buffer_pos_;
-        size_t buffer_size_;
-        stream_type *stream_;
+        uint8_t reg_addr[2]{0};
+        zoal::periph::i2c_request &request;
     };
 
-    enum class ssd1306_resolution {
-        ssd1306_128x64, ssd1306_128x32, ssd1306_128x16
-    };
+    enum class ssd1306_resolution { ssd1306_128x64, ssd1306_128x32, ssd1306_128x16 };
 
     template<ssd1306_resolution Resolution>
-    class ssd1306_resolution_info {
-    };
+    class ssd1306_resolution_info {};
 
     template<>
     class ssd1306_resolution_info<ssd1306_resolution::ssd1306_128x64> {
@@ -240,7 +254,6 @@ namespace zoal { namespace ic {
         static constexpr ssd1306_resolution resolution = Resolution;
         using iface = Interface;
         using resolution_info = ssd1306_resolution_info<resolution>;
-        using stream_type = typename Interface::stream_type;
 
         enum : uint8_t {
             set_contrast = 0x81,
@@ -268,8 +281,8 @@ namespace zoal { namespace ic {
             set_charge_pump = 0x8D
         };
 
-        explicit ssd1306(stream_type *stream)
-                : iface_(stream) {}
+        explicit ssd1306(zoal::periph::i2c_request &request)
+            : iface_(request) {}
 
         void init() {
             iface_.init();
@@ -310,14 +323,6 @@ namespace zoal { namespace ic {
             iface_.command((resolution_info::height / 8) - 1); // End Page address
 
             iface_.data(graphic_buffer, size);
-        }
-
-        bool ready() {
-            return !iface_.busy_;
-        }
-
-        void ensure_ready() {
-            while (iface_.busy_);
         }
 
     private:

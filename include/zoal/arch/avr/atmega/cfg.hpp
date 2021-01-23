@@ -112,7 +112,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     template<class S>
     struct spi_mode_cfg<S, spi_mode::slave> : type_list<typename S::SPCRx::template cas<0x01 << 4, 0x03 << 4>> {};
 
-    template <class Microcontroller>
+    template<class Microcontroller>
     class cfg {
     public:
         using mcu = Microcontroller;
@@ -147,26 +147,22 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using apply = typename zoal::gpio::api::optimize<timer_mode_cfg, clock_divider_cfg>;
         };
 
-        template<class A, zoal::periph::adc_ref Ref = zoal::periph::adc_ref::vcc, uintptr_t ClockDivider = 128>
+        template<class A, class Cfg>
         class adc {
         public:
             using apply = typename zoal::gpio::api::optimize<
                 //
-                adc_clock_divider<A, ClockDivider>,
-                adc_ref<A, Ref>>;
+                adc_clock_divider<A, 128>,
+                adc_ref<A, Cfg::reference>>;
         };
 
-        template<class S,
-                 uintptr_t ClockDivider = 2,
-                 bit_order Order = bit_order::msbf,
-                 spi_cpol_cpha PolPha = spi_cpol_cpha::mode_0,
-                 spi_mode Mode = spi_mode::master>
+        template<class S, class Cfg>
         class spi {
         public:
-            using clock_divider = spi_clock_divider_cfg<S, ClockDivider>;
-            using order = spi_bit_order_cfg<S, Order>;
-            using cpol_cpha = spi_cpol_cpha_cfg<S, PolPha>;
-            using mode = spi_mode_cfg<S, Mode>;
+            using clock_divider = spi_clock_divider_cfg<S, Cfg::clock_divider>;
+            using order = spi_bit_order_cfg<S, Cfg::order>;
+            using cpol_cpha = spi_cpol_cpha_cfg<S, Cfg::pol_pha>;
+            using mode = spi_mode_cfg<S, Cfg::mode>;
             using apply = typename zoal::gpio::api::optimize<clock_divider, order, cpol_cpha, mode>::result;
         };
 

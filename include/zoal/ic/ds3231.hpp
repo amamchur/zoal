@@ -4,13 +4,13 @@
 #define ZOAL_IC_DS3231_HPP
 
 #include "../data/date_time.hpp"
+#include "../periph/i2c_request.hpp"
 
 namespace zoal { namespace ic {
-
-    template<uint8_t Address = 0x68>
     class ds3231 {
     public:
-        using self_type = ds3231<Address>;
+        static constexpr uint8_t century_flag = 1 << 7;
+        static constexpr uint8_t month_mask = 0x1F;
 
         enum class register_address : uint8_t {
             seconds = 0x00,
@@ -34,67 +34,64 @@ namespace zoal { namespace ic {
             temp_lsb = 0x12
         };
 
-        static constexpr uint8_t data_size = static_cast<uint8_t>(register_address::temp_lsb) + 1;
-
-        template<class Stream>
-        class ds3231_i2c_callback {
-        public:
-            static void address_assigned(Stream *stream, void *token) {
-                stream->read(Address, data_size);
-                stream->callback = &ds3231_i2c_callback<Stream>::data_fetched;
-                Stream::i2c::transmit(stream);
-            }
-
-            static void data_fetched(Stream *stream, void *token) {
-                auto *obj = reinterpret_cast<self_type *>(token);
-                for (uint8_t i = 0; i < stream->size(); i++) {
-                    obj->data_[i] = stream->data_[i];
-                }
-
-                obj->ready_ = true;
-            }
-
-            static void i2c_data_updated(Stream *stream, void *token) {
-                auto *obj = reinterpret_cast<self_type *>(token);
-                obj->ready_ = true;
-            }
+        enum ds3231_request {
+            //
+            unknown,
+            reg_seconds_address_assigment_read,
+            reg_data_fetch,
+            reg_data_update
         };
 
-        template<class Stream>
-        void fetch(Stream *stream) {
-            ready_ = false;
+        static constexpr uint8_t data_size = static_cast<uint8_t>(register_address::temp_lsb) + 1;
 
-            stream->callback = &ds3231_i2c_callback<Stream>::address_assigned;
-            stream->token = this;
-            stream->write(Address).value(static_cast<uint8_t>(register_address::seconds));
-            Stream::i2c::transmit(stream);
+        ds3231() = default;
+        explicit ds3231(uint8_t addr)
+            : address_(addr) {}
+
+        void fetch(zoal::periph::i2c_request &request) {
+            request.initiator = this;
+            request.token = reg_seconds_address_assigment_read;
+            request.write(address_, &reg_addr, &reg_addr + sizeof(reg_addr));
         }
 
-        template<class Stream>
-        void update(Stream *stream) {
-            ready_ = false;
+        void update(zoal::periph::i2c_request &request) {
+            request.initiator = this;
+            request.token = reg_data_update;
+            request.write(address_, data_, data_ + sizeof(data_));
+        }
 
-            stream->callback = &ds3231_i2c_callback<Stream>::i2c_data_updated;
-            stream->token = this;
-            stream->write(Address).value(static_cast<uint8_t>(register_address::seconds));
-            for (uint8_t i = 0; i < static_cast<uint8_t>(register_address::temp_lsb); i++) {
-                stream->value(data_[i]);
+        zoal::periph::i2c_request_completion_result complete_request(zoal::periph::i2c_request &request) {
+            if (request.initiator != this || request.result != zoal::periph::i2c_result::ok) {
+                return zoal::periph::i2c_request_completion_result::ignored;
             }
 
-            Stream::i2c::transmit(stream);
+            switch (request.token) {
+            case reg_seconds_address_assigment_read:
+                request.token = reg_data_fetch;
+                request.read(address_, data_, data_ + sizeof(data_));
+                return zoal::periph::i2c_request_completion_result::new_request;
+            case reg_data_fetch:
+            case reg_data_update:
+                return zoal::periph::i2c_request_completion_result::finished;
+            default:
+                return zoal::periph::i2c_request_completion_result::ignored;
+            }
         }
 
-        zoal::data::date_time date_time() {
+        zoal::data::date_time date_time() const {
             auto &me = *this;
             zoal::data::date_time dt;
             dt.seconds = bcd2bin(me[register_address::seconds]);
             dt.minutes = bcd2bin(me[register_address::minutes]);
             dt.hours = bcd2bin(me[register_address::hours]);
 
-            dt.day = me[register_address::day];
+            dt.day = (zoal::data::day_of_week)me[register_address::day];
             dt.date = bcd2bin(me[register_address::date]);
-            dt.month = bcd2bin(me[register_address::month_century]);
-            dt.year = static_cast<uint16_t>(bcd2bin(me[register_address::year]) + 2000);
+            dt.month = bcd2bin(me[register_address::month_century] & month_mask);
+            dt.year = static_cast<uint16_t>(bcd2bin(me[register_address::year]) + 1900);
+            if ((me[register_address::month_century] & century_flag) == century_flag) {
+                dt.year += 100;
+            }
 
             return dt;
         }
@@ -106,36 +103,34 @@ namespace zoal { namespace ic {
             me[register_address::hours] = bin2bcd(dt.hours);
             me[register_address::day] = dt.day;
             me[register_address::date] = bin2bcd(dt.date);
-            me[register_address::month_century] = bin2bcd(dt.month);
-            me[register_address::year] = bin2bcd(static_cast<uint8_t>(dt.year - 2000));
+            me[register_address::month_century] = bin2bcd(dt.month) | (dt.year >= 2000 ? century_flag : 0);
+            me[register_address::year] = bin2bcd(static_cast<uint8_t>(dt.year - 1900));
+            if (dt.year > 2000) {
+                me[register_address::year] = bin2bcd(static_cast<uint8_t>(dt.year - 2000));
+            } else {
+                me[register_address::year] = bin2bcd(static_cast<uint8_t>(dt.year - 1900));
+            }
         }
 
         float temperature() {
-            uint8_t msb = data_[register_address::temp_msb];
-            uint8_t lsb = data_[register_address::temp_lsb];
-            return (float) msb + ((lsb >> 6u) * 0.25f);
+            auto &me = *this;
+            uint8_t msb = me[register_address::temp_msb];
+            uint8_t lsb = me[register_address::temp_lsb];
+            return static_cast<float>(msb) + static_cast<float>(lsb >> 6u) * 0.25f;
         }
 
-        uint8_t operator[](register_address addr) const {
+        inline uint8_t operator[](register_address addr) const {
             return data_[static_cast<uintptr_t>(addr)];
         }
 
-        volatile uint8_t &operator[](register_address addr) {
+        inline uint8_t &operator[](register_address addr) {
             return data_[static_cast<uintptr_t>(addr)];
-        }
-
-        void wait() const {
-            while (!ready_);
-        }
-
-        bool ready() const {
-            return ready_;
         }
 
     private:
-        volatile bool ready_{false};
-
-        volatile uint8_t data_[data_size]{0};
+        uint8_t address_{0x68};
+        uint8_t reg_addr{static_cast<uint8_t>(register_address::seconds)};
+        uint8_t data_[data_size]{0};
 
         static uint8_t bcd2bin(uint8_t value) {
             return static_cast<uint8_t>(value - 6 * (value >> 4u));

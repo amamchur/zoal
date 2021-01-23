@@ -63,7 +63,7 @@ function(add_avr_executable NAME MCU)
     set(DEVICE_KEY "avrdude_device_${MCU}")
     set(AVRDUDE_DEVICE ${${DEVICE_KEY}})
     add_custom_target(${NAME}-upload
-            COMMAND avrdude -p ${AVRDUDE_DEVICE} -c usbasp -Uflash:w:${NAME}:e
+            COMMAND avrdude -V -p ${AVRDUDE_DEVICE} -c usbasp -Uflash:w:${NAME}:e
             DEPENDS ${NAME}
             VERBATIM
             )

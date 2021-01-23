@@ -46,7 +46,13 @@ add_mcu_executable(ATmega328p atmega328p
         )
 target_compile_definitions(ATmega328p PRIVATE F_CPU=16000000UL)
 
-add_mcu_executable(ATmega32u4 atmega32u4 apps/atmega32u4.cpp)
+add_mcu_executable(ATmega32u4 atmega32u4
+        apps/atmega32u4.cpp
+        misc/terminal_input.cpp
+        ${TERMINAL_STATE_MACHINE_SRC}
+        ${TYPE_DETECTOR_STATE_MACHINE_SRC}
+        ${CMD_STATE_MACHINE_SRC}
+        )
 target_compile_definitions(ATmega32u4 PRIVATE F_CPU=16000000UL)
 
 add_mcu_executable(ATmega2560 atmega2560 apps/atmega2560.cpp)

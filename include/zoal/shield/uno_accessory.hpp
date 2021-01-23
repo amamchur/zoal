@@ -6,7 +6,7 @@
 #include <zoal/ic/ds3231.hpp>
 #include <zoal/ic/p9813.hpp>
 #include <zoal/ic/ssd1306.hpp>
-#include <zoal/periph/i2c_stream.hpp>
+#include <zoal/periph/i2c_request.hpp>
 #include <zoal/periph/software_spi.hpp>
 
 namespace zoal { namespace shield {

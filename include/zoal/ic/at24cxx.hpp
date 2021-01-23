@@ -1,4 +1,4 @@
-#pragma once
+Address#pragma once
 
 #ifndef ZOAL_IC_AT24C32_HPP
 #define ZOAL_IC_AT24C32_HPP

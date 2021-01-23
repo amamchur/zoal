@@ -24,12 +24,13 @@ TEST(avr_atmega_adc, mux) {
 
 TEST(avr_atmega_adc, cfg) {
     using namespace zoal::gpio;
+    using namespace zoal::periph;
     using namespace zoal::ct;
     using namespace zoal::tests;
 
     using mcu = zoal::mcu::atmega328p;
     using adc = mcu::adc_00;
-    using gpio_cfg = api::optimize<mcu::cfg::adc<adc>::apply>;
+    using gpio_cfg = api::optimize<mcu::cfg::adc<adc, adc_config<>>::apply>;
 
     cas_collector c;
     type_list_iterator<gpio_cfg>::for_each(c);

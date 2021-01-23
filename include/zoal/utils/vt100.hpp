@@ -44,10 +44,9 @@ namespace zoal { namespace utils { namespace vt100 {
     };
 
     // Reset terminal to initial state
-#if 0
     struct ris : public zoal::io::output_stream_functor<ris> {
         template<class T>
-        void write() {
+        void write(T &t) {
             t.send_byte('\033');
             t.send_byte('c');
         }
@@ -56,49 +55,33 @@ namespace zoal { namespace utils { namespace vt100 {
     // turn_off_character_attributes
     struct sgr0 : public zoal::io::output_stream_functor<sgr0> {
         template<class T>
-        void write() {
+        void write(T &t) {
             t.send_byte('\033');
             t.send_byte('[');
             t.send_byte('m');
         }
     };
 
+    struct ed2 : public zoal::io::output_stream_functor<ed2> {
+        template<class T>
+        void write(T &t) {
+            t.send_byte('\033');
+            t.send_byte('[');
+            t.send_byte('2');
+            t.send_byte('j');
+        }
+    };
+
     //  Clear entire line
     struct el2 : public zoal::io::output_stream_functor<el2> {
         template<class T>
-        void write() {
+        void write(T &t) {
             t.send_byte('\033');
             t.send_byte('[');
             t.send_byte('2');
             t.send_byte('k');
         }
     };
-#else
-    struct ed2 {
-        inline operator const char *() const {
-            return "\0332j";
-        }
-    };
-
-    struct ris {
-        inline operator const char *() const {
-            return "\033c";
-        }
-    };
-
-    // turn_off_character_attributes
-    struct sgr0 {
-        inline operator const char *() const {
-            return "\033[m";
-        }
-    };
-
-    struct el2 {
-        inline operator const char *() const {
-            return "\033[2K";
-        }
-    };
-#endif
 
     struct color : public zoal::io::output_stream_functor<color> {
         color(int f, int b)
@@ -109,15 +92,7 @@ namespace zoal { namespace utils { namespace vt100 {
             : foreground(c.foreground)
             , background(c.background) {}
 
-        color() {}
-
-        inline color f(uint8_t value) const {
-            return color(value, background);
-        }
-
-        inline color b(uint8_t value) const {
-            return color(foreground, value);
-        }
+        color() = default;
 
         template<class T>
         void write(T &t) {
@@ -143,7 +118,7 @@ namespace zoal { namespace utils { namespace vt100 {
 
     // ^[[<v>;<h>H
     struct cup : public zoal::io::output_stream_functor<cup> {
-        cup() {}
+        cup() = default;
 
         cup(int v, int h)
             : vert(v)
@@ -157,12 +132,12 @@ namespace zoal { namespace utils { namespace vt100 {
 
             auto p = buffer + sizeof(buffer) - 1;
             p = helper<T>::format(p, vert);
-            helper<T>::output(p);
+            helper<T>::output(t, p);
 
             t.send_byte(';');
             p = buffer + sizeof(buffer) - 1;
             p = helper<T>::format(p, hor);
-            helper<T>::output(p);
+            helper<T>::output(t, p);
 
             t.send_byte('H');
         }

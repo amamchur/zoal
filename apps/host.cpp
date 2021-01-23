@@ -1,11 +1,6 @@
+#include <cstring>
 #include <iostream>
 #include <string>
-
-#include <zoal/gpio/api.hpp>
-#include <zoal/mem/cas.hpp>
-#include <zoal/mcu/atmega2560.hpp>
-#include <zoal/ct/type_list.hpp>
-#include <zoal/ct/signature.hpp>
 
 using namespace std;
 

@@ -3,7 +3,7 @@
 #ifndef ZOAL_IO_OUTPUT_STREAM_HPP
 #define ZOAL_IO_OUTPUT_STREAM_HPP
 
-#include "../utils/defs.hpp"
+#include "../data/date_time.hpp"
 #include "stream.hpp"
 
 #include <math.h>
@@ -49,7 +49,7 @@ namespace zoal { namespace io {
         output_stream &operator<<(unsigned long value) {
             uint8_t buffer[32];
             uint8_t *ptr = buffer + sizeof(buffer);
-            ptr = format_number(ptr, value);
+            ptr = format_number(ptr, value, radix);
 
             auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
             transport.send_data(ptr, length);
@@ -73,7 +73,7 @@ namespace zoal { namespace io {
 
             uint8_t buffer[32];
             uint8_t *ptr = buffer + sizeof(buffer);
-            ptr = format_number(ptr, static_cast<uint32_t>(value));
+            ptr = format_number(ptr, static_cast<uint32_t>(value), radix);
 
             auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
             transport.send_data(ptr, length);
@@ -126,6 +126,19 @@ namespace zoal { namespace io {
             return *this << (double)value;
         }
 
+        output_stream &operator<<(const zoal::data::date_time &dt) {
+            char buffer[] = "0000.00.00 00:00:00";
+            uint8_t *p = reinterpret_cast<uint8_t *>(buffer);
+            format_number(p += 4, dt.year, 10);
+            format_number(p += 3, dt.month, 10);
+            format_number(p += 3, dt.date, 10);
+            format_number(p += 3, dt.hours, 10);
+            format_number(p += 3, dt.minutes, 10);
+            format_number(p + 3, dt.seconds, 10);
+            transport.send_data(buffer, sizeof(buffer) - 1);
+            return *this;
+        }
+
         template<uint8_t Value>
         output_stream &operator<<(const radix_value<Value> &) {
             this->radix = Value;
@@ -155,10 +168,10 @@ namespace zoal { namespace io {
             return *this;
         }
 
-        uint8_t *format_number(uint8_t *ptr, uint32_t value) {
+        uint8_t *format_number(uint8_t *ptr, uint32_t value, uint8_t rdx) {
             do {
-                auto v = static_cast<uint8_t>(value % radix);
-                value /= radix;
+                auto v = static_cast<uint8_t>(value % rdx);
+                value /= rdx;
                 v += v < 0xA ? 0x30 : 0x37; // To ASCII
                 *--ptr = v;
             } while (value > 0);
