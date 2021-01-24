@@ -92,7 +92,7 @@ TEST(ds3231, fetch_data_request) {
     ds3231.fetch(request);
 
     EXPECT_EQ(request.initiator, &ds3231);
-    EXPECT_EQ(request.address(), 0xD0);
+    EXPECT_EQ(request.address_rw(), 0xD0);
     EXPECT_EQ(*request.ptr, static_cast<uint8_t>(ra::seconds));
     EXPECT_EQ(request.end - request.ptr, 1);
 
@@ -108,7 +108,7 @@ TEST(ds3231, fetch_data_request) {
     EXPECT_EQ(res,  zoal::periph::i2c_request_completion_result::new_request);
 
     EXPECT_EQ(request.initiator, &ds3231);
-    EXPECT_EQ(request.address(), 0xD1);
+    EXPECT_EQ(request.address_rw(), 0xD1);
     EXPECT_EQ(*request.ptr, static_cast<uint8_t>(ra::seconds));
     EXPECT_EQ(request.end - request.ptr, 19);
 
@@ -144,7 +144,7 @@ TEST(ds3231, update_data_request) {
     uint8_t &ref = ds3231[ra::seconds];
     uint8_t *ptr = &ref;
     EXPECT_EQ(request.initiator, &ds3231);
-    EXPECT_EQ(request.address(), 0xD0);
+    EXPECT_EQ(request.address_rw(), 0xD0);
     EXPECT_EQ(request.ptr, ptr);
     EXPECT_EQ(request.end - request.ptr, 19);
 

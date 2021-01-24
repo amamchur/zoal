@@ -13,22 +13,25 @@ namespace zoal { namespace periph {
 
     class i2c_request {
     public:
+        i2c_request() = default;
+        i2c_request(const i2c_request &) = delete;
+
         void write(uint8_t address, uint8_t *s, uint8_t *e) {
-            address_rw = address << 1;
+            address_rw_ = address << 1;
             result = zoal::periph::i2c_result::pending;
             ptr = s;
             end = e;
         }
 
         void read(uint8_t address, uint8_t *s, uint8_t *e) {
-            address_rw = static_cast<uint8_t>(address << 1 | 1);
+            address_rw_ = static_cast<uint8_t>(address << 1 | 1);
             result = zoal::periph::i2c_result::pending;
             ptr = s;
             end = e;
         }
 
-        inline uint8_t address() const {
-            return address_rw;
+        inline uint8_t address_rw() const {
+            return address_rw_;
         }
 
         inline bool has_next() const {
@@ -36,15 +39,11 @@ namespace zoal { namespace periph {
         }
 
         inline bool request_next() const {
-            return ptr + 1 < end;
+            return ptr < end;
         }
 
         inline uint8_t dequeue() {
             return *ptr++;
-        }
-
-        inline void value(uint8_t value) {
-            *ptr++ = value;
         }
 
         inline void enqueue(uint8_t value) {
@@ -70,6 +69,7 @@ namespace zoal { namespace periph {
         }
 
         void reset() {
+            address_rw_ = 0;
             result = zoal::periph::i2c_result::idle;
             context = nullptr;
             initiator = nullptr;
@@ -85,7 +85,7 @@ namespace zoal { namespace periph {
         uint8_t *ptr{nullptr};
         uint8_t *end{nullptr};
 
-        uint8_t address_rw{0};
+        uint8_t address_rw_{0};
         volatile zoal::periph::i2c_result result{zoal::periph::i2c_result::idle};
     };
 
@@ -99,12 +99,11 @@ namespace zoal { namespace periph {
 
             auto result = h.complete_request(req);
             switch (result) {
-            case zoal::periph::i2c_request_completion_result::ignored:
-            case zoal::periph::i2c_request_completion_result::finished:
-                return result;
             case zoal::periph::i2c_request_completion_result::new_request:
                 I2Circuit::start();
                 break;
+            default:
+                return result;
             }
         } while (true);
     }

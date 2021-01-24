@@ -107,7 +107,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 break;
             case I2C_START:
             case I2C_REP_START:
-                TWDRx::ref() = request.address();
+                TWDRx::ref() = request.address_rw();
                 TWCRx::ref() = ACK;
                 break;
             case I2C_MT_SLA_ACK:

@@ -3,17 +3,24 @@
 
 namespace zoal { namespace gfx {
     template<class Graphics, class Font, int CharSpacing = 1>
-    class glyph_render {
+    class monospace_glyph_render {
     public:
-        using self_type = glyph_render<Graphics, Font, CharSpacing>;
+        using self_type = monospace_glyph_render<Graphics, Font, CharSpacing>;
         using pixel_type = typename Graphics::pixel_type;
 
-        explicit glyph_render(Graphics *graphics, const Font *font)
-                : graphics_(graphics), font_(font) {}
+        monospace_glyph_render(Graphics *graphics, const Font *font)
+            : graphics_(graphics)
+            , font_(font) {}
 
         void draw(const char *text, pixel_type fg) {
             while (*text) {
                 draw(*text++, fg);
+            }
+        }
+
+        void draw(const char *start, const char *end, pixel_type fg) {
+            while (start != end) {
+                draw(*start++, fg);
             }
         }
 

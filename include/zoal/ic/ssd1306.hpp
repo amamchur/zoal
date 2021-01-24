@@ -9,6 +9,7 @@
 #include <string.h>
 
 namespace zoal { namespace ic {
+    enum class cntr_flags : uint8_t { co_bit = 1 << 7, dc_bit = 1 << 6 };
 
     template<int Width, int Height, bool safe = true>
     class ssd1306_adapter {
@@ -127,6 +128,35 @@ namespace zoal { namespace ic {
         }
     };
 
+    enum class ssd1306_resolution { ssd1306_128x64, ssd1306_128x32, ssd1306_128x16 };
+
+    template<ssd1306_resolution Resolution>
+    class ssd1306_resolution_info {};
+
+    template<>
+    class ssd1306_resolution_info<ssd1306_resolution::ssd1306_128x64> {
+    public:
+        static constexpr uint8_t width = 128;
+        static constexpr uint8_t height = 64;
+        static constexpr size_t buffer_size = width * height / 8;
+    };
+
+    template<>
+    class ssd1306_resolution_info<ssd1306_resolution::ssd1306_128x32> {
+    public:
+        static constexpr uint8_t width = 128;
+        static constexpr uint8_t height = 32;
+        static constexpr size_t buffer_size = width * height / 8;
+    };
+
+    template<>
+    class ssd1306_resolution_info<ssd1306_resolution::ssd1306_128x16> {
+    public:
+        static constexpr uint8_t width = 128;
+        static constexpr uint8_t height = 16;
+        static constexpr size_t buffer_size = width * height / 8;
+    };
+
     template<class Tools, class IICircuit, class Reset, class SlaveAddressSelect, uint8_t Address = 0x3C>
     class ssd1306_interface_i2c {
     public:
@@ -162,90 +192,32 @@ namespace zoal { namespace ic {
         void command(uint8_t cmd) {
             request.initiator = this;
             request.token = 0;
-            reg_addr[0] = 0x00;
-            reg_addr[1] = cmd;
-            request.write(address, reg_addr, reg_addr + sizeof(reg_addr));
+            cmd_buffer[0] = 0x00;
+            cmd_buffer[1] = cmd;
+            request.write(address, cmd_buffer, cmd_buffer + 2);
             zoal::periph::process_i2c_request_sync<i2c>(request, *this);
         }
 
         zoal::periph::i2c_request_completion_result complete_request(zoal::periph::i2c_request &req) {
-            if (request.initiator != this || request.result != zoal::periph::i2c_result::ok) {
+            if (request.initiator != this) {
                 return zoal::periph::i2c_request_completion_result::ignored;
             }
 
             return zoal::periph::i2c_request_completion_result::finished;
         }
 
-        void data(uint8_t *graphic_buffer, size_t size) {
+        template<class B>
+        void data(B &buffer) {
             request.initiator = this;
             request.token = 0;
-            reg_addr[0] = 0x00;
-            reg_addr[1] = 0x40;
-            request.write(address, reg_addr, reg_addr + sizeof(reg_addr));
+            auto p = buffer.control_byte;
+            p[0] = 0x40;
+            request.write(address, p, p + sizeof(B));
             zoal::periph::process_i2c_request_sync<i2c>(request, *this);
         }
 
-//        void data(uint8_t *graphic_buffer, size_t size) {
-//            busy_ = true;
-//            buffer_ = graphic_buffer;
-//            buffer_pos_ = 0;
-//            buffer_size_ = size;
-//            send_next_data();
-//        }
-//
-//        void send_next_data() {
-//            if (buffer_pos_ >= buffer_size_) {
-//                busy_ = false;
-//                return;
-//            }
-//
-//            busy_ = true;
-//            stream_->callback = &chunk_sent;
-//            stream_->token = this;
-//            stream_->write(address).value(0x40);
-//
-//            auto count = stream_->copy(buffer_ + buffer_pos_, buffer_size_ - buffer_pos_);
-//            buffer_pos_ += count;
-//
-//            i2c::transmit(stream_);
-//        }
-//
-//        static void chunk_sent(stream_type *stream, void *token) {
-//            auto *obj = reinterpret_cast<self_type *>(token);
-//            obj->send_next_data();
-//        }
-
-        uint8_t reg_addr[2]{0};
+        uint8_t cmd_buffer[8]{0};
         zoal::periph::i2c_request &request;
-    };
-
-    enum class ssd1306_resolution { ssd1306_128x64, ssd1306_128x32, ssd1306_128x16 };
-
-    template<ssd1306_resolution Resolution>
-    class ssd1306_resolution_info {};
-
-    template<>
-    class ssd1306_resolution_info<ssd1306_resolution::ssd1306_128x64> {
-    public:
-        static constexpr uint8_t width = 128;
-        static constexpr uint8_t height = 64;
-        static constexpr size_t buffer_size = width * height / 8;
-    };
-
-    template<>
-    class ssd1306_resolution_info<ssd1306_resolution::ssd1306_128x32> {
-    public:
-        static constexpr uint8_t width = 128;
-        static constexpr uint8_t height = 32;
-        static constexpr size_t buffer_size = width * height / 8;
-    };
-
-    template<>
-    class ssd1306_resolution_info<ssd1306_resolution::ssd1306_128x16> {
-    public:
-        static constexpr uint8_t width = 128;
-        static constexpr uint8_t height = 16;
-        static constexpr size_t buffer_size = width * height / 8;
     };
 
     template<ssd1306_resolution Resolution, class Interface>
@@ -254,6 +226,11 @@ namespace zoal { namespace ic {
         static constexpr ssd1306_resolution resolution = Resolution;
         using iface = Interface;
         using resolution_info = ssd1306_resolution_info<resolution>;
+
+        struct buffer_type {
+            uint8_t control_byte[1];
+            uint8_t canvas[resolution_info::buffer_size];
+        };
 
         enum : uint8_t {
             set_contrast = 0x81,
@@ -313,7 +290,7 @@ namespace zoal { namespace ic {
             iface_.command(display_on); //--turn on oled panel
         }
 
-        void display(uint8_t *graphic_buffer, size_t size = resolution_info::buffer_size) {
+        void display_sync(buffer_type &buffer_type) {
             iface_.command(set_column_address); // 0x21 COMMAND
             iface_.command(0); // Column start address
             iface_.command(resolution_info::width - 1); // Column end address
@@ -322,10 +299,13 @@ namespace zoal { namespace ic {
             iface_.command(0); // Start Page address
             iface_.command((resolution_info::height / 8) - 1); // End Page address
 
-            iface_.data(graphic_buffer, size);
+            iface_.data(buffer_type);
         }
 
-    private:
+        zoal::periph::i2c_request_completion_result complete_request(zoal::periph::i2c_request &req) {
+            return iface_.complete_request(req);
+        }
+
         iface iface_;
     };
 }}

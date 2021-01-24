@@ -22,17 +22,18 @@ function(add_zoal_tests)
             tests/gpio/pin_control.cpp
             tests/gpio/stub_classes.cpp
             tests/ic/ds3231.cpp
-            tests/ic/lm75.cpp
             tests/ic/hd44780.cpp
+            tests/ic/lm75.cpp
             tests/io/analog_keypad.cpp
             tests/io/button_machine.cpp
             tests/io/output_stream.cpp
             tests/mem/clear_and_set.cpp
+            tests/periph/i2c_request.cpp
+            tests/test_utils/address_cast.cpp
+            tests/test_utils/mem_transport.cpp
+            tests/test_utils/ms_counter.cpp
             tests/utils/i2c_scanner.cpp
             tests/utils/vt100.cpp
-            tests/test_utils/address_cast.cpp
-            tests/test_utils/ms_counter.cpp
-            tests/test_utils/mem_transport.cpp
             )
     add_executable(zoal_tests ${TEST_CASES_FILES})
     target_compile_definitions(zoal_tests PRIVATE -DZOAL_COVERAGE)

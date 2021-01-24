@@ -48,50 +48,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/include/zoal/parse/type_parser.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/ic/ds3231.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/ic/lm75.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_utils/mem_transport.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_utils/mem_transport.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/utils/vt100.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/data/font_5x8.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/data/font_5x8.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/periph/i2c_request.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_utils/process_sync_i2c_mock.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ToolchainAVR.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainAVR.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ToolchainHost.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainHost.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/stream.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/stream.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/data/date_time.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/data/date_time.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/at24cxx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/at24cxx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ds3231.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/ds3231.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/lm75.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/lm75.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/gfx/glyph_render.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gfx/monospace_glyph_render.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/ic/ssd1306.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/ssd1306.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/parser/number.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/parser/ragel_scanner.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/parse/ragel_scanner.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/parser/result.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/parse/result.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/periph/adc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/adc.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/periph/i2c_stream.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/periph/spi.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/spi.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/utils/i2c_scanner.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/i2c_scanner.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/utils/vt100.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/vt100.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/cmd_line_parser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/cmd_line_parser.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_input.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_input.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_machine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_machine.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/type_detector.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/type_detector.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/type_detector.rl" beforeDir="false" afterPath="$PROJECT_DIR$/misc/type_detector.rl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/arch/avr/atmega/adc.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/arch/avr/atmega/adc.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/io/output_stream.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/io/output_stream.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_utils/cas_collector.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/cas_collector.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/ds3231.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/ds3231.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/lm75.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/lm75.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,6 +138,11 @@
     </key>
   </component>
   <component name="RunManager" selected="Google Test.zoal_tests">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -333,11 +309,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
@@ -477,7 +448,9 @@
       <workItem from="1611301017801" duration="7758000" />
       <workItem from="1611310887661" duration="43757000" />
       <workItem from="1611392443789" duration="24787000" />
-      <workItem from="1611419405161" duration="14590000" />
+      <workItem from="1611419405161" duration="14917000" />
+      <workItem from="1611437241903" duration="4198000" />
+      <workItem from="1611474636619" duration="10180000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -605,7 +578,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611334412542</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="RE-factor I2C communication approach">
+      <created>1611434527336</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1611434527336</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -652,7 +632,8 @@
     <MESSAGE value="Add additional unit tests" />
     <MESSAGE value="Remove unused files + add additional tests" />
     <MESSAGE value="Fix AVR USART metadata generation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix AVR USART metadata generation" />
+    <MESSAGE value="RE-factor I2C communication approach" />
+    <option name="LAST_COMMIT_MESSAGE" value="RE-factor I2C communication approach" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -14,7 +14,7 @@ TEST(lm75, fetch_data_request) {
     lm75.fetch(request);
 
     EXPECT_EQ(request.initiator, &lm75);
-    EXPECT_EQ(request.address(), 0x90);
+    EXPECT_EQ(request.address_rw(), 0x90);
     EXPECT_EQ(*request.ptr, 0);
     EXPECT_EQ(request.end - request.ptr, 1);
 
@@ -30,7 +30,7 @@ TEST(lm75, fetch_data_request) {
     EXPECT_EQ(res,  zoal::periph::i2c_request_completion_result::new_request);
 
     EXPECT_EQ(request.initiator, &lm75);
-    EXPECT_EQ(request.address(), 0x91);
+    EXPECT_EQ(request.address_rw(), 0x91);
     EXPECT_EQ(*request.ptr, 0);
     EXPECT_EQ(request.end - request.ptr, 6);
 

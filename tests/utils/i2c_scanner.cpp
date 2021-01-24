@@ -11,7 +11,7 @@ TEST(i2c_scanner, scan_request) {
     scanner.scan(request);
 
     EXPECT_EQ(request.initiator, &scanner);
-    EXPECT_EQ(request.address(), 0x2);
+    EXPECT_EQ(request.address_rw(), 0x2);
     EXPECT_EQ(request.ptr, nullptr);
     EXPECT_EQ(request.end - request.ptr, 0);
 

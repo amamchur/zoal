@@ -1,12 +1,15 @@
 #include "../misc/cmd_line_parser.hpp"
 #include "../misc/terminal_input.hpp"
 #include "../misc/type_detector.hpp"
+#include "./data/font_5x8.hpp"
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_leonardo.hpp>
+#include <zoal/gfx/monospace_glyph_render.hpp>
+#include <zoal/gfx/renderer.hpp>
 #include <zoal/ic/ds3231.hpp>
 #include <zoal/ic/lm75.hpp>
 #include <zoal/ic/ssd1306.hpp>
@@ -29,7 +32,7 @@ using delay = zoal::utils::delay<F_CPU, counter>;
 using tools = zoal::utils::tool_set<mcu, F_CPU, counter, void>;
 
 zoal::data::ring_buffer<uint8_t, 64> rx_buffer;
-using usart_tx_transport = zoal::utils::usart_transmitter<usart, 256, zoal::utils::interrupts_off>;
+using usart_tx_transport = zoal::utils::usart_transmitter<usart, 64, zoal::utils::interrupts_off>;
 using tx_stream_type = zoal::io::output_stream<usart_tx_transport>;
 
 usart_tx_transport transport;
@@ -73,17 +76,14 @@ void initialize_hardware() {
     api::optimize<api::enable<usart, timer, i2c>>();
 
     zoal::utils::interrupts::on();
-
-    display.init();
 }
 
 void print_temp() {
-    stream << "Temp: " << temp_sensor.temperature() << " C\r\n";
+    stream << temp_sensor.temperature() << " C\r\n";
 }
 
 void print_date_time() {
-    auto dt = clock.date_time();
-    stream << "Data time: " << dt << "\r\n";
+    stream << clock.date_time() << "\r\n";
 }
 
 void update_date_time() {
@@ -106,7 +106,6 @@ void led_off(void *) {
 
 void request_temp(void *) {
     if (request.processing()) {
-        stream << "request_temp request.processing: " << (int)request.result << "\r\n";
         return;
     }
 
@@ -117,7 +116,6 @@ void request_temp(void *) {
 
 void request_time(void *) {
     if (request.processing()) {
-        stream << "request_time request.processing: " << (int)request.result << "\r\n";
         return;
     }
 
@@ -154,16 +152,57 @@ const char help_msg[] PROGMEM = "ZOAL ATmega32u4 Demo Application\r\n"
                                 "\ttemp\t\tdisplay temperature\r\n"
                                 "\ttime\t\tdisplay date time\r\n"
                                 "\tset-time\tset date time\r\n"
-                                "\ti2c-scan\tscan i2c devises\r\n";
+                                "\ti2c-scan\tscan i2c devises\r\n"
+                                "\toled\tscan i2c devises\r\n";
 const char start_blink_cmd[] PROGMEM = "start-blink";
 const char stop_blink_cmd[] PROGMEM = "stop-blink";
 const char temp_cmd[] PROGMEM = "temp";
 const char time_cmd[] PROGMEM = "time";
 const char set_time_cmd[] PROGMEM = "set-time";
 const char i2c_scan_cmd[] PROGMEM = "i2c-scan";
+const char oled_render_cmd[] PROGMEM = "oled";
 
 void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
     usart_tx_transport::send_data(s, e - s);
+}
+
+template<size_t Width = 5, size_t Height = 8>
+class progmem_bitmap_font {
+public:
+    using self_type = progmem_bitmap_font<Width, Height>;
+
+    static constexpr size_t width = Width;
+    static constexpr size_t height = Height;
+
+    static const self_type *from_memory(const void *buffer) {
+        return reinterpret_cast<const self_type *>(buffer);
+    }
+
+    uint16_t glyph_columns(char c, uint8_t index) const {
+        return pgm_read_byte(data + c * width + index);
+    }
+
+    uint8_t data[0];
+};
+
+using adapter = zoal::ic::ssd1306_adapter_0<128, 64>;
+using graphics = zoal::gfx::renderer<uint8_t, adapter>;
+ssd1306_type::buffer_type ssd1306_buffer;
+
+static void oled_render(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
+    p->callback(&command_line_parser::empty_callback);
+    if (e == zoal::misc::command_line_event::line_end) {
+        return;
+    }
+
+    stream << "OLED render\r\n";
+
+    auto f = progmem_bitmap_font<>::from_memory(font_5x8);
+    auto g = graphics::from_memory(ssd1306_buffer.canvas);
+    zoal::gfx::monospace_glyph_render<graphics, progmem_bitmap_font<>> tl(g, f);
+    g->clear(0);
+    tl.position(0, 8).draw(p->token_start(), p->token_end(), 1);
+    display.display_sync(ssd1306_buffer);
 }
 
 static void parser_time(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
@@ -225,6 +264,10 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
         scan_i2c();
     }
 
+    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(oled_render_cmd), ts, te)) {
+        p->callback(&oled_render);
+    }
+
     terminal.sync();
 }
 
@@ -238,13 +281,6 @@ void input_callback(const zoal::misc::terminal_input *, const char *s, const cha
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
 
-#include <zoal/gfx/glyph_render.hpp>
-#include <zoal/gfx/renderer.hpp>
-
-uint8_t graphic_buffer[ssd1306_type::resolution_info::buffer_size];
-using adapter = zoal::ic::ssd1306_adapter_0<128, 64>;
-using graphics = zoal::gfx::renderer<uint8_t, adapter>;
-
 int main() {
     initialize_hardware();
 
@@ -256,9 +292,7 @@ int main() {
     stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
     terminal.sync();
 
-    auto g = graphics::from_memory(graphic_buffer);
-    g->fill_circle(50, 50, 16, 1);
-    display.display(graphic_buffer, sizeof(graphic_buffer));
+    display.init();
 
     while (true) {
         uint8_t rx_byte = 0;
