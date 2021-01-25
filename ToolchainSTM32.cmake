@@ -50,7 +50,7 @@ function(add_mcu_executable NAME MCU)
         get_filename_component(ARM_FLASH_LD_ABS ${ARM_FLASH_LD} ABSOLUTE)
         target_link_options(${NAME} PUBLIC
                 -T${ARM_FLASH_LD_ABS}
-                -Wl,-Map,"${NAME}.map"
+                -Wl,-Map,${NAME}.map
                 -Wl,--gc-sections,--print-memory-usage
                 ${ARM_COMMON_FLAGS})
 

@@ -28,9 +28,8 @@ TEST(output_stream, output_uint) {
     zoal::io::output_stream<mem_transport> stream(mt);
     stream << static_cast<uint8_t>(10) << " ";
     stream << static_cast<uint16_t>(20) << " ";
-    stream << static_cast<uint32_t>(30) << " ";
-    stream << static_cast<uint64_t>(40);
-    EXPECT_STREQ(buffer, "10 20 30 40");
+    stream << static_cast<uint32_t>(30);
+    EXPECT_STREQ(buffer, "10 20 30");
 }
 
 TEST(output_stream, output_uint_hex) {
@@ -40,9 +39,8 @@ TEST(output_stream, output_uint_hex) {
     stream << zoal::io::hex;
     stream << static_cast<uint8_t>(10) << " ";
     stream << static_cast<uint16_t>(20) << " ";
-    stream << static_cast<uint32_t>(30) << " ";
-    stream << static_cast<uint64_t>(40);
-    EXPECT_STREQ(buffer, "A 14 1E 28");
+    stream << static_cast<uint32_t>(30);
+    EXPECT_STREQ(buffer, "A 14 1E");
 }
 
 TEST(output_stream, output_int) {
@@ -51,9 +49,8 @@ TEST(output_stream, output_int) {
     zoal::io::output_stream<mem_transport> stream(mt);
     stream << static_cast<int8_t>(10) << " " << static_cast<int8_t>(-10) << " ";
     stream << static_cast<int16_t>(20) << " " << static_cast<int16_t>(-20) << " ";
-    stream << static_cast<int32_t>(30) << " " << static_cast<int32_t>(-30) << " ";
-    stream << static_cast<int64_t>(40) << " " << static_cast<int64_t>(-40);
-    EXPECT_STREQ(buffer, "10 -10 20 -20 30 -30 40 -40");
+    stream << static_cast<int32_t>(30) << " " << static_cast<int32_t>(-30);
+    EXPECT_STREQ(buffer, "10 -10 20 -20 30 -30");
 }
 
 TEST(output_stream, output_double) {

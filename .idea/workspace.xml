@@ -48,21 +48,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/apps/data/font_5x8.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/data/font_5x8.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/periph/i2c_request.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_utils/process_sync_i2c_mock.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ToolchainHost.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainHost.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/gfx/glyph_render.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gfx/monospace_glyph_render.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ssd1306.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/ssd1306.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/ic/ds3231.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/ds3231.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/ic/lm75.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/lm75.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ToolchainSTM32.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainSTM32.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/cfg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/io/output_stream.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/io/output_stream.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +75,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug Host" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug STM32" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
@@ -137,7 +127,7 @@
       <recent name="$PROJECT_DIR$/tests/mem" />
     </key>
   </component>
-  <component name="RunManager" selected="Google Test.zoal_tests">
+  <component name="RunManager" selected="CMake Application.All">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
@@ -274,11 +264,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -307,6 +292,11 @@
     <configuration name="stm32f303_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_nucleo" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_nucleo">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
@@ -451,6 +441,8 @@
       <workItem from="1611419405161" duration="14917000" />
       <workItem from="1611437241903" duration="4198000" />
       <workItem from="1611474636619" duration="10180000" />
+      <workItem from="1611519070090" duration="30000" />
+      <workItem from="1611532532314" duration="931000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -605,6 +597,11 @@
     <option name="TAB_STATES">
       <map>
         <entry key="1">
+          <value>
+            <State />
+          </value>
+        </entry>
+        <entry key="MAIN">
           <value>
             <State />
           </value>

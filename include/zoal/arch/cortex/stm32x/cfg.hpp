@@ -25,7 +25,6 @@ namespace zoal { namespace arch { namespace stm32x {
     public:
         using mcu = Microcontroller;
         using api = typename mcu::api;
-        static constexpr auto mcu_frequency = mcu::frequency;
 
         template<class U, class Cfg>
         class usart {
