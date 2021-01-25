@@ -47,12 +47,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ToolchainSTM32.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainSTM32.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/cfg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/io/output_stream.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/io/output_stream.cpp" afterDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fix compile errors on Windows GCC compilers.">
+      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +71,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug STM32" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release AVR" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
@@ -127,7 +123,7 @@
       <recent name="$PROJECT_DIR$/tests/mem" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.All">
+  <component name="RunManager" selected="CMake Application.host">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
@@ -442,7 +438,7 @@
       <workItem from="1611437241903" duration="4198000" />
       <workItem from="1611474636619" duration="10180000" />
       <workItem from="1611519070090" duration="30000" />
-      <workItem from="1611532532314" duration="931000" />
+      <workItem from="1611532532314" duration="1587000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -577,7 +573,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611434527336</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Fix compile errors on Windows GCC compilers.">
+      <created>1611533644512</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1611533644512</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -630,7 +633,8 @@
     <MESSAGE value="Remove unused files + add additional tests" />
     <MESSAGE value="Fix AVR USART metadata generation" />
     <MESSAGE value="RE-factor I2C communication approach" />
-    <option name="LAST_COMMIT_MESSAGE" value="RE-factor I2C communication approach" />
+    <MESSAGE value="Fix compile errors on Windows GCC compilers." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix compile errors on Windows GCC compilers." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
