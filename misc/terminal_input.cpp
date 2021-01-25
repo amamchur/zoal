@@ -84,7 +84,11 @@ namespace zoal { namespace misc {
         *cursor_ = ch;
         cursor_++;
         end_++;
-        sync();
+        if (cursor_ == end_) {
+            vt100_callback_(this, cursor_ - 1, cursor_);
+        } else {
+            sync();
+        }
     }
 
     void terminal_input::do_backspace() {
