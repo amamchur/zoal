@@ -6,7 +6,6 @@
 #include <zoal/periph/software_spi.hpp>
 #include <zoal/utils/helpers.hpp>
 #include <zoal/utils/ms_counter.hpp>
-#include <zoal/utils/tool_set.hpp>
 
 enum : uint8_t
 {

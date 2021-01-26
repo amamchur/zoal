@@ -1,20 +1,8 @@
-#include "../misc/max72xx.hpp"
 #include "templates/blink.hpp"
 #include "templates/compile_check.hpp"
 #include "templates/ir_remove.hpp"
-#include "templates/max72xx.hpp"
-#include "templates/multi_function_shield.hpp"
 #include "templates/neo_pixel.hpp"
-#include "templates/tm1637.hpp"
-#include "templates/uno_lcd_shield.hpp"
-
-#include <zoal/io/analog_keypad.hpp>
-#include <zoal/io/button.hpp>
-#include <zoal/io/ir_remote_receiver.hpp>
-#include <zoal/io/rotary_encoder.hpp>
 #include <zoal/mcu/attiny2313a.hpp>
-#include <zoal/periph/software_spi.hpp>
-#include <zoal/shield/uno_lcd.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>

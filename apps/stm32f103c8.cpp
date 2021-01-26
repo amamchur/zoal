@@ -4,10 +4,7 @@
 
 #include <zoal/io/button.hpp>
 #include <zoal/mcu/stm32f103c8tx.hpp>
-#include <zoal/utils/cmsis_os2/delay.hpp>
-#include <zoal/utils/cmsis_os2/tool_set.hpp>
 #include <zoal/utils/logger.hpp>
-#include <zoal/utils/vt100.hpp>
 
 using mcu = zoal::mcu::stm32f103c8tx;
 using usart_01 = mcu::usart_01;
@@ -40,7 +37,7 @@ extern "C" void zoal_init() {
         >();
 
     api::optimize<api::enable<usart_01>>();
-//    usart_01::enable_rx();
+    //    usart_01::enable_rx();
 
     NVIC_EnableIRQ(USART1_IRQn);
 
@@ -55,5 +52,4 @@ extern "C" [[noreturn]] __unused void zoal_default_thread(void *) {
     }
 }
 
-extern "C" void USART1_IRQHandler() {
-}
+extern "C" void USART1_IRQHandler() {}

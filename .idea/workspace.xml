@@ -47,31 +47,17 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Add invokaction manager draft">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ToolchainHost.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainHost.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny13.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny13.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/attiny2313.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny2313.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/attiny85.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny85.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/adxl345.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/adxl345.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ds3231.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/ds3231.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/lm75.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/lm75.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ssd1306.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/ssd1306.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/utils/i2c_scanner.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/i2c_scanner.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/utils/ms_counter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/ms_counter.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_input.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_input.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/ic/ds3231.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/ds3231.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/ic/lm75.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/lm75.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/periph/i2c_request.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/periph/i2c_request.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_utils/process_sync_i2c_mock.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/process_sync_i2c_mock.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/at24cxx.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ic74hc595.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/max72xx.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/p9813.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/st7920.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/tm1637.hpp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,7 +132,7 @@
       <recent name="$PROJECT_DIR$/tests/mem" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.All">
+  <component name="RunManager" selected="CMake Application.ATmega32u4">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
@@ -612,7 +598,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611534197824</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Add I2C request dispatcher">
+      <created>1611692382848</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1611692382848</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -667,7 +660,8 @@
     <MESSAGE value="RE-factor I2C communication approach" />
     <MESSAGE value="Fix compile errors on Windows GCC compilers." />
     <MESSAGE value="Add invokaction manager draft" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add invokaction manager draft" />
+    <MESSAGE value="Add I2C request dispatcher" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add I2C request dispatcher" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
