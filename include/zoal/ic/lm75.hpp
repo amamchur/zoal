@@ -1,45 +1,32 @@
 #ifndef ZOAL_IC_LM75_HPP
 #define ZOAL_IC_LM75_HPP
 
+#include "../periph/i2c_device.hpp"
 #include "../periph/i2c_request.hpp"
 
 namespace zoal { namespace ic {
-    class lm75 {
+    class lm75 : public zoal::periph::i2c_device {
     public:
-        enum lm75_request {
-            //
-            unknown,
-            reg_temp_address_assigment,
-            reg_temp_data_fetch
-        };
-
         enum class register_address : uint8_t { temperature = 0x00, configuration = 0x01, t_hyst = 0x02, t_os = 0x03 };
 
-        lm75() = default;
-        explicit lm75(uint8_t addr)
+        explicit lm75(uint8_t addr = 0x48)
             : address_(addr) {}
 
-        void fetch(zoal::periph::i2c_request &request) {
-            request.initiator = this;
-            request.token = reg_temp_address_assigment;
-            request.write(address_, &reg_addr, &reg_addr + sizeof(reg_addr));
-        }
+        template<class Dispatcher>
+        typename Dispatcher::finisher_type fetch(Dispatcher &disp) {
+            auto notify_client = [](Dispatcher &dispatcher) { dispatcher.finish_sequence(); };
+            auto address_assigned = [this, notify_client](Dispatcher &dispatcher) {
+                auto req = dispatcher.acquire_request();
+                req->read(address_, this->data_, this->data_ + sizeof(this->data_));
 
-        zoal::periph::i2c_request_completion_result complete_request(zoal::periph::i2c_request &request) {
-            if (request.initiator != this || request.result != zoal::periph::i2c_result::ok) {
-                return zoal::periph::i2c_request_completion_result::ignored;
-            }
+                next_sequence(dispatcher, notify_client);
+            };
 
-            switch (request.token) {
-            case reg_temp_address_assigment:
-                request.token = reg_temp_data_fetch;
-                request.read(address_, data_, data_ + sizeof(data_));
-                return zoal::periph::i2c_request_completion_result::new_request;
-            case reg_temp_data_fetch:
-                return zoal::periph::i2c_request_completion_result::finished;
-            }
+            auto req = disp.acquire_request();
+            req->write(address_, &reg_addr, &reg_addr + sizeof(reg_addr));
+            next_sequence(disp, address_assigned);
 
-            return zoal::periph::i2c_request_completion_result::ignored;
+            return disp.make_finisher();
         }
 
         float temperature() {
@@ -53,7 +40,7 @@ namespace zoal { namespace ic {
             return result;
         }
 
-        uint8_t address_{0x48};
+        uint8_t address_{0};
         uint8_t reg_addr{static_cast<uint8_t>(register_address::temperature)};
         uint8_t data_[6]{0};
     };

@@ -15,14 +15,11 @@ TEST(i2c_request, default_values) {
     EXPECT_FALSE(request.processing());
     EXPECT_FALSE(request.finished());
 
-    EXPECT_EQ(request.initiator, nullptr);
-    EXPECT_EQ(request.token, 0);
-    EXPECT_EQ(request.context, nullptr);
     EXPECT_EQ(request.ptr, nullptr);
     EXPECT_EQ(request.end, nullptr);
 
-    auto r = request.result;
-    EXPECT_EQ(r, zoal::periph::i2c_result::idle);
+    auto r = request.status;
+    EXPECT_EQ(r, zoal::periph::i2c_request_status::idle);
 }
 
 TEST(i2c_request, write_data) {
@@ -37,14 +34,11 @@ TEST(i2c_request, write_data) {
     EXPECT_TRUE(request.processing());
     EXPECT_FALSE(request.finished());
 
-    EXPECT_EQ(request.initiator, nullptr);
-    EXPECT_EQ(request.token, 0);
-    EXPECT_EQ(request.context, nullptr);
     EXPECT_EQ(request.ptr, buffer);
     EXPECT_EQ(request.end, buffer + sizeof(buffer));
 
-    auto r = request.result;
-    EXPECT_EQ(r, zoal::periph::i2c_result::pending);
+    auto r = request.status;
+    EXPECT_EQ(r, zoal::periph::i2c_request_status::pending);
 
     std::vector<uint8_t> data;
     while (request.has_next()) {
@@ -96,19 +90,19 @@ TEST(i2c_request, read_data) {
 TEST(i2c_request, finished_state) {
     zoal::periph::i2c_request request;
 
-    request.result = zoal::periph::i2c_result::idle;
+    request.status = zoal::periph::i2c_request_status::idle;
     EXPECT_FALSE(request.finished());
 
-    request.result = zoal::periph::i2c_result::pending;
+    request.status = zoal::periph::i2c_request_status::pending;
     EXPECT_FALSE(request.finished());
 
-    request.result = zoal::periph::i2c_result::ok;
+    request.status = zoal::periph::i2c_request_status::finished;
     EXPECT_TRUE(request.finished());
 
-    request.result = zoal::periph::i2c_result::end_of_stream;
+    request.status = zoal::periph::i2c_request_status::finished_eos;
     EXPECT_TRUE(request.finished());
 
-    request.result = zoal::periph::i2c_result::error;
+    request.status = zoal::periph::i2c_request_status::failed;
     EXPECT_TRUE(request.finished());
 }
 
@@ -124,9 +118,6 @@ TEST(i2c_request, reset) {
     EXPECT_TRUE(request.processing());
     EXPECT_FALSE(request.finished());
 
-    EXPECT_EQ(request.initiator, nullptr);
-    EXPECT_EQ(request.token, 0);
-    EXPECT_EQ(request.context, nullptr);
     EXPECT_EQ(request.ptr, buffer);
     EXPECT_EQ(request.end, buffer + sizeof(buffer));
 
@@ -138,34 +129,7 @@ TEST(i2c_request, reset) {
     EXPECT_FALSE(request.processing());
     EXPECT_FALSE(request.finished());
 
-    EXPECT_EQ(request.initiator, nullptr);
-    EXPECT_EQ(request.token, 0);
-    EXPECT_EQ(request.context, nullptr);
     EXPECT_EQ(request.ptr, nullptr);
     EXPECT_EQ(request.end, nullptr);
 }
 
-TEST(i2c_request, process_sync) {
-    zoal::ic::lm75 lm75;
-    using i2c_mock = zoal::tests::process_sync_i2c_mock<typeof(this)>;
-
-    auto &request = i2c_mock::request;
-    lm75.fetch(request);
-
-    auto result = process_i2c_request_sync<i2c_mock>(request, lm75);
-    EXPECT_EQ(result, i2c_request_completion_result::finished);
-
-    auto temp = lm75.temperature();
-    EXPECT_FLOAT_EQ(temp, -25.0f);
-
-    i2c_mock::join();
-
-    request.reset();
-    result = process_i2c_request_sync<i2c_mock>(request, lm75);
-    EXPECT_EQ(result, i2c_request_completion_result::ignored);
-
-    temp = lm75.temperature();
-    EXPECT_FLOAT_EQ(temp, -25.0f);
-
-    i2c_mock::join();
-}

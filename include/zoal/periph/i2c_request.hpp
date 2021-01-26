@@ -5,11 +5,7 @@
 #include <stdint.h>
 
 namespace zoal { namespace periph {
-    enum class i2c_error { none, bus_error, abort_lost };
-
-    enum class i2c_result { idle, pending, ok, end_of_stream, error };
-
-    enum class i2c_request_completion_result { ignored, finished, new_request };
+    enum class i2c_request_status { idle, pending, finished, finished_eos, failed };
 
     class i2c_request {
     public:
@@ -18,14 +14,14 @@ namespace zoal { namespace periph {
 
         void write(uint8_t address, uint8_t *s, uint8_t *e) {
             address_rw_ = address << 1;
-            result = zoal::periph::i2c_result::pending;
+            status = zoal::periph::i2c_request_status::pending;
             ptr = s;
             end = e;
         }
 
         void read(uint8_t address, uint8_t *s, uint8_t *e) {
             address_rw_ = static_cast<uint8_t>(address << 1 | 1);
-            result = zoal::periph::i2c_result::pending;
+            status = zoal::periph::i2c_request_status::pending;
             ptr = s;
             end = e;
         }
@@ -50,18 +46,18 @@ namespace zoal { namespace periph {
             *ptr++ = value;
         }
 
-        inline void complete(zoal::periph::i2c_result r) {
-            result = r;
+        inline void complete(zoal::periph::i2c_request_status r) {
+            status = r;
         }
 
         inline volatile bool processing() {
-            return result != zoal::periph::i2c_result::idle;
+            return status != zoal::periph::i2c_request_status::idle;
         }
 
         inline volatile bool finished() {
-            switch (result) {
-            case i2c_result::idle:
-            case i2c_result::pending:
+            switch (status) {
+            case i2c_request_status::idle:
+            case i2c_request_status::pending:
                 return false;
             default:
                 return true;
@@ -70,43 +66,16 @@ namespace zoal { namespace periph {
 
         void reset() {
             address_rw_ = 0;
-            result = zoal::periph::i2c_result::idle;
-            context = nullptr;
-            initiator = nullptr;
-            token = 0;
+            status = zoal::periph::i2c_request_status::idle;
             ptr = nullptr;
             end = nullptr;
         }
 
-        void *initiator{nullptr};
-        uintptr_t token{0};
-        void *context{nullptr};
-
         uint8_t *ptr{nullptr};
         uint8_t *end{nullptr};
-
         uint8_t address_rw_{0};
-        volatile zoal::periph::i2c_result result{zoal::periph::i2c_result::idle};
+        volatile zoal::periph::i2c_request_status status{zoal::periph::i2c_request_status::idle};
     };
-
-    template<class I2Circuit, class H>
-    zoal::periph::i2c_request_completion_result process_i2c_request_sync(zoal::periph::i2c_request &req, H &h) {
-        I2Circuit::start();
-        do {
-            if (!req.finished()) {
-                continue;
-            }
-
-            auto result = h.complete_request(req);
-            switch (result) {
-            case zoal::periph::i2c_request_completion_result::new_request:
-                I2Circuit::start();
-                break;
-            default:
-                return result;
-            }
-        } while (true);
-    }
 }}
 
 #endif

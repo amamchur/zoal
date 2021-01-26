@@ -103,7 +103,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             switch (status) {
             case I2C_BUS_ERROR:
                 TWCRx::ref() = STOP;
-                request.complete(zoal::periph::i2c_result::error);
+                request.complete(zoal::periph::i2c_request_status::failed);
                 break;
             case I2C_START:
             case I2C_REP_START:
@@ -117,12 +117,12 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                     TWCRx::ref() = ACK;
                 } else {
                     TWCRx::ref() = STOP;
-                    request.complete(zoal::periph::i2c_result::ok);
+                    request.complete(zoal::periph::i2c_request_status::finished);
                 }
                 break;
             case I2C_MT_ARB_LOST:
                 TWCRx::ref() = ACK;
-                request.complete(zoal::periph::i2c_result::error);
+                request.complete(zoal::periph::i2c_request_status::failed);
                 break;
             case I2C_MR_SLA_ACK:
                 TWCRx::ref() = request.request_next() ? ACK : NACK;
@@ -137,20 +137,20 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 break;
             case I2C_MT_SLA_NACK:
                 TWCRx::ref() = STOP;
-                request.complete(zoal::periph::i2c_result::error);
+                request.complete(zoal::periph::i2c_request_status::failed);
                 break;
             case I2C_MT_DATA_NACK:
                 TWCRx::ref() = STOP;
-                request.complete(zoal::periph::i2c_result::error);
+                request.complete(zoal::periph::i2c_request_status::failed);
                 break;
             case I2C_MR_SLA_NACK:
                 TWCRx::ref() = STOP;
-                request.complete(zoal::periph::i2c_result::error);
+                request.complete(zoal::periph::i2c_request_status::failed);
                 break;
             case I2C_MR_DATA_NACK:
                 request.enqueue(TWDRx::ref());
                 TWCRx::ref() = STOP;
-                request.complete(zoal::periph::i2c_result::ok);
+                request.complete(zoal::periph::i2c_request_status::finished);
                 break;
             default:
                 break;

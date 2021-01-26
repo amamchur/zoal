@@ -59,6 +59,7 @@ namespace zoal { namespace misc {
         handle_v100_fn handle_v100_fn_{nullptr};
 
         void cursor(char *c);
+        char *cursor() const;
         void insert_char(char ch);
         void do_backspace();
         void do_delete();

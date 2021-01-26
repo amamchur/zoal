@@ -1,6 +1,9 @@
+#include "../test_utils/i2c_mock.hpp"
+
 #include "gtest/gtest.h"
 #include <zoal/ic/lm75.hpp>
 #include <zoal/periph/i2c_request.hpp>
+#include <zoal/periph/i2c_request_dispatcher.hpp>
 
 TEST(lm75, default_values) {
     auto lm75 = zoal::ic::lm75();
@@ -9,42 +12,35 @@ TEST(lm75, default_values) {
 }
 
 TEST(lm75, fetch_data_request) {
-    zoal::periph::i2c_request request;
-    auto lm75 = zoal::ic::lm75();
-    lm75.fetch(request);
+    using dispatcher_type = zoal::periph::i2c_request_dispatcher<zoal::tests::i2c_mock<typeof(this)>, sizeof(void *) * 8>;
+    dispatcher_type dispatcher;
+    zoal::periph::i2c_request &request = dispatcher.request;
+    volatile bool finished = false;
 
-    EXPECT_EQ(request.initiator, &lm75);
+    auto lm75 = zoal::ic::lm75();
+    lm75.fetch(dispatcher)([&]() { finished = true; });
+
+    EXPECT_FALSE(finished);
     EXPECT_EQ(request.address_rw(), 0x90);
     EXPECT_EQ(*request.ptr, 0);
     EXPECT_EQ(request.end - request.ptr, 1);
 
-    auto res = lm75.complete_request(request);
-    EXPECT_EQ(res,  zoal::periph::i2c_request_completion_result::ignored);
+    dispatcher.handle();
+    request.status = zoal::periph::i2c_request_status::finished;
+    dispatcher.handle();
 
-    zoal::periph::i2c_request request2;
-    res = lm75.complete_request(request2);
-    EXPECT_EQ(res,  zoal::periph::i2c_request_completion_result::ignored);
-
-    request.result = zoal::periph::i2c_result::ok;
-    res = lm75.complete_request(request);
-    EXPECT_EQ(res,  zoal::periph::i2c_request_completion_result::new_request);
-
-    EXPECT_EQ(request.initiator, &lm75);
+    EXPECT_FALSE(finished);
     EXPECT_EQ(request.address_rw(), 0x91);
     EXPECT_EQ(*request.ptr, 0);
     EXPECT_EQ(request.end - request.ptr, 6);
 
-    request.result = zoal::periph::i2c_result::ok;
     // Assign -25 degrees
     request.ptr[0] = 0xE7; // msb
     request.ptr[1] = 0x00; // lsb
-    res = lm75.complete_request(request);
-    EXPECT_EQ(res,  zoal::periph::i2c_request_completion_result::finished);
+    request.status = zoal::periph::i2c_request_status::finished;
+    dispatcher.handle();
 
     auto temp = lm75.temperature();
+    EXPECT_TRUE(finished);
     EXPECT_FLOAT_EQ(temp, -25.0f);
-
-    request.token = 0xDEADBEEF;
-    res = lm75.complete_request(request);
-    EXPECT_EQ(res,  zoal::periph::i2c_request_completion_result::ignored);
 }

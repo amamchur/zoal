@@ -32,7 +32,7 @@ using spi = mcu::spi_00;
 using adc = mcu::adc_00;
 using i2c = mcu::i2c_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using counter_irq_handler = counter::handler<F_CPU, 64, timer>;
+using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
 
 zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 
@@ -397,7 +397,7 @@ int main() {
 #pragma clang diagnostic pop
 
 ISR(TIMER0_OVF_vect) {
-    counter_irq_handler::increment();
+    milliseconds += overflow_to_tick::step();
 }
 
 ISR(USART_RX_vect) {
@@ -406,10 +406,4 @@ ISR(USART_RX_vect) {
 
 ISR(USART_UDRE_vect) {
     usart::tx_handler([](uint8_t &value) { return usart_tx_transport::tx_buffer.pop_front(value); });
-}
-
-ISR(ADC_vect) {
-}
-
-ISR(TWI_vect) {
 }

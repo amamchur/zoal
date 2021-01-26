@@ -33,7 +33,7 @@ namespace zoal { namespace tests {
                     request.enqueue(0x00);
                 }
 
-                request.complete(zoal::periph::i2c_result::ok);
+                request.complete(zoal::periph::i2c_request_status::finished);
             });
         }
     };

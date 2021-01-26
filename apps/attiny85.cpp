@@ -1,8 +1,9 @@
+#include "../misc/max72xx.hpp"
+
 #include <avr/interrupt.h>
 #include <zoal/data/segment7.hpp>
-#include <zoal/periph/software_spi.hpp>
-#include <zoal/ic/max72xx.hpp>
 #include <zoal/mcu/attiny85.hpp>
+#include <zoal/periph/software_spi.hpp>
 #include <zoal/utils/helpers.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
@@ -25,7 +26,7 @@ using mcu = zoal::mcu::attiny85<F_CPU>;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
 using adc = mcu::adc_00;
-using ms_handler = counter::handler<F_CPU, 64, timer>;
+using ms_handler = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
 using sspi = zoal::periph::tx_software_spi<mcu::pb_03, mcu::pb_02>;
 using max7219 = zoal::ic::max72xx<sspi, mcu::pb_01>;
 
@@ -50,7 +51,7 @@ int main() {
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
     while (true) {
         if (update_flags & update_ms) {
-            ms_handler::increment();
+            milliseconds += ms_handler::step();
             update_flags &= ~update_ms;
         }
 

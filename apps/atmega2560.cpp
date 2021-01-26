@@ -11,7 +11,7 @@ volatile uint32_t milliseconds = 0;
 using mcu = zoal::pcb::mcu;
 using timer = typename mcu::timer_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using counter_irq_handler = typename counter::handler<F_CPU, 64, timer>;
+using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
 using delay = zoal::utils::delay<F_CPU, counter>;
 ;
 using usart = mcu::usart_00;
@@ -69,7 +69,7 @@ int main() {
 #pragma clang diagnostic pop
 
 ISR(TIMER0_OVF_vect) {
-    counter_irq_handler::increment();
+    milliseconds += overflow_to_tick::step();
 }
 
 ISR(USART0_RX_vect) {

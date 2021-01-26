@@ -48,10 +48,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Add invokaction manager draft">
-      <change afterPath="$PROJECT_DIR$/include/zoal/utils/new.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ToolchainHost.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainHost.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/attiny13.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny13.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/attiny2313.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny2313.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/attiny85.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny85.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/adxl345.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/adxl345.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ds3231.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/ds3231.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/lm75.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/lm75.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ssd1306.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/ssd1306.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/utils/i2c_scanner.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/i2c_scanner.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/utils/ms_counter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/ms_counter.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/misc/terminal_input.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/terminal_input.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/ds3231.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/ds3231.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/lm75.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/lm75.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/periph/i2c_request.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/periph/i2c_request.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_utils/process_sync_i2c_mock.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/process_sync_i2c_mock.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +146,12 @@
       <recent name="$PROJECT_DIR$/tests/mem" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.ATmega328p">
+  <component name="RunManager" selected="CMake Application.All">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -258,11 +283,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -291,6 +311,11 @@
     <configuration name="stm32f303_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_nucleo" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_nucleo">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">

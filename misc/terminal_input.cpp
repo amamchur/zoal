@@ -87,7 +87,9 @@ namespace zoal { namespace misc {
         if (cursor_ == end_) {
             vt100_callback_(this, cursor_ - 1, cursor_);
         } else {
-            sync();
+            send_cstr("\033[s");
+            vt100_callback_(this, cursor_ - 1, end_);
+            send_cstr("\033[u\033[1C");
         }
     }
 
@@ -102,7 +104,10 @@ namespace zoal { namespace misc {
 
         end_--;
         cursor_--;
-        sync();
+
+        send_cstr("\033[1D\033[K\033[s");
+        vt100_callback_(this, cursor_, end_);
+        send_cstr("\033[u");
     }
 
     void terminal_input::do_delete() {
@@ -115,7 +120,9 @@ namespace zoal { namespace misc {
         }
 
         end_--;
-        sync();
+        send_cstr("\033[K\033[s");
+        vt100_callback_(this, cursor_, end_);
+        send_cstr("\033[u");
     }
 
     const char *terminal_input::str_start() const {
@@ -173,8 +180,8 @@ namespace zoal { namespace misc {
 
     void terminal_input::send_cstr(const char *str) const {
         auto e = str;
-        while (*e++)
-            ;
+        do {
+        } while (*e++);
         vt100_callback_(this, str, e);
     }
 
@@ -209,5 +216,9 @@ namespace zoal { namespace misc {
 
         cursor(cursor_ + size_);
         sync();
+    }
+
+    char *terminal_input::cursor() const {
+        return cursor_;
     }
 }}

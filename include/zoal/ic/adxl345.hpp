@@ -2,14 +2,16 @@
 #define ZOAL_IC_ADXL345_HPP
 
 #include "../data/vector.hpp"
+#include "../periph/i2c_device.hpp"
 
 #include <stdint.h>
 
 namespace zoal { namespace ic {
-    template<uint8_t Address = 0x53>
-    class adxl345 {
+    class adxl345 : public zoal::periph::i2c_device {
     public:
-        using self_type = adxl345<Address>;
+        adxl345() = default;
+        explicit adxl345(uint8_t addr)
+            : address_(addr) {}
 
         enum class register_map : uint8_t {
             device_id = 0x00,
@@ -44,68 +46,57 @@ namespace zoal { namespace ic {
             fifo_status = 0x37
         };
 
-        volatile bool ready_{false};
-        volatile zoal::data::vector<int16_t> raw_vector;
+        zoal::data::vector<int16_t> raw_vector;
 
-        template<class Stream>
-        uint8_t read_device_id(Stream *stream) {
-            using i2c = typename Stream::i2c;
-            ready_ = false;
-            stream->callback = nullptr;
-            stream->token = this;
-            stream->write(Address).value(static_cast<uint8_t>(register_map::device_id));
-            i2c::transmit(stream);
-            i2c::wait();
+        template<class Dispatcher>
+        typename Dispatcher::finisher_type power_on(Dispatcher &disp) {
+            auto notify_client = [](Dispatcher &dispatcher) { dispatcher.finish_sequence(); };
+            auto turn_on = [this, notify_client](Dispatcher &dispatcher) {
+                buffer[0] = static_cast<uint8_t>(register_map::power_control);
+                buffer[1] = 8;
 
-            stream->read(Address, 1);
-            i2c::transmit(stream);
-            i2c::wait();
+                auto req = dispatcher.acquire_request();
+                req->write(address_, buffer, buffer + 2);
+                next_sequence(dispatcher, notify_client);
+            };
 
-            return stream->data_[0];
+            // Turm off first
+            buffer[0] = static_cast<uint8_t>(register_map::power_control);
+            buffer[1] = 0;
+
+            auto req = disp.acquire_request();
+            req->write(address_, buffer, buffer + 2);
+            next_sequence(disp, turn_on);
+            return disp.make_finisher();
         }
 
-        template<class Stream>
-        void read_axis(Stream *stream) {
-            using i2c = typename Stream::i2c;
-            ready_ = false;
-            stream->callback = nullptr;
-            stream->token = this;
-            stream->write(Address).value(static_cast<uint8_t>(register_map::x_axis_data_0));
-            i2c::transmit(stream);
-            i2c::wait();
+        template<class Dispatcher>
+        typename Dispatcher::finisher_type fecth_axis(Dispatcher &disp) {
+            auto parse_and_notify_client = [this](Dispatcher &dispatcher) {
+                raw_vector.x = static_cast<int16_t>(buffer[1]) << 8 | buffer[0];
+                raw_vector.y = static_cast<int16_t>(buffer[3]) << 8 | buffer[2];
+                raw_vector.z = static_cast<int16_t>(buffer[5]) << 8 | buffer[4];
+                dispatcher.finish_sequence();
+            };
 
-            stream->read(Address, 6);
-            i2c::transmit(stream);
-            i2c::wait();
+            auto read_axis = [this, parse_and_notify_client](Dispatcher &dispatcher) {
+                auto req = dispatcher.acquire_request();
+                req->read(address_, buffer, buffer + 6);
+                next_sequence(dispatcher, parse_and_notify_client);
+            };
 
-            raw_vector.x = static_cast<int16_t >(stream->data_[1]) << 8 | stream->data_[0];
-            raw_vector.y = static_cast<int16_t >(stream->data_[3]) << 8 | stream->data_[2];
-            raw_vector.z = static_cast<int16_t >(stream->data_[5]) << 8 | stream->data_[4];
+            // Assign x_axis_data_0 address
+            buffer[0] = static_cast<uint8_t>(register_map::x_axis_data_0);
+            buffer[1] = 0;
+
+            auto req = disp.acquire_request();
+            req->write(address_, buffer, buffer + 1);
+            next_sequence(disp, read_axis);
+            return disp.make_finisher();
         }
 
-        //        void fetch() {
-        //            ready = false;
-        //
-        //            I2C::wait();
-        //            I2C::stream().write(Address).value(static_cast<uint8_t>(register_map::device_id));
-        //            I2C::transmit(&i2c_address_assigned, this);
-        //        }
-
-        static void i2c_address_assigned(void *token) {
-            //            I2C::stream().read(Address, 1);
-            //            I2C::transmit(&i2c_data_fetched, token);
-        }
-
-        static void i2c_data_fetched(void *token) {
-            //            auto *cls = (self_type *) token;
-            //            auto &stream = I2C::stream();
-            //
-            //            for (uint8_t i = 0; i < cls->data_size; i++) {
-            //                cls->data[i] = stream.data[i];
-            //            }
-            //
-            //            cls->ready_ = true;
-        }
+        uint8_t address_{0x53};
+        uint8_t buffer[8];
     };
 }}
 

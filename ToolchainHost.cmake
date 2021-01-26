@@ -18,12 +18,14 @@ function(add_zoal_tests)
             tests/arch/avr/atmega/usart.cpp
             tests/ct/static_assertion.cpp
             tests/data/ring_buffer.cpp
+            tests/func/function.cpp
             tests/gpio/gpio_api.cpp
             tests/gpio/pin_control.cpp
             tests/gpio/stub_classes.cpp
             tests/ic/ds3231.cpp
             tests/ic/hd44780.cpp
             tests/ic/lm75.cpp
+            tests/ic/ssd1306.cpp
             tests/io/analog_keypad.cpp
             tests/io/button_machine.cpp
             tests/io/output_stream.cpp
