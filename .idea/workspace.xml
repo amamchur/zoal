@@ -48,8 +48,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/include/zoal/gpio/bit_order.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/io/digital_sampler.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/digital_sampler.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/io/ir_remote_receiver.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/ir_remote_receiver.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -439,7 +441,7 @@
       <workItem from="1611535128016" duration="34000" />
       <workItem from="1611562282434" duration="2859000" />
       <workItem from="1611700451142" duration="6682000" />
-      <workItem from="1611818270914" duration="23007000" />
+      <workItem from="1611818270914" duration="40058000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -616,7 +618,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611835213530</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Fix ir_remote_receiver">
+      <created>1611842634869</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1611842634869</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -650,7 +659,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Update STM32 projects to latest firmware" />
     <MESSAGE value="Add terminal input" />
     <MESSAGE value="Code cleanup" />
     <MESSAGE value="Add Knuth-Morris-Pratt search algorithm" />
@@ -675,7 +683,8 @@
     <MESSAGE value="Cleanup includes" />
     <MESSAGE value="Update accessory shield" />
     <MESSAGE value="Update multi functional shield" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update multi functional shield" />
+    <MESSAGE value="Fix ir_remote_receiver" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix ir_remote_receiver" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

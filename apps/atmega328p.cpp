@@ -21,7 +21,6 @@ volatile bool process_adc = false;
 using pcb = zoal::board::arduino_uno;
 using mcu = pcb::mcu;
 using timer = mcu::timer_00;
-using timer_02 = mcu::timer_02;
 using usart = mcu::usart_00;
 using spi = mcu::spi_00;
 using adc = mcu::adc_00;
@@ -33,7 +32,7 @@ using delay = tools::delay;
 using shield_type = zoal::shield::uno_multi_functional<pcb, typeof(milliseconds)>;
 shield_type shield;
 
-constexpr uint32_t ir_period_microseconds = 50;
+constexpr uint32_t ir_period_microseconds = 100;
 using ir_receiver_type = zoal::io::ir_remote_receiver<pcb::ard_d02, ir_period_microseconds>;
 ir_receiver_type ir_receiver;
 
@@ -55,7 +54,7 @@ char terminal_buffer[terminal_str_size];
 zoal::misc::terminal_input terminal(terminal_buffer, sizeof(terminal_buffer));
 auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
 
-const char help_msg[] PROGMEM = "ZOAL Demo Application\r\n"
+const char help_msg[] PROGMEM = "ZOAL ATmega328p Demo Application\r\n"
                                 "Commands: \r\n"
                                 "\t start-blink\tstart blinking\r\n"
                                 "\t stop-blink\tstop blinking\r\n";
@@ -85,7 +84,8 @@ void initialize_hardware() {
         //
         mcu::irq::timer<timer>::enable_overflow_interrupt,
         //
-        shield_type::gpio_cfg
+        shield_type::gpio_cfg,
+        ir_receiver_type::gpio_cfg
         //
         >();
 
@@ -199,18 +199,42 @@ using test_pin = pcb::ard_d05;
 void configure_timer_2() {
     test_pin::mode<zoal::gpio::pin_mode::output>();
 
-    // 20000 Hz (16000000/((24+1)*32))
+    //    // 20000 Hz (16000000/((24+1)*32))
+    //    OCR2A = 24;
+    //    // CTC
+    //    TCCR2A |= (1 << WGM21);
+    //    // Prescaler 32
+    //    TCCR2B |= (1 << CS21) | (1 << CS20);
+    //    // Output Compare Match A Interrupt Enable
+    //    TIMSK2 |= (1 << OCIE2A);
+    //
+    //    TCCR2A = 0;
+    //    TCCR2B = 0;
+    //    TCNT2 = 0;
+
+    // 10000 Hz (16000000/((24+1)*64))
     OCR2A = 24;
     // CTC
     TCCR2A |= (1 << WGM21);
-    // Prescaler 32
-    TCCR2B |= (1 << CS21) | (1 << CS20);
+    // Prescaler 64
+    TCCR2B |= (1 << CS22);
     // Output Compare Match A Interrupt Enable
     TIMSK2 |= (1 << OCIE2A);
 }
 
+uint32_t invert_bit_order(uint32_t v) {
+    uint32_t result = 0;
+    constexpr auto bits = static_cast<uint8_t>(sizeof(uint32_t) << 3);
+    for (int i = 0; i < bits; i++) {
+        result <<= 1;
+        result |= v & 1;
+        v >>= 1;
+    }
+
+    return result;
+}
+
 int main() {
-    configure_timer_2();
     initialize_hardware();
 
     terminal.vt100_feedback(&vt100_callback);
@@ -221,11 +245,9 @@ int main() {
     stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
     terminal.sync();
 
-    shield.dec_to_segments(123);
-
-    stream << "pin: " << pcb::ard_a01::read() << "\r\n";
-
-    ir_receiver.begin();
+    delay::ms(10);
+    ir_receiver.start();
+    configure_timer_2();
 
     while (true) {
         uint8_t rx_byte = 0;
@@ -240,9 +262,13 @@ int main() {
         }
 
         if (ir_receiver.processed()) {
-            zoal::utils::interrupts_off scope_off;
-            auto value = ir_receiver.result();
-            ir_receiver.start();
+            uint32_t value;
+            {
+                zoal::utils::interrupts_off scope_off;
+                value = ir_receiver.result();
+                ir_receiver.start();
+            }
+
             stream << value << "\r\n";
         }
 
@@ -260,7 +286,6 @@ ISR(TIMER0_OVF_vect) {
 
 ISR(TIMER2_COMPA_vect) {
     ir_receiver.handle();
-    test_pin::toggle();
 }
 
 ISR(USART_RX_vect) {

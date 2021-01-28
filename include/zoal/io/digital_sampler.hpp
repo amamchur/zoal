@@ -72,10 +72,9 @@ namespace zoal { namespace io {
         overflow
     };
 
-    template<class Pin, class StartTrigger, class StopTrigger>
+    template<class StartTrigger, class StopTrigger>
     class digital_sampler {
     public:
-        using pin = Pin;
         using duration_type = typename StartTrigger::duration_type;
         using start_condition = trigger_condition<StartTrigger::mode>;
         using stop_condition = trigger_condition<StopTrigger::mode>;
@@ -88,15 +87,11 @@ namespace zoal { namespace io {
             recording
         };
 
-        digital_sampler() {
-            reset();
-        }
-
-        void reset() {
+        void reset(uint8_t initial_value) {
             transition = signal_transition::none;
             state = 0;
             time = 0;
-            value = pin::read();
+            value = initial_value;
         }
 
         static signal_transition get_signal_transitoin(uint8_t from, uint8_t to) {
@@ -111,13 +106,12 @@ namespace zoal { namespace io {
         }
 
         template<class Sample>
-        sampling_result process(Sample &sample) {
+        sampling_result process(uint8_t signal, Sample &sample) {
             if (++time <= 0) {
-                reset();
+                reset(signal);
                 return sampling_result::overflow;
             }
 
-            uint8_t signal = pin::read();
             signal_transition current = get_signal_transitoin(value, signal);
             if (current != signal_transition::none && current != transition) {
                 transition = current;
@@ -140,7 +134,7 @@ namespace zoal { namespace io {
                     }
 
                     if (!start_condition::matched(transition)) {
-                        reset();
+                        reset(signal);
                         return sampling_result::working;
                     }
 
@@ -164,7 +158,7 @@ namespace zoal { namespace io {
                     if (stop_condition::matched(transition)) {
                         sample.signal = value;
                         sample.duration = time;
-                        reset();
+                        reset(signal);
                         return sampling_result::finished;
                     }
 

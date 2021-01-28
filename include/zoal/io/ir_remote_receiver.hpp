@@ -2,10 +2,11 @@
 #define ZOAL_IO_IR_REMOTE_RECEIVER_HPP
 
 #include "../gpio/pin_mode.hpp"
+#include "../gpio/bit_order.hpp"
 #include "digital_sampler.hpp"
 
 namespace zoal { namespace io {
-    template<class Pin, uint32_t PeriodMicroseconds, class ResultType = uint32_t>
+    template<class Pin, uint32_t PeriodMicroseconds, class ResultType = uint32_t, zoal::gpio::bit_order Order = zoal::gpio::bit_order::msbf>
     class ir_remote_receiver {
     public:
         static constexpr uint16_t start_holdoff_us = 5000; //us
@@ -17,26 +18,19 @@ namespace zoal { namespace io {
         static constexpr uint16_t stop_holdoff_iterations = stop_holdoff_us / PeriodMicroseconds;
         static constexpr uint16_t zero_space_iterations = zero_space_us / PeriodMicroseconds;
         static constexpr uint16_t one_space_iterations = one_space_us / PeriodMicroseconds;
-        static constexpr uint16_t threshold = zero_space_iterations + 200 / PeriodMicroseconds;
+        static constexpr uint16_t threshold = (one_space_us - zero_space_us) / 2 / PeriodMicroseconds;
 
         using duration_type = uint16_t;
         using start_trigger = sampling_trigger<duration_type, trigger_mode::falling_edge, start_holdoff_iterations>;
         using stop_trigger = sampling_trigger<duration_type, trigger_mode::rising_edge, stop_holdoff_iterations>;
         using sample_type = sample<duration_type>;
-        using digital_sampler_type = digital_sampler<Pin, start_trigger, stop_trigger>;
+        using digital_sampler_type = digital_sampler<start_trigger, stop_trigger>;
+        using bit_op = zoal::gpio::push_bit_op<ResultType, Order>;
 
         using api = zoal::gpio::api;
-        using gpio_cfg = api::optimize<
-            //
-            api::mode<zoal::gpio::pin_mode::input_floating, Pin>>;
+        using gpio_cfg = api::optimize<api::mode<zoal::gpio::pin_mode::input_floating, Pin>>;
 
         enum state { state_stopped, state_running, state_processed };
-
-        void begin() {
-            using namespace zoal::gpio;
-            typename Pin::template mode<pin_mode::input>();
-            start();
-        }
 
         void handle() {
             if (state != state_running) {
@@ -44,12 +38,11 @@ namespace zoal { namespace io {
             }
 
             sample_type sample;
-            sampling_result result = sampler.process(sample);
+            sampling_result result = sampler.process(Pin::read(), sample);
             switch (result) {
             case sampling_result::sample:
                 if (sample.signal == 1) {
-                    data <<= 1;
-                    data |= (sample.duration > zero_space_iterations + 10) ? 1 : 0;
+                    data = bit_op::push(data, (sample.duration > zero_space_iterations + threshold) ? 1 : 0);
                 }
                 break;
             case sampling_result::finished:
@@ -67,6 +60,7 @@ namespace zoal { namespace io {
         void start() {
             state = state_running;
             data = 0;
+            sampler.reset(Pin::read());
         }
 
         void stop() {
@@ -78,8 +72,8 @@ namespace zoal { namespace io {
         }
 
     private:
-        state state;
-        ResultType data;
+        state state{state_stopped};
+        ResultType data{0};
         digital_sampler_type sampler;
     };
 }}
