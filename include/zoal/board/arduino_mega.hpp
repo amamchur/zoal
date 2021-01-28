@@ -6,8 +6,7 @@
 #include "../arch/avr/atmega/spi.hpp"
 #include "../mcu/atmega2560.hpp"
 
-namespace zoal {
-    template<uint32_t Frequency>
+namespace zoal { namespace board {
     class arduino_mega {
     public:
         using mcu = zoal::mcu::atmega2560;
@@ -86,10 +85,6 @@ namespace zoal {
         using ard_a14 = typename mcu::pk_06;
         using ard_a15 = typename mcu::pk_07;
     };
-
-#if defined(F_CPU)
-    using pcb = arduino_mega<F_CPU>;
-#endif
-}
+}}
 
 #endif

@@ -14,7 +14,7 @@ TEST(hd44780, uno_lcd_sheald) {
 
     using counter = zoal::tests::ms_counter;
     using delay = zoal::tests::delay<counter>;
-    using pcb = zoal::pcb;
+    using pcb = zoal::board::arduino_uno;
 
     using interface_type = zoal::ic::hd44780_interface_4bit<
         //

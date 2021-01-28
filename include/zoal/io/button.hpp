@@ -7,8 +7,12 @@
 
 namespace zoal { namespace io {
 
-    template<bool Active_Low, uint8_t DebounceDelay = 5, uint16_t ReleaseDelay = 500, uint16_t PressInterval = 30
-        , uint16_t DecPressDelay = 25, uint16_t MinPressDelay = 25>
+    template<bool Active_Low,
+             uint8_t DebounceDelay = 5,
+             uint16_t ReleaseDelay = 500,
+             uint16_t PressInterval = 30,
+             uint16_t DecPressDelay = 25,
+             uint16_t MinPressDelay = 25>
     class button_config {
     public:
         static constexpr bool active_low = Active_Low;
@@ -31,9 +35,10 @@ namespace zoal { namespace io {
     public:
         using machine_type = typename Config::machine;
 
-        machine_type& machine() {
+        machine_type &machine() {
             return machine_;
         }
+
     protected:
         machine_type machine_;
         TimeType prev_time{0};
@@ -61,13 +66,13 @@ namespace zoal { namespace io {
             }
         }
 
-        template<class Callback, class ...Args>
+        template<class Callback, class... Args>
         void handle(TimeType current_time, Callback callback, Args... args) {
             handle(current_time);
             machine.invoke_callback(callback, args...);
         }
 
-        template<class T, class M, class ...Args>
+        template<class T, class M, class... Args>
         void handle(TimeType current_time, T *obj, M m, Args... args) {
             handle(current_time);
             machine.invoke_callback(zoal::utils::method_invoker<T, button_event, Args...>(obj, m), args...);
@@ -113,7 +118,7 @@ namespace zoal { namespace io {
             });
         }
 
-        template<class Callback, class ...Args>
+        template<class Callback, class... Args>
         void handle(TimeType current_time, Callback callback, Args... args) {
             handle();
             this->machine_.invoke_callback(callback, args...);

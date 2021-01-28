@@ -20,6 +20,7 @@
 #include <zoal/periph/i2c_request_dispatcher.hpp>
 #include <zoal/periph/software_spi.hpp>
 #include <zoal/periph/spi.hpp>
+#include <zoal/shield/uno_accessory.hpp>
 #include <zoal/utils/i2c_scanner.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/new.hpp>
@@ -30,15 +31,16 @@ using namespace zoal::utils::vt100;
 
 volatile uint32_t milliseconds = 0;
 
-using mcu = zoal::pcb::mcu;
-using pcb = zoal::pcb;
+using pcb = zoal::board::arduino_leonardo;
+using mcu = pcb::mcu;
 using usart = mcu::usart_01;
 using adc = mcu::adc_00;
 using i2c = mcu::i2c_00;
 using spi = mcu::spi_00;
-using timer = zoal::pcb::mcu::timer_00;
+using timer = pcb::mcu::timer_00;
 
-using blink_pin = zoal::pcb::ard_d13;
+using blink_pin = pcb::ard_d13;
+
 using ms_counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 32, 256>;
 using delay = zoal::utils::delay<F_CPU, ms_counter>;
@@ -51,31 +53,25 @@ usart_tx_transport transport;
 using scheduler_type = zoal::utils::function_scheduler<ms_counter, 8, void *>;
 using command_line_parser = zoal::misc::command_line_parser;
 char terminal_buffer[32];
-auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
+auto terminal_greeting = "\033[0;32mroot@mcu\033[m$ ";
 auto terminal = zoal::misc::terminal_input(terminal_buffer, sizeof(terminal_buffer));
 
 using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c, sizeof(void *) * 4>;
-using ssd1306_interface = zoal::ic::ssd1306_interface_i2c<delay, typename pcb::ard_d07, typename pcb::ard_d08, 0x3C>;
-using ssd1306_type = zoal::ic::ssd1306<zoal::ic::ssd1306_resolution::ssd1306_128x64, ssd1306_interface>;
+using shield = zoal::shield::uno_accessory<delay, pcb>;
+using buzzer = shield::buzzer;
+shield::display_type display;
+shield::thermometer_type temp_sensor;
+shield::clock_type clock;
+shield::accelerometer_type accelerometer;
 
 zoal::data::ring_buffer<uint8_t, 32> rx_buffer;
 tx_stream_type stream(transport);
 
-ssd1306_type display;
-zoal::ic::lm75 temp_sensor;
-zoal::ic::ds3231 clock;
-zoal::ic::adxl345 accelerometer;
 zoal::utils::i2c_scanner scanner;
 i2c_req_dispatcher_type i2c_req_dispatcher;
 zoal::periph::i2c_request &request = i2c_req_dispatcher.request;
 
 scheduler_type scheduler;
-
-zoal::io::button<uint32_t, typename pcb::ard_a01> u_button;
-zoal::io::button<uint32_t, typename pcb::ard_a02> r_button;
-zoal::io::button<uint32_t, typename pcb::ard_a03> l_button;
-zoal::io::button<uint32_t, typename pcb::ard_a04> e_button;
-zoal::io::button<uint32_t, typename pcb::ard_a05> d_button;
 
 void initialize_hardware() {
     using namespace zoal::gpio;
@@ -97,8 +93,8 @@ void initialize_hardware() {
         mcu::cfg::adc<adc, zoal::periph::adc_config<>>::apply,
         //
         api::mode<zoal::gpio::pin_mode::output, blink_pin>,
-        ssd1306_interface::gpio_cfg,
-        api::mode<zoal::gpio::pin_mode::input_pull_up, pcb::ard_a01, pcb::ard_a02, pcb::ard_a03, pcb::ard_a04, pcb::ard_a05>
+        api::mode<zoal::gpio::pin_mode::input_pull_up, pcb::ard_a01, pcb::ard_a02, pcb::ard_a03, pcb::ard_a04, pcb::ard_a05>,
+        shield::gpio_cfg
         //
         >();
 
@@ -142,6 +138,9 @@ void scan_i2c() {
     scanner.scan(i2c_req_dispatcher)([]() { terminal.sync(); });
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-attributes"
+
 const char zoal_ascii_logo[] PROGMEM = "  __________          _\r\n"
                                        " |___  / __ \\   /\\   | |\r\n"
                                        "    / / |  | | /  \\  | |\r\n"
@@ -168,6 +167,8 @@ const char i2c_scan_cmd[] PROGMEM = "i2c-scan";
 const char oled_render_cmd[] PROGMEM = "oled";
 const char axis_cmd[] PROGMEM = "axis";
 const char adc_cmd[] PROGMEM = "adc";
+
+#pragma clang diagnostic pop
 
 void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
     usart_tx_transport::send_data(s, e - s);
@@ -297,32 +298,6 @@ void input_callback(const zoal::misc::terminal_input *, const char *s, const cha
     terminal.sync();
 }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
-
-enum class joystick_button { up, right, button, left, enter };
-auto button_handler = [](zoal::io::button_event e, joystick_button b) {
-    if (e != zoal::io::button_event::press) {
-        return;
-    }
-
-    switch (b) {
-    case joystick_button::right:
-        terminal.cursor(terminal.cursor() + 1);
-        break;
-    case joystick_button::left:
-        terminal.cursor(terminal.cursor() - 1);
-        break;
-    case joystick_button::enter:
-        rx_buffer.push_back(13);
-        break;
-    default:
-        break;
-    }
-
-    terminal.sync();
-};
-
 void accelerometer_initialized() {
     stream << "\033[2K\r";
     stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
@@ -354,6 +329,33 @@ void initialize_i2c_devices() {
     i2c_req_dispatcher.handle_until_finished();
 }
 
+using joystick_type = typename shield::joystick;
+joystick_type joystick;
+auto button_handler = [](zoal::io::button_event e, shield::joystick_button b) {
+    if (e != zoal::io::button_event::press) {
+        return;
+    }
+
+    switch (b) {
+    case shield::joystick_button::right:
+        terminal.cursor(terminal.cursor() + 1);
+        break;
+    case shield::joystick_button::left:
+        terminal.cursor(terminal.cursor() - 1);
+        break;
+    case shield::joystick_button::enter:
+        rx_buffer.push_back(13);
+        break;
+    default:
+        break;
+    }
+
+    terminal.sync();
+};
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
+
 int main() {
     initialize_hardware();
 
@@ -363,6 +365,10 @@ int main() {
     terminal.clear();
 
     initialize_i2c_devices();
+
+    buzzer::on();
+    delay::ms(20);
+    buzzer::off();
 
     while (true) {
         uint8_t rx_byte = 0;
@@ -380,16 +386,15 @@ int main() {
         scheduler.handle();
 
         auto time = ms_counter::now();
-        u_button.handle(time, button_handler, joystick_button::up);
-        r_button.handle(time, button_handler, joystick_button::right);
-        l_button.handle(time, button_handler, joystick_button::left);
-        e_button.handle(time, button_handler, joystick_button::enter);
-        d_button.handle(time, button_handler, joystick_button::button);
+        joystick.handle(time, button_handler);
     }
 
     return 0;
 }
 #pragma clang diagnostic pop
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-attributes"
 
 ISR(TIMER0_OVF_vect) {
     milliseconds += overflow_to_tick::step();
@@ -406,3 +411,5 @@ ISR(USART1_UDRE_vect) {
 ISR(TWI_vect) {
     i2c::handle_request_irq(request);
 }
+
+#pragma clang diagnostic pop

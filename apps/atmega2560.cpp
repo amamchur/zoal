@@ -8,14 +8,15 @@
 
 volatile uint32_t milliseconds = 0;
 
-using mcu = zoal::pcb::mcu;
+using pcb = zoal::board::arduino_mega;
+using mcu = pcb::mcu;
 using timer = typename mcu::timer_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
 using delay = zoal::utils::delay<F_CPU, counter>;
 ;
 using usart = mcu::usart_00;
-using blink_pin = zoal::pcb::ard_d13;
+using blink_pin = pcb::ard_d13;
 
 zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 using usart_tx_transport = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;

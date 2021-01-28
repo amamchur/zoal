@@ -5,8 +5,8 @@
 
 #include "arduino_atmegaxx8.hpp"
 
-namespace zoal {
-	using pcb = board::arduino_atmegaxx8;
-}
+namespace zoal { namespace board  {
+    using arduino_uno = board::arduino_atmegaxx8;
+}}
 
 #endif

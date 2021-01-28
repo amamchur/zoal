@@ -24,8 +24,8 @@ volatile uint32_t milliseconds = 0;
 volatile uint16_t adc_value = 0;
 volatile bool process_adc = false;
 
-using pcb = zoal::pcb;
-using mcu = zoal::pcb::mcu;
+using pcb = zoal::board::arduino_uno;
+using mcu = pcb::mcu;
 using timer = mcu::timer_00;
 using usart = mcu::usart_00;
 using spi = mcu::spi_00;

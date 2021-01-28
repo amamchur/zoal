@@ -3,7 +3,7 @@
 
 #include "../mcu/stm32f303retx.hpp"
 
-namespace zoal {
+namespace zoal { namespace board {
     class nucleo_f303re {
     public:
         using mcu = zoal::mcu::stm32f303retx;
@@ -33,8 +33,6 @@ namespace zoal {
         using build_in_led = typename mcu::pa_05;
         using build_in_button = typename mcu::pc_13;
     };
-
-    using pcb = nucleo_f303re;
-}
+}}
 
 #endif

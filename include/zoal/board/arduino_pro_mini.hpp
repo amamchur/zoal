@@ -10,10 +10,6 @@ namespace zoal { namespace board {
         // 	using BA06 = mcu::c6 ;
         // 	using BA07 = mcu::c7 ;
     };
-
-#if defined(F_CPU)
-    using pcb = arduino_pro_mini<F_CPU>;
-#endif
 }}
 
 #endif

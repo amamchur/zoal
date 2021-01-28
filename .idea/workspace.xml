@@ -48,16 +48,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/zoal.doxyfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny2313.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny2313.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny85.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny85.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/at24cxx.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ic74hc595.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/max72xx.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/p9813.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/st7920.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/tm1637.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f303retx.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303retx.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_leonardo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_leonardo.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_mega.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_mega.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_nano.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_nano.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_pro_mini.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_pro_mini.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/arduino_uno.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/arduino_uno.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/board/nucleo_f303re.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/board/nucleo_f303re.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/gpio/pin.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/pin.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ds3231.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/ds3231.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/io/button.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/button.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/ds3231.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/ds3231.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/hd44780.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/hd44780.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,11 +118,11 @@
     <property name="cf.advertisement.text.has.clang-format" value="true" />
     <property name="cf.advertisement.text.overridden" value="true" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/include/zoal/gpio" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../jsonlite" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="settings.editor.splitter.proportion" value="0.18565089" />
   </component>
   <component name="RecentsManager">
@@ -132,12 +141,7 @@
       <recent name="$PROJECT_DIR$/tests/mem" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.ATmega32u4">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="CMake Application.All">
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -450,6 +454,8 @@
       <workItem from="1611532532314" duration="1852000" />
       <workItem from="1611535128016" duration="34000" />
       <workItem from="1611562282434" duration="2859000" />
+      <workItem from="1611700451142" duration="6682000" />
+      <workItem from="1611818270914" duration="5540000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -605,7 +611,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611692382848</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Cleanup includes">
+      <created>1611693631773</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1611693631773</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -661,7 +674,8 @@
     <MESSAGE value="Fix compile errors on Windows GCC compilers." />
     <MESSAGE value="Add invokaction manager draft" />
     <MESSAGE value="Add I2C request dispatcher" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add I2C request dispatcher" />
+    <MESSAGE value="Cleanup includes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleanup includes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

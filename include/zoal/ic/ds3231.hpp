@@ -35,7 +35,7 @@ namespace zoal { namespace ic {
             temp_lsb = 0x12
         };
 
-        static constexpr uint8_t data_size = static_cast<uint8_t>(register_address::year) + 1;
+        static constexpr uint8_t data_size = static_cast<uint8_t>(register_address::temp_lsb) + 1;
 
         explicit ds3231(uint8_t addr = 0x68)
             : address_(addr) {}

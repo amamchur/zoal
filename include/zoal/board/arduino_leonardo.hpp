@@ -3,8 +3,7 @@
 
 #include "../mcu/atmega32u4.hpp"
 
-namespace zoal {
-    template<uint32_t Frequency>
+namespace zoal { namespace board {
     class arduino_leonardo {
     public:
         using mcu = mcu::atmega32u4;
@@ -31,10 +30,6 @@ namespace zoal {
         using ard_a04 = typename mcu::pf_01;
         using ard_a05 = typename mcu::pf_00;
     };
-
-#if defined(F_CPU)
-    using pcb = arduino_leonardo<F_CPU>;
-#endif
-}
+}}
 
 #endif

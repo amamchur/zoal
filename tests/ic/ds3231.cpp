@@ -109,7 +109,7 @@ TEST(ds3231, fetch_data_request) {
     EXPECT_FALSE(finished);
     EXPECT_EQ(request.address_rw(), 0xD1);
     EXPECT_EQ(*request.ptr, static_cast<uint8_t>(ra::seconds));
-    EXPECT_EQ(request.end - request.ptr, 19);
+    EXPECT_EQ(request.end - request.ptr, 6);
 
     uint8_t &ref = ds3231[ra::seconds];
     uint8_t *ptr = &ref;
