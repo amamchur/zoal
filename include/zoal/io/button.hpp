@@ -71,13 +71,6 @@ namespace zoal { namespace io {
             handle(current_time);
             machine.invoke_callback(callback, args...);
         }
-
-        template<class T, class M, class... Args>
-        void handle(TimeType current_time, T *obj, M m, Args... args) {
-            handle(current_time);
-            machine.invoke_callback(zoal::utils::method_invoker<T, button_event, Args...>(obj, m), args...);
-        }
-
     protected:
         machine_type machine;
     };
@@ -123,12 +116,6 @@ namespace zoal { namespace io {
             handle();
             this->machine_.invoke_callback(callback, args...);
         }
-
-        template<class T, class M>
-        inline void handle(TimeType current_time, T *obj, M m) {
-            handle(zoal::utils::method_invoker<T, button_event>(obj, m));
-        }
-
     protected:
         uint16_t repeat_interval{Config::press_delay};
     };

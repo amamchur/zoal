@@ -32,11 +32,11 @@ namespace zoal { namespace shield {
         public:
             using counter_value_type = typename delay::counter_value_type;
 
-            zoal::io::button<uint32_t, typename pcb::ard_a01> u_button;
-            zoal::io::button<uint32_t, typename pcb::ard_a02> r_button;
-            zoal::io::button<uint32_t, typename pcb::ard_a03> l_button;
-            zoal::io::button<uint32_t, typename pcb::ard_a04> e_button;
-            zoal::io::button<uint32_t, typename pcb::ard_a05> d_button;
+            zoal::io::button<counter_value_type, typename pcb::ard_a01> u_button;
+            zoal::io::button<counter_value_type, typename pcb::ard_a02> r_button;
+            zoal::io::button<counter_value_type, typename pcb::ard_a03> l_button;
+            zoal::io::button<counter_value_type, typename pcb::ard_a04> e_button;
+            zoal::io::button<counter_value_type, typename pcb::ard_a05> d_button;
 
             /**
              * Handle Uno Accessory Joystick

@@ -22,9 +22,9 @@ namespace zoal { namespace gpio {
             uint8_t v = value & mask;
             PinOut::write(v);
             nop<Config::data_edge_rise_delay_ops>::place();
-            PinClk::high();
+            typename PinClk::high();
             nop<Config::clock_edge_rise_delay_ops>::place();
-            PinClk::low();
+            typename PinClk::low();
             value >>= 1;
         }
     }
@@ -33,15 +33,15 @@ namespace zoal { namespace gpio {
     void shift_out_msbf(T value) {
         using namespace zoal::utils;
 
-        auto bits = static_cast<uint8_t >(sizeof(T) << 3);
-        auto mask = static_cast<uint8_t >(1u << (bits - 1));
+        constexpr auto bits = static_cast<uint8_t >(sizeof(T) << 3);
+        constexpr auto mask = static_cast<uint8_t >(1u << (bits - 1));
         for (auto i = 0; i < bits; i++) {
             uint8_t v = value & mask;
             PinOut::write(v);
             nop<Config::data_edge_rise_delay_ops>::place();
-            PinClk::high();
+            typename PinClk::high();
             nop<Config::clock_edge_rise_delay_ops>::place();
-            PinClk::low();
+            typename PinClk::low();
             value <<= 1;
         }
     }

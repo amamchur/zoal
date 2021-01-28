@@ -3,86 +3,51 @@
 
 #include "../data/segment7.hpp"
 #include "../gpio/pin.hpp"
-#include "../ic/ic74hc595.hpp"
+#include "../gpio/shift_out.hpp"
 #include "../io/button.hpp"
 
 namespace zoal { namespace shield {
-    template<class Board, class Tools, void (*ButtonCallback)(uint8_t, ::zoal::io::button_event) = nullptr>
-    class uno_multi_functional_shield_buttons {
-    protected:
-        using tools = Tools;
-        using self = uno_multi_functional_shield_buttons<Board, Tools, ButtonCallback>;
-        using counter = typename tools::counter;
-
-        void init_buttons() {
-            button1.begin();
-            button2.begin();
-            button3.begin();
-        }
-
-        void handle_buttons() {
-            button1.handle(this, &self::button1_handler);
-            button2.handle(this, &self::button2_handler);
-            button3.handle(this, &self::button3_handler);
-        }
-
-        void button1_handler(::zoal::io::button_event event) {
-            ButtonCallback(0, event);
-        }
-
-        void button2_handler(::zoal::io::button_event event) {
-            ButtonCallback(1, event);
-        }
-
-        void button3_handler(::zoal::io::button_event event) {
-            ButtonCallback(2, event);
-        }
-
-        ::zoal::io::button_ext<typename Board::BA01, counter> button1;
-        ::zoal::io::button_ext<typename Board::BA02, counter> button2;
-        ::zoal::io::button_ext<typename Board::BA03, counter> button3;
-    };
-
-    template<class Board, class Tools>
-    class uno_multi_functional_shield_buttons<Board, Tools, nullptr> {
-    protected:
-        inline void init_buttons() {}
-
-        inline void handle_buttons() {}
-    };
-
-    template<class Board, class Tools, void (*ButtonCallback)(uint8_t, ::zoal::io::button_event) = nullptr>
-    class uno_multi_functional : public uno_multi_functional_shield_buttons<Board, Tools, ButtonCallback> {
+    template<class UnoCompatibleBoard, class TimeType>
+    class uno_multi_functional {
     public:
-        using self = uno_multi_functional<Board, Tools, ButtonCallback>;
-        using delay = typename Tools::Delay;
+        using button_0_pin  = typename UnoCompatibleBoard::ard_a01;
+        using button_1_pin  = typename UnoCompatibleBoard::ard_a02;
+        using button_2_pin  = typename UnoCompatibleBoard::ard_a03;
+        using led_0 = ::zoal::gpio::active_drain<typename UnoCompatibleBoard::ard_d13>;
+        using led_1 = ::zoal::gpio::active_drain<typename UnoCompatibleBoard::ard_d12>;
+        using led_2 = ::zoal::gpio::active_drain<typename UnoCompatibleBoard::ard_d11>;
+        using led_3 = ::zoal::gpio::active_drain<typename UnoCompatibleBoard::ard_d10>;
+        using beeper = ::zoal::gpio::active_drain<typename UnoCompatibleBoard::ard_d03>;
+        using shift_reg_latch = typename UnoCompatibleBoard::ard_d04;
+        using shift_reg_clk = typename UnoCompatibleBoard::ard_d07;
+        using shift_reg_data = typename UnoCompatibleBoard::ard_d08;
 
-        using Led1 = ::zoal::gpio::active_low<typename Board::BD13>;
-        using Led2 = ::zoal::gpio::active_low<typename Board::BD12>;
-        using Led3 = ::zoal::gpio::active_low<typename Board::BD11>;
-        using Led4 = ::zoal::gpio::active_low<typename Board::BD10>;
-        using beeper = ::zoal::gpio::active_drain<typename Board::BD03>;
-        using Display = ::zoal::ic::ic74hc595<Tools, typename Board::BD08, typename Board::BD04, typename Board::BD07>;
+        using gpio_cfg = zoal::gpio::api::optimize<
+            //
+            typename led_0::gpio_cfg,
+            typename led_1::gpio_cfg,
+            typename led_2::gpio_cfg,
+            typename led_3::gpio_cfg,
+            typename beeper::gpio_cfg,
+            // Shield already contains pull-up resistors. Keep input floating to minimize current consumption.
+            zoal::gpio::api::mode<zoal::gpio::pin_mode::input_floating, button_0_pin, button_1_pin, button_2_pin>,
+            zoal::gpio::api::mode<zoal::gpio::pin_mode::output_push_pull, shift_reg_latch, shift_reg_clk, shift_reg_data>,
+            zoal::gpio::api::low<shift_reg_latch, shift_reg_clk, shift_reg_data>>;
 
-        void begin() {
-            this->init_buttons();
+        void dec_to_segments(uint16_t value) {
+            segments[0] = 0xFF;
+            segments[1] = 0xFF;
+            segments[2] = 0xFF;
+            segments[3] = ~::zoal::data::segment7::abcd_hex(0);
 
-            Led1::off();
-            Led2::off();
-            Led3::off();
-            Led4::off();
-            beeper::off();
-
-            segmentDisplay.begin();
+            for (int i = 3; value > 0 && i >= 0; i--) {
+                uint16_t v = value % 10;
+                segments[i] = ~::zoal::data::segment7::abcd_hex(v);
+                value /= 10;
+            }
         }
 
-        void beep(uint32_t duration = 50) {
-            beeper::on();
-            delay::milliseconds(duration);
-            beeper::off();
-        }
-
-        void hexToSegments(uint16_t value) {
+        void hex_to_segments(uint16_t value) {
             uint16_t v = value;
             for (int i = 3; i >= 0; i--) {
                 auto d = static_cast<uint8_t>(v & 0x0Fu);
@@ -91,28 +56,31 @@ namespace zoal { namespace shield {
             }
         }
 
-        void dynamicIndication() {
-            auto segmentMask = static_cast<uint8_t>(1u << segmentIndex);
-            auto segmentValue = segments[segmentIndex];
-            segmentDisplay << segmentValue << segmentMask;
-            segmentIndex = static_cast<uint8_t>((segmentIndex + 1) & 0x3);
+        void dynamic_indication() {
+            auto segmentMask = static_cast<uint8_t>(1u << segment_index);
+            auto segmentValue = segments[segment_index];
+
+            typename shift_reg_latch::low();
+            ::zoal::gpio::shift_out_msbf<shift_reg_data, shift_reg_clk>(segmentValue);
+            ::zoal::gpio::shift_out_msbf<shift_reg_data, shift_reg_clk>(segmentMask);
+            typename shift_reg_latch::high();
+
+            segment_index = static_cast<uint8_t>((segment_index + 1) & 0x3);
         }
 
-        void handle() {
-            this->handle_buttons();
+        template<class H>
+        void handle_buttons(TimeType time, H button_handler) {
+            button_0.handle(time, button_handler, static_cast<uint8_t>(0));
+            button_1.handle(time, button_handler, static_cast<uint8_t>(1));
+            button_2.handle(time, button_handler, static_cast<uint8_t>(2));
         }
 
-        void display(uint8_t s0, uint8_t s1, uint8_t s2, uint8_t s3) {
-            segments[0] = s0;
-            segments[1] = s1;
-            segments[2] = s2;
-            segments[3] = s3;
-        }
-
-    protected:
-        Display segmentDisplay;
         uint8_t segments[4]{0, 0, 0, 0};
-        uint8_t segmentIndex{0};
+        uint8_t segment_index{0};
+
+        zoal::io::button<TimeType, button_0_pin> button_0;
+        zoal::io::button<TimeType, button_1_pin> button_1;
+        zoal::io::button<TimeType, button_2_pin> button_2;
     };
 }}
 

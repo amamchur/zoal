@@ -11,7 +11,6 @@ namespace zoal { namespace misc {
         typedef void (*callback_fn)(const self_type *t, const char *s, const char *e);
         typedef void (*handle_v100_fn)(const self_type *t, terminal_machine_event e);
 
-        terminal_input() noexcept;
         terminal_input(void *buffer, size_t size) noexcept;
         void init_buffer(char *buffer, size_t size);
 

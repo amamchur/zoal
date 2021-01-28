@@ -6,19 +6,12 @@
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_uno.hpp>
-#include <zoal/ic/lm75.hpp>
-#include <zoal/io/analog_keypad.hpp>
-#include <zoal/periph/i2c_request.hpp>
+#include <zoal/shield/uno_multi_functional.hpp>
 #include <zoal/utils/logger.hpp>
-#include <zoal/utils/new.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 
-FUSES = {
-    .low = 0xFF,
-    .high = 0xD7,
-    .extended = 0xFC
-};
+FUSES = {.low = 0xFF, .high = 0xD7, .extended = 0xFC};
 
 volatile uint32_t milliseconds = 0;
 volatile uint16_t adc_value = 0;
@@ -33,33 +26,33 @@ using adc = mcu::adc_00;
 using i2c = mcu::i2c_00;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
+using tools = zoal::utils::tool_set<mcu, F_CPU, counter, void>;
+using delay = tools::delay;
+using shield_type = zoal::shield::uno_multi_functional<pcb, typeof(milliseconds)>;
+shield_type shield;
 
 zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 
-using usart_tx_transport = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;
+using usart_tx_transport = zoal::utils::usart_transmitter<usart, 32, zoal::utils::interrupts_off>;
 usart_tx_transport transport;
 using tx_stream_type = zoal::io::output_stream<usart_tx_transport>;
 tx_stream_type stream(transport);
 
-using tools = zoal::utils::tool_set<mcu, F_CPU, counter, void>;
-using delay = tools::delay;
 using api = zoal::gpio::api;
 using blink_pin = pcb::ard_d13;
-using lcd_back_light = pcb::ard_d10;
 using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
 
 scheduler_type scheduler;
-constexpr size_t terminal_str_size = 128;
+constexpr size_t terminal_str_size = 64;
 using command_line_parser = zoal::misc::command_line_parser;
 char terminal_buffer[terminal_str_size];
 zoal::misc::terminal_input terminal(terminal_buffer, sizeof(terminal_buffer));
 auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
 
-const char help_msg[] PROGMEM =
-    "ZOAL Demo Application\r\n"
-    "Commands: \r\n"
-    "\t start-blink\tstart blinking\r\n"
-    "\t stop-blink\tstop blinking\r\n";
+const char help_msg[] PROGMEM = "ZOAL Demo Application\r\n"
+                                "Commands: \r\n"
+                                "\t start-blink\tstart blinking\r\n"
+                                "\t stop-blink\tstop blinking\r\n";
 const char help_cmd[] PROGMEM = "help";
 const char adc_cmd[] PROGMEM = "adc";
 const char start_blink_cmd[] PROGMEM = "start-blink";
@@ -84,9 +77,9 @@ void initialize_hardware() {
         mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::connect,
         mcu::cfg::i2c<i2c, F_CPU>::apply,
         //
-        api::mode<zoal::gpio::pin_mode::output, blink_pin, lcd_back_light>,
-        api::_1<lcd_back_light>,
-        mcu::irq::timer<timer>::enable_overflow_interrupt
+        mcu::irq::timer<timer>::enable_overflow_interrupt,
+        //
+        shield_type::gpio_cfg
         //
         >();
 
@@ -97,7 +90,6 @@ void initialize_hardware() {
     api::optimize<api::enable<usart, timer, adc, i2c>>();
 
     adc::enable();
-    adc::enable_interrupt();
 }
 
 void led_on(void *);
@@ -139,6 +131,7 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
 
     if (cmp_progmem_str_token(zoal::io::progmem_str_iter(adc_cmd), ts, te)) {
         auto v = adc::read();
+        shield.dec_to_segments(v);
         stream << "ADC: " << v << "\r\n";
     }
 
@@ -171,198 +164,28 @@ const char zoal_ascii_logo[] PROGMEM = "  __________          _\r\n"
                                        " /_____\\____/_/    \\_\\______|\r\n"
                                        "\r\n";
 
-void analog_keypad_handler(zoal::io::button_event e, int button) {
+uint16_t display_value = 0;
+
+void button_handler(zoal::io::button_event e, uint8_t b) {
     if (e != zoal::io::button_event::press) {
         return;
     }
 
-    stream << "Buttons press: " << button << "\r\n";
-}
-
-template<class Ret, class... Args>
-class abstract_invocation {
-public:
-    virtual Ret operator()(Args ...args) = 0;
-};
-
-template<class T, class Ret, class... Args>
-class method_invocation : public abstract_invocation<Ret, Args...> {
-public:
-    method_invocation(T *obj, Ret (T::*method)(Args ...)) : instance(obj), callback(method) {}
-
-    Ret operator()(Args ...args) override {
-        return (*instance.*callback)(args...);
+    switch (b) {
+    case 0:
+        display_value++;
+        break;
+    case 1:
+        display_value--;
+        break;
+    case 2:
+        display_value = 0;
+        break;
+    default:
+        return;
     }
 
-    T *instance;
-
-    Ret (T::*callback)(Args ...);
-};
-
-template<class T, class... Args>
-class method_invocation<T, void, Args...> : public abstract_invocation<void, Args...> {
-public:
-    method_invocation(T *obj, void (T::*method)(Args ...)) : instance(obj), callback(method) {}
-
-    void operator()(Args ...args) override {
-        (*instance.*callback)(args...);
-    }
-
-    T *instance;
-
-    void (T::*callback)(Args ...);
-};
-
-template<class T, class Ret, class... Args>
-class const_method_invocation : public abstract_invocation<Ret, Args...> {
-public:
-    const_method_invocation(const T *obj, Ret (T::*method)(Args ...) const) : instance(obj), callback(method) {}
-
-    Ret operator()(Args ...args) override {
-        return (*instance.*callback)(args...);
-    }
-
-    const T *instance;
-
-    Ret (T::*callback)(Args ...) const;
-};
-
-template<class L, class Ret, class... Args>
-class lambda_invocation : public abstract_invocation<Ret, Args...> {
-public:
-    explicit lambda_invocation(L l) : lambda(l) {}
-
-    Ret operator()(Args ...args) override {
-        return lambda(args...);
-    }
-
-    L lambda;
-};
-
-template<class L, class... Args>
-class lambda_invocation<L, void, Args...> : public abstract_invocation<void, Args...> {
-public:
-    explicit lambda_invocation(L l) : lambda(l) {}
-
-    void operator()(Args ...args) override {
-        lambda(args...);
-    }
-
-    L lambda;
-};
-
-template<class Ret, class... Args>
-class base_invoker {
-public:
-protected:
-    abstract_invocation<Ret, Args...> *invocation{nullptr};
-};
-
-template<class... Args>
-class base_invoker<void, Args...> {
-public:
-protected:
-    abstract_invocation<void, Args...> *invocation{nullptr};
-};
-
-template<size_t ClosureBankSize, class Ret, class... Args>
-class manager : public base_invoker<Ret, Args...> {
-public:
-    static constexpr size_t bank_size = ClosureBankSize;
-    static constexpr size_t bank_count = 2;
-
-    void *get_mem_bank() {
-        return mem_banks[active_bank];
-    }
-
-    template<class T>
-    void create_handler(T *obj, Ret (T::*method)(Args ...)) {
-        using invocation_type = method_invocation<T, Ret, Args...>;
-        static constexpr bool has_spaces = sizeof(invocation_type) < bank_size;
-        static_assert(has_spaces, "Handler size is too big. Please increase closure bank size.");
-
-        auto instance = new(get_mem_bank()) invocation_type(obj, method);
-        this->invocation = instance;
-    }
-
-    template<class T>
-    void create_handler(T *obj, Ret (T::*method)(Args ...) const) {
-        using invocation_type = const_method_invocation<T, Ret, Args...>;
-        static constexpr bool has_spaces = sizeof(invocation_type) < bank_size;
-        static_assert(has_spaces, "Handler size is too big. Please increase closure bank size.");
-
-        auto instance = new(get_mem_bank()) invocation_type(obj, method);
-        this->invocation = instance;
-    }
-
-    template<class L>
-    void create_handler(L l) {
-        using invocation_type = lambda_invocation<L, Ret, Args...>;
-        static constexpr bool has_spaces = sizeof(invocation_type) < bank_size;
-        static_assert(has_spaces, "Handler size is too big. Please increase closure bank size.");
-
-        auto instance = new(get_mem_bank()) invocation_type(l);
-        this->invocation = instance;
-    }
-
-    void invoke(Args ...args) {
-        auto inv = this->invocation;
-        active_bank = (active_bank + 1) % bank_count;
-        this->invocation = nullptr;
-        (*inv)(args...);
-    }
-
-    bool has_invocation() const {
-        return this->invocation != nullptr;
-    }
-
-private:
-    size_t active_bank{0};
-    uint8_t mem_banks[bank_count][bank_size]{{0}};
-};
-
-template<class M>
-class mng_client {
-public:
-    explicit mng_client(M &m) : manager(m) {}
-
-    mng_client(const mng_client &) = delete;
-
-    void start(int number, int &b) {
-        auto l3 = [&b]() {
-            b++;
-            return 0;
-        };
-
-        auto l2 = [this, l3, &b]() {
-            b++;
-            this->manager.create_handler(l3);
-            return 0;
-        };
-
-        auto l1 = [this, l2, &b]() {
-            b++;
-            this->manager.create_handler(l2);
-            return 0;
-        };
-        manager.create_handler(l1);
-    }
-
-    M &manager;
-};
-
-void do_test() {
-    using manager_type = manager<sizeof(void *) * 8, int>;
-    manager_type mng;
-    mng_client<manager_type> client(mng);
-
-    int b = 1;
-    client.start(5, b);
-    while (mng.has_invocation()) {
-        mng.invoke();
-    }
-
-    stream << b << "\r\n";
+    shield.dec_to_segments(display_value);
 }
 
 int main() {
@@ -373,10 +196,12 @@ int main() {
     terminal.greeting(terminal_greeting);
     terminal.clear();
 
-    do_test();
-
     stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
     terminal.sync();
+
+    shield.dec_to_segments(123);
+
+    stream << "pin: " << pcb::ard_a01::read() << "\r\n";
 
     while (true) {
         uint8_t rx_byte = 0;
@@ -391,6 +216,8 @@ int main() {
         }
 
         scheduler.handle();
+        shield.handle_buttons(counter::now(), button_handler);
+        shield.dynamic_indication();
     }
 }
 

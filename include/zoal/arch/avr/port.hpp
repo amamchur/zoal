@@ -36,6 +36,7 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
         static constexpr auto address = Address;
         static constexpr uint8_t pin_mask = PinMask;
+        static constexpr zoal::gpio::features feature = zoal::gpio::features::none;
 
         using PINx = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, register_type, PinMask>;
         using DDRx = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, register_type, PinMask>;
