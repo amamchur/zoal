@@ -6,6 +6,7 @@
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_uno.hpp>
+#include <zoal/io/ir_remote_receiver.hpp>
 #include <zoal/shield/uno_multi_functional.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
@@ -20,6 +21,7 @@ volatile bool process_adc = false;
 using pcb = zoal::board::arduino_uno;
 using mcu = pcb::mcu;
 using timer = mcu::timer_00;
+using timer_02 = mcu::timer_02;
 using usart = mcu::usart_00;
 using spi = mcu::spi_00;
 using adc = mcu::adc_00;
@@ -30,6 +32,10 @@ using tools = zoal::utils::tool_set<mcu, F_CPU, counter, void>;
 using delay = tools::delay;
 using shield_type = zoal::shield::uno_multi_functional<pcb, typeof(milliseconds)>;
 shield_type shield;
+
+constexpr uint32_t ir_period_microseconds = 50;
+using ir_receiver_type = zoal::io::ir_remote_receiver<pcb::ard_d02, ir_period_microseconds>;
+ir_receiver_type ir_receiver;
 
 zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 
@@ -188,7 +194,23 @@ void button_handler(zoal::io::button_event e, uint8_t b) {
     shield.dec_to_segments(display_value);
 }
 
+using test_pin = pcb::ard_d05;
+
+void configure_timer_2() {
+    test_pin::mode<zoal::gpio::pin_mode::output>();
+
+    // 20000 Hz (16000000/((24+1)*32))
+    OCR2A = 24;
+    // CTC
+    TCCR2A |= (1 << WGM21);
+    // Prescaler 32
+    TCCR2B |= (1 << CS21) | (1 << CS20);
+    // Output Compare Match A Interrupt Enable
+    TIMSK2 |= (1 << OCIE2A);
+}
+
 int main() {
+    configure_timer_2();
     initialize_hardware();
 
     terminal.vt100_feedback(&vt100_callback);
@@ -203,6 +225,8 @@ int main() {
 
     stream << "pin: " << pcb::ard_a01::read() << "\r\n";
 
+    ir_receiver.begin();
+
     while (true) {
         uint8_t rx_byte = 0;
         bool result;
@@ -215,6 +239,13 @@ int main() {
             terminal.push(&rx_byte, 1);
         }
 
+        if (ir_receiver.processed()) {
+            zoal::utils::interrupts_off scope_off;
+            auto value = ir_receiver.result();
+            ir_receiver.start();
+            stream << value << "\r\n";
+        }
+
         scheduler.handle();
         shield.handle_buttons(counter::now(), button_handler);
         shield.dynamic_indication();
@@ -225,6 +256,11 @@ int main() {
 
 ISR(TIMER0_OVF_vect) {
     milliseconds += overflow_to_tick::step();
+}
+
+ISR(TIMER2_COMPA_vect) {
+    ir_receiver.handle();
+    test_pin::toggle();
 }
 
 ISR(USART_RX_vect) {

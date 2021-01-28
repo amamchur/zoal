@@ -50,14 +50,7 @@
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/port.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/port.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/gpio/shift_out.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/shift_out.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/button.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/button.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/shield/uno_multi_functional.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/shield/uno_multi_functional.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/ic74hc595.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/ic74hc595.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_input.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_input.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/io/ir_remote_receiver.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/ir_remote_receiver.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,7 +125,7 @@
       <recent name="$PROJECT_DIR$/tests/mem" />
     </key>
   </component>
-  <component name="RunManager" selected="Google Test.zoal_tests">
+  <component name="RunManager" selected="CMake Application.ATmega328p">
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -446,7 +439,7 @@
       <workItem from="1611535128016" duration="34000" />
       <workItem from="1611562282434" duration="2859000" />
       <workItem from="1611700451142" duration="6682000" />
-      <workItem from="1611818270914" duration="15849000" />
+      <workItem from="1611818270914" duration="23007000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -616,7 +609,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611824852995</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Update multi functional shield">
+      <created>1611835213530</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1611835213530</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -674,7 +674,8 @@
     <MESSAGE value="Add I2C request dispatcher" />
     <MESSAGE value="Cleanup includes" />
     <MESSAGE value="Update accessory shield" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update accessory shield" />
+    <MESSAGE value="Update multi functional shield" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update multi functional shield" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
