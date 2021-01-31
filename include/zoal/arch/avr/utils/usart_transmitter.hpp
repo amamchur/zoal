@@ -10,7 +10,7 @@ namespace zoal { namespace utils {
     public:
         using tx_buffer_type = zoal::data::ring_buffer<uint8_t, 16>;
 
-        static void send_byte(uint8_t value) {
+        void send_byte(uint8_t value) {
             bool done = false;
             while (!done) {
                 ScopeLock off;
@@ -20,7 +20,7 @@ namespace zoal { namespace utils {
             U::enable_tx();
         }
 
-        static void send_data(const void *data, size_t size) {
+        void send_data(const void *data, size_t size) {
             auto ptr = reinterpret_cast<const char *>(data);
             while (size > 0) {
                 ScopeLock off;

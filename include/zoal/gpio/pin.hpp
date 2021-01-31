@@ -87,6 +87,7 @@ namespace zoal { namespace gpio {
         using off = typename strategy::off;
         using gpio_cfg = typename api::optimize<
             //
+            typename pin::port::clock_on_cas,
             typename strategy::gpio_cfg,
             off>;
     };
@@ -99,7 +100,8 @@ namespace zoal { namespace gpio {
         using off = typename Pin::low;
         using gpio_cfg = typename api::optimize<
             //
-            typename Pin::template mode<pin_mode::output>,
+            typename pin::port::clock_on_cas,
+            typename pin::template mode<pin_mode::output>,
             off>;
     };
 
@@ -111,7 +113,8 @@ namespace zoal { namespace gpio {
         using off = typename Pin::high;
         using gpio_cfg = typename api::optimize<
             //
-            typename Pin::template mode<pin_mode::output>,
+            typename pin::port::clock_on_cas,
+            typename pin::template mode<pin_mode::output>,
             off>;
     };
 }}

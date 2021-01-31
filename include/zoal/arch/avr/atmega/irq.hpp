@@ -27,33 +27,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
 
             template<uint8_t Channel>
             using clear_channel_interrupt_flag = tifrs::template clear_channel_flag<T::no, Channel>;
-
-//            static void enable_overflow_interrupt() {
-//                timrs::template enable_overflow_interrupt<T::no>();
-//            }
-//
-//            static void disable_overflow_interrupt() {
-//                timrs::template disable_overflow_interrupt<T::no>();
-//            }
-//
-//            static void clear_overflow_interrupt_flag() {
-//                tifrs::template clear_counter_flag<T::no>();
-//            }
-//
-//            template<uint8_t Channel>
-//            static void enable_compare_match_interrupt() {
-//                timrs::template enable_compare_match_interrupt<T::no, Channel>();
-//            }
-//
-//            template<uint8_t Channel>
-//            static void disable_compare_match_interrupt() {
-//                timrs::template disable_compare_match_interrupt<T::no, Channel>();
-//            }
-//
-//            template<uint8_t Channel>
-//            static void clear_channel_interrupt_flag() {
-//                tifrs::template clear_channel_flag<T::no, Channel>();
-//            }
         };
     };
 }}}}

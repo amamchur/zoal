@@ -1,8 +1,8 @@
 #ifndef ZOAL_IO_IR_REMOTE_RECEIVER_HPP
 #define ZOAL_IO_IR_REMOTE_RECEIVER_HPP
 
-#include "../gpio/pin_mode.hpp"
 #include "../gpio/bit_order.hpp"
+#include "../gpio/pin_mode.hpp"
 #include "digital_sampler.hpp"
 
 namespace zoal { namespace io {
@@ -28,7 +28,10 @@ namespace zoal { namespace io {
         using bit_op = zoal::gpio::push_bit_op<ResultType, Order>;
 
         using api = zoal::gpio::api;
-        using gpio_cfg = api::optimize<api::mode<zoal::gpio::pin_mode::input_floating, Pin>>;
+        using gpio_cfg = api::optimize<
+            //
+            typename Pin::port::clock_on_cas,
+            api::mode<zoal::gpio::pin_mode::input_floating, Pin>>;
 
         enum state { state_stopped, state_running, state_processed };
 

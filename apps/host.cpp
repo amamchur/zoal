@@ -1,16 +1,20 @@
 #include <iostream>
 #include <zoal/func/function.hpp>
 
-zoal::func::function<64, void> fn1;
-zoal::func::function<64, void> fn2;
+template<class T>
+void print_hex(T value) {
+    constexpr uint8_t nibbles = sizeof(value) << 1;
+
+    std::cout << "0x";
+    for (int i = nibbles - 1; i >= 0; i--) {
+        auto h = (value >> (i << 2)) & 0xF;
+        char ch = h < 10 ? ('0' + h) : ('A' + h - 10);
+        std::cout << ch;
+    }
+}
+
 int main() {
-    fn1 = [](){
-        std::cout << "Hello" << std::endl;
-    };
-
-    fn1();
-    fn2 = fn1;
-    fn2();
-
+    print_hex(-2);
+    std::cout << std::endl;
     return 0;
 }

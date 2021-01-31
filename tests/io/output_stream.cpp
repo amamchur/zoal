@@ -1,8 +1,9 @@
+#include "../test_utils/mem_transport.hpp"
+
 #include "gtest/gtest.h"
+#include <zoal/data/date_time.hpp>
 #include <zoal/io/output_stream.hpp>
 #include <zoal/utils/vt100.hpp>
-
-#include "../test_utils/mem_transport.hpp"
 
 using namespace zoal::tests;
 
@@ -122,4 +123,23 @@ TEST(output_stream, transport_functor) {
 
     stream << "Hello";
     EXPECT_STREQ(buffer, "Hello");
+}
+
+TEST(output_stream, date_time) {
+    using namespace zoal::utils::vt100;
+    char buffer[256] = {0};
+    mem_transport mt(buffer, sizeof(buffer));
+    zoal::io::output_stream<mem_transport> stream(mt);
+
+    zoal::data::date_time dt;
+    dt.year = 2121;
+    dt.month = 1;
+    dt.date = 23;
+    dt.day = zoal::data::saturday;
+    dt.hours = 15;
+    dt.minutes = 27;
+    dt.seconds = 30;
+
+    stream << dt;
+    EXPECT_STREQ(buffer, "2121.01.23 15:27:30");
 }

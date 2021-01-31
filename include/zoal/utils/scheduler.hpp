@@ -1,8 +1,8 @@
 #ifndef ZOAL_UTILS_SCHEDULER_HPP
 #define ZOAL_UTILS_SCHEDULER_HPP
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 namespace zoal { namespace utils {
     template<class CounterValueType, class Callback, class Token>
@@ -19,12 +19,13 @@ namespace zoal { namespace utils {
         schedule_item() = default;
 
         schedule_item(CounterValueType tm, Callback c)
-                : time(tm), handler(c) {
-        }
+            : time(tm)
+            , handler(c) {}
 
         schedule_item(CounterValueType tm, Callback c, Token t)
-                : time(tm), handler(c), token(t) {
-        }
+            : time(tm)
+            , handler(c)
+            , token(t) {}
     };
 
     template<class CounterValueType, class Callback>
@@ -40,8 +41,8 @@ namespace zoal { namespace utils {
         schedule_item() = default;
 
         schedule_item(CounterValueType tm, Callback c)
-                : time(tm), handler(c) {
-        }
+            : time(tm)
+            , handler(c) {}
     };
 
     template<class Counter, size_t Capacity, class Callback, class Token>
@@ -51,7 +52,8 @@ namespace zoal { namespace utils {
         using counter_type = typename Counter::value_type;
         using item_type = schedule_item<counter_type, Callback, token_type>;
 
-        base_scheduler() noexcept : prev_time(Counter::now()) {
+        base_scheduler() noexcept
+            : prev_time(Counter::now()) {
             clear();
         }
 
@@ -190,8 +192,8 @@ namespace zoal { namespace utils {
         using base_type = base_scheduler<Counter, Capacity, typename method_callback<T, Token>::type, Token>;
         using item_type = typename base_type::item_type;
 
-        explicit method_scheduler(T *obj) : instance(obj) {
-        }
+        explicit method_scheduler(T *obj)
+            : instance(obj) {}
 
         void handle() {
             this->base_type::template handle<method_scheduler>(*this);

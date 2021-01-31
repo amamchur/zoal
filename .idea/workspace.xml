@@ -48,11 +48,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/include/zoal/gpio/bit_order.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/digital_sampler.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/digital_sampler.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/irq.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/irq.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/utils/usart_transmitter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/utils/usart_transmitter.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/data/date_time.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/data/date_time.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/gpio/pin.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/pin.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/io/ir_remote_receiver.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/ir_remote_receiver.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/io/stream_functor.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/stream_functor.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/utils/scheduler.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/scheduler.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/io/output_stream.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/io/output_stream.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/coverage-zero.sh" beforeDir="false" afterPath="$PROJECT_DIR$/tools/coverage-zero.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/llvm-coverage.sh" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +84,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release AVR" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug Host" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
@@ -127,7 +136,12 @@
       <recent name="$PROJECT_DIR$/tests/mem" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.ATmega328p">
+  <component name="RunManager" selected="Google Test.zoal_tests">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -259,6 +273,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -287,11 +306,6 @@
     <configuration name="stm32f303_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_nucleo" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_nucleo">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
@@ -441,7 +455,8 @@
       <workItem from="1611535128016" duration="34000" />
       <workItem from="1611562282434" duration="2859000" />
       <workItem from="1611700451142" duration="6682000" />
-      <workItem from="1611818270914" duration="40058000" />
+      <workItem from="1611818270914" duration="42509000" />
+      <workItem from="1612079094779" duration="13246000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -625,7 +640,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611842634869</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Re-factor digital sampler">
+      <created>1611875646500</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1611875646500</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -659,7 +681,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add terminal input" />
     <MESSAGE value="Code cleanup" />
     <MESSAGE value="Add Knuth-Morris-Pratt search algorithm" />
     <MESSAGE value="Improved CAS applying strategies" />
@@ -684,7 +705,8 @@
     <MESSAGE value="Update accessory shield" />
     <MESSAGE value="Update multi functional shield" />
     <MESSAGE value="Fix ir_remote_receiver" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix ir_remote_receiver" />
+    <MESSAGE value="Re-factor digital sampler" />
+    <option name="LAST_COMMIT_MESSAGE" value="Re-factor digital sampler" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

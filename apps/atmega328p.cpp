@@ -14,9 +14,8 @@
 
 FUSES = {.low = 0xFF, .high = 0xD7, .extended = 0xFC};
 
+volatile bool ms_trigger = true;
 volatile uint32_t milliseconds = 0;
-volatile uint16_t adc_value = 0;
-volatile bool process_adc = false;
 
 using pcb = zoal::board::arduino_uno;
 using mcu = pcb::mcu;
@@ -57,7 +56,8 @@ auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
 const char help_msg[] PROGMEM = "ZOAL ATmega328p Demo Application\r\n"
                                 "Commands: \r\n"
                                 "\t start-blink\tstart blinking\r\n"
-                                "\t stop-blink\tstop blinking\r\n";
+                                "\t stop-blink\tstop blinking\r\n"
+                                "\t adc\t\tread adc value\r\n";
 const char help_cmd[] PROGMEM = "help";
 const char adc_cmd[] PROGMEM = "adc";
 const char start_blink_cmd[] PROGMEM = "start-blink";
@@ -117,7 +117,7 @@ void led_off(void *) {
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
 void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
-    usart_tx_transport::send_data(s, e - s);
+    transport.send_data(s, e - s);
 }
 
 void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
@@ -215,11 +215,11 @@ void configure_timer_2() {
     // 10000 Hz (16000000/((24+1)*64))
     OCR2A = 24;
     // CTC
-    TCCR2A |= (1 << WGM21);
+    TCCR2A = (1 << WGM21);
     // Prescaler 64
-    TCCR2B |= (1 << CS22);
+    TCCR2B = (1 << CS22);
     // Output Compare Match A Interrupt Enable
-    TIMSK2 |= (1 << OCIE2A);
+    TIMSK2 = (1 << OCIE2A);
 }
 
 uint32_t invert_bit_order(uint32_t v) {
@@ -232,6 +232,50 @@ uint32_t invert_bit_order(uint32_t v) {
     }
 
     return result;
+}
+
+template<class T>
+void print_hex(T value) {
+    constexpr uint8_t nibbles = sizeof(value) << 1;
+
+    transport.send_byte('0');
+    transport.send_byte('x');
+    for (int i = nibbles - 1; i >= 0; i--) {
+        auto h = (value >> (i << 2)) & 0xF;
+        uint8_t ch = h < 10 ? ('0' + h) : ('A' + h - 10);
+        transport.send_byte(ch);
+    }
+}
+
+void handle_ir_remote() {
+    if (!ir_receiver.processed()) {
+        return;
+    }
+
+    uint32_t value;
+    {
+        zoal::utils::interrupts_off scope_off;
+        value = ir_receiver.result();
+        ir_receiver.start();
+    }
+
+    switch (value) {
+    case 0x20DFE01Ful:
+        terminal.cursor(terminal.cursor() - 1);
+        break;
+    case 0x20DF609Ful:
+        terminal.cursor(terminal.cursor() + 1);
+        break;
+    case 0x20DF22DDul:
+        rx_buffer.push_back(13);
+        break;
+    case 0x00000001ul:
+        break;
+    default:
+        stream << "\033[2K\r" << zoal::io::hexadecimal(value) << "\r\n";
+        terminal.sync();
+        break;
+    }
 }
 
 int main() {
@@ -261,26 +305,21 @@ int main() {
             terminal.push(&rx_byte, 1);
         }
 
-        if (ir_receiver.processed()) {
-            uint32_t value;
-            {
-                zoal::utils::interrupts_off scope_off;
-                value = ir_receiver.result();
-                ir_receiver.start();
-            }
+        handle_ir_remote();
 
-            stream << value << "\r\n";
+        if (ms_trigger) {
+            ms_trigger = false;
+            scheduler.handle();
+            shield.handle_buttons(counter::now(), button_handler);
+            shield.dynamic_indication();
         }
-
-        scheduler.handle();
-        shield.handle_buttons(counter::now(), button_handler);
-        shield.dynamic_indication();
     }
 }
 
 #pragma clang diagnostic pop
 
 ISR(TIMER0_OVF_vect) {
+    ms_trigger = true;
     milliseconds += overflow_to_tick::step();
 }
 
