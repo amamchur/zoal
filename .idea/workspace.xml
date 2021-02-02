@@ -41,27 +41,52 @@
   <component name="CMakeSettings">
     <configurations>
       <configuration PROFILE_NAME="Debug STM32" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainSTM32.cmake" ENABLED="true" />
-      <configuration PROFILE_NAME="Debug Host" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainHost.cmake" ENABLED="true" />
       <configuration PROFILE_NAME="Release STM32" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainSTM32.cmake" ENABLED="true" />
       <configuration PROFILE_NAME="Release AVR" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainAVR.cmake" ENABLED="true" />
+      <configuration PROFILE_NAME="Debug Host" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_TOOLCHAIN_FILE=ToolchainHost.cmake" ENABLED="true" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/i2c.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/i2c.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/i2c.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/irq.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/irq.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/utils/usart_transmitter.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/utils/usart_transmitter.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/data/date_time.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/data/date_time.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/input_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/input_processor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_hal_conf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_it.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_it.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/gpio.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/gpio.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/stm32f1xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/stm32f1xx_it.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/i2c.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ct/conditional_type.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ct/conditional_type.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/gpio/pin.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gpio/pin.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/adxl345.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/adxl345.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ds3231.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/ds3231.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/lm75.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/lm75.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/ssd1306.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/ssd1306.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/io/ir_remote_receiver.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/ir_remote_receiver.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/output_stream.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/io/stream_functor.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/stream_functor.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/utils/scheduler.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/scheduler.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/io/output_stream.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/io/output_stream.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/coverage-zero.sh" beforeDir="false" afterPath="$PROJECT_DIR$/tools/coverage-zero.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/llvm-coverage.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/i2c_device.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/i2c_device.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/i2c_request_dispatcher.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/i2c_request_dispatcher.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/utils/i2c_scanner.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/i2c_scanner.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/at24cxx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/at24cxx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/ds3231.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/ds3231.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/lm75.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/lm75.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/ssd1306.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/ssd1306.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/periph/i2c_request.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/periph/i2c_request.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_utils/process_sync_i2c_mock.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/process_sync_i2c_mock.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/i2c_scanner.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,8 +109,13 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug Host" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug STM32" />
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
@@ -117,7 +147,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
     <property name="settings.editor.splitter.proportion" value="0.18565089" />
   </component>
   <component name="RecentsManager">
@@ -136,7 +166,7 @@
       <recent name="$PROJECT_DIR$/tests/mem" />
     </key>
   </component>
-  <component name="RunManager" selected="Google Test.zoal_tests">
+  <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f103_freertos">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
@@ -273,11 +303,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -308,25 +333,30 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" path-to-node="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <configuration name="gen atmega2560" type="NodeJSConfigurationType" application-parameters="-f atmega -m $PROJECT_DIR$/../zoal-mcu-metadata/ATmega_DFP/1.2.209/atdf/ATmega2560.atdf -o include/zoal/mcu/atmega2560_q.hpp" path-to-node="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen atmega328p" type="NodeJSConfigurationType" application-parameters="-f atmega -m $PROJECT_DIR$/../zoal-mcu-metadata/ATmega_DFP/1.2.209/atdf/ATmega328P.atdf -o include/zoal/mcu/atmega328p.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen atmega328p" type="NodeJSConfigurationType" application-parameters="-f atmega -m $PROJECT_DIR$/../zoal-mcu-metadata/ATmega_DFP/1.2.209/atdf/ATmega328P.atdf -o include/zoal/mcu/atmega328p.hpp" path-to-node="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen stm32f030f4px" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F030F4Px.xml&quot; -o ./include/zoal/mcu/stm32f030f4px.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen stm32f030f4px" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F030F4Px.xml&quot; -o ./include/zoal/mcu/stm32f030f4px.hpp" path-to-node="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen stm32f103c8tx.hpp" type="NodeJSConfigurationType" temporary="true" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F103C(8-B)Tx.xml&quot; -o ./include/zoal/mcu/stm32f103c8tx.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen stm32f103c8tx.hpp" type="NodeJSConfigurationType" temporary="true" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F103C(8-B)Tx.xml&quot; -o ./include/zoal/mcu/stm32f103c8tx.hpp" path-to-node="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen stm32f303retx.hpp" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F303R(D-E)Tx.xml&quot; -o ./include/zoal/mcu/stm32f303retx.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen stm32f303retx.hpp" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F303R(D-E)Tx.xml&quot; -o ./include/zoal/mcu/stm32f303retx.hpp" path-to-node="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen stm32f303vctx" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F303VCYx.xml&quot; -o ./include/zoal/mcu/stm32f303vctx.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen stm32f303vctx" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F303VCYx.xml&quot; -o ./include/zoal/mcu/stm32f303vctx.hpp" path-to-node="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <configuration name="stm32f103_blue_pill" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f103_blue_pill" CONFIG_NAME="ReleaseAVR" version="1" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f103_blue_pill">
@@ -456,7 +486,11 @@
       <workItem from="1611562282434" duration="2859000" />
       <workItem from="1611700451142" duration="6682000" />
       <workItem from="1611818270914" duration="42509000" />
-      <workItem from="1612079094779" duration="13246000" />
+      <workItem from="1612079094779" duration="13525000" />
+      <workItem from="1612107974649" duration="2471000" />
+      <workItem from="1612115914760" duration="7984000" />
+      <workItem from="1612169685301" duration="12617000" />
+      <workItem from="1612182524509" duration="38642000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -647,7 +681,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611875646500</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Re-factor date time output">
+      <created>1612093844518</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1612093844518</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -681,7 +722,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Code cleanup" />
     <MESSAGE value="Add Knuth-Morris-Pratt search algorithm" />
     <MESSAGE value="Improved CAS applying strategies" />
     <MESSAGE value="Added FreeRTOS support" />
@@ -706,10 +746,28 @@
     <MESSAGE value="Update multi functional shield" />
     <MESSAGE value="Fix ir_remote_receiver" />
     <MESSAGE value="Re-factor digital sampler" />
-    <option name="LAST_COMMIT_MESSAGE" value="Re-factor digital sampler" />
+    <MESSAGE value="Re-factor date time output" />
+    <option name="LAST_COMMIT_MESSAGE" value="Re-factor date time output" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c</url>
+          <line>4722</line>
+          <option name="timeStamp" value="46" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/tests/periph/i2c_request.cpp</url>
+          <line>42</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/zoal/periph/i2c_request.hpp</url>
+          <line>53</line>
+          <option name="timeStamp" value="92" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint enabled="true" type="CidrExceptionBreakpoint" />
         <breakpoint type="python-exception">
@@ -719,6 +777,11 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="com.jetbrains.cidr.embedded.openocd.conf.type">
+        <watch expression="eeprom_mem" language="ObjectiveC" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

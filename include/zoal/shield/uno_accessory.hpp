@@ -21,7 +21,7 @@ namespace zoal { namespace shield {
 
         using ssd1306_interface = zoal::ic::ssd1306_interface_i2c<delay, typename pcb::ard_d07, typename pcb::ard_d08, 0x3C>;
         using display_type = zoal::ic::ssd1306<zoal::ic::ssd1306_resolution::ssd1306_128x64, ssd1306_interface>;
-        using clock_type = zoal::ic::ds3231;
+        using clock_type = zoal::ic::ds3231<zoal::periph::device_buffer_type::static_mem>;
         using thermometer_type = zoal::ic::lm75;
         using accelerometer_type = zoal::ic::adxl345;
         using buzzer = zoal::gpio::active_high<typename pcb::ard_d11>;

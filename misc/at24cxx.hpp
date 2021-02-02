@@ -1,59 +1,64 @@
-Address#pragma once
-
 #ifndef ZOAL_IC_AT24C32_HPP
 #define ZOAL_IC_AT24C32_HPP
 
 #include <stdint.h>
+#include <zoal/ct/conditional_type.hpp>
+#include <zoal/periph/i2c_device.hpp>
+#include <zoal/periph/i2c_request.hpp>
 
 namespace zoal { namespace ic {
-    template<class I2C, uint16_t PageSize, uint8_t Address = 0x57>
-    class at24cxx {
+    class at24cxx_api : public zoal::periph::i2c_device {
     public:
-        static constexpr uint16_t address = Address;
-        static constexpr uint16_t page_size = PageSize;
+        using buffer_type = zoal::periph::i2c_device_buffer<2, 1>;
 
-        using self_type = at24cxx<I2C, PageSize, Address>;
+        explicit at24cxx_api(uint8_t addr = 0x57)
+            : address_(addr) {}
 
-        volatile bool ready{false};
-        uint16_t page_address{0};
-        uint16_t length{0};
-        uint8_t page[PageSize];
+        template<class Dispatcher>
+        typename Dispatcher::finisher_type write(Dispatcher &disp, uint32_t pos, void *src, size_t size) {
+            buffer->command[0] = static_cast<uint8_t>(pos >> 16);
+            buffer->command[1] = static_cast<uint8_t>(pos & 0xFF);
 
-        void read_page(uint16_t size = PageSize) {
-            length = size;
-            ready = false;
-            I2C::wait();
-            I2C::stream().write(Address)
-                    .value(page_address >> 8)
-                    .value(page_address & 0xFF);
-            I2C::transmit(&i2c_address_assigned, this);
+            auto req = disp.acquire_request();
+            req->write(address_, buffer->command, buffer->command + 6);
+            req->extra_ptr = reinterpret_cast<uint8_t *>(src);
+            req->extra_end = req->extra_ptr + size;
+            next_sequence(disp, notify_client<Dispatcher>);
+            return disp.make_finisher();
         }
 
-        void write_page(uint16_t size = PageSize) {
-            ready = false;
-            length = size;
+        template<class Dispatcher>
+        typename Dispatcher::finisher_type read(Dispatcher &disp, uint32_t pos, void *dst, size_t size) {
+            using zoal::periph::i2c_request_status;
+
+            buffer->command[0] = static_cast<uint8_t>(pos >> 16);
+            buffer->command[1] = static_cast<uint8_t>(pos & 0xFF);
+
+            auto address_assigned = [this, dst, size](Dispatcher &dispatcher, i2c_request_status s) {
+                if (s == i2c_request_status::finished) {
+                    auto req = dispatcher.acquire_request();
+                    req->read(address_, reinterpret_cast<uint8_t *>(dst), reinterpret_cast<uint8_t *>(dst) + size);
+                    next_sequence(dispatcher, notify_client<Dispatcher>);
+                } else {
+                    dispatcher.finish_sequence(-1);
+                }
+            };
+
+            auto req = disp.acquire_request();
+            req->write(address_, buffer->command, buffer->command + 2);
+            next_sequence(disp, address_assigned);
+
+            return disp.make_finisher();
         }
 
-        static void i2c_data_fetched(void *token) {
-            // Class *cls = (Class *)token;
-            // auto &stream = I2C::stream();
-
-            // for (uint16_t i = 0; i < cls->length; i++) {
-            // 	cls->page[i] = stream.data[i];
-            // }
-
-            // cls->ready = true;
-        }
-
-
-        static void i2c_address_assigned(void *token) {
-            auto *cls = (self_type *) token;
-            cls->ready = true;
-
-            I2C::stream().read(Address, cls->length);
-            // I2C::transmit(&i2cDataFetched, token);
-        }
+        uint8_t address_{0};
+        buffer_type *buffer{nullptr};
     };
+
+    template<zoal::periph::device_buffer_type BufferType = zoal::periph::device_buffer_type::static_mem>
+    using at24cxx = typename zoal::ct::conditional_type<BufferType == zoal::periph::device_buffer_type::static_mem,
+                                                        zoal::periph::i2c_buffer_owner<at24cxx_api>,
+                                                        zoal::periph::i2c_buffer_guardian<at24cxx_api>>::type;
 }}
 
 #endif

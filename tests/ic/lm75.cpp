@@ -18,7 +18,7 @@ TEST(lm75, fetch_data_request) {
     volatile bool finished = false;
 
     auto lm75 = zoal::ic::lm75();
-    lm75.fetch(dispatcher)([&]() { finished = true; });
+    lm75.fetch(dispatcher)([&](int code) { finished = code == 0; });
 
     EXPECT_FALSE(finished);
     EXPECT_EQ(request.address_rw(), 0x90);

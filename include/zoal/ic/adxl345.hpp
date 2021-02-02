@@ -46,18 +46,21 @@ namespace zoal { namespace ic {
             fifo_status = 0x37
         };
 
-        zoal::data::vector<int16_t> raw_vector;
-
         template<class Dispatcher>
         typename Dispatcher::finisher_type power_on(Dispatcher &disp) {
-            auto notify_client = [](Dispatcher &dispatcher) { dispatcher.finish_sequence(); };
-            auto turn_on = [this, notify_client](Dispatcher &dispatcher) {
-                buffer[0] = static_cast<uint8_t>(register_map::power_control);
-                buffer[1] = 8;
+            using zoal::periph::i2c_request_status;
 
-                auto req = dispatcher.acquire_request();
-                req->write(address_, buffer, buffer + 2);
-                next_sequence(dispatcher, notify_client);
+            auto turn_on = [this](Dispatcher &dispatcher, zoal::periph::i2c_request_status s) {
+                if (s == i2c_request_status::finished) {
+                    buffer[0] = static_cast<uint8_t>(register_map::power_control);
+                    buffer[1] = 8;
+
+                    auto req = dispatcher.acquire_request();
+                    req->write(address_, buffer, buffer + 2);
+                    next_sequence(dispatcher, i2c_device::notify_client<Dispatcher>);
+                } else {
+                    dispatcher.finish_sequence(-1);
+                }
             };
 
             // Turm off first
@@ -72,17 +75,16 @@ namespace zoal { namespace ic {
 
         template<class Dispatcher>
         typename Dispatcher::finisher_type fecth_axis(Dispatcher &disp) {
-            auto parse_and_notify_client = [this](Dispatcher &dispatcher) {
-                raw_vector.x = static_cast<int16_t>(buffer[1]) << 8 | buffer[0];
-                raw_vector.y = static_cast<int16_t>(buffer[3]) << 8 | buffer[2];
-                raw_vector.z = static_cast<int16_t>(buffer[5]) << 8 | buffer[4];
-                dispatcher.finish_sequence();
-            };
+            using zoal::periph::i2c_request_status;
 
-            auto read_axis = [this, parse_and_notify_client](Dispatcher &dispatcher) {
-                auto req = dispatcher.acquire_request();
-                req->read(address_, buffer, buffer + 6);
-                next_sequence(dispatcher, parse_and_notify_client);
+            auto read_axis = [this](Dispatcher &dispatcher, i2c_request_status s) {
+                if (s == i2c_request_status::finished) {
+                    auto req = dispatcher.acquire_request();
+                    req->read(address_, buffer, buffer + 6);
+                    next_sequence(dispatcher, notify_client<Dispatcher>);
+                } else {
+                    dispatcher.finish_sequence(-1);
+                }
             };
 
             // Assign x_axis_data_0 address
@@ -93,6 +95,12 @@ namespace zoal { namespace ic {
             req->write(address_, buffer, buffer + 1);
             next_sequence(disp, read_axis);
             return disp.make_finisher();
+        }
+
+        zoal::data::vector<int16_t> vector() {
+            return zoal::data::vector<int16_t>(static_cast<int16_t>(buffer[1]) << 8 | buffer[0],
+                                               static_cast<int16_t>(buffer[3]) << 8 | buffer[2],
+                                               static_cast<int16_t>(buffer[5]) << 8 | buffer[4]);
         }
 
         uint8_t address_{0x53};

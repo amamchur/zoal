@@ -33,7 +33,6 @@ void zoal_init_hardware() {
         usart_mux::connect,
         usart_cfg::apply,
         user_led::gpio_cfg,
-        keypad_type::gpio_cfg,
         api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12, mcu::pb_13>>();
 
     // Enable peripherals after configuration

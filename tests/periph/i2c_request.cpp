@@ -10,8 +10,7 @@ TEST(i2c_request, default_values) {
     zoal::periph::i2c_request request;
 
     EXPECT_EQ(request.address_rw(), 0);
-    EXPECT_FALSE(request.has_next());
-    EXPECT_FALSE(request.request_next());
+    EXPECT_TRUE(request.eos());
     EXPECT_FALSE(request.processing());
     EXPECT_FALSE(request.finished());
 
@@ -29,8 +28,7 @@ TEST(i2c_request, write_data) {
     request.write(0x3C, buffer, buffer + sizeof(buffer));
 
     EXPECT_EQ(request.address_rw(), 0x78);
-    EXPECT_TRUE(request.has_next());
-    EXPECT_TRUE(request.request_next());
+    EXPECT_FALSE(request.eos());
     EXPECT_TRUE(request.processing());
     EXPECT_FALSE(request.finished());
 
@@ -41,8 +39,8 @@ TEST(i2c_request, write_data) {
     EXPECT_EQ(r, zoal::periph::i2c_request_status::pending);
 
     std::vector<uint8_t> data;
-    while (request.has_next()) {
-        data.push_back(request.dequeue());
+    while (!request.eos()) {
+        data.push_back(request.pull());
     }
 
     ASSERT_EQ(data.size(), 5);
@@ -60,16 +58,15 @@ TEST(i2c_request, read_data) {
     request.read(0x3C, buffer, buffer + sizeof(buffer) / 2);
     EXPECT_EQ(request.address_rw(), 0x79);
     EXPECT_EQ(request.end - request.ptr, 5);
-    EXPECT_TRUE(request.has_next());
-    EXPECT_TRUE(request.request_next());
+    EXPECT_FALSE(request.eos());
     EXPECT_TRUE(request.processing());
     EXPECT_FALSE(request.finished());
 
     uint8_t fib_prev = 1;
     uint8_t fib = 1;
-    while (request.request_next()) {
+    while (!request.eos()) {
         auto f = fib_prev + fib;
-        request.enqueue(f);
+        request.push(f);
         fib_prev = fib;
         fib = f;
     }
@@ -113,8 +110,7 @@ TEST(i2c_request, reset) {
     request.write(0x3C, buffer, buffer + sizeof(buffer));
 
     EXPECT_EQ(request.address_rw(), 0x78);
-    EXPECT_TRUE(request.has_next());
-    EXPECT_TRUE(request.request_next());
+    EXPECT_FALSE(request.eos());
     EXPECT_TRUE(request.processing());
     EXPECT_FALSE(request.finished());
 
@@ -124,8 +120,7 @@ TEST(i2c_request, reset) {
     request.reset();
 
     EXPECT_EQ(request.address_rw(), 0);
-    EXPECT_FALSE(request.has_next());
-    EXPECT_FALSE(request.request_next());
+    EXPECT_TRUE(request.eos());
     EXPECT_FALSE(request.processing());
     EXPECT_FALSE(request.finished());
 

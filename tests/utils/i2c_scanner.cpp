@@ -16,7 +16,7 @@ TEST(i2c_scanner, scan_request) {
 
     std::vector<uint8_t> found_devs;
     scanner.device_found.assign([&](uint8_t dev) { found_devs.push_back(dev); });
-    scanner.scan(dispatcher)([&]() { finished = true; });
+    scanner.scan(dispatcher)([&](int code) { finished = code == 0; });
 
     EXPECT_EQ(request.address_rw(), 0x2);
     EXPECT_EQ(request.ptr, nullptr);
@@ -47,7 +47,7 @@ TEST(i2c_scanner, handle_until_finished) {
 
     bool dev_0x48_found = false;
     scanner.device_found = [&](uint8_t addr) { dev_0x48_found = dev_0x48_found || addr == 0x48; };
-    scanner.scan(dispatcher)([&]() { finished = true; });
+    scanner.scan(dispatcher)([&](int code) { finished = code == 0; });
 
     EXPECT_FALSE(finished);
     EXPECT_FALSE(dev_0x48_found);

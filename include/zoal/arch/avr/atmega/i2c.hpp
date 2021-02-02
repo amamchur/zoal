@@ -112,12 +112,12 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 break;
             case I2C_MT_SLA_ACK:
             case I2C_MT_DATA_ACK:
-                if (request.has_next()) {
-                    TWDRx::ref() = request.dequeue();
-                    TWCRx::ref() = ACK;
-                } else {
+                if (request.eos()) {
                     TWCRx::ref() = STOP;
                     request.complete(zoal::periph::i2c_request_status::finished);
+                } else {
+                    TWDRx::ref() = request.pull();
+                    TWCRx::ref() = ACK;
                 }
                 break;
             case I2C_MT_ARB_LOST:
@@ -125,15 +125,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 request.complete(zoal::periph::i2c_request_status::failed);
                 break;
             case I2C_MR_SLA_ACK:
-                TWCRx::ref() = request.request_next() ? ACK : NACK;
+                TWCRx::ref() = request.eos() ? NACK : ACK;
                 break;
             case I2C_MR_DATA_ACK:
-                request.enqueue(TWDRx::ref());
-                if (request.request_next()) {
-                    TWCRx::ref() = ACK;
-                } else {
-                    TWCRx::ref() = NACK;
-                }
+                request.push(TWDRx::ref());
+                TWCRx::ref() = request.eos() ? NACK : ACK;
                 break;
             case I2C_MT_SLA_NACK:
                 TWCRx::ref() = STOP;
@@ -148,7 +144,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 request.complete(zoal::periph::i2c_request_status::failed);
                 break;
             case I2C_MR_DATA_NACK:
-                request.enqueue(TWDRx::ref());
+                request.push(TWDRx::ref());
                 TWCRx::ref() = STOP;
                 request.complete(zoal::periph::i2c_request_status::finished);
                 break;

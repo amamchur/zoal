@@ -117,14 +117,14 @@ void led_off(void *) {
 }
 
 void request_temp(void *) {
-    temp_sensor.fetch(i2c_req_dispatcher)([&]() {
+    temp_sensor.fetch(i2c_req_dispatcher)([&](int) {
         stream << "\033[2K\r" << temp_sensor.temperature() << " ℃\r\n";
         terminal.sync();
     });
 }
 
 void request_time(void *) {
-    clock.fetch(i2c_req_dispatcher)([&]() {
+    clock.fetch(i2c_req_dispatcher)([&](int) {
         stream << "\033[2K\r" << clock.date_time() << "\r\n";
         terminal.sync();
     });
@@ -135,7 +135,7 @@ void scan_i2c() {
         stream << "\033[2K\r"
                << "i2c device: " << addr << "\r\n";
     };
-    scanner.scan(i2c_req_dispatcher)([]() { terminal.sync(); });
+    scanner.scan(i2c_req_dispatcher)([](int) { terminal.sync(); });
 }
 
 #pragma clang diagnostic push
@@ -171,7 +171,7 @@ const char adc_cmd[] PROGMEM = "adc";
 #pragma clang diagnostic pop
 
 void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
-    usart_tx_transport::send_data(s, e - s);
+    transport.send_data(s, e - s);
 }
 
 template<size_t Width = 5, size_t Height = 8>
@@ -206,12 +206,12 @@ static void oled_render(zoal::misc::command_line_machine *p, zoal::misc::command
     zoal::gfx::monospace_glyph_render<graphics, progmem_bitmap_font<>> tl(g, f);
     g->clear(0);
     tl.position(0, 8).draw(p->token_start(), p->token_end(), 1);
-    display.display(i2c_req_dispatcher)([]() { terminal.sync(); });
+    display.display(i2c_req_dispatcher)([](int) { terminal.sync(); });
 }
 
 void read_axis() {
-    accelerometer.fecth_axis(i2c_req_dispatcher)([]() {
-        auto axis = accelerometer.raw_vector;
+    accelerometer.fecth_axis(i2c_req_dispatcher)([](int ) {
+        auto axis = accelerometer.vector();
         stream << "\033[2K\r";
         stream << "x: " << axis.x << "\r\n";
         stream << "y: " << axis.y << "\r\n";
@@ -234,7 +234,7 @@ static void parser_time(zoal::misc::command_line_machine *p, zoal::misc::command
 
     auto dt = zoal::parse::type_parser<zoal::data::date_time>::parse(pos);
     clock.date_time(dt);
-    clock.update(i2c_req_dispatcher)([]() { terminal.sync(); });
+    clock.update(i2c_req_dispatcher)([](int) { terminal.sync(); });
 }
 
 void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
@@ -298,13 +298,13 @@ void input_callback(const zoal::misc::terminal_input *, const char *s, const cha
     terminal.sync();
 }
 
-void accelerometer_initialized() {
+void accelerometer_initialized(int) {
     stream << "\033[2K\r";
     stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
     terminal.sync();
 }
 
-void display_initialized() {
+void display_initialized(int) {
     accelerometer.power_on(i2c_req_dispatcher)(accelerometer_initialized);
 }
 
@@ -322,7 +322,7 @@ void initialize_i2c_devices() {
         ds3231_found = ds3231_found || addr == 0x68;
         adxl345_found = adxl345_found || addr == 0x53;
     };
-    scanner.scan(i2c_req_dispatcher)([&]() { terminal.sync(); });
+    scanner.scan(i2c_req_dispatcher)([&](int) { terminal.sync(); });
     i2c_req_dispatcher.handle_until_finished();
 
     display.init(i2c_req_dispatcher)(display_initialized);

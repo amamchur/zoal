@@ -24,6 +24,7 @@ namespace zoal { namespace periph {
         inline void operator()() {
             I2Circuit::start();
         }
+
     private:
         Function &function;
     };
@@ -32,8 +33,8 @@ namespace zoal { namespace periph {
     class i2c_request_dispatcher {
     public:
         using i2c = I2Circuit;
-        using periph_callback_type = zoal::func::function<ClosureBankSize, void, i2c_request_dispatcher &>;
-        using client_callback_type = zoal::func::function<ClosureBankSize, void>;
+        using driver_callback_type = zoal::func::function<ClosureBankSize, void, i2c_request_dispatcher &, zoal::periph::i2c_request_status>;
+        using client_callback_type = zoal::func::function<ClosureBankSize, void, int>;
         using finisher_type = i2c_request_finisher<i2c, client_callback_type>;
 
         zoal::periph::i2c_request request;
@@ -46,13 +47,13 @@ namespace zoal { namespace periph {
             return finisher_type(client_callback);
         }
 
-        void finish_sequence() {
-            success_periph_callback.reset();
-            failed_periph_callback.reset();
+        void finish_sequence(int code) {
+            driver_periph_callback.reset();
 
             if (client_callback) {
                 typeof(client_callback) cb(client_callback);
-                cb();
+                client_callback.reset();
+                cb(code);
             }
         }
 
@@ -61,23 +62,13 @@ namespace zoal { namespace periph {
                 return;
             }
 
-            switch (request.status) {
-            case zoal::periph::i2c_request_status::finished:
-            case zoal::periph::i2c_request_status::finished_eos: {
-                typeof(success_periph_callback) cb(success_periph_callback);
-                success_periph_callback.reset();
-                cb(*this);
-                break;
-            }
-            default: {
-                typeof(failed_periph_callback) cb(failed_periph_callback);
-                failed_periph_callback.reset();
-                cb(*this);
-                break;
-            }
+            if (driver_periph_callback) {
+                typeof(driver_periph_callback) cb(driver_periph_callback);
+                driver_periph_callback.reset();
+                cb(*this, request.status);
             }
 
-            if (!success_periph_callback && !failed_periph_callback) {
+            if (!driver_periph_callback) {
                 request.reset();
                 client_callback.reset();
             }
@@ -96,8 +87,7 @@ namespace zoal { namespace periph {
     private:
         friend class i2c_device;
 
-        periph_callback_type success_periph_callback;
-        periph_callback_type failed_periph_callback;
+        driver_callback_type driver_periph_callback;
         client_callback_type client_callback;
     };
 }}

@@ -209,7 +209,7 @@ namespace zoal { namespace ic {
 
             iface_.prepare_request(disp, reinterpret_cast<uint8_t *>(&buffer), ptr);
 
-            this->next_sequence(disp, [](Dispatcher &dispatcher) { dispatcher.finish_sequence(); });
+            this->next_sequence(disp, [](Dispatcher &dispatcher, zoal::periph::i2c_request_status) { dispatcher.finish_sequence(0); });
             return disp.make_finisher();
         }
 
@@ -227,7 +227,7 @@ namespace zoal { namespace ic {
 
             iface_.prepare_request(disp, ptr, buffer.canvas + sizeof(buffer.canvas));
 
-            this->next_sequence(disp, [](Dispatcher &dispatcher) { dispatcher.finish_sequence(); });
+            this->next_sequence(disp, [](Dispatcher &dispatcher, zoal::periph::i2c_request_status) { dispatcher.finish_sequence(0); });
             return disp.make_finisher();
         }
 

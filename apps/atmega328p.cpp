@@ -1,7 +1,6 @@
 #include "../misc/cmd_line_parser.hpp"
 #include "../misc/terminal_input.hpp"
 
-#include <avr/eeprom.h>
 #include <avr/io.h>
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>

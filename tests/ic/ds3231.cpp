@@ -6,7 +6,7 @@
 #include <zoal/periph/i2c_request_dispatcher.hpp>
 
 TEST(ds3231, default_values) {
-    auto ds3231 = zoal::ic::ds3231();
+    auto ds3231 = zoal::ic::ds3231<zoal::periph::device_buffer_type::static_mem>();
     auto dt = ds3231.date_time();
     EXPECT_EQ(dt.year, 2000);
     EXPECT_EQ(dt.month, 0);
@@ -21,8 +21,8 @@ TEST(ds3231, default_values) {
 }
 
 TEST(ds3231, date_time_to_regs_21xx) {
-    using ra = zoal::ic::ds3231::register_address;
-    auto ds3231 = zoal::ic::ds3231();
+    using ra = zoal::ic::ds3231<>::register_address;
+    auto ds3231 = zoal::ic::ds3231<>();
     zoal::data::date_time dt;
     dt.year = 2121;
     dt.month = 1;
@@ -55,8 +55,8 @@ TEST(ds3231, date_time_to_regs_21xx) {
 }
 
 TEST(ds3231, date_time_to_regs_20xx) {
-    using ra = zoal::ic::ds3231::register_address;
-    auto ds3231 = zoal::ic::ds3231();
+    using ra = zoal::ic::ds3231<>::register_address;
+    auto ds3231 = zoal::ic::ds3231<>();
     zoal::data::date_time dt;
     dt.year = 2021;
     dt.month = 1;
@@ -94,9 +94,9 @@ TEST(ds3231, fetch_data_request) {
     zoal::periph::i2c_request &request = dispatcher.request;
     volatile bool finished = false;
 
-    using ra = zoal::ic::ds3231::register_address;
-    auto ds3231 = zoal::ic::ds3231();
-    ds3231.fetch(dispatcher)([&]() { finished = true; });
+    using ra = zoal::ic::ds3231<>::register_address;
+    auto ds3231 = zoal::ic::ds3231<>();
+    ds3231.fetch(dispatcher)([&](int code) { finished = code == 0; });
 
     EXPECT_FALSE(finished);
     EXPECT_EQ(request.address_rw(), 0xD0);
@@ -109,7 +109,7 @@ TEST(ds3231, fetch_data_request) {
     EXPECT_FALSE(finished);
     EXPECT_EQ(request.address_rw(), 0xD1);
     EXPECT_EQ(*request.ptr, static_cast<uint8_t>(ra::seconds));
-    EXPECT_EQ(request.end - request.ptr, 6);
+    EXPECT_EQ(request.end - request.ptr, 7);
 
     uint8_t &ref = ds3231[ra::seconds];
     uint8_t *ptr = &ref;
@@ -126,8 +126,8 @@ TEST(ds3231, update_data_request) {
     zoal::periph::i2c_request &request = dispatcher.request;
     volatile bool finished = false;
 
-    using ra = zoal::ic::ds3231::register_address;
-    auto ds3231 = zoal::ic::ds3231();
+    using ra = zoal::ic::ds3231<>::register_address;
+    auto ds3231 = zoal::ic::ds3231<>();
     zoal::data::date_time dt;
     dt.year = 2021;
     dt.month = 1;
@@ -138,14 +138,14 @@ TEST(ds3231, update_data_request) {
     dt.seconds = 30;
 
     ds3231.date_time(dt);
-    ds3231.update(dispatcher)([&]() { finished = true; });
+    ds3231.update(dispatcher)([&](int code) { finished = code == 0; });
 
     uint8_t &ref = ds3231[ra::seconds];
     uint8_t *ptr = &ref;
     EXPECT_FALSE(finished);
     EXPECT_EQ(request.address_rw(), 0xD0);
     EXPECT_EQ(request.ptr, ptr - 1);
-    EXPECT_EQ(request.end - request.ptr, 19);
+    EXPECT_EQ(request.end - request.ptr, 20);
 
     request.status = zoal::periph::i2c_request_status::finished;
     dispatcher.handle();

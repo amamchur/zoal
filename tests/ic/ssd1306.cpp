@@ -19,8 +19,8 @@ TEST(ssd1306, init_oled) {
     volatile bool finished = false;
     ssd1306_type display;
 
-    display.init(dispatcher)([&finished]() {
-        finished = true;
+    display.init(dispatcher)([&finished](int code) {
+        finished = code == 0;
     });
 
     EXPECT_EQ(request.address_rw(), 0x3C << 1);
@@ -78,8 +78,8 @@ TEST(ssd1306, display) {
     display.buffer.canvas[2] = 3;
     display.buffer.canvas[3] = 4;
 
-    display.display(dispatcher)([&finished]() {
-        finished = true;
+    display.display(dispatcher)([&finished](int code) {
+        finished = code == 0;
     });
 
     auto offset = request.ptr - display.buffer.control_buffer;

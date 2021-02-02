@@ -160,6 +160,7 @@ set(STM32F103_FREERTOS_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c
+        cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c
@@ -183,6 +184,7 @@ set(STM32F103_FREERTOS_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.3/Middlewares/Third_Party/FreeRTOS/Source/timers.c
         cubemx-proj/stm32f103_freertos/Src/freertos.c
         cubemx-proj/stm32f103_freertos/Src/gpio.c
+        cubemx-proj/stm32f103_freertos/Src/i2c.c
         cubemx-proj/stm32f103_freertos/Src/main.c
         cubemx-proj/stm32f103_freertos/Src/rtc.c
         cubemx-proj/stm32f103_freertos/Src/stm32f1xx_hal_msp.c

@@ -1,20 +1,86 @@
 #ifndef ZOAL_I2C_DEVICE_HPP
 #define ZOAL_I2C_DEVICE_HPP
 
+#include "./i2c_request.hpp"
+
 namespace zoal { namespace periph {
-    class i2c_device {
-    protected:
-        template<class M, class S, class F>
-        void next_sequence(M &m, S s, F f) {
-            m.success_periph_callback.assign(s);
-            m.failed_periph_callback.assign(f);
+    enum class device_buffer_type { static_mem, shared_mem };
+
+    template<size_t MinCmdSize, size_t MinDataSize>
+    class i2c_device_buffer {
+    public:
+        static auto constexpr min_cmd_size = MinCmdSize;
+        static auto constexpr min_data_size = MinDataSize;
+
+        size_t total_size;
+        uint8_t command[min_cmd_size];
+        uint8_t data[min_data_size];
+    };
+
+    template<class ApiClass>
+    class i2c_buffer_owner : public ApiClass {
+    public:
+        explicit i2c_buffer_owner()
+            : ApiClass() {
+            this->buffer = &buffer_own;
         }
 
-        template<class M, class S>
-        void next_sequence(M &m, S s) {
-            m.success_periph_callback.assign(s);
-            m.failed_periph_callback.reset();
+        explicit i2c_buffer_owner(uint8_t addr)
+            : ApiClass(addr) {
+            this->buffer = &buffer_own;
         }
+
+    private:
+        typename ApiClass::buffer_type buffer_own{0};
+    };
+
+    template<class ApiClass>
+    class i2c_buffer_guardian : public ApiClass {
+    public:
+        template<size_t Size>
+        i2c_buffer_guardian(void *mem, uint8_t addr)
+            : ApiClass(addr) {
+            assign_buffer<Size>(mem);
+        }
+
+        template<size_t Size>
+        explicit i2c_buffer_guardian(void *mem)
+            : ApiClass() {
+            assign_buffer<Size>(mem);
+        }
+
+        template<class T, size_t Size>
+        i2c_buffer_guardian(T (&array)[Size], uint8_t addr)
+            : ApiClass(addr) {
+            assign_buffer<Size * sizeof(T)>(array);
+        }
+
+        template<class T, size_t Size>
+        explicit i2c_buffer_guardian(T (&array)[Size])
+            : ApiClass() {
+            assign_buffer<Size * sizeof(T)>(array);
+        }
+
+    private:
+        template<size_t Size>
+        void assign_buffer(void *mem) {
+            static_assert(Size >= sizeof(typename ApiClass::buffer_type), "Buffer too small");
+            this->buffer = reinterpret_cast<typename ApiClass::buffer_type *>(mem);
+            this->buffer->total_size = Size;
+        }
+    };
+
+    class i2c_device {
+    protected:
+        template<class Dispatcher, class Callback>
+        static void next_sequence(Dispatcher &dispatcher, Callback callback) {
+            dispatcher.driver_periph_callback.assign(callback);
+        }
+
+        template<class Dispatcher>
+        static void notify_client(Dispatcher &dispatcher, zoal::periph::i2c_request_status status) {
+            dispatcher.finish_sequence(status == zoal::periph::i2c_request_status::finished ? 0 : -1);
+        };
     };
 }}
 

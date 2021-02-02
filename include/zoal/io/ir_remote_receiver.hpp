@@ -1,6 +1,7 @@
 #ifndef ZOAL_IO_IR_REMOTE_RECEIVER_HPP
 #define ZOAL_IO_IR_REMOTE_RECEIVER_HPP
 
+#include "../gpio/api.hpp"
 #include "../gpio/bit_order.hpp"
 #include "../gpio/pin_mode.hpp"
 #include "digital_sampler.hpp"

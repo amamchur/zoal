@@ -73,8 +73,8 @@ namespace zoal { namespace gpio {
     template<class Pin>
     class active_drain_strategy<Pin, true> {
     public:
-        using on = typename Pin::high;
-        using off = typename Pin::low;
+        using on = typename Pin::low;
+        using off = typename Pin::high;
         using gpio_cfg = typename Pin::template mode<pin_mode::output_open_drain>;
     };
 

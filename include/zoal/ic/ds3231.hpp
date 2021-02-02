@@ -3,12 +3,13 @@
 #ifndef ZOAL_IC_DS3231_HPP
 #define ZOAL_IC_DS3231_HPP
 
+#include "../ct/conditional_type.hpp"
 #include "../data/date_time.hpp"
 #include "../periph/i2c_device.hpp"
 #include "../periph/i2c_request.hpp"
 
 namespace zoal { namespace ic {
-    class ds3231 : public zoal::periph::i2c_device {
+    class ds3231_api : public zoal::periph::i2c_device {
     public:
         static constexpr uint8_t century_flag = 1 << 7;
         static constexpr uint8_t month_mask = 0x1F;
@@ -36,34 +37,33 @@ namespace zoal { namespace ic {
         };
 
         static constexpr uint8_t data_size = static_cast<uint8_t>(register_address::temp_lsb) + 1;
+        using buffer_type = zoal::periph::i2c_device_buffer<1, data_size>;
 
-        explicit ds3231(uint8_t addr = 0x68)
+        explicit ds3231_api(uint8_t addr = 0x68)
             : address_(addr) {}
 
         template<class Dispatcher>
         typename Dispatcher::finisher_type fetch(Dispatcher &disp) {
-            auto notify_client = [](Dispatcher &dispatcher) { dispatcher.finish_sequence(); };
-
-            auto address_assigned = [this, notify_client](Dispatcher &dispatcher) {
+            auto address_assigned = [this](Dispatcher &dispatcher, zoal::periph::i2c_request_status) {
                 auto req = dispatcher.acquire_request();
-                auto size = static_cast<uint8_t>(register_address::year) - static_cast<uint8_t>(register_address::seconds);
-                req->read(address_, this->data_, this->data_ + size);
-                next_sequence(dispatcher, notify_client);
+                auto size = static_cast<uint8_t>(register_address::year) - static_cast<uint8_t>(register_address::seconds) + 1;
+                req->read(address_, buffer->data, buffer->data + size);
+                next_sequence(dispatcher, notify_client<Dispatcher>);
             };
 
             auto req = disp.acquire_request();
-            req->write(address_, &reg_addr, &reg_addr + sizeof(reg_addr));
+            buffer->command[0] = static_cast<uint8_t>(register_address::seconds);
+            req->write(address_, buffer->command, buffer->command + 1);
             next_sequence(disp, address_assigned);
             return disp.make_finisher();
         }
 
         template<class Dispatcher>
         typename Dispatcher::finisher_type update(Dispatcher &disp) {
-            auto notify_client = [](Dispatcher &dispatcher) { dispatcher.finish_sequence(); };
-
             auto req = disp.acquire_request();
-            req->write(address_, &reg_addr, &reg_addr + sizeof(data_));
-            next_sequence(disp, notify_client);
+            buffer->command[0] = static_cast<uint8_t>(register_address::seconds);
+            req->write(address_, buffer->command, buffer->command + sizeof(buffer->data) + 1);
+            next_sequence(disp, notify_client<Dispatcher>);
             return disp.make_finisher();
         }
 
@@ -85,7 +85,7 @@ namespace zoal { namespace ic {
             return dt;
         }
 
-        void date_time(const zoal::data::date_time &dt) {
+        ds3231_api &date_time(const zoal::data::date_time &dt) {
             auto &me = *this;
             me[register_address::seconds] = bin2bcd(dt.seconds);
             me[register_address::minutes] = bin2bcd(dt.minutes);
@@ -99,6 +99,7 @@ namespace zoal { namespace ic {
             } else {
                 me[register_address::year] = bin2bcd(static_cast<uint8_t>(dt.year - 2000));
             }
+            return *this;
         }
 
         float temperature() {
@@ -109,17 +110,15 @@ namespace zoal { namespace ic {
         }
 
         inline uint8_t operator[](register_address addr) const {
-            return data_[static_cast<uintptr_t>(addr)];
+            return buffer->data[static_cast<uintptr_t>(addr)];
         }
 
         inline uint8_t &operator[](register_address addr) {
-            return data_[static_cast<uintptr_t>(addr)];
+            return buffer->data[static_cast<uintptr_t>(addr)];
         }
 
-    private:
         uint8_t address_{0};
-        uint8_t reg_addr{static_cast<uint8_t>(register_address::seconds)};
-        uint8_t data_[data_size]{0};
+        buffer_type *buffer{nullptr};
 
         static uint8_t bcd2bin(uint8_t value) {
             return static_cast<uint8_t>(value - 6 * (value >> 4u));
@@ -129,6 +128,12 @@ namespace zoal { namespace ic {
             return static_cast<uint8_t>(value + 6 * (value / 10));
         }
     };
+
+    template<zoal::periph::device_buffer_type BufferType = zoal::periph::device_buffer_type::static_mem>
+    using ds3231 = typename zoal::ct::conditional_type<BufferType == zoal::periph::device_buffer_type::static_mem,
+                                                       zoal::periph::i2c_buffer_owner<ds3231_api>,
+                                                       zoal::periph::i2c_buffer_guardian<ds3231_api>>::type;
+
 }}
 
 #endif

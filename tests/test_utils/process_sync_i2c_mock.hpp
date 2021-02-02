@@ -26,11 +26,11 @@ namespace zoal { namespace tests {
             thread = std::thread([]() {
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-                if (request.request_next()) {
-                    request.enqueue(0xE7);
+                if (!request.eos()) {
+                    request.push(0xE7);
                 }
-                if (request.request_next()) {
-                    request.enqueue(0x00);
+                if (!request.eos()) {
+                    request.push(0x00);
                 }
 
                 request.complete(zoal::periph::i2c_request_status::finished);

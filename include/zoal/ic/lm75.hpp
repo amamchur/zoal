@@ -14,12 +14,11 @@ namespace zoal { namespace ic {
 
         template<class Dispatcher>
         typename Dispatcher::finisher_type fetch(Dispatcher &disp) {
-            auto notify_client = [](Dispatcher &dispatcher) { dispatcher.finish_sequence(); };
-            auto address_assigned = [this, notify_client](Dispatcher &dispatcher) {
+            auto address_assigned = [this](Dispatcher &dispatcher, zoal::periph::i2c_request_status) {
                 auto req = dispatcher.acquire_request();
                 req->read(address_, this->data_, this->data_ + sizeof(this->data_));
 
-                next_sequence(dispatcher, notify_client);
+                next_sequence(dispatcher, notify_client<Dispatcher>);
             };
 
             auto req = disp.acquire_request();

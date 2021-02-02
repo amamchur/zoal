@@ -8,7 +8,6 @@
 
 #include <FreeRTOS.h>
 
-static keypad_type keypad;
 static user_button_1_type user_button_1;
 static user_button_2_type user_button_2;
 
@@ -19,17 +18,10 @@ static user_button_2_type user_button_2;
         }
     };
 
-    auto keypad_callback = [](zoal::io::button_event e, size_t r, size_t c) {
-        if (e == zoal::io::button_event::press) {
-            rx_stream_buffer.send(key_map[r][c]);
-        }
-    };
-
     while (true) {
         auto time = xTaskGetTickCount();
         user_button_1.handle(time, button_callback, app_cmd_button1_pressed);
         user_button_2.handle(time, button_callback, app_cmd_button2_pressed);
-        keypad.handle(keypad_callback, time);
         vTaskDelay(5);
     }
 }
