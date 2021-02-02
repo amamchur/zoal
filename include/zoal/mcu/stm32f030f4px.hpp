@@ -82,54 +82,54 @@ namespace zoal { namespace metadata {
     using zoal::ct::integral_constant;
     using stm32f030f4px_sign = zoal::ct::signature<'s', 't', 'm', '3', '2', 'f', '0', '3', '0', 'f', '4', 'p', 'x'>;
 
-    template<> // PA4 -> USART1_CK
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x04, signal::ck> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA8 -> USART1_CK
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x08, signal::ck> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA0 -> USART1_CTS
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x00, signal::cts> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA11 -> USART1_CTS
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0B, signal::cts> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA1 -> USART1_DE
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x01, signal::de> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA12 -> USART1_DE
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0C, signal::de> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA1 -> USART1_RTS
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x01, signal::rts> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA12 -> USART1_RTS
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0C, signal::rts> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA3 -> USART1_RX
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x03, signal::rx> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA10 -> USART1_RX
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0A, signal::rx> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA15 -> USART1_RX
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0F, signal::rx> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PB7 -> USART1_RX
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000400, 0x07, signal::rx> : zoal::ct::integral_constant<int, 0> {};
-    template<> // PA2 -> USART1_TX
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x02, signal::tx> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA9 -> USART1_TX
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x09, signal::tx> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA14 -> USART1_TX
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0E, signal::tx> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PB6 -> USART1_TX
-    struct stm32_af<stm32f030f4px_sign, 0x40013800, 0x48000400, 0x06, signal::tx> : zoal::ct::integral_constant<int, 0> {};
-    template<> // PA4 -> USART2_CK
-    struct stm32_af<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x04, signal::ck> : zoal::ct::integral_constant<int, 1> {};
     template<> // PA0 -> USART2_CTS
-    struct stm32_af<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x00, signal::cts> : zoal::ct::integral_constant<int, 1> {};
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x00, signal::cts> : zoal::ct::integral_constant<int, 1> {};
     template<> // PA1 -> USART2_DE
-    struct stm32_af<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x01, signal::de> : zoal::ct::integral_constant<int, 1> {};
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x01, signal::de> : zoal::ct::integral_constant<int, 1> {};
     template<> // PA1 -> USART2_RTS
-    struct stm32_af<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x01, signal::rts> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA3 -> USART2_RX
-    struct stm32_af<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x03, signal::rx> : zoal::ct::integral_constant<int, 1> {};
-    template<> // PA15 -> USART2_RX
-    struct stm32_af<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x0F, signal::rx> : zoal::ct::integral_constant<int, 1> {};
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x01, signal::rts> : zoal::ct::integral_constant<int, 1> {};
     template<> // PA2 -> USART2_TX
-    struct stm32_af<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x02, signal::tx> : zoal::ct::integral_constant<int, 1> {};
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x02, signal::tx> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA3 -> USART2_RX
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x03, signal::rx> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA4 -> USART2_CK
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x04, signal::ck> : zoal::ct::integral_constant<int, 1> {};
     template<> // PA14 -> USART2_TX
-    struct stm32_af<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x0E, signal::tx> : zoal::ct::integral_constant<int, 1> {};
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x0E, signal::tx> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA15 -> USART2_RX
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40004400, 0x48000000, 0x0F, signal::rx> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA0 -> USART1_CTS
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x00, signal::cts> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA1 -> USART1_DE
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x01, signal::de> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA1 -> USART1_RTS
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x01, signal::rts> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA2 -> USART1_TX
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x02, signal::tx> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA3 -> USART1_RX
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x03, signal::rx> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA4 -> USART1_CK
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x04, signal::ck> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA8 -> USART1_CK
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x08, signal::ck> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA9 -> USART1_TX
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x09, signal::tx> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA10 -> USART1_RX
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0A, signal::rx> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA11 -> USART1_CTS
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0B, signal::cts> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA12 -> USART1_DE
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0C, signal::de> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA12 -> USART1_RTS
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0C, signal::rts> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA14 -> USART1_TX
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0E, signal::tx> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA15 -> USART1_RX
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000000, 0x0F, signal::rx> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB6 -> USART1_TX
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000400, 0x06, signal::tx> : zoal::ct::integral_constant<int, 0> {};
+    template<> // PB7 -> USART1_RX
+    struct stm32_signal_map<stm32f030f4px_sign, 0x40013800, 0x48000400, 0x07, signal::rx> : zoal::ct::integral_constant<int, 0> {};
 }}
 
 #endif

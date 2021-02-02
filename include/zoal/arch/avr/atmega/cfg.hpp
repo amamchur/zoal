@@ -166,10 +166,10 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using apply = typename zoal::gpio::api::optimize<clock_divider, order, cpol_cpha, mode>::result;
         };
 
-        template<class I, uint32_t SysFreq, uint32_t I2CFreq = 400000>
+        template<class I, class Cfg>
         class i2c {
         public:
-            static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)SysFreq / (double)I2CFreq) - 16.0) / 2.0);
+            static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)Cfg::clock_frequency / (double)Cfg::i2c_frequency) - 16.0) / 2.0);
             using apply = typename zoal::gpio::api::optimize<
                 type_list<typename I::TWSRx::template cas<0xFF, 0>, typename I::TWBRx::template cas<0xFF, TWBRx_value>>>;
         };

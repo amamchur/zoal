@@ -6,6 +6,7 @@
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_uno.hpp>
 #include <zoal/io/ir_remote_receiver.hpp>
+#include <zoal/periph/i2c.hpp>
 #include <zoal/shield/uno_multi_functional.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
@@ -63,6 +64,11 @@ const char start_blink_cmd[] PROGMEM = "start-blink";
 const char stop_blink_cmd[] PROGMEM = "stop-blink";
 
 void initialize_hardware() {
+    using namespace zoal::gpio;
+    using usart_cfg = zoal::periph::usart_115200<F_CPU>;
+    using i2c_cfg = zoal::periph::i2c_fast_mode<F_CPU>;
+    using adc_cfg = zoal::periph::adc_config<>;
+
     // Power on modules
     api::optimize<api::clock_on<usart, timer>>();
 
@@ -71,15 +77,15 @@ void initialize_hardware() {
     api::optimize<
         //
         mcu::mux::usart<usart, mcu::pd_00, mcu::pd_01, mcu::pd_04>::connect,
-        mcu::cfg::usart<usart, zoal::periph::usart_115200<F_CPU>>::apply,
+        mcu::cfg::usart<usart, usart_cfg>::apply,
         //
         mcu::mux::adc<adc, pcb::ard_a00>::connect,
-        mcu::cfg::adc<adc, zoal::periph::adc_config<>>::apply,
+        mcu::cfg::adc<adc, adc_cfg>::apply,
         //
         mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply,
         //
         mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::connect,
-        mcu::cfg::i2c<i2c, F_CPU>::apply,
+        mcu::cfg::i2c<i2c, i2c_cfg>::apply,
         //
         mcu::irq::timer<timer>::enable_overflow_interrupt,
         //

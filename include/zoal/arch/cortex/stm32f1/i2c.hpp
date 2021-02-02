@@ -7,15 +7,17 @@ namespace zoal { namespace arch { namespace stm32f1 {
     template<uintptr_t Address, class... Mixin>
     class i2c : public Mixin... {
     public:
-        using I2Cx_CR1 = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
-        using I2Cx_CR2 = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
-        using I2Cx_OAR1 = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
-        using I2Cx_OAR2 = zoal::mem::reg<Address + 0x0C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
-        using I2Cx_DR = zoal::mem::reg<Address + 0x10, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
-        using I2Cx_SR1 = zoal::mem::reg<Address + 0x14, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
-        using I2Cx_SR2 = zoal::mem::reg<Address + 0x18, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
-        using I2Cx_CCR = zoal::mem::reg<Address + 0x1C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
-        using I2Cx_TRISE = zoal::mem::reg<Address + 0x20, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        static constexpr uintptr_t address = Address;
+
+        using I2Cx_CR1 = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t, 0x0000FFFF>;
+        using I2Cx_CR2 = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint32_t, 0x00001FFF>;
+        using I2Cx_OAR1 = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint32_t, 0x0000FFFF>;
+        using I2Cx_OAR2 = zoal::mem::reg<Address + 0x0C, zoal::mem::reg_io::read_write, uint32_t, 0x000000FF>;
+        using I2Cx_DR = zoal::mem::reg<Address + 0x10, zoal::mem::reg_io::read_write, uint32_t, 0x000000FF>;
+        using I2Cx_SR1 = zoal::mem::reg<Address + 0x14, zoal::mem::reg_io::read_write, uint32_t, 0x0000FFFF>;
+        using I2Cx_SR2 = zoal::mem::reg<Address + 0x18, zoal::mem::reg_io::read_write, uint32_t, 0x0000FFFF>;
+        using I2Cx_CCR = zoal::mem::reg<Address + 0x1C, zoal::mem::reg_io::read_write, uint32_t, 0x0000FFFF>;
+        using I2Cx_TRISE = zoal::mem::reg<Address + 0x20, zoal::mem::reg_io::read_write, uint32_t, 0x0000003F>;
 
         static constexpr uint32_t I2Cx_CR1_POS = 1 << 11; // Acknowledge/PEC Position (for data reception)
         static constexpr uint32_t I2Cx_CR1_ACK = 1 << 10; // Acknowledge enable
@@ -37,6 +39,9 @@ namespace zoal { namespace arch { namespace stm32f1 {
         static constexpr uint32_t I2Cx_SR1_SB = 1 << 0; // Start bit (Master mode)
 
         static constexpr uint32_t I2Cx_SR2_BUSY = 1 << 1; // Bus busy
+
+        using enable_cas = zoal::ct::type_list<typename I2Cx_CR1::template cas<0, I2Cx_CR1_PE>>;
+        using disable_cas = zoal::ct::type_list<typename I2Cx_CR1::template cas<I2Cx_CR1_PE, 0>>;
 
         static inline void enable() {
             I2Cx_CR1::ref() |= I2Cx_CR1_PE;

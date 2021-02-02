@@ -6,6 +6,7 @@
 
 using mcu = zoal::mcu::stm32f103c8tx;
 using usart_01 = mcu::usart_01;
+using i2c_02 = mcu::i2c_02;
 using user_led = zoal::gpio::active_drain<mcu::pc_13>;
 
 #endif

@@ -1,18 +1,17 @@
-#include "../misc/at24cxx.hpp"
 #include "command_processor.hpp"
 #include "command_queue.hpp"
 #include "gpio.h"
 #include "hardware.hpp"
-#include "i2c.h"
 #include "input_processor.hpp"
 #include "rtc.h"
 #include "stm32f1xx_hal.h"
 #include "terminal.hpp"
+#include "zoal/ic/at24cxx.hpp"
 
 #include <cstring>
 #include <zoal/arch/cortex/stm32f1/i2c.hpp>
-#include <zoal/freertos/task.hpp>
 #include <zoal/freertos/event_group.hpp>
+#include <zoal/freertos/task.hpp>
 #include <zoal/ic/ds3231.hpp>
 #include <zoal/periph/i2c_request_dispatcher.hpp>
 #include <zoal/utils/delay.hpp>
@@ -32,8 +31,6 @@ __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> terminal_task(zoal_
 __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> main_task(zoal_main_task, "main");
 zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> i2c_02_events;
 
-using i2c_01 = zoal::arch::stm32f1::i2c<0x40005400>;
-using i2c_02 = zoal::arch::stm32f1::i2c<0x40005800>;
 using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c_02, sizeof(void *) * 8>;
 i2c_req_dispatcher_type i2c_req_dispatcher;
 zoal::periph::i2c_request &request = i2c_req_dispatcher.request;
@@ -109,7 +106,6 @@ int main() {
 
     MX_GPIO_Init();
     MX_RTC_Init();
-    MX_I2C2_Init();
     zoal_init_hardware();
 
     vTaskStartScheduler();

@@ -1,10 +1,11 @@
-#ifndef ZOAL_IC_AT24C32_HPP
-#define ZOAL_IC_AT24C32_HPP
+#ifndef ZOAL_IC_AT24CXX_HPP
+#define ZOAL_IC_AT24CXX_HPP
+
+#include "../ct/conditional_type.hpp"
+#include "../periph/i2c_device.hpp"
+#include "../periph/i2c_request.hpp"
 
 #include <stdint.h>
-#include <zoal/ct/conditional_type.hpp>
-#include <zoal/periph/i2c_device.hpp>
-#include <zoal/periph/i2c_request.hpp>
 
 namespace zoal { namespace ic {
     class at24cxx_api : public zoal::periph::i2c_device {

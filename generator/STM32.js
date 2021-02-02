@@ -78,6 +78,7 @@ const familyMap = {
             '#include <zoal/arch/cortex/stm32f1/usart.hpp>',
             '#include <zoal/arch/cortex/stm32f1/timer.hpp>',
             '#include <zoal/arch/cortex/stm32f1/metadata.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/i2c.hpp>'
         ],
         classDeclaration: [
             `using afio = ::zoal::arch::stm32f1::afio<0x40010000, clock_apb2<0x00000001>>;`,
@@ -98,8 +99,12 @@ const familyMap = {
             usart1: {bus: 'apb2', address: 0x40013800, busClockMask: 0x00004000},
             usart2: {bus: 'apb1', address: 0x40004400, busClockMask: 0x00020000},
             usart3: {bus: 'apb1', address: 0x40004800, busClockMask: 0x00040000},
+
             adc1: {bus: 'apb2', address: 0x40012400, busClockMask: 0x00001000},
             adc2: {bus: 'apb2', address: 0x40012800, busClockMask: 0x00002000},
+
+            i2c1: {bus: 'apb1', address: 0x40005400, busClockMask: 0x00200000},
+            i2c2: {bus: 'apb1', address: 0x40005800, busClockMask: 0x00400000},
 
             tim1: {bus: 'apb2', address: 0x40012C00, busClockMask: 0x00000800},
             tim2: {bus: 'apb1', address: 0x40000000, busClockMask: 0x00000001},
@@ -305,6 +310,13 @@ class STM32 extends BaseGenerator {
                 result.push(`using ${name}_${n} = ::zoal::arch::${ns}::adc<${address}, clock_${data.bus}<${m}>>;`);
             },
 
+            i2c: function (name, no, data) {
+                let address = STM32.toHex(data.address, 8);
+                let n = ("00" + no.toString(10)).substr(-2);
+                let m = STM32.toHex(data.busClockMask, 8);
+                result.push(`using ${name}_${n} = ::zoal::arch::${ns}::i2c<${address}, clock_${data.bus}<${m}>>;`);
+            },
+
             tim: function (name, no, data) {
                 let address = STM32.toHex(data.address, 8);
                 let n = ("00" + no.toString(10)).substr(-2);
@@ -334,7 +346,7 @@ class STM32 extends BaseGenerator {
             if (fn) {
                 fn(nn[1], nn[2] - 0, pd);
             } else {
-                console.log(nn[1]);
+                console.log('Builder not found', nn[1]);
             }
         }
 
@@ -361,6 +373,7 @@ class STM32 extends BaseGenerator {
     }
 
     collectData(metadata) {
+        this.metadata = metadata;
         this.mcu.family = metadata.Mcu.$.Family.toLowerCase();
         this.collectPins(metadata);
 
@@ -443,11 +456,65 @@ class STM32 extends BaseGenerator {
         })
     }
 
-    buildUSARTSsMetadata(sign_name) {
+    buildPinRemapMetadataFromMcuXml(sign_name) {
+        let pins = this.metadata.Mcu.Pin;
+        let data = familyMap[this.mcu.family];
         let result = [];
-        let periphs = this.mcu.periphs;
-        let keys = Object.keys(periphs);
+        for (let i = 0; i < pins.length; i++) {
+            let pin = pins[i];
+            let pinName = pin.$.Name;
+            let pm = pinName.toLowerCase().match(/p(\w)(\d+)/);
+            if (!pm) {
+                continue;
+            }
 
+            let portName = pm[1];
+            let offset = pm[2] - 0;
+            let port = data.ports[portName];
+            let signals = pin.Signal;
+
+            for (let j = 0; j < signals.length; j++) {
+                let signal = signals[j];
+                let signalName = signal.$.Name;
+                let vm = signalName.toLowerCase().match(/^([a-z0-9]+\d+)_(\w+)$/);
+                if (!vm) {
+                    continue;
+                }
+
+                let periphName = vm[1];
+                let periph = data.periphs[periphName];
+                if (!periph) {
+                    continue;
+                }
+
+                let sm = signalName.toLowerCase().match(/^(\w+)_(\w+)$/);
+                if (!sm) {
+                    continue;
+                }
+
+                if (!periph || !port || !sm) {
+                    continue;
+                }
+
+                let portHex = STM32.toHex(port.address, 8);
+                let periphHex = STM32.toHex(periph.address, 8);
+                let offsetHex = STM32.toHex(offset, 2);
+                let sgnl = sm[2];
+                let q = {
+                    key: `${periphHex}${portHex}${offsetHex}${sgnl}`,
+                    declaration: [
+                        `template<> // ${pinName} -> ${signalName}`,
+                        `struct stm32_signal_map<${sign_name}, ${periphHex}, ${portHex}, ${offsetHex}, signal::${sgnl}> : zoal::ct::integral_constant<int, 0> {};`
+                    ]
+                };
+                result.push(q);
+            }
+        }
+
+        return result;
+    }
+
+    buildPinRemapMetadataFromGpioCfg(sign_name) {
         let file = this.gpioConfigFilePath;
         let buffer = fs.readFileSync(file);
 
@@ -459,10 +526,10 @@ class STM32 extends BaseGenerator {
 
         let data = familyMap[this.mcu.family];
         let pins = xmlData.IP.GPIO_Pin;
-        let exp = [];
-        let z = [];
+        let result = [];
 
         function processRemap(pin, s, offset, port) {
+            let pinName = pin.$.Name;
             let signalName = s.$.Name;
             let sm = signalName.toLowerCase().match(/^(\w+)_(\w+)$/);
             let name = s.RemapBlock[0].$.Name;
@@ -474,14 +541,14 @@ class STM32 extends BaseGenerator {
             }
 
             let portHex = STM32.toHex(port.address, 8);
-            let usartHex = STM32.toHex(periph.address, 8);
+            let periphHex = STM32.toHex(periph.address, 8);
             let offsetHex = STM32.toHex(offset, 2);
-
-            z.push({
-                sortKey: `${usartHex}${portHex}${offsetHex}`,
+            let sgnl = sm[2];
+            result.push({
+                key: `${periphHex}${portHex}${offsetHex}${sgnl}`,
                 declaration: [
-                    `template<> // ${name} -> ${periphName}`,
-                    `struct stm32_remap<${sign_name}, ${usartHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[2]}> {};`
+                    `template<> // ${pinName} -> ${signalName}`,
+                    `struct stm32_signal_map<${sign_name}, ${periphHex}, ${portHex}, ${offsetHex}, signal::${sgnl}> : zoal::ct::integral_constant<int, ${vm[2]}> {};`
                 ]
             });
         }
@@ -497,10 +564,8 @@ class STM32 extends BaseGenerator {
 
             for (let j = 0; j < signals.length; j++) {
                 let signal = signals[j];
-                let signalName = signal.$.Name;
                 if (signal.RemapBlock) {
                     processRemap(pin, signal, offset, port);
-                    continue;
                 }
 
                 if (!signal.SpecificParameter) {
@@ -515,34 +580,53 @@ class STM32 extends BaseGenerator {
 
                 let periphName = vm[2];
                 let periph = data.periphs[periphName];
-
+                let signalName = signal.$.Name;
                 let sm = signalName.toLowerCase().match(/^(\w+)_(\w+)$/);
                 if (!periph || !port || !sm) {
                     continue;
                 }
 
                 let portHex = STM32.toHex(port.address, 8);
-                let usartHex = STM32.toHex(periph.address, 8);
+                let periphHex = STM32.toHex(periph.address, 8);
                 let offsetHex = STM32.toHex(offset, 2);
-                let q = {
-                    sortKey: `${signalName}${portHex}${offsetHex}`,
+                let sgnl = sm[2];
+                let obj = {
+                    key: `${periphHex}${portHex}${offsetHex}${sgnl}`,
                     declaration: [
                         `template<> // ${pinName} -> ${signalName}`,
-                        `struct stm32_af<${sign_name}, ${usartHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[1]}> {};`
+                        `struct stm32_signal_map<${sign_name}, ${periphHex}, ${portHex}, ${offsetHex}, signal::${sm[2]}> : zoal::ct::integral_constant<int, ${vm[1]}> {};`
                     ]
                 };
-                z.push(q);
+                result.push(obj);
             }
         }
 
-        z.sort((a, b) => {
-            return a.sortKey.localeCompare(b.sortKey);
-        });
+        return result;
+    }
 
-        for (let i = 0; i < z.length; i++) {
-            result = result.concat(z[i].declaration);
+    buildPinRemapMetadata(sign_name) {
+        let gpio_md = this.buildPinRemapMetadataFromGpioCfg(sign_name);
+        let xml_md = this.buildPinRemapMetadataFromMcuXml(sign_name);
+        let remapping = [].concat(gpio_md);
+        for (let i = 0; i < xml_md.length; i++) {
+            let obj = xml_md[i];
+            let qqq = remapping.find((item) => {
+                return item.key === obj.key;
+            });
+
+            if (!qqq) {
+                remapping.push(obj);
+            }
         }
 
+        remapping.sort((a, b) => {
+            return a.key.localeCompare(b.key);
+        });
+
+        let result = [];
+        for (let i = 0; i < remapping.length; i++) {
+            result = result.concat(remapping[i].declaration);
+        }
         return result;
     }
 
@@ -618,7 +702,7 @@ class STM32 extends BaseGenerator {
             '    using zoal::ct::integral_constant;',
             `    using ${sign_name} = ${sign};`,
             '',
-            this.buildUSARTSsMetadata(sign_name).join('\n'),
+            this.buildPinRemapMetadata(sign_name).join('\n'),
             `}}`,
             '',
             `#endif`,

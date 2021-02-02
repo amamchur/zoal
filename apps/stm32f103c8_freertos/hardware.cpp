@@ -2,6 +2,7 @@
 
 #include "stm32f1xx_hal.h"
 
+#include <zoal/periph/i2c.hpp>
 #include <zoal/periph/usart.hpp>
 
 zoal::mem::reserve_mem<stream_buffer_type, 32> rx_stream_buffer(1);
@@ -12,6 +13,10 @@ tx_stream_type tx_stream(transport);
 
 void zoal_init_hardware() {
     using api = zoal::gpio::api;
+    using i2c_02_cfg = zoal::periph::i2c_fast_mode<36000000>;
+    using i2c_mux = mcu::mux::i2c<i2c_02, mcu::pb_11, mcu::pb_10>;
+    using i2c_cfg = mcu::cfg::i2c<i2c_02, i2c_02_cfg>;
+
     using usart_01_cfg = zoal::periph::usart_115200<72000000>;
     using usart_mux = mcu::mux::usart<usart_01, mcu::pb_07, mcu::pb_06>;
     using usart_cfg = mcu::cfg::usart<usart_01, usart_01_cfg>;
@@ -20,26 +25,37 @@ void zoal_init_hardware() {
     api::optimize<
         //
         usart_mux::periph_clock_on,
-        usart_cfg::periph_clock_on
+        usart_cfg::periph_clock_on,
+        //
+        i2c_mux::periph_clock_on,
+        i2c_cfg::periph_clock_on
         //
         >();
 
     // Disable peripherals before configuration
-    api::optimize<api::disable<usart_01>>();
+    api::optimize<api::disable<usart_01, i2c_02>>();
 
     // Configuring everything
     api::optimize<
         //
         usart_mux::connect,
         usart_cfg::apply,
+        //
+        i2c_mux::connect,
+        i2c_cfg::apply,
+        //
         user_led::gpio_cfg,
         api::mode<zoal::gpio::pin_mode::input_pull_up, mcu::pb_12, mcu::pb_13>>();
 
     // Enable peripherals after configuration
-    api::optimize<api::enable<usart_01>>();
+    api::optimize<api::enable<usart_01, i2c_02>>();
 
     HAL_NVIC_SetPriority(USART1_IRQn, 13, 0);
     HAL_NVIC_EnableIRQ(USART1_IRQn);
+    HAL_NVIC_SetPriority(I2C2_EV_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(I2C2_EV_IRQn);
+    HAL_NVIC_SetPriority(I2C2_ER_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(I2C2_ER_IRQn);
 
     usart_01::enable_rx();
 }

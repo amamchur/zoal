@@ -20,6 +20,7 @@
 #include <zoal/periph/i2c_request_dispatcher.hpp>
 #include <zoal/periph/software_spi.hpp>
 #include <zoal/periph/spi.hpp>
+#include <zoal/periph/i2c.hpp>
 #include <zoal/shield/uno_accessory.hpp>
 #include <zoal/utils/i2c_scanner.hpp>
 #include <zoal/utils/ms_counter.hpp>
@@ -76,6 +77,7 @@ scheduler_type scheduler;
 void initialize_hardware() {
     using namespace zoal::gpio;
     using usart_cfg = zoal::periph::usart_115200<F_CPU>;
+    using i2c_cfg = zoal::periph::i2c_fast_mode<F_CPU>;
 
     api::optimize<api::disable<usart, timer, i2c, spi, adc>>();
     api::optimize<
@@ -87,7 +89,7 @@ void initialize_hardware() {
         mcu::irq::timer<timer>::enable_overflow_interrupt,
         //
         mcu::mux::i2c<i2c, mcu::pd_01, mcu::pd_00>::connect,
-        mcu::cfg::i2c<i2c, F_CPU>::apply,
+        mcu::cfg::i2c<i2c, i2c_cfg>::apply,
         //
         mcu::mux::adc<adc, pcb::ard_a00>::connect,
         mcu::cfg::adc<adc, zoal::periph::adc_config<>>::apply,

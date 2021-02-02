@@ -73,12 +73,12 @@ namespace zoal { namespace periph {
     class i2c_device {
     protected:
         template<class Dispatcher, class Callback>
-        static void next_sequence(Dispatcher &dispatcher, Callback callback) {
+        inline static void next_sequence(Dispatcher &dispatcher, Callback callback) {
             dispatcher.driver_periph_callback.assign(callback);
         }
 
         template<class Dispatcher>
-        static void notify_client(Dispatcher &dispatcher, zoal::periph::i2c_request_status status) {
+        inline static void notify_client(Dispatcher &dispatcher, zoal::periph::i2c_request_status status) {
             dispatcher.finish_sequence(status == zoal::periph::i2c_request_status::finished ? 0 : -1);
         };
     };
