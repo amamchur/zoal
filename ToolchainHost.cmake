@@ -16,6 +16,8 @@ function(add_zoal_tests)
             tests/arch/avr/atmega/adc.cpp
             tests/arch/avr/atmega/port.cpp
             tests/arch/avr/atmega/usart.cpp
+            tests/arch/cortex/stm32f1/i2c.cpp
+            tests/arch/cortex/stm32f1/usart.cpp
             tests/ct/static_assertion.cpp
             tests/data/ring_buffer.cpp
             tests/func/function.cpp

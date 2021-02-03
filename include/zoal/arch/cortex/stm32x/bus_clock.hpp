@@ -44,7 +44,7 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr zoal::arch::bus bus = Bus;
 
         using clock_on_cas = typename power_cas::clock_on_cas;
-        using clock_off_cas =  typename power_cas::clock_on_cas;
+        using clock_off_cas =  typename power_cas::clock_off_cas;
 
         static inline void clock_on() {
             zoal::mem::apply_cas_list<typename power_cas::clock_on_cas>::apply();

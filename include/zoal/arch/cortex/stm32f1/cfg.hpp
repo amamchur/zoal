@@ -75,8 +75,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
             static constexpr auto peripheral_clock_mhz = peripheral_clock / 1000000;
             static constexpr auto i2c_frequency = Cfg::i2c_frequency;
             static constexpr bool i2c_standard_mode = i2c_frequency <= 100000;
-            static constexpr auto t_i2c_ns = 1000000000 / i2c_frequency;
-            static constexpr auto t_pclk_ns = 1000 / peripheral_clock_mhz;
             static constexpr auto max_rise_time = i2c_standard_mode ? (peripheral_clock_mhz * max_rise_time_standard_mode_ns) / 1000 + 1
                                                                     : (peripheral_clock_mhz * max_rise_time_fast_mode_ns) / 1000 + 1;
             static constexpr auto standard_mode_ccr = (peripheral_clock / i2c_frequency) / (1 + 1); // 1:1
