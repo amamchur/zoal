@@ -1,6 +1,3 @@
-#include "templates/blink.hpp"
-#include "templates/compile_check.hpp"
-#include "templates/ir_remove.hpp"
 #include "templates/neo_pixel.hpp"
 #include <zoal/mcu/attiny2313a.hpp>
 #include <zoal/utils/logger.hpp>

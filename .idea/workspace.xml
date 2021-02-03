@@ -48,12 +48,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/arch/cortex/stm32f1/i2c.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/arch/cortex/stm32f1/usart.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ToolchainHost.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/ToolchainHost.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/bus_clock.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/bus_clock.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/attiny2313.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny2313.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/templates/blink.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/templates/compile_check.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/templates/ds3231.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/templates/ir_remove.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/templates/multi_function_shield.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/templates/tm1637.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/templates/uno_lcd_shield.hpp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,6 +81,9 @@
     </option>
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug Host" />
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="stm32f1_i2c" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -133,7 +140,7 @@
       <recent name="$PROJECT_DIR$/tests/gpio" />
     </key>
   </component>
-  <component name="RunManager" selected="Google Test.zoal_tests">
+  <component name="RunManager" selected="CMake Application.All">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
