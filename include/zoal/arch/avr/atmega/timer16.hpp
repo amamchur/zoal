@@ -14,10 +14,10 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         using TCCRxA = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
         using TCCRxB = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
         using TCCRxC = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using TCNTx = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using ICRx = zoal::mem::reg<Address + 0x06, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using OCRxA = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using OCRxB = zoal::mem::reg<Address + 0x0A, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using TCNTx = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint16_t, 0xFFFF>;
+        using ICRx = zoal::mem::reg<Address + 0x06, zoal::mem::reg_io::read_write, uint16_t, 0xFFFF>;
+        using OCRxA = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint16_t, 0xFFFF>;
+        using OCRxB = zoal::mem::reg<Address + 0x0A, zoal::mem::reg_io::read_write, uint16_t, 0xFFFF>;
 
         static constexpr uint8_t TCCRxA_COMxA = 0xC0;
         static constexpr uint8_t TCCRxA_COMxB = 0x30;

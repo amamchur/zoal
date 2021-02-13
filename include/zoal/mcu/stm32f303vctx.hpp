@@ -48,9 +48,9 @@ namespace zoal { namespace mcu {
         using port_a = port<0x48000000, clock_ahb<0x00020000>, 0xFFFF>;
         using port_b = port<0x48000400, clock_ahb<0x00040000>, 0xFFFF>;
         using port_c = port<0x48000800, clock_ahb<0x00080000>, 0xFFFF>;
-        using port_d = port<0x48000C00, clock_ahb<0x00100000>, 0xFE9F>;
-        using port_e = port<0x48001000, clock_ahb<0x00200000>, 0x19FF>;
-        using port_f = port<0x48001400, clock_ahb<0x00400000>, 0x0647>;
+        using port_d = port<0x48000C00, clock_ahb<0x00100000>, 0xFFFF>;
+        using port_e = port<0x48001000, clock_ahb<0x00200000>, 0xFFFF>;
+        using port_f = port<0x48001400, clock_ahb<0x00400000>, 0x0657>;
 
         using adc_01 = ::zoal::arch::stm32x::adc<0x50000000, clock_ahb<0x10000000>>;
         using adc_02 = ::zoal::arch::stm32x::adc<0x50000100, clock_ahb<0x10000000>>;
@@ -120,7 +120,10 @@ namespace zoal { namespace mcu {
         using pd_02 = pin<port_d, 0x02>;
         using pd_03 = pin<port_d, 0x03>;
         using pd_04 = pin<port_d, 0x04>;
+        using pd_05 = pin<port_d, 0x05>;
+        using pd_06 = pin<port_d, 0x06>;
         using pd_07 = pin<port_d, 0x07>;
+        using pd_08 = pin<port_d, 0x08>;
         using pd_09 = pin<port_d, 0x09>;
         using pd_10 = pin<port_d, 0x0A>;
         using pd_11 = pin<port_d, 0x0B>;
@@ -138,12 +141,18 @@ namespace zoal { namespace mcu {
         using pe_06 = pin<port_e, 0x06>;
         using pe_07 = pin<port_e, 0x07>;
         using pe_08 = pin<port_e, 0x08>;
+        using pe_09 = pin<port_e, 0x09>;
+        using pe_10 = pin<port_e, 0x0A>;
         using pe_11 = pin<port_e, 0x0B>;
         using pe_12 = pin<port_e, 0x0C>;
+        using pe_13 = pin<port_e, 0x0D>;
+        using pe_14 = pin<port_e, 0x0E>;
+        using pe_15 = pin<port_e, 0x0F>;
 
         using pf_00 = pin<port_f, 0x00>;
         using pf_01 = pin<port_f, 0x01>;
         using pf_02 = pin<port_f, 0x02>;
+        using pf_04 = pin<port_f, 0x04>;
         using pf_06 = pin<port_f, 0x06>;
         using pf_09 = pin<port_f, 0x09>;
         using pf_10 = pin<port_f, 0x0A>;
@@ -295,8 +304,12 @@ namespace zoal { namespace metadata {
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000000, 0x48000C00, 0x0F, signal::exti15> : zoal::ct::integral_constant<int, 0> {};
     template<> // PE11 -> ADC1_EXTI11
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000000, 0x48001000, 0x0B, signal::exti11> : zoal::ct::integral_constant<int, 0> {};
+    template<> // PE15 -> ADC1_EXTI15
+    struct stm32_signal_map<stm32f303vctx_sign, 0x50000000, 0x48001000, 0x0F, signal::exti15> : zoal::ct::integral_constant<int, 0> {};
     template<> // PF2 -> ADC1_IN10
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000000, 0x48001400, 0x02, signal::in10> : zoal::ct::integral_constant<int, 0> {};
+    template<> // PF4 -> ADC1_IN5
+    struct stm32_signal_map<stm32f303vctx_sign, 0x50000000, 0x48001400, 0x04, signal::in5> : zoal::ct::integral_constant<int, 0> {};
     template<> // PA4 -> ADC2_IN1
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000100, 0x48000000, 0x04, signal::in1> : zoal::ct::integral_constant<int, 0> {};
     template<> // PA5 -> ADC2_IN2
@@ -337,6 +350,8 @@ namespace zoal { namespace metadata {
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000100, 0x48000C00, 0x0F, signal::exti15> : zoal::ct::integral_constant<int, 0> {};
     template<> // PE11 -> ADC2_EXTI11
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000100, 0x48001000, 0x0B, signal::exti11> : zoal::ct::integral_constant<int, 0> {};
+    template<> // PE15 -> ADC2_EXTI15
+    struct stm32_signal_map<stm32f303vctx_sign, 0x50000100, 0x48001000, 0x0F, signal::exti15> : zoal::ct::integral_constant<int, 0> {};
     template<> // PF2 -> ADC2_IN10
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000100, 0x48001400, 0x02, signal::in10> : zoal::ct::integral_constant<int, 0> {};
     template<> // PA2 -> ADC3_EXTI2
@@ -369,10 +384,16 @@ namespace zoal { namespace metadata {
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000400, 0x48001000, 0x07, signal::in13> : zoal::ct::integral_constant<int, 0> {};
     template<> // PE8 -> ADC3_IN6
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000400, 0x48001000, 0x08, signal::in6> : zoal::ct::integral_constant<int, 0> {};
+    template<> // PE9 -> ADC3_IN2
+    struct stm32_signal_map<stm32f303vctx_sign, 0x50000400, 0x48001000, 0x09, signal::in2> : zoal::ct::integral_constant<int, 0> {};
+    template<> // PE10 -> ADC3_IN14
+    struct stm32_signal_map<stm32f303vctx_sign, 0x50000400, 0x48001000, 0x0A, signal::in14> : zoal::ct::integral_constant<int, 0> {};
     template<> // PE11 -> ADC3_IN15
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000400, 0x48001000, 0x0B, signal::in15> : zoal::ct::integral_constant<int, 0> {};
     template<> // PE12 -> ADC3_IN16
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000400, 0x48001000, 0x0C, signal::in16> : zoal::ct::integral_constant<int, 0> {};
+    template<> // PE13 -> ADC3_IN3
+    struct stm32_signal_map<stm32f303vctx_sign, 0x50000400, 0x48001000, 0x0D, signal::in3> : zoal::ct::integral_constant<int, 0> {};
     template<> // PF2 -> ADC3_EXTI2
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000400, 0x48001400, 0x02, signal::exti2> : zoal::ct::integral_constant<int, 0> {};
     template<> // PA2 -> ADC4_EXTI2
@@ -389,6 +410,8 @@ namespace zoal { namespace metadata {
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48000800, 0x02, signal::exti2> : zoal::ct::integral_constant<int, 0> {};
     template<> // PD2 -> ADC4_EXTI2
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48000C00, 0x02, signal::exti2> : zoal::ct::integral_constant<int, 0> {};
+    template<> // PD8 -> ADC4_IN12
+    struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48000C00, 0x08, signal::in12> : zoal::ct::integral_constant<int, 0> {};
     template<> // PD9 -> ADC4_IN13
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48000C00, 0x09, signal::in13> : zoal::ct::integral_constant<int, 0> {};
     template<> // PD10 -> ADC4_IN7
@@ -405,6 +428,10 @@ namespace zoal { namespace metadata {
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48001000, 0x02, signal::exti2> : zoal::ct::integral_constant<int, 0> {};
     template<> // PE8 -> ADC4_IN6
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48001000, 0x08, signal::in6> : zoal::ct::integral_constant<int, 0> {};
+    template<> // PE14 -> ADC4_IN1
+    struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48001000, 0x0E, signal::in1> : zoal::ct::integral_constant<int, 0> {};
+    template<> // PE15 -> ADC4_IN2
+    struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48001000, 0x0F, signal::in2> : zoal::ct::integral_constant<int, 0> {};
     template<> // PF2 -> ADC4_EXTI2
     struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48001400, 0x02, signal::exti2> : zoal::ct::integral_constant<int, 0> {};
 }}

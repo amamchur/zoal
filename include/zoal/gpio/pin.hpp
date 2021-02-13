@@ -101,7 +101,7 @@ namespace zoal { namespace gpio {
         using gpio_cfg = typename api::optimize<
             //
             typename pin::port::clock_on_cas,
-            typename pin::template mode<pin_mode::output>,
+            typename pin::template mode<pin_mode::output_push_pull>,
             off>;
     };
 

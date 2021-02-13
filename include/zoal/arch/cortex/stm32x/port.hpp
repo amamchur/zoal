@@ -54,8 +54,11 @@ namespace zoal { namespace arch { namespace stm32x {
 
         static constexpr auto speed_mask = 0x3; // 11: High speed
 
-        template<uintptr_t V, uint8_t Shift = 0>
-        using spd_cas = typename P::GPIOx_OSPEEDR::template cas<(V != 0 ? speed_mask : 0) << Shift, (V != 0 ? speed_mask : 0) << Shift>;
+        template<uint32_t V, uint8_t Shift = 0>
+        using spd_cas = typename P::GPIOx_OSPEEDR::template cas<
+            //
+            static_cast<uint32_t>((V != 0u ? speed_mask : 0u) << Shift),
+            static_cast<uint32_t>((V != 0u ? speed_mask : 0u) << Shift)>;
         using GPIOx_OSPEEDR = type_list<
             //
             spd_cas<(Mask & 1 << 0x0), 0>,
@@ -75,8 +78,11 @@ namespace zoal { namespace arch { namespace stm32x {
             spd_cas<(Mask & 1 << 0xE), 28>,
             spd_cas<(Mask & 1 << 0xF), 30>>;
 
-        template<uintptr_t V, uint8_t Shift = 0>
-        using md_cas = typename P::GPIOx_MODER::template cas<(V != 0 ? 0x03 : 0) << Shift, (V != 0 ? rm::GPIOx_MODER_mask : 0) << Shift>;
+        template<uint32_t V, uint8_t Shift = 0>
+        using md_cas = typename P::GPIOx_MODER::template cas<
+            //
+            static_cast<uint32_t>((V != 0u ? 0x03u : 0u) << Shift),
+            static_cast<uint32_t>((V != 0u ? rm::GPIOx_MODER_mask : 0u) << Shift)>;
         using GPIOx_MODER = type_list<
             //
             md_cas<(Mask & 1 << 0x0), 0>,
@@ -96,8 +102,11 @@ namespace zoal { namespace arch { namespace stm32x {
             md_cas<(Mask & 1 << 0xE), 28>,
             md_cas<(Mask & 1 << 0xF), 30>>;
 
-        template<uintptr_t V, uint8_t Shift = 0>
-        using tp_cas = typename P::GPIOx_OTYPER::template cas<(V != 0 ? 0x03 : 0) << Shift, (V != 0 ? rm::GPIOx_OTYPER_mask : 0) << Shift>;
+        template<uint32_t V, uint8_t Shift = 0>
+        using tp_cas = typename P::GPIOx_OTYPER::template cas<
+            //
+            static_cast<uint32_t>((V != 0 ? 0x03 : 0) << Shift),
+            static_cast<uint32_t>((V != 0 ? rm::GPIOx_OTYPER_mask : 0) << Shift)>;
         using GPIOx_OTYPER = type_list<
             //
             tp_cas<(Mask & 1 << 0x0), 0>,
@@ -117,8 +126,11 @@ namespace zoal { namespace arch { namespace stm32x {
             tp_cas<(Mask & 1 << 0xE), 28>,
             tp_cas<(Mask & 1 << 0xF), 30>>;
 
-        template<uintptr_t V, uint8_t Shift = 0>
-        using pud_cas = typename P::GPIOx_PUPDR::template cas<(V != 0 ? 0x03 : 0) << Shift, (V != 0 ? rm::GPIOx_PUPDR_mask : 0) << Shift>;
+        template<uint32_t V, uint8_t Shift = 0>
+        using pud_cas = typename P::GPIOx_PUPDR::template cas<
+            //
+            static_cast<uint32_t>((V != 0 ? 0x03 : 0) << Shift),
+            static_cast<uint32_t>((V != 0 ? rm::GPIOx_PUPDR_mask : 0) << Shift)>;
         using GPIOx_PUPDR = type_list<
             //
             pud_cas<(Mask & 1 << 0x0), 0>,
@@ -166,25 +178,13 @@ namespace zoal { namespace arch { namespace stm32x {
         using mode_cas = typename pin_mode_to_cnf_mode<self_type, PinMode, Mask>::all;
 
         template<register_type Mask>
-        using low_cas = zoal::ct::type_list<typename GPIOx_BRR::template cas<0, Mask>>;
+        using low_cas = zoal::mem::callable_cas_list_variadic<typename GPIOx_BRR::template cas<0, Mask>>;
 
         template<register_type Mask>
-        using high_cas = zoal::ct::type_list<typename GPIOx_BSRR::template cas<0, Mask>>;
+        using high_cas = zoal::mem::callable_cas_list_variadic<typename GPIOx_BSRR::template cas<0, Mask>>;
 
         ZOAL_INLINE_IO static register_type read() {
             return GPIOx_IDR::ref();
-        }
-
-        template<register_type Mask>
-        ZOAL_INLINE_IO static void low() {
-            static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            GPIOx_BRR::ref() = Mask;
-        }
-
-        template<register_type Mask>
-        ZOAL_INLINE_IO static void high() {
-            static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
-            GPIOx_BSRR::ref() = Mask;
         }
 
         template<register_type Mask>
@@ -193,12 +193,6 @@ namespace zoal { namespace arch { namespace stm32x {
             register_type data = GPIOx_ODR::ref();
             GPIOx_BRR::ref() = data & Mask;
             GPIOx_BSRR::ref() = ~data & Mask;
-        }
-
-        template<::zoal::gpio::pin_mode PinMode, register_type Mask>
-        ZOAL_INLINE_IO static void mode() {
-            using md = pin_mode_to_cnf_mode<self_type, PinMode, Mask>;
-            zoal::mem::apply_cas_list<typename md::all>::apply();
         }
     };
 }}}

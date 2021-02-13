@@ -1,5 +1,6 @@
 #include "../misc/cmd_line_parser.hpp"
 #include "../misc/terminal_input.hpp"
+#include "../misc/timer_freq_calculator.hpp"
 
 #include <avr/io.h>
 #include <zoal/arch/avr/stream.hpp>
@@ -14,7 +15,7 @@
 
 FUSES = {.low = 0xFF, .high = 0xD7, .extended = 0xFC};
 
-volatile bool ms_trigger = true;
+volatile uint8_t time_divider = 0;
 volatile uint32_t milliseconds = 0;
 
 using pcb = zoal::board::arduino_uno;
@@ -32,6 +33,15 @@ using shield_type = zoal::shield::uno_multi_functional<pcb, typeof(milliseconds)
 shield_type shield;
 
 constexpr uint32_t ir_period_microseconds = 100;
+constexpr uint32_t ms_period_microseconds = 1000;
+constexpr uint32_t timer_period = 1 << timer::resolution;
+using ir_calc = zoal::misc::timer_freq_calculator<1000000 / ir_period_microseconds, F_CPU, timer_period, 1, 8, 64, 256, 1024>;
+using ms_calc = zoal::misc::timer_freq_calculator<1000000 / ms_period_microseconds, F_CPU, timer_period, 1, 8, 64, 256, 1024>;
+using overflow_to_tick_v2 = zoal::utils::timer_overflow_to_tick<F_CPU, ir_calc::prescaler, ir_calc::compare_value + 1>;
+
+static_assert(ir_calc::delta_freq_abs < 0.001, "Frequency precision is less then ±0.1%");
+static_assert(ms_calc::delta_freq_abs < 0.001, "Frequency precision is less then ±0.1%");
+
 using ir_receiver_type = zoal::io::ir_remote_receiver<pcb::ard_d02, ir_period_microseconds>;
 ir_receiver_type ir_receiver;
 
@@ -204,19 +214,6 @@ using test_pin = pcb::ard_d05;
 void configure_timer_2() {
     test_pin::mode<zoal::gpio::pin_mode::output>();
 
-    //    // 20000 Hz (16000000/((24+1)*32))
-    //    OCR2A = 24;
-    //    // CTC
-    //    TCCR2A |= (1 << WGM21);
-    //    // Prescaler 32
-    //    TCCR2B |= (1 << CS21) | (1 << CS20);
-    //    // Output Compare Match A Interrupt Enable
-    //    TIMSK2 |= (1 << OCIE2A);
-    //
-    //    TCCR2A = 0;
-    //    TCCR2B = 0;
-    //    TCNT2 = 0;
-
     // 10000 Hz (16000000/((24+1)*64))
     OCR2A = 24;
     // CTC
@@ -291,11 +288,24 @@ int main() {
     terminal.greeting(terminal_greeting);
     terminal.clear();
 
+    stream << "ir prescaler: " << ir_calc::prescaler << "\r\n";
+    stream << "ir compare_value: " << ir_calc::compare_value << "\r\n";
+    stream << "ir delta_freq_abs: " << ir_calc::delta_freq_abs << "\r\n";
+
+    stream << "overflow_to_tick_v2 us_per_tick: " << overflow_to_tick_v2::us_per_tick << "\r\n";
+    stream << "overflow_to_tick_v2 fraction_inc: " << overflow_to_tick_v2::fraction_inc << "\r\n";
+    stream << "overflow_to_tick_v2 us_inc: " << overflow_to_tick_v2::us_inc << "\r\n";
+
+    stream << "overflow_to_tick us_per_tick: " << overflow_to_tick::us_per_tick << "\r\n";
+    stream << "overflow_to_tick fraction_inc: " << overflow_to_tick::fraction_inc << "\r\n";
+    stream << "overflow_to_tick us_inc: " << overflow_to_tick::us_inc << "\r\n";
+
     stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
     terminal.sync();
 
-    delay::ms(10);
     ir_receiver.start();
+
+    test_pin::mode<zoal::gpio::pin_mode::output_push_pull>();
     configure_timer_2();
 
     while (true) {
@@ -311,12 +321,14 @@ int main() {
         }
 
         handle_ir_remote();
+        shield.dynamic_indication();
 
-        if (ms_trigger) {
-            ms_trigger = false;
+        if (time_divider & 0xF8) {
+            time_divider = 0;
             scheduler.handle();
             shield.handle_buttons(counter::now(), button_handler);
-            shield.dynamic_indication();
+            shield.dec_to_segments(milliseconds / 100);
+            shield.segments[2] &= ~0x80;
         }
     }
 }
@@ -324,11 +336,14 @@ int main() {
 #pragma clang diagnostic pop
 
 ISR(TIMER0_OVF_vect) {
-    ms_trigger = true;
-    milliseconds += overflow_to_tick::step();
+    //    ms_trigger = true;
+    //    milliseconds += overflow_to_tick::step();
 }
 
 ISR(TIMER2_COMPA_vect) {
+    test_pin::toggle();
+    time_divider++;
+    milliseconds += overflow_to_tick_v2::step();
     ir_receiver.handle();
 }
 

@@ -15,11 +15,11 @@ namespace zoal { namespace arch { namespace stm32x {
     public:
         static constexpr uintptr_t address = Address;
 
-        static constexpr uint32_t USARTx_ISR_bit_TXE = 1 << 7; // Bit 7 TXE: Transmit data register empty
-        static constexpr uint32_t USARTx_ISR_bit_RXNE = 1 << 5;
-        static constexpr uint32_t USARTx_CR1_bit_RXNEIE = 1 << 5; // Bit 5 RXNE: Read data register not empty
-        static constexpr uint32_t USARTx_CR1_bit_TXEIE = 1 << 7; // Bit 7 TXEIE: interrupt enable
-        static constexpr uint32_t USARTx_CR1_bit_UE = 1 << 0; // Bit 0 UE: USART enable
+        static constexpr uint32_t USARTx_ISR_TXE = 1 << 7; // Bit 7 TXE: Transmit data register empty
+        static constexpr uint32_t USARTx_ISR_RXNE = 1 << 5;
+        static constexpr uint32_t USARTx_CR1_RXNEIE = 1 << 5; // Bit 5 RXNE: Read data register not empty
+        static constexpr uint32_t USARTx_CR1_TXEIE = 1 << 7; // Bit 7 TXEIE: interrupt enable
+        static constexpr uint32_t USARTx_CR1_UE = 1 << 0; // Bit 0 UE: USART enable
 
         using USARTx_CR1 = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using USARTx_CR2 = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
@@ -36,39 +36,39 @@ namespace zoal { namespace arch { namespace stm32x {
         using self_type = usart<Address, Mixin...>;
 
         static void enable() {
-            USARTx_CR1::ref() |= USARTx_CR1_bit_UE;
+            USARTx_CR1::ref() |= USARTx_CR1_UE;
         }
 
         static void disable() {
-            USARTx_CR1::ref() &= ~USARTx_CR1_bit_UE;
+            USARTx_CR1::ref() &= ~USARTx_CR1_UE;
         }
 
         static void enable_tx() {
-            USARTx_CR1::ref() |= USARTx_CR1_bit_TXEIE;
+            USARTx_CR1::ref() |= USARTx_CR1_TXEIE;
         }
 
         static void disable_tx() {
-            USARTx_CR1::ref() &= ~USARTx_CR1_bit_TXEIE;
+            USARTx_CR1::ref() &= ~USARTx_CR1_TXEIE;
         }
 
         static void enable_rx() {
-            USARTx_CR1::ref() |= USARTx_CR1_bit_RXNEIE;
+            USARTx_CR1::ref() |= USARTx_CR1_RXNEIE;
         }
 
         static void disable_rx() {
-            USARTx_CR1::ref() &= ~USARTx_CR1_bit_RXNEIE;
+            USARTx_CR1::ref() &= ~USARTx_CR1_RXNEIE;
         }
 
         static inline void flush() {}
 
         template<class Buffer>
         static inline void rx_handler() {
-            auto rx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_RXNEIE;
+            auto rx_enabled = USARTx_CR1::ref() & USARTx_CR1_RXNEIE;
             if (!rx_enabled) {
                 return;
             }
 
-            auto rx_not_empty = USARTx_ISR::ref() & USARTx_ISR_bit_RXNE;
+            auto rx_not_empty = USARTx_ISR::ref() & USARTx_ISR_RXNE;
             if (!rx_not_empty) {
                 return;
             }
@@ -76,14 +76,29 @@ namespace zoal { namespace arch { namespace stm32x {
             Buffer::push_back(USARTx_RDR::ref());
         }
 
+        template<class RxCallback>
+        static void rx_handler(RxCallback rx_callback) {
+            auto rx_enabled = USARTx_CR1::ref() & USARTx_CR1_RXNEIE;
+            if (!rx_enabled) {
+                return;
+            }
+
+            auto rx_not_empty = USARTx_ISR::ref() & USARTx_ISR_RXNE;
+            if (!rx_not_empty) {
+                return;
+            }
+
+            rx_callback(USARTx_RDR::ref());
+        }
+
         template<class Buffer>
         static void tx_handler() {
-            auto tx_enabled = USARTx_CR1::ref() & USARTx_CR1_bit_TXEIE;
+            auto tx_enabled = USARTx_CR1::ref() & USARTx_CR1_TXEIE;
             if (!tx_enabled) {
                 return;
             }
 
-            auto tx_empty = USARTx_ISR::ref() & USARTx_ISR_bit_TXE;
+            auto tx_empty = USARTx_ISR::ref() & USARTx_ISR_TXE;
             if (!tx_empty) {
                 return;
             }
@@ -94,6 +109,28 @@ namespace zoal { namespace arch { namespace stm32x {
             } else {
                 disable_tx();
             }
+        }
+
+        template<class TxCallback>
+        static bool tx_handler(TxCallback callback) {
+            auto tx_enabled = USARTx_CR1::ref() & USARTx_CR1_TXEIE;
+            if (!tx_enabled) {
+                return false;
+            }
+
+            auto tx_empty = USARTx_ISR::ref() & USARTx_ISR_TXE;
+            if (!tx_empty) {
+                return false;
+            }
+
+            uint8_t value;
+            if (callback(value)) {
+                USARTx_TDR::ref() = value;
+            } else {
+                disable_tx();
+            }
+
+            return true;
         }
     };
 }}}

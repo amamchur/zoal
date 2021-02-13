@@ -11,4 +11,4 @@ node index.js -f attiny -m /home/andrii/Documents/src/zoal-mcu-metadata/ATtiny_D
 node index.js -f stm32 -m ~/STM32CubeMX/db/mcu/STM32F030F4Px.xml -o ./include/zoal/mcu/stm32f030f4px.hpp
 node index.js -f stm32 -m ~/STM32CubeMX/db/mcu/STM32F103C\(8-B\)Tx.xml -o ./include/zoal/mcu/stm32f103c8tx.hpp
 node index.js -f stm32 -m ~/STM32CubeMX/db/mcu/STM32F303R\(D-E\)Tx.xml -o ./include/zoal/mcu/stm32f303retx.hpp
-node index.js -f stm32 -m ~/STM32CubeMX/db/mcu/STM32F303VCYx.xml -o ./include/zoal/mcu/stm32f303vctx.hpp
+node index.js -f stm32 -m ~/STM32CubeMX/db/mcu/STM32F303V\(B-C\)Tx.xml -o ./include/zoal/mcu/stm32f303vctx.hpp

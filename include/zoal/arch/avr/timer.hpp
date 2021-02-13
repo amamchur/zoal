@@ -56,6 +56,18 @@ namespace zoal { namespace arch { namespace avr {
             return 0;
         }
 
+        template<uint8_t Channel, word Value>
+        using compare_value_cas = zoal::ct::type_list<
+            //
+            typename zoal::ct::type_at_index<
+                //
+                Channel,
+                zoal::mem::null_cas,
+                zoal::ct::type_list<
+                    //
+                    typename self_type::OCRxA::template set<Value>,
+                    typename self_type::OCRxB::template set<Value>>>::result>;
+
         template<uint8_t Channel>
         static void compare_value(word value) {
             static_assert(Channel < channels_count, "Channel index is out of range");

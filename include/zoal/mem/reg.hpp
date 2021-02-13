@@ -19,6 +19,9 @@ namespace zoal { namespace mem {
         template<uint32_t C, uint32_t S>
         using cas = typename zoal::mem::cas<Address, RegIO, Type, Mask, C, S>;
 
+        template<uint32_t V>
+        using set = typename zoal::mem::cas<Address, RegIO, Type, Mask, mask, V>;
+
         ZOAL_INLINE_IO static volatile type &ref() {
             return *ZOAL_ADDRESS_CAST(Type, Address);
         }

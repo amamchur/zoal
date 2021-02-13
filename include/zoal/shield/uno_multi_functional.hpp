@@ -34,7 +34,7 @@ namespace zoal { namespace shield {
             zoal::gpio::api::mode<zoal::gpio::pin_mode::output_push_pull, shift_reg_latch, shift_reg_clk, shift_reg_data>,
             zoal::gpio::api::low<shift_reg_latch, shift_reg_clk, shift_reg_data>>;
 
-        void dec_to_segments(uint16_t value) {
+        void dec_to_segments(uint32_t value) {
             segments[0] = 0xFF;
             segments[1] = 0xFF;
             segments[2] = 0xFF;

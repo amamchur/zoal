@@ -8,7 +8,7 @@
 
 using mcu = zoal::mcu::stm32f103c8tx;
 using usart_01 = mcu::usart_01;
-using usart_02 = mcu::usart_02;
+using debug_usart = mcu::usart_02;
 using usart_03 = mcu::usart_03;
 
 using api = zoal::gpio::api;

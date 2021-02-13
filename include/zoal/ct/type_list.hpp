@@ -68,6 +68,36 @@ namespace zoal { namespace ct {
         }
     };
 
+    template<class List>
+    struct type_chain_iterator {
+        template<class F>
+        ZOAL_INLINE_MF static void for_each(F &fn) {
+            fn.template operator()<List>();
+            type_chain_iterator<typename List::next>::for_each(fn);
+        }
+    };
+
+    template<>
+    struct type_chain_iterator<void> {
+        template<class F>
+        static void for_each(F fn) {}
+    };
+
+    template<class List, size_t Index = 0>
+    struct type_chain_index_iterator {
+        template<class F>
+        static void for_each(F &fn) {
+            fn.template operator()<List>(Index);
+            type_chain_index_iterator<typename List::next, Index + 1>::for_each(fn);
+        }
+    };
+
+    template<size_t Index>
+    struct type_chain_index_iterator<void, Index> {
+        template<class F>
+        static void for_each(const F &fn) {}
+    };
+
     template<size_t Index>
     struct type_list_index_iterator<void, Index> {
         template<class F>

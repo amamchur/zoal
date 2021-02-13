@@ -56,7 +56,7 @@ function collectVariables(array) {
     let map = {};
     for (let i = 0; i < array.length; i++) {
         let line = array[i];
-        let m = line.match(/^\s*(\w+)\s*=\s*(.*)$/);
+        let m = line.match(/^\s*([-\w]+)\s*=\s*(.*)$/);
         if (m) {
             map[m[1]] = m[2];
         }
@@ -201,7 +201,7 @@ function processMxProject(projectPath) {
 const mxProjectFolder = 'cubemx-proj'
 let array = [];
 
-// array = processMxProject(path.join(mxProjectFolder, 'stm32f103_blue_pill'));
+// array = processMxProject(path.join(mxProjectFolder, 'stm32f303_discovery'));
 fs.readdirSync(mxProjectFolder).forEach(file => {
     try {
         let a = processMxProject(path.join(mxProjectFolder, file));

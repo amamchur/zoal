@@ -1,22 +1,29 @@
+#include <cstdint>
 #include <iostream>
-#include <zoal/func/function.hpp>
-#include <zoal/mcu/stm32f103c8tx.hpp>
-#include <zoal/periph/i2c.hpp>
+#include <zoal/ct/type_list.hpp>
+#include "../misc/timer_freq_calculator.hpp"
 
-using mcu = zoal::mcu::stm32f103c8tx;
-using i2c = mcu::i2c_02;
-using i2c_02_cfg = zoal::periph::i2c_config<36000000, 400000>;
-using i2c_cfg = mcu::cfg::i2c<i2c, i2c_02_cfg>;
+using calc = zoal::misc::timer_freq_calculator<1000, 16000000, 256, 1, 8, 64, 256, 1024>;
+
+class Functor {
+public:
+    template<class T>
+    void operator()(int index) {
+        std::cout << "--- index: " << index << std::endl;
+        std::cout << "current_prescaler:\t" << T::current_prescaler << std::endl;
+        std::cout << "current_value:\t\t" << T::current_value << std::endl;
+
+        std::cout << "best_prescaler:\t\t" << T::prescaler << std::endl;
+        std::cout << "best_prescaler:\t\t" << T::prescaler << std::endl;
+        std::cout << "best_value:\t\t\t" << T::compare_value << std::endl;
+        std::cout << "real_freq:\t\t\t" << T::real_freq << std::endl;
+        std::cout << "delta_freq_abs:\t\t" << T::delta_freq_abs << std::endl;
+    }
+};
 
 int main() {
-    std::cout << "max_rise_time:\t\t\t" << i2c_cfg::max_rise_time << std::endl;
-    std::cout << "standard_mode_ccr:\t\t" << i2c_cfg::standard_mode_ccr << std::endl;
-    std::cout << "fast_mode_duty_0_ccr:\t" << i2c_cfg::fast_mode_duty_0_ccr << std::endl;
-    std::cout << "fast_mode_duty_1_ccr:\t" << i2c_cfg::fast_mode_duty_1_ccr << std::endl;
-    std::cout << "duty_0_accuracy:\t\t" << i2c_cfg::duty_0_accuracy << std::endl;
-    std::cout << "duty_1_accuracy:\t\t" << i2c_cfg::duty_1_accuracy << std::endl;
-    std::cout << "duty:\t\t\t\t\t" << i2c_cfg::duty << std::endl;
-    std::cout << "ccr:\t\t\t\t\t" << i2c_cfg::ccr << std::endl;
+    Functor fn;
+    zoal::ct::type_chain_index_iterator<calc>::for_each(fn);
 
     return 0;
 }
