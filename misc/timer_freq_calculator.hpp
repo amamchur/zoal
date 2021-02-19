@@ -1,6 +1,8 @@
 #ifndef ZOAL_UTILS_TIMER_FREQ_CALCULATOR_HPP
 #define ZOAL_UTILS_TIMER_FREQ_CALCULATOR_HPP
 
+#include <stdint.h>
+
 namespace zoal { namespace misc {
     template<uint32_t DesirableFreq, uint32_t TimerFreq, uint32_t MaxTimerPeriod, uint32_t Prescaler, uint32_t... Prescalers>
     class timer_freq_calculator {

@@ -94,6 +94,13 @@ namespace zoal { namespace io {
                 transport.send_byte('-');
             }
 
+            double e = 0.5;
+            for (uint8_t i = 0; i < precision; i++) {
+                e /= 10;
+            }
+
+            value += e;
+
             auto int_part = static_cast<uint32_t>(value);
             double fraction = value - int_part;
             *this << int_part;
@@ -103,13 +110,6 @@ namespace zoal { namespace io {
             }
 
             transport.send_byte('.');
-
-            double e = 0.5;
-            for (uint8_t i = 0; i < precision; i++) {
-                e /= 10;
-            }
-
-            fraction += e;
 
             for (uint8_t i = 0; i < precision; i++) {
                 fraction *= 10.0;

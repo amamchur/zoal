@@ -51,7 +51,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
             I2Cx_CR1::ref() &= ~I2Cx_CR1_PE;
         }
 
-        static inline void start() {
+        static inline void start(zoal::periph::i2c_request &) {
             do {
             } while ((I2Cx_SR2::ref() & I2Cx_SR2_BUSY) != 0);
 

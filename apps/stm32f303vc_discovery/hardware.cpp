@@ -4,6 +4,9 @@
 
 #include <zoal/periph/usart.hpp>
 
+i2c_req_dispatcher_type i2c_req_dispatcher;
+zoal::periph::i2c_request &request = i2c_req_dispatcher.request;
+
 usart_debug_tx_transport transport;
 tx_stream_type tx_stream(transport);
 

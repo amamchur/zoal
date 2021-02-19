@@ -6,27 +6,27 @@
 #include "./i2c_request.hpp"
 
 namespace zoal { namespace periph {
-    template<class I2Circuit, class Function>
+    template<class Dispatcher>
     class i2c_request_finisher {
     public:
-        explicit i2c_request_finisher(Function &f)
-            : function(f) {}
+        explicit i2c_request_finisher(Dispatcher &d)
+            : dispatcher(d) {}
         i2c_request_finisher(const i2c_request_finisher &) = delete;
         i2c_request_finisher(const i2c_request_finisher &&cb) noexcept
-            : function(cb.function) {}
+            : dispatcher(cb.dispatcher) {}
 
         template<class T, class... Args>
         inline void operator()(T t, Args... args) {
-            function.assign(t, args...);
-            I2Circuit::start();
+            dispatcher.client_callback.assign(t, args...);
+            Dispatcher::i2c::start(dispatcher.request);
         }
 
         inline void operator()() {
-            I2Circuit::start();
+            Dispatcher::i2c::start(dispatcher.request);
         }
 
     private:
-        Function &function;
+        Dispatcher &dispatcher;
     };
 
     template<class I2Circuit, size_t ClosureBankSize>
@@ -35,7 +35,7 @@ namespace zoal { namespace periph {
         using i2c = I2Circuit;
         using driver_callback_type = zoal::func::function<ClosureBankSize, void, i2c_request_dispatcher &, zoal::periph::i2c_request_status>;
         using client_callback_type = zoal::func::function<ClosureBankSize, void, int>;
-        using finisher_type = i2c_request_finisher<i2c, client_callback_type>;
+        using finisher_type = i2c_request_finisher<i2c_request_dispatcher>;
 
         zoal::periph::i2c_request request;
 
@@ -44,7 +44,7 @@ namespace zoal { namespace periph {
         }
 
         finisher_type make_finisher() {
-            return finisher_type(client_callback);
+            return finisher_type(*this);
         }
 
         void finish_sequence(int code) {
@@ -74,7 +74,7 @@ namespace zoal { namespace periph {
             }
 
             if (request.status == zoal::periph::i2c_request_status::pending) {
-                i2c::start();
+                i2c::start(request);
             }
         }
 
@@ -86,6 +86,7 @@ namespace zoal { namespace periph {
 
     private:
         friend class i2c_device;
+        friend class i2c_request_finisher<i2c_request_dispatcher>;
 
         driver_callback_type driver_periph_callback;
         client_callback_type client_callback;

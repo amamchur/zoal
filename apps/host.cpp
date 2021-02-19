@@ -1,7 +1,9 @@
+#include "../misc/timer_freq_calculator.hpp"
+
 #include <cstdint>
 #include <iostream>
 #include <zoal/ct/type_list.hpp>
-#include "../misc/timer_freq_calculator.hpp"
+#include <zoal/data/vector.hpp>
 
 using calc = zoal::misc::timer_freq_calculator<1000, 16000000, 256, 1, 8, 64, 256, 1024>;
 
@@ -22,8 +24,10 @@ public:
 };
 
 int main() {
-    Functor fn;
-    zoal::ct::type_chain_index_iterator<calc>::for_each(fn);
+    zoal::data::vector<int> v(1, 0, 1);
+    auto nv = v.normalize();
 
+    std::cout << "length: " << v.length() << std::endl;
+    std::cout << "x: " << nv.x << " y: " << nv.y << " z: " << nv.z << std::endl;
     return 0;
 }

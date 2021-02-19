@@ -1,4 +1,3 @@
-#include "./constants.hpp"
 #include "./hardware.hpp"
 #include "./input_processor.hpp"
 #include "./terminal.hpp"
@@ -9,61 +8,58 @@
 #include "usart.h"
 #include "usb.h"
 
+#include <zoal/freertos/event_group.hpp>
 #include <zoal/freertos/stream_buffer.hpp>
 #include <zoal/freertos/task.hpp>
+#include <zoal/ic/lsm303dlhc.hpp>
 #include <zoal/mcu/stm32f303vctx.hpp>
 #include <zoal/mem/reserve_mem.hpp>
+#include <zoal/periph/i2c_request_dispatcher.hpp>
+#include <zoal/utils/i2c_scanner.hpp>
 #include <zoal/utils/ms_counter.hpp>
+#include <zoal/utils/new.hpp>
 
 using mcu = zoal::mcu::stm32f303vctx;
 using counter = zoal::utils::ms_counter<uint32_t, &uwTick>;
+using i2c_01 = mcu::i2c_01;
+
+zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> i2c_02_events;
 
 [[noreturn]] void zoal_main_task(void *);
 
 using task_type = zoal::freertos::task<zoal::freertos::freertos_allocation_type::static_mem>;
-__unused zoal::mem::reserve_mem<task_type, 128, StackType_t> input_task(zoal_input_processor, "input");
+__unused zoal::mem::reserve_mem<task_type, 512, StackType_t> input_task(zoal_input_processor, "input");
 __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> terminal_task(zoal_terminal_rx_task, "terminal");
 __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> main_task(zoal_main_task, "main");
 
-using led_gpio_cfg = zoal::gpio::api::optimize<
-    //
-    led_03::gpio_cfg,
-    led_04::gpio_cfg,
-    led_05::gpio_cfg,
-    led_06::gpio_cfg,
-    led_07::gpio_cfg,
-    led_08::gpio_cfg,
-    led_09::gpio_cfg,
-    led_10::gpio_cfg>;
+zoal::utils::i2c_scanner scanner;
+
+static void test_i2c() {
+    vTaskDelay(1000);
+    scanner.device_found = [](uint8_t addr) {
+        tx_stream << "\033[2K\r"
+                  << "I2C Device found: " << zoal::io::hexadecimal(addr) << "\r\n";
+    };
+    scanner.scan(i2c_req_dispatcher)([](int code) {
+        if (code == 0) {
+            tx_stream << "Done\r\n";
+        } else {
+            tx_stream << "Error\r\n";
+        }
+        terminal.sync();
+    });
+}
 
 [[noreturn]] void zoal_main_task(void *) {
-    led_gpio_cfg();
-    vTaskDelay(1000);
+    pcb::led_gpio_cfg();
 
-    while (true) {
-        led_03::pin::toggle();
-        vTaskDelay(100);
+    for (;;) {
+        auto bits = i2c_02_events.wait(1);
+        if (bits) {
+            i2c_req_dispatcher.handle();
+        }
 
-        led_04::pin::toggle();
-        vTaskDelay(100);
-
-        led_05::pin::toggle();
-        vTaskDelay(100);
-
-        led_06::pin::toggle();
-        vTaskDelay(100);
-
-        led_07::pin::toggle();
-        vTaskDelay(100);
-
-        led_08::pin::toggle();
-        vTaskDelay(100);
-
-        led_09::pin::toggle();
-        vTaskDelay(100);
-
-        led_10::pin::toggle();
-        vTaskDelay(100);
+        vTaskDelay(1);
     }
 }
 
@@ -83,4 +79,12 @@ int main() {
 
     vTaskStartScheduler();
     return 0;
+}
+
+extern "C" void I2C1_EV_IRQHandler() {
+    i2c_01::handle_request_irq(request, []() { i2c_02_events.set_isr(1); });
+}
+
+extern "C" void I2C1_ER_IRQHandler() {
+    i2c_01::handle_request_irq(request, []() { i2c_02_events.set_isr(1); });
 }

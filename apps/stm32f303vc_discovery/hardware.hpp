@@ -8,15 +8,7 @@
 #include <zoal/io/matrix_keypad.hpp>
 #include <zoal/io/output_stream.hpp>
 #include <zoal/mem/reserve_mem.hpp>
-
-using led_03 = zoal::gpio::active_high<mcu::pe_09>;
-using led_04 = zoal::gpio::active_high<mcu::pe_08>;
-using led_05 = zoal::gpio::active_high<mcu::pe_10>;
-using led_06 = zoal::gpio::active_high<mcu::pe_15>;
-using led_07 = zoal::gpio::active_high<mcu::pe_11>;
-using led_08 = zoal::gpio::active_high<mcu::pe_14>;
-using led_09 = zoal::gpio::active_high<mcu::pe_12>;
-using led_10 = zoal::gpio::active_high<mcu::pe_13>;
+#include <zoal/periph/i2c_request_dispatcher.hpp>
 
 using stream_buffer_type = zoal::freertos::stream_buffer<zoal::freertos::freertos_allocation_type::static_mem>;
 
@@ -34,5 +26,10 @@ extern usart_debug_tx_transport transport;
 extern tx_stream_type tx_stream;
 
 void zoal_init_hardware();
+
+using i2c_01 = mcu::i2c_01;
+using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c_01, sizeof(void *) * 8>;
+extern i2c_req_dispatcher_type i2c_req_dispatcher;
+extern zoal::periph::i2c_request &request;
 
 #endif

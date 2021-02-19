@@ -1,6 +1,7 @@
 #ifndef ZOAL_FUNC_FUNCTION_HPP
 #define ZOAL_FUNC_FUNCTION_HPP
 
+#include "../utils/new.hpp"
 #include "./invocation.hpp"
 
 #include <string.h>

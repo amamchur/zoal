@@ -8,7 +8,7 @@
 #include <zoal/freertos/task.hpp>
 #include <zoal/mem/reserve_mem.hpp>
 
-constexpr size_t input_string_length = 256;
+constexpr size_t input_string_length = 64;
 
 extern zoal::mem::reserve_mem<zoal::misc::terminal_input, input_string_length> terminal;
 extern char command_history[input_string_length];

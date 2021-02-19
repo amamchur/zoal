@@ -88,7 +88,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             TWCRx::ref() &= ~(1 << TWENx | 1 << TWIEx | 1 << TWEAx);
         }
 
-        static void start() {
+        static void start(zoal::periph::i2c_request &) {
             TWCRx::ref() = START;
         }
 
