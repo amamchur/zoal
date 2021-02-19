@@ -13,7 +13,7 @@
 #else
 #define ZOAL_ADDRESS_CAST(TYPE, ADDRESS) reinterpret_cast<volatile TYPE *>(ADDRESS)
 #endif
-`
+
 namespace zoal { namespace mem {
     enum class reg_io { read, write, read_write };
     enum class cas_strategy_type { main, set, clear, assign, ignore };
