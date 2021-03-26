@@ -220,8 +220,6 @@ set(STM32F303_DISCOVERY_SRC
         cube-repo/STM32Cube_FW_F3_V1.11.2/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_pwr_ex.c
         cube-repo/STM32Cube_FW_F3_V1.11.2/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_rcc.c
         cube-repo/STM32Cube_FW_F3_V1.11.2/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_rcc_ex.c
-        cube-repo/STM32Cube_FW_F3_V1.11.2/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_rtc.c
-        cube-repo/STM32Cube_FW_F3_V1.11.2/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_rtc_ex.c
         cube-repo/STM32Cube_FW_F3_V1.11.2/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_spi.c
         cube-repo/STM32Cube_FW_F3_V1.11.2/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_spi_ex.c
         cube-repo/STM32Cube_FW_F3_V1.11.2/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_tim.c
@@ -243,7 +241,6 @@ set(STM32F303_DISCOVERY_SRC
         cubemx-proj/stm32f303_discovery/Src/gpio.c
         cubemx-proj/stm32f303_discovery/Src/i2c.c
         cubemx-proj/stm32f303_discovery/Src/main.c
-        cubemx-proj/stm32f303_discovery/Src/rtc.c
         cubemx-proj/stm32f303_discovery/Src/spi.c
         cubemx-proj/stm32f303_discovery/Src/stm32f3xx_hal_msp.c
         cubemx-proj/stm32f303_discovery/Src/stm32f3xx_hal_timebase_tim.c
@@ -312,6 +309,8 @@ add_mcu_executable(stm32f303_discovery stm32
         apps/stm32f303vc_discovery/input_processor.cpp
         apps/stm32f303vc_discovery/terminal.cpp
         apps/stm32f303vc_discovery/hardware.cpp
+        apps/stm32f303vc_discovery/command_processor.cpp
+        apps/stm32f303vc_discovery/command_queue.cpp
         apps/stm32f303vc_discovery/main.cpp
         misc/terminal_input.cpp
         ${TERMINAL_STATE_MACHINE_SRC}

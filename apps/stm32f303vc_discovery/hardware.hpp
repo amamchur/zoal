@@ -4,6 +4,8 @@
 #include "board.hpp"
 
 #include <zoal/freertos/stream_buffer.hpp>
+#include <zoal/freertos/mutex.hpp>
+#include <zoal/freertos/scoped_lock.hpp>
 #include <zoal/io/button.hpp>
 #include <zoal/io/matrix_keypad.hpp>
 #include <zoal/io/output_stream.hpp>
@@ -19,6 +21,10 @@ public:
 
     zoal::mem::reserve_mem<stream_buffer_type, 32> rxs{1};
     zoal::mem::reserve_mem<stream_buffer_type, 32> txs{1};
+
+    using mutex_type = zoal::freertos::mutex<zoal::freertos::freertos_allocation_type::static_mem>;
+    using scoped_lock = zoal::freertos::scoped_lock<mutex_type>;
+    mutex_type mutex;
 };
 
 using tx_stream_type = zoal::io::output_stream<usart_debug_tx_transport>;

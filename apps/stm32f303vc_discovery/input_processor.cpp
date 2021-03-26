@@ -2,6 +2,7 @@
 
 #include "./board.hpp"
 #include "./constants.hpp"
+#include "./terminal.hpp"
 #include "hardware.hpp"
 #include "i2c.h"
 #include "task.h"
@@ -11,13 +12,10 @@
 
 using user_button_type = pcb::user_button_type<TickType_t>;
 user_button_type user_button;
-uint8_t recv[16];
 zoal::ic::lsm303dlhc<> lsm303dlhc;
 
 [[noreturn]] void zoal_input_processor(void *) {
     user_button_type::pin::mode<zoal::gpio::pin_mode::input_floating>();
-
-    vTaskDelay(100);
 
     using acc = zoal::ic::lsm303dlhc<>;
     constexpr auto reg1 = acc::ctrl_reg1_a_odr_400Hz | acc::ctrl_reg1_a_x_y_x_en;
@@ -25,6 +23,7 @@ zoal::ic::lsm303dlhc<> lsm303dlhc;
 
     auto ctrl_reg4_a_initialized = [](int code){
         tx_stream << "ctrl_reg4_a_initialized: " << code << "\r\n";
+        terminal.sync();
     };
 
     auto ctrl_reg1_a_initialized = [ctrl_reg4_a_initialized](int code){

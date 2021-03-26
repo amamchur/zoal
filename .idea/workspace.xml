@@ -48,8 +48,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/command_processor.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/command_processor.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/command_queue.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/command_queue.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/types.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/zoal/freertos/mutex.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/zoal/freertos/scoped_lock.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/constants.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/constants.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/input_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/input_processor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/terminal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/terminal.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/.mxproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Inc/FreeRTOSConfig.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Inc/FreeRTOSConfig.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Inc/rtc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Inc/stm32f3xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Inc/stm32f3xx_hal_conf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Inc/stm32f3xx_it.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Inc/stm32f3xx_it.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/i2c.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/i2c.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/rtc.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/stm32f3xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/stm32f3xx_it.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/stm32f303_discovery.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/stm32f303_discovery.ioc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/utils/new.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/new.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_utils/i2c_mock.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_utils/i2c_mock.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +97,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug STM32" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug Host" />
   <component name="Git.Merge.Settings">
     <option name="BRANCH" value="stm32f1_i2c" />
   </component>
@@ -109,7 +134,7 @@
     <property name="cf.advertisement.text.has.clang-format" value="true" />
     <property name="cf.advertisement.text.overridden" value="true" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/stm32f303vc_discovery" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/nanopb-maintenance_0.3" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -143,7 +168,12 @@
       <command value="vTaskDelay(1);" />
     </option>
   </component>
-  <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f303_discovery">
+  <component name="RunManager" selected="CMake Application.All">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -308,11 +338,6 @@
     <configuration name="stm32f303_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_nucleo" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_nucleo">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" path-to-node="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
@@ -488,7 +513,9 @@
       <workItem from="1613378268383" duration="5105000" />
       <workItem from="1613559983342" duration="10623000" />
       <workItem from="1613723732057" duration="4781000" />
-      <workItem from="1613734004470" duration="430000" />
+      <workItem from="1613734004470" duration="17606000" />
+      <workItem from="1614121781590" duration="90000" />
+      <workItem from="1616756966761" duration="397000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -721,7 +748,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613733974214</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Fix build issue">
+      <created>1613734609667</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1613734609667</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -755,7 +789,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add missed project" />
     <MESSAGE value="Simplify USART interface" />
     <MESSAGE value="Improve button/keypad UX" />
     <MESSAGE value="Add STM32F1xx timer" />
@@ -780,7 +813,8 @@
     <MESSAGE value="Remove outdated files" />
     <MESSAGE value="Fix STM32F303VC MCU generator" />
     <MESSAGE value="Add I2C interface for STN32F3" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add I2C interface for STN32F3" />
+    <MESSAGE value="Fix build issue" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix build issue" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
