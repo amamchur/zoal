@@ -1,66 +1,109 @@
-#ifndef ZOAL_STEPPER_28BYJ_HPP
-#define ZOAL_STEPPER_28BYJ_HPP
+#ifndef ZOAL_IO_STEPPER_28BYJ_HPP
+#define ZOAL_IO_STEPPER_28BYJ_HPP
 
 #include "../gpio/api.hpp"
 
 namespace zoal { namespace io {
-    template<int steps, class Tools, class pin_a, class pin_b, class pin_c, class pin_d>
+    template<int steps, class pin_a, class pin_b, class pin_c, class pin_d>
     class stepper_28byj_mode {};
 
-    template<class Tools, class pin_a, class pin_b, class pin_c, class pin_d>
-    class stepper_28byj_mode<8, Tools, pin_a, pin_b, pin_c, pin_d> {
+    template<class pin_a, class pin_b, class pin_c, class pin_d>
+    class stepper_28byj_mode<8, pin_a, pin_b, pin_c, pin_d> {
     public:
-        using tools = Tools;
+        using api = zoal::gpio::api;
 
-        static void init() {
-            zoal::gpio::api::optimize<zoal::gpio::api::mode<zoal::gpio::pin_mode::output, pin_a, pin_b, pin_c, pin_d>>();
-        }
+        using step0 = api::optimize<
+            //
+            typename pin_a::_1,
+            typename pin_b::_0,
+            typename pin_c::_0,
+            typename pin_d::_0>;
+        using step1 = api::optimize<
+            //
+            typename pin_a::_1,
+            typename pin_b::_1,
+            typename pin_c::_0,
+            typename pin_d::_0>;
+        using step2 = api::optimize<
+            //
+            typename pin_a::_0,
+            typename pin_b::_1,
+            typename pin_c::_0,
+            typename pin_d::_0>;
+        using step3 = api::optimize<
+            //
+            typename pin_a::_0,
+            typename pin_b::_1,
+            typename pin_c::_1,
+            typename pin_d::_0>;
+        using step4 = api::optimize<
+            //
+            typename pin_a::_0,
+            typename pin_b::_0,
+            typename pin_c::_1,
+            typename pin_d::_0>;
+        using step5 = api::optimize<
+            //
+            typename pin_a::_0,
+            typename pin_b::_0,
+            typename pin_c::_1,
+            typename pin_d::_1>;
+        using step6 = api::optimize<
+            //
+            typename pin_a::_0,
+            typename pin_b::_0,
+            typename pin_c::_0,
+            typename pin_d::_1>;
+        using step7 = api::optimize<
+            //
+            typename pin_a::_1,
+            typename pin_b::_0,
+            typename pin_c::_0,
+            typename pin_d::_1>;
+        using stop = api::optimize<
+            //
+            typename pin_a::_0,
+            typename pin_b::_0,
+            typename pin_c::_0,
+            typename pin_d::_0>;
+        using gpio_cfg = api::optimize<api::mode<zoal::gpio::pin_mode::output, pin_a, pin_b, pin_c, pin_d>, stop>;
 
         static void select_step(uint8_t step) {
             switch (step) {
             case 0:
-                typename tools::api::template _1<pin_a, pin_b>();
-                typename tools::api::template _0<pin_c, pin_d>();
+                step0();
                 break;
             case 1:
-                typename tools::api::template _1<pin_b>();
-                typename tools::api::template _0<pin_a, pin_c, pin_d>();
+                step1();
                 break;
             case 2:
-                typename tools::api::template _1<pin_b, pin_c>();
-                typename tools::api::template _0<pin_a, pin_d>();
+                step2();
                 break;
             case 3:
-                typename tools::api::template _1<pin_c>();
-                typename tools::api::template _0<pin_a, pin_b, pin_d>();
+                step3();
                 break;
             case 4:
-                typename tools::api::template _1<pin_c, pin_d>();
-                typename tools::api::template _0<pin_a, pin_b>();
+                step4();
                 break;
             case 5:
-                typename tools::api::template _1<pin_d>();
-                typename tools::api::template _0<pin_a, pin_c, pin_b>();
+                step5();
                 break;
             case 6:
-                typename tools::api::template _1<pin_a, pin_d>();
-                typename tools::api::template _0<pin_b, pin_c>();
+                step6();
                 break;
             case 7:
-                typename tools::api::template _1<pin_a>();
-                typename tools::api::template _0<pin_b, pin_c, pin_d>();
+                step7();
                 break;
             default:
-                typename tools::api::template _0<pin_a, pin_d, pin_b, pin_c>();
+                stop();
                 break;
             }
         }
     };
 
-    template<class Tools, class pin_a, class pin_b, class pin_c, class pin_d>
-    class stepper_28byj_mode<4, Tools, pin_a, pin_b, pin_c, pin_d> {
+    template<class pin_a, class pin_b, class pin_c, class pin_d>
+    class stepper_28byj_mode<4, pin_a, pin_b, pin_c, pin_d> {
     public:
-        using tools = Tools;
         // pin_a - blue;
         // pin_b - pink;
         // pin_c - yellow;
@@ -72,10 +115,7 @@ namespace zoal { namespace io {
         using step2 = api::optimize<api::high<pin_c, pin_d>, api::low<pin_a, pin_b>>;
         using step3 = api::optimize<api::high<pin_a, pin_d>, api::low<pin_b, pin_c>>;
         using stop = api::optimize<api::low<pin_a, pin_d, pin_b, pin_c>>;
-
-        static void init() {
-            api::optimize<api::mode<zoal::gpio::pin_mode::output, pin_a, pin_b, pin_c, pin_d>>();
-        }
+        using gpio_cfg = api::optimize<api::mode<zoal::gpio::pin_mode::output, pin_a, pin_b, pin_c, pin_d>, stop>;
 
         static void select_step(uint8_t step) {
             switch (step) {
@@ -98,7 +138,7 @@ namespace zoal { namespace io {
         }
     };
 
-    template<class Tools, class pin_a, class pin_b, class pin_c, class pin_d, uint8_t spr = 8>
+    template<class pin_a, class pin_b, class pin_c, class pin_d, uint8_t spr = 8>
     class stepper_28byj {
     public:
         static constexpr uint8_t steps_per_rotation = spr;
@@ -106,12 +146,8 @@ namespace zoal { namespace io {
 
         typedef enum { finished, idle, waiting, rotated } status;
 
-        using tools = Tools;
-        using stepper_mode = stepper_28byj_mode<spr, Tools, pin_a, pin_b, pin_c, pin_d>;
-
-        void init() {
-            stepper_mode::init();
-        }
+        using stepper_mode = stepper_28byj_mode<spr, pin_a, pin_b, pin_c, pin_d>;
+        using gpio_cfg = typename stepper_mode::gpio_cfg;
 
         void step_allowed() {
             perform_step = true;
@@ -145,8 +181,6 @@ namespace zoal { namespace io {
             steps_left = 0;
 
             zoal::gpio::api::optimize<zoal::gpio::api::low<pin_a, pin_d, pin_b, pin_c>>();
-
-            //            typename tools::api::template _0<pin_a, pin_d, pin_b, pin_c>();
         }
 
         void rotate(uint32_t steps, uint8_t dir) {
