@@ -2,12 +2,14 @@
 #include "../misc/terminal_input.hpp"
 #include "../misc/type_detector.hpp"
 #include "./data/font_5x8.hpp"
+#include "./data/roboto_regular_16.hpp"
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_leonardo.hpp>
+#include <zoal/gfx/glyph_render.hpp>
 #include <zoal/gfx/monospace_glyph_render.hpp>
 #include <zoal/gfx/renderer.hpp>
 #include <zoal/ic/adxl345.hpp>
@@ -17,10 +19,10 @@
 #include <zoal/io/button.hpp>
 #include <zoal/parse/type_parser.hpp>
 #include <zoal/periph/adc.hpp>
+#include <zoal/periph/i2c.hpp>
 #include <zoal/periph/i2c_request_dispatcher.hpp>
 #include <zoal/periph/software_spi.hpp>
 #include <zoal/periph/spi.hpp>
-#include <zoal/periph/i2c.hpp>
 #include <zoal/shield/uno_accessory.hpp>
 #include <zoal/utils/i2c_scanner.hpp>
 #include <zoal/utils/ms_counter.hpp>
@@ -158,7 +160,7 @@ const char help_msg[] PROGMEM = "ZOAL ATmega32u4 Demo Application\r\n"
                                 "\ttime\t\tdisplay date time\r\n"
                                 "\tset-time\tset date time\r\n"
                                 "\ti2c-scan\tscan i2c devises\r\n"
-                                "\toled\t\tscan i2c devises\r\n"
+                                "\toled\t\tprint text on OLED screen\r\n"
                                 "\tadc\t\tread adc value\r\n";
 const char start_blink_cmd[] PROGMEM = "start-blink";
 const char stop_blink_cmd[] PROGMEM = "stop-blink";
@@ -206,8 +208,13 @@ static void oled_render(zoal::misc::command_line_machine *p, zoal::misc::command
     auto f = progmem_bitmap_font<>::from_memory(font_5x8);
     auto g = graphics::from_memory(display.buffer.canvas);
     zoal::gfx::monospace_glyph_render<graphics, progmem_bitmap_font<>> tl(g, f);
+    zoal::gfx::glyph_render<graphics> tl2(g, &roboto_regular_16);
+
     g->clear(0);
-    tl.position(0, 8).draw(p->token_start(), p->token_end(), 1);
+    //tl.position(0, 8).draw(p->token_start(), p->token_end(), 1);
+
+    tl2.position(24, 24).draw(L"W", 1);
+
     display.display(i2c_req_dispatcher)([](int) { terminal.sync(); });
 }
 
@@ -371,6 +378,18 @@ int main() {
     buzzer::on();
     delay::ms(20);
     buzzer::off();
+
+
+    auto font = &roboto_regular_16;
+    using adapter = zoal::ic::ssd1306_adapter_0<128, 64>;
+    using graphics = zoal::gfx::renderer<uint8_t, adapter>;
+    auto g = graphics::from_memory(display.buffer.canvas);
+    zoal::gfx::glyph_render<graphics> gr(g, font);
+
+    g->clear(0);
+    gr.position(0, font->y_advance * 2).draw(L"!@#$%^&*(),", 1);
+    gr.position(0, font->y_advance * 3).draw(L"Qwerty!", 1);
+    display.display(i2c_req_dispatcher)([](int) { terminal.sync(); });
 
     while (true) {
         uint8_t rx_byte = 0;

@@ -48,7 +48,8 @@ target_compile_definitions(ATmega328p PRIVATE F_CPU=16000000UL)
 
 add_mcu_executable(ATmega32u4 atmega32u4
         apps/atmega32u4.cpp
-        apps/data/font_5x8.cpp
+#        apps/data/font_5x8.cpp
+        apps/data/roboto_regular_16.cpp
         misc/terminal_input.cpp
         ${TERMINAL_STATE_MACHINE_SRC}
         ${TYPE_DETECTOR_STATE_MACHINE_SRC}
