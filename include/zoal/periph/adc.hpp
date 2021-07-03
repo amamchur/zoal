@@ -9,6 +9,15 @@ namespace zoal { namespace periph {
     public:
         static constexpr adc_ref reference = Ref;
     };
+
+    template<class M, class A, class Pin>
+    class adc_channel {
+    public:
+        static uint16_t read() {
+            typename M::mux::template adc<A, Pin>::connect();
+            return A::read();
+        }
+    };
 }}
 
 #endif

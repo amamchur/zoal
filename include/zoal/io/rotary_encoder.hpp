@@ -137,7 +137,6 @@ namespace zoal { namespace io {
 
     template<class A, class B, class StateMachine = rotary_4phase_machine, zoal::gpio::pin_mode PinMode = zoal::gpio::pin_mode::input_pull_up>
     class rotary_encoder {
-        rotary_state rotaryState;
     public:
         void begin() {
             A::template mode<PinMode>();
@@ -147,9 +146,10 @@ namespace zoal { namespace io {
         template<class Callback>
         void handle(Callback callback) {
             using namespace zoal::gpio;
-            uint8_t va = PinMode == pin_mode::input_pull_up ? A::read() ^ 1 : A::read();
-            uint8_t vb = PinMode == pin_mode::input_pull_up ? B::read() ^ 1 : B::read();
-            uint8_t to = va << 1 | vb;
+            uint8_t to = A::read() << 1 | B::read();
+            if (PinMode == pin_mode::input_pull_up) {
+                to = to ^ 3;
+            }
             uint8_t state = StateMachine::handle(rotaryState, to);
             uint8_t event = state & state_directions_event_mask;
             switch (event) {
@@ -168,6 +168,8 @@ namespace zoal { namespace io {
         void handle(T *obj, M m) {
             handle(zoal::utils::method_invoker<T, rotary_event>(obj, m));
         }
+
+        rotary_state rotaryState{rotary_state::rotary_state_0};
     };
 }}
 

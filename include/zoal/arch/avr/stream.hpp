@@ -27,29 +27,29 @@ namespace zoal { namespace io {
         explicit progmem_str_iter(const char *str)
             : ptr_(str) {}
 
-        inline char operator*() const {
+        char operator*() const {
             auto v = pgm_read_byte(ptr_);
             return static_cast<char>(v);
         }
 
-        inline bool operator==(const progmem_str_iter &iter) const {
+        bool operator==(const progmem_str_iter &iter) const {
             return ptr_ == iter.ptr_;
         }
 
-        inline bool operator!=(const progmem_str_iter &iter) const {
+        bool operator!=(const progmem_str_iter &iter) const {
             return ptr_ != iter.ptr_;
         }
 
-        inline progmem_str_iter &operator++() {
+        progmem_str_iter &operator++() {
             ptr_++;
             return *this;
         }
 
-        inline progmem_str_iter operator+(intptr_t d) const {
+        progmem_str_iter operator+(intptr_t d) const {
             return progmem_str_iter(ptr_ + d);
         }
 
-        inline intptr_t operator-(progmem_str_iter iter) const {
+        intptr_t operator-(progmem_str_iter iter) const {
             return ptr_ - iter.ptr_;
         }
 

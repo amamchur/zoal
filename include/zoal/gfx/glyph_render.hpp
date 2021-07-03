@@ -3,6 +3,8 @@
 
 #include "../text/types.hpp"
 
+#include <avr/pgmspace.h>
+
 namespace zoal { namespace gfx {
     template<class Graphics>
     class glyph_render {
@@ -30,8 +32,8 @@ namespace zoal { namespace gfx {
             }
 
             auto pos = code - range->start + range->base;
-//            auto glyph = font_->glyphs + pos;
-//            render_glyph(glyph);
+            //            auto glyph = font_->glyphs + pos;
+            //            render_glyph(glyph);
 
             zoal::text::glyph g;
             memcpy_P(&g, font_->glyphs + pos, sizeof(g));
@@ -39,6 +41,12 @@ namespace zoal { namespace gfx {
         }
 
         void draw(const wchar_t *text, pixel_type fg) {
+            while (*text) {
+                draw(*text++, fg);
+            }
+        }
+
+        void draw(const char *text, pixel_type fg) {
             while (*text) {
                 draw(*text++, fg);
             }

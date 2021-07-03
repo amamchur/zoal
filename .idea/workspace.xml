@@ -48,15 +48,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fix build issue">
-      <change afterPath="$PROJECT_DIR$/apps/data/roboto_regular_16.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/data/roboto_regular_16.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/data/roboto_regular_24.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/data/roboto_regular_24.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/gfx/glyph_render.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/text/types.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/stream.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/stream.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/gfx/glyph_render.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gfx/glyph_render.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/io/rotary_encoder.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/rotary_encoder.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/adc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/adc.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +118,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/data" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../zoal_font_generator" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -153,7 +152,7 @@
       <command value="vTaskDelay(1);" />
     </option>
   </component>
-  <component name="RunManager" selected="CMake Application.ATmega32u4">
+  <component name="RunManager" selected="CMake Application.ATmega328p">
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Release AVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -285,11 +284,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="Release AVR" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -325,7 +319,7 @@
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" path-to-node="node" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
+    <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" path-to-node="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <configuration name="gen atmega2560" type="NodeJSConfigurationType" application-parameters="-f atmega -m $PROJECT_DIR$/../zoal-mcu-metadata/ATmega_DFP/1.2.209/atdf/ATmega2560.atdf -o include/zoal/mcu/atmega2560_q.hpp" path-to-node="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
@@ -499,6 +493,9 @@
       <workItem from="1623829177457" duration="816000" />
       <workItem from="1623830018148" duration="3147000" />
       <workItem from="1623835084667" duration="16061000" />
+      <workItem from="1625299121117" duration="753000" />
+      <workItem from="1625300409171" duration="5000" />
+      <workItem from="1625300437904" duration="13841000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
