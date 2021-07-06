@@ -104,7 +104,7 @@ namespace zoal { namespace ic {
         }
 
         uint8_t address_{0x53};
-        uint8_t buffer[8];
+        uint8_t buffer[8]{0};
     };
 }}
 
