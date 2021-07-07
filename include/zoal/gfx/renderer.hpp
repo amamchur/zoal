@@ -15,21 +15,21 @@ namespace zoal { namespace gfx {
             return reinterpret_cast<self_type *>(buffer);
         }
 
-        inline void clear(Pixel v) {
+        inline void clear(pixel_type v) {
             adapter_type::clear(buffer, v);
         }
 
-        inline void pixel(int x, int y, Pixel c) {
+        inline void pixel(int x, int y, pixel_type c) {
             adapter_type::pixel(buffer, x, y, c);
         }
 
-        void swap(Pixel &a, Pixel &b) {
+        void swap(pixel_type &a, pixel_type &b) {
             auto tmp = a;
             a = b;
             b = tmp;
         }
 
-        void draw_line(int x0, int y0, int x1, int y1, Pixel color) {
+        void draw_line(int x0, int y0, int x1, int y1, pixel_type color) {
             int dx = abs(x1 - x0);
             int sx = x0 < x1 ? 1 : -1;
             int dy = abs(y1 - y0);
@@ -55,7 +55,7 @@ namespace zoal { namespace gfx {
             }
         }
 
-        void draw_rect(int x, int y, int w, int h, Pixel color) {
+        void draw_rect(int x, int y, int w, int h, pixel_type color) {
             draw_line(x, y, x + w, y, color);
             draw_line(x, y + h, x + w, y + h, color);
             draw_line(x, y, x, y + h, color);
@@ -69,7 +69,7 @@ namespace zoal { namespace gfx {
         }
 
         template<class Horizontal, class Vertical>
-        void render_circle(int xc, int yc, int r, Pixel color, Horizontal h, Vertical v) {
+        void render_circle(int xc, int yc, int r, pixel_type color, Horizontal h, Vertical v) {
             int f = 1 - r;
             int ddf_x = 1;
             int ddf_y = -2 * r;
@@ -96,25 +96,25 @@ namespace zoal { namespace gfx {
             }
         }
 
-        void draw_circle(int x, int y, int r, Pixel color) {
+        void draw_circle(int x, int y, int r, pixel_type color) {
             void *ptr = buffer;
             render_circle(x, y, r, color,
-                          [ptr](int x, int y, int d, Pixel color) {
+                          [ptr](int x, int y, int d, pixel_type color) {
                               adapter_type::pixel(ptr, x + d, y, color);
                               adapter_type::pixel(ptr, x - d, y, color);
                           },
-                          [ptr](int x, int y, int d, Pixel color) {
+                          [ptr](int x, int y, int d, pixel_type color) {
                               adapter_type::pixel(ptr, x, y + d, color);
                               adapter_type::pixel(ptr, x, y - d, color);
                           });
         }
 
-        void fill_circle(int x, int y, int r, Pixel color) {
+        void fill_circle(int x, int y, int r, pixel_type color) {
             render_circle(x, y, r, color,
-                          [this](int x, int y, int d, Pixel color) {
+                          [this](int x, int y, int d, pixel_type color) {
                               draw_line(x - d, y, x + d, y, color);
                           },
-                          [this](int x, int y, int d, Pixel color) {
+                          [this](int x, int y, int d, pixel_type color) {
                               draw_line(x, y - d, x, y + d, color);
                           });
         }

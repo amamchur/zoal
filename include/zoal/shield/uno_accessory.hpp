@@ -4,6 +4,7 @@
 #include <zoal/gpio/pin.hpp>
 #include <zoal/ic/adxl345.hpp>
 #include <zoal/ic/ds3231.hpp>
+#include <zoal/ic/p9813.hpp>
 #include <zoal/ic/ssd1306.hpp>
 
 namespace zoal { namespace shield {
@@ -25,6 +26,10 @@ namespace zoal { namespace shield {
         using thermometer_type = zoal::ic::lm75;
         using accelerometer_type = zoal::ic::adxl345;
         using buzzer = zoal::gpio::active_high<typename pcb::ard_d11>;
+
+        using rgb_spi = zoal::periph::tx_software_spi<typename pcb::ard_d05, typename pcb::ard_d06>;
+        using rgb_led = zoal::ic::p9813<rgb_spi>;
+        using rbg_power = typename pcb::ard_d12;
 
         enum class joystick_button { up, right, button, left, enter };
 
@@ -63,6 +68,10 @@ namespace zoal { namespace shield {
             typename pcb::ard_a05::port::clock_on_cas,
             typename buzzer::pin::port::clock_on_cas,
             typename buzzer::gpio_cfg,
+            // RGB Led
+            typename rbg_power::port::clock_on_cas,
+            typename rgb_spi::gpio_cfg,
+            zoal::gpio::api::mode<zoal::gpio::pin_mode::output, rbg_power>,
             // Joystick buttons
             zoal::gpio::api::mode<zoal::gpio::pin_mode::input_pull_up,
                                   typename pcb::ard_a01,
@@ -72,6 +81,16 @@ namespace zoal { namespace shield {
                                   typename pcb::ard_a05>
             //
             >;
+        static void rgb(uint8_t red, uint8_t green, uint8_t blue) {
+            typename rbg_power::_1();
+            rgb_led::frame();
+            rgb_led::send(red, green, blue);
+            rgb_led::frame();
+        }
+
+        static inline void rgb_off() {
+            typename rbg_power::_0();
+        }
     };
 }}
 

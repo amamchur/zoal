@@ -1,7 +1,7 @@
 #ifndef ZOAL_MISC_IC_P9813_HPP
 #define ZOAL_MISC_IC_P9813_HPP
 
-namespace zoal { namespace misc {
+namespace zoal { namespace ic {
     template<class SPInterface>
     class p9813 {
     public:

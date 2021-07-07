@@ -47,16 +47,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added new glyph renderer">
-      <change afterPath="$PROJECT_DIR$/apps/data/free_sans_regular_16.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/data/free_sans_regular_16.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/avr/utils/progmem_reader.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/utils/proxy_mem_reader.hpp" afterDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Updated glyph renderer">
+      <change afterPath="$PROJECT_DIR$/include/zoal/ic/p9813.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/gfx/glyph_render.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gfx/glyph_render.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/adxl345.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/adxl345.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/gfx/renderer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/gfx/renderer.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/software_spi.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/software_spi.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +116,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/data" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/include/zoal/ic" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -134,11 +131,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\ic" />
       <recent name="C:\Users\amam\CLionProjects\zoal\apps\data" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\text" />
       <recent name="$PROJECT_DIR$/apps/stm32f303vc_discovery" />
       <recent name="$PROJECT_DIR$/apps/stm32f303_discovery" />
-      <recent name="$PROJECT_DIR$/include/zoal/gpio" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/tests/arch" />
@@ -506,7 +503,7 @@
       <workItem from="1625475457801" duration="1414000" />
       <workItem from="1625478945857" duration="19000" />
       <workItem from="1625567046066" duration="6788000" />
-      <workItem from="1625583208015" duration="1141000" />
+      <workItem from="1625583208015" duration="6934000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>
@@ -746,7 +743,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613734609667</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Updated glyph renderer">
+      <created>1625584471303</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1625584471303</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -780,7 +784,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Simplify USART interface" />
     <MESSAGE value="Improve button/keypad UX" />
     <MESSAGE value="Add STM32F1xx timer" />
     <MESSAGE value="Remove unused classes, update common interface." />
@@ -805,7 +808,8 @@
     <MESSAGE value="Fix STM32F303VC MCU generator" />
     <MESSAGE value="Add I2C interface for STN32F3" />
     <MESSAGE value="Fix build issue" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix build issue" />
+    <MESSAGE value="Updated glyph renderer" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated glyph renderer" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
