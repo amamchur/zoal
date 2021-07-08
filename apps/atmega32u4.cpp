@@ -194,7 +194,8 @@ static void oled_render(zoal::misc::command_line_machine *p, zoal::misc::command
     auto g = graphics::from_memory(display.buffer.canvas);
     zoal::gfx::glyph_render<graphics, zoal::utils::progmem_reader> gl(g, &roboto_regular_16);
     g->clear(0);
-    gl.position(0, 32).draw(p->token_start(), p->token_end(), 1);
+    gl.position(roboto_regular_16.y_advance, roboto_regular_16.y_advance);
+    gl.draw(p->token_start(), p->token_end(), 1);
     display.display(i2c_req_dispatcher)([](int) { terminal.sync(); });
 }
 
@@ -311,7 +312,7 @@ void initialize_i2c_devices() {
     bool ds3231_found = false;
     bool adxl345_found = false;
 
-    display.assign_addr();
+    shield::ssd1306_slave_address_setup();
 
     scanner.device_found = [&](uint8_t addr) {
         ssd1306_found = ssd1306_found || addr == 0x3C;

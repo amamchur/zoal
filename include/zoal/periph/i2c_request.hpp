@@ -33,7 +33,7 @@ namespace zoal { namespace periph {
         }
 
         inline bool eos() const {
-            return ptr >= end;
+            return ptr >= end && extra_ptr >= extra_end;
         }
 
         inline uint8_t pull() {

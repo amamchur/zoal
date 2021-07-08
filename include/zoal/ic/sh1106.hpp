@@ -1,5 +1,5 @@
-#ifndef ZOAL_IC_SSD1306_HPP
-#define ZOAL_IC_SSD1306_HPP
+#ifndef ZOAL_IC_SH1106_HPP
+#define ZOAL_IC_SH1106_HPP
 
 #include "../gpio/api.hpp"
 #include "../gpio/pin.hpp"
@@ -11,74 +11,53 @@
 #include <string.h>
 
 namespace zoal { namespace ic {
-    /**
-     * Adapter for SSD1306 Graphic Display Data RAM
-     * @tparam Width screen width
-     * @tparam Height screen height
-     * @tparam Safe check pixel ranges
-     */
+
     template<int Width, int Height, bool Safe = true>
-    class ssd1306_gddram_adapter {
+    using sh1106_adapter_0 = ssd1306_adapter_0<Width, Height, Safe>;
+
+    template<int Width, int Height, bool Safe = true>
+    using sh1106_adapter_90 = ssd1306_adapter_90<Width, Height, Safe>;
+
+    template<int Width, int Height, bool Safe = true>
+    using sh1106_adapter_180 = ssd1306_adapter_180<Width, Height, Safe>;
+
+    template<int Width, int Height, bool Safe = true>
+    using sh1106_adapter_270 = ssd1306_adapter_270<Width, Height, Safe>;
+
+    enum class sh1106_resolution { sh1106_128x64, sh1106_128x32, sh1106_128x16 };
+
+    template<sh1106_resolution Resolution>
+    class sh1106_resolution_info {};
+
+    template<>
+    class sh1106_resolution_info<sh1106_resolution::sh1106_128x64> {
     public:
-        static constexpr size_t buffer_size = Width * Height / 8;
-
-        static void ssd1306_pixel(void *data, int x, int y, uint8_t value) {
-            if (Safe && ((x < 0) || (x >= Width) || (y < 0) || (y >= Height))) {
-                return;
-            }
-
-            auto page = y >> 3;
-            auto bit = y & 0x07;
-            auto ptr = reinterpret_cast<uint8_t *>(data) + page * Width + x;
-            if (value) {
-                *ptr |= 1 << bit;
-            } else {
-                *ptr &= ~(1 << bit);
-            }
-        }
-
-        static void clear(void *data, uint8_t v) {
-            memset(data, v ? 0xFF : 0x00, buffer_size);
-        }
+        static constexpr uint8_t width = 128;
+        static constexpr uint8_t height = 64;
+        static constexpr size_t buffer_size = width * height / 8;
     };
 
-    template<int Width, int Height, bool Safe = true>
-    class ssd1306_adapter_0 : public ssd1306_gddram_adapter<Width, Height, Safe> {
+    template<>
+    class sh1106_resolution_info<sh1106_resolution::sh1106_128x32> {
     public:
-        inline static void pixel(void *data, int x, int y, uint8_t value) {
-            ssd1306_adapter_0::ssd1306_pixel(data, x, y, value);
-        }
+        static constexpr uint8_t width = 128;
+        static constexpr uint8_t height = 32;
+        static constexpr size_t buffer_size = width * height / 8;
     };
 
-    template<int Width, int Height, bool Safe = true>
-    class ssd1306_adapter_90 : public ssd1306_gddram_adapter<Width, Height, Safe> {
+    template<>
+    class sh1106_resolution_info<sh1106_resolution::sh1106_128x16> {
     public:
-        inline static void pixel(void *data, int x, int y, uint8_t value) {
-            ssd1306_adapter_90::ssd1306_pixel(data, Width - y - 1, x, value);
-        }
-    };
-
-    template<int Width, int Height, bool Safe = true>
-    class ssd1306_adapter_180 : public ssd1306_gddram_adapter<Width, Height, Safe> {
-    public:
-        inline static void pixel(void *data, int x, int y, uint8_t value) {
-            ssd1306_adapter_180::ssd1306_pixel(data, Width - x - 1, Height - y - 1, value);
-        }
-    };
-
-    template<int Width, int Height, bool Safe = true>
-    class ssd1306_adapter_270 : public ssd1306_gddram_adapter<Width, Height, Safe> {
-    public:
-        inline static void pixel(void *data, int x, int y, uint8_t value) {
-            ssd1306_adapter_270::ssd1306_pixel(data, y, Height - x - 1, value);
-        }
+        static constexpr uint8_t width = 128;
+        static constexpr uint8_t height = 16;
+        static constexpr size_t buffer_size = width * height / 8;
     };
 
     template<uint8_t Address = 0x3C>
-    class ssd1306_interface_i2c : public zoal::periph::i2c_device {
+    class sh1106_interface_i2c : public zoal::periph::i2c_device {
     public:
         using device_type = zoal::periph::i2c_device;
-        using self_type = ssd1306_interface_i2c<Address>;
+        using self_type = sh1106_interface_i2c<Address>;
         static constexpr uint8_t i2c_address = Address;
 
         template<class Dispatcher>
@@ -91,7 +70,7 @@ namespace zoal { namespace ic {
     };
 
     template<uint8_t Width, uint8_t Height, class Interface>
-    class ssd1306 : public Interface::device_type {
+    class sh1106 : public Interface::device_type {
     public:
         static_assert(Width > 0, "Width must be greater than 0");
         static_assert(Width <= 128, "Width must be less or equal to 128");
@@ -111,8 +90,8 @@ namespace zoal { namespace ic {
 
         buffer_type buffer;
 
-        static constexpr uint8_t co_bit = 1 << 7;
-        static constexpr uint8_t dc_bit = 1 << 6;
+        static const uint8_t co_bit = 1 << 7;
+        static const uint8_t dc_bit = 1 << 6;
 
         enum : uint8_t {
             set_contrast = 0x81,
@@ -128,17 +107,20 @@ namespace zoal { namespace ic {
             set_display_clock_divide_ratio = 0xD5,
             set_precharge_period = 0xD9,
             set_multiplex_ratio = 0xA8,
-            set_lower_column_start_address = 0x00,
-            set_higher_column_start_address = 0x10,
             set_display_start_line = 0x40,
             set_memory_address_mode = 0x20,
-            set_column_address = 0x21,
-            set_page_address = 0x22,
+            set_page_address = 0xB0,
             set_com_output_scan_inc = 0xC0,
             set_com_output_scan_dec = 0xC8,
             set_segment_remap = 0xA0,
-            set_charge_pump = 0x8D
+            set_charge_pump = 0x8D,
+            set_column_low_address = 0x00,
+            set_column_high_address = 0x10
         };
+
+        void assign_addr() {
+            iface_.init();
+        }
 
         static inline uint8_t *add_command(uint8_t *ptr, uint8_t cmd) {
             *ptr++ = co_bit;
@@ -166,7 +148,7 @@ namespace zoal { namespace ic {
 
         template<class Dispatcher>
         typename Dispatcher::finisher_type init(Dispatcher &disp) {
-            auto start = reinterpret_cast<uint8_t *>(&buffer.control_buffer);
+            auto start = buffer.control_buffer;
             auto ptr = start;
             ptr = add_command(ptr, display_off);
             ptr = add_command(ptr, set_display_clock_divide_ratio, 0x80);
@@ -192,25 +174,31 @@ namespace zoal { namespace ic {
         }
 
         template<class Dispatcher>
-        typename Dispatcher::finisher_type display(Dispatcher &disp) {
-            uint8_t *ptr = buffer.control_buffer;
+        void display_page(uint8_t page, Dispatcher &dispatcher) {
+            using zoal::periph::i2c_request_status;
 
-            // Setup page start and end address (triple byte command)
-            ptr = add_command(ptr, set_page_address, 0, (height >> 3) - 1);
+            if (page >= (height >> 3)) {
+                dispatcher.finish_sequence(0);
+                return;
+            }
 
-            // Setup column start and end address (triple byte command)
-            ptr = add_command(ptr, set_column_address, 0, width - 1);
-
-            // Next will be data for GDDRAM
+            auto start = buffer.control_buffer;
+            auto ptr = start;
+            ptr = add_command(ptr, set_page_address | page);
+            ptr = add_command(ptr, set_column_low_address | 0x02);
+            ptr = add_command(ptr, set_column_high_address | 0x00);
             *ptr++ = dc_bit;
 
-            auto cmd_start = buffer.control_buffer;
-            auto cmd_end = ptr;
-            auto data_start = buffer.canvas;
-            auto data_end = buffer.canvas + sizeof(buffer.canvas);
-            iface_.prepare_request(disp, cmd_start, cmd_end, data_start, data_end);
+            auto page_data = buffer.canvas + width * page;
+            iface_.prepare_request(dispatcher, buffer.control_buffer, ptr, page_data, page_data + width);
 
-            this->next_sequence(disp, [](Dispatcher &dispatcher, zoal::periph::i2c_request_status) { dispatcher.finish_sequence(0); });
+            auto cb = [this, page](Dispatcher &d, i2c_request_status) { display_page(page + 1, d); };
+            this->next_sequence(dispatcher, cb);
+        }
+
+        template<class Dispatcher>
+        typename Dispatcher::finisher_type display(Dispatcher &disp) {
+            display_page(0, disp);
             return disp.make_finisher();
         }
 

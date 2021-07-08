@@ -6,6 +6,7 @@
 #include <zoal/ic/ds3231.hpp>
 #include <zoal/ic/p9813.hpp>
 #include <zoal/ic/ssd1306.hpp>
+#include <zoal/periph/adc.hpp>
 
 namespace zoal { namespace shield {
     /**
@@ -17,11 +18,15 @@ namespace zoal { namespace shield {
     class uno_accessory {
     public:
         using pcb = UnoCompatibleBoard;
+        using mcu = typename pcb::mcu;
         using delay = Delay;
         using potentiometer_pin = typename pcb::ard_a00;
+        using potentiometer_channel = zoal::periph::adc_channel<mcu, typename mcu::adc_00, typename pcb::ard_a00>;
 
-        using ssd1306_interface = zoal::ic::ssd1306_interface_i2c<delay, typename pcb::ard_d07, typename pcb::ard_d08, 0x3C>;
-        using display_type = zoal::ic::ssd1306<zoal::ic::ssd1306_resolution::ssd1306_128x64, ssd1306_interface>;
+        using ssd1306_reset = typename pcb::ard_d07;
+        using ssd1306_address_select = typename pcb::ard_d08;
+        using ssd1306_interface = zoal::ic::ssd1306_interface_i2c<0x3C>;
+        using display_type = zoal::ic::ssd1306<128, 64, ssd1306_interface>;
         using clock_type = zoal::ic::ds3231<zoal::periph::device_buffer_type::static_mem>;
         using thermometer_type = zoal::ic::lm75;
         using accelerometer_type = zoal::ic::adxl345;
@@ -36,6 +41,22 @@ namespace zoal { namespace shield {
         class joystick {
         public:
             using counter_value_type = typename delay::counter_value_type;
+            using gpio_cfg = zoal::gpio::api::optimize<
+                // Enabled clock for periphs
+                typename pcb::ard_a01::port::clock_on_cas,
+                typename pcb::ard_a02::port::clock_on_cas,
+                typename pcb::ard_a03::port::clock_on_cas,
+                typename pcb::ard_a04::port::clock_on_cas,
+                typename pcb::ard_a05::port::clock_on_cas,
+
+                zoal::gpio::api::mode<zoal::gpio::pin_mode::input_pull_up,
+                                      typename pcb::ard_a01,
+                                      typename pcb::ard_a02,
+                                      typename pcb::ard_a03,
+                                      typename pcb::ard_a04,
+                                      typename pcb::ard_a05>
+                //
+                >;
 
             zoal::io::button<counter_value_type, typename pcb::ard_a01> u_button;
             zoal::io::button<counter_value_type, typename pcb::ard_a02> r_button;
@@ -45,7 +66,7 @@ namespace zoal { namespace shield {
 
             /**
              * Handle Uno Accessory Joystick
-             * @tparam H
+             * @tparam H handler
              * @param time current time in abstract units
              * @param button_handler callback void fn(zoal::io::button_event e, joystick_button b)
              */
@@ -61,17 +82,15 @@ namespace zoal { namespace shield {
 
         using gpio_cfg = zoal::gpio::api::optimize<
             // Enabled clock for periphs
-            typename pcb::ard_a01::port::clock_on_cas,
-            typename pcb::ard_a02::port::clock_on_cas,
-            typename pcb::ard_a03::port::clock_on_cas,
-            typename pcb::ard_a04::port::clock_on_cas,
-            typename pcb::ard_a05::port::clock_on_cas,
+            typename joystick::gpio_cfg,
             typename buzzer::pin::port::clock_on_cas,
             typename buzzer::gpio_cfg,
             // RGB Led
             typename rbg_power::port::clock_on_cas,
             typename rgb_spi::gpio_cfg,
             zoal::gpio::api::mode<zoal::gpio::pin_mode::output, rbg_power>,
+            // SSD1306
+            zoal::gpio::api::mode<zoal::gpio::pin_mode::output, ssd1306_reset, ssd1306_address_select>,
             // Joystick buttons
             zoal::gpio::api::mode<zoal::gpio::pin_mode::input_pull_up,
                                   typename pcb::ard_a01,
@@ -81,6 +100,17 @@ namespace zoal { namespace shield {
                                   typename pcb::ard_a05>
             //
             >;
+
+        static void ssd1306_slave_address_setup() {
+            typename ssd1306_address_select::low();
+
+            typename ssd1306_reset::high();
+            delay::ms(1);
+            typename ssd1306_reset::low();
+            delay::ms(10);
+            typename ssd1306_reset::high();
+        }
+
         static void rgb(uint8_t red, uint8_t green, uint8_t blue) {
             typename rbg_power::_1();
             rgb_led::frame();

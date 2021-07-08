@@ -44,7 +44,7 @@ zoal::utils::i2c_scanner scanner;
 static void read_clock() {
     clock.fetch(i2c_req_dispatcher)([](int) {
         auto dt = clock.date_time();
-        tx_stream << "\033[2K\rDate time: " << "\r\n" << dt << "\r\n";
+        tx_stream << "\033[2K\r" << "Date time: " << "\r\n" << dt << "\r\n";
         terminal.sync();
     });
 }
@@ -70,8 +70,6 @@ static void read_eeprom() {
 }
 
 static void test_i2c() {
-    vTaskDelay(100);
-
     scanner.device_found = [](uint8_t addr) {
         tx_stream << "\033[2K\r"
                   << "I2C Device found: " << zoal::io::hexadecimal(addr) << "\r\n";

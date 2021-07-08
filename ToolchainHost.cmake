@@ -28,6 +28,7 @@ function(add_zoal_tests)
             tests/ic/hd44780.cpp
             tests/ic/lm75.cpp
             tests/ic/ssd1306.cpp
+            tests/ic/sh1106.cpp
             tests/io/analog_keypad.cpp
             tests/io/button_machine.cpp
             tests/io/output_stream.cpp

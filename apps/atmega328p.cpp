@@ -6,16 +6,16 @@
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_uno.hpp>
-#include <zoal/io/ir_remote_receiver.hpp>
+#include <zoal/gfx/renderer.hpp>
 #include <zoal/periph/i2c.hpp>
-#include <zoal/shield/uno_multi_functional.hpp>
+#include <zoal/periph/i2c_request_dispatcher.hpp>
+#include <zoal/utils/i2c_scanner.hpp>
 #include <zoal/utils/logger.hpp>
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/tool_set.hpp>
 
 FUSES = {.low = 0xFF, .high = 0xD7, .extended = 0xFC};
 
-volatile uint8_t time_divider = 0;
 volatile uint32_t milliseconds = 0;
 
 using pcb = zoal::board::arduino_uno;
@@ -29,21 +29,6 @@ using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
 using tools = zoal::utils::tool_set<mcu, F_CPU, counter, void>;
 using delay = tools::delay;
-using shield_type = zoal::shield::uno_multi_functional<pcb, typeof(milliseconds)>;
-shield_type shield;
-
-constexpr uint32_t ir_period_microseconds = 100;
-constexpr uint32_t ms_period_microseconds = 1000;
-constexpr uint32_t timer_period = 1 << timer::resolution;
-using ir_calc = zoal::misc::timer_freq_calculator<1000000 / ir_period_microseconds, F_CPU, timer_period, 1, 8, 64, 256, 1024>;
-using ms_calc = zoal::misc::timer_freq_calculator<1000000 / ms_period_microseconds, F_CPU, timer_period, 1, 8, 64, 256, 1024>;
-using overflow_to_tick_v2 = zoal::utils::timer_overflow_to_tick<F_CPU, ir_calc::prescaler, ir_calc::compare_value + 1>;
-
-static_assert(ir_calc::delta_freq_abs < 0.001, "Frequency precision is less then ±0.1%");
-static_assert(ms_calc::delta_freq_abs < 0.001, "Frequency precision is less then ±0.1%");
-
-using ir_receiver_type = zoal::io::ir_remote_receiver<pcb::ard_d02, ir_period_microseconds>;
-ir_receiver_type ir_receiver;
 
 zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 
@@ -51,6 +36,11 @@ using usart_tx_transport = zoal::utils::usart_transmitter<usart, 32, zoal::utils
 usart_tx_transport transport;
 using tx_stream_type = zoal::io::output_stream<usart_tx_transport>;
 tx_stream_type stream(transport);
+
+zoal::utils::i2c_scanner scanner;
+using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c, sizeof(void *) * 4>;
+i2c_req_dispatcher_type i2c_req_dispatcher;
+zoal::periph::i2c_request &request = i2c_req_dispatcher.request;
 
 using api = zoal::gpio::api;
 using blink_pin = pcb::ard_d13;
@@ -78,9 +68,10 @@ void initialize_hardware() {
     using usart_cfg = zoal::periph::usart_115200<F_CPU>;
     using i2c_cfg = zoal::periph::i2c_fast_mode<F_CPU>;
     using adc_cfg = zoal::periph::adc_config<>;
+    using i2c_cfg = zoal::periph::i2c_fast_mode<F_CPU>;
 
     // Power on modules
-    api::optimize<api::clock_on<usart, timer>>();
+    api::optimize<api::clock_on<usart, i2c, timer>>();
 
     // Disable all modules before applying settings
     api::optimize<api::disable<usart, timer, adc, i2c>>();
@@ -97,10 +88,7 @@ void initialize_hardware() {
         mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::connect,
         mcu::cfg::i2c<i2c, i2c_cfg>::apply,
         //
-        mcu::irq::timer<timer>::enable_overflow_interrupt,
-        //
-        shield_type::gpio_cfg,
-        ir_receiver_type::gpio_cfg
+        mcu::irq::timer<timer>::enable_overflow_interrupt
         //
         >();
 
@@ -152,7 +140,6 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
 
     if (cmp_progmem_str_token(zoal::io::progmem_str_iter(adc_cmd), ts, te)) {
         auto v = adc::read();
-        shield.dec_to_segments(v);
         stream << "ADC: " << v << "\r\n";
     }
 
@@ -185,100 +172,11 @@ const char zoal_ascii_logo[] PROGMEM = "  __________          _\r\n"
                                        " /_____\\____/_/    \\_\\______|\r\n"
                                        "\r\n";
 
-uint16_t display_value = 0;
+#include <zoal/ic/sh1106.hpp>
 
-void button_handler(zoal::io::button_event e, uint8_t b) {
-    if (e != zoal::io::button_event::press) {
-        return;
-    }
-
-    switch (b) {
-    case 0:
-        display_value++;
-        break;
-    case 1:
-        display_value--;
-        break;
-    case 2:
-        display_value = 0;
-        break;
-    default:
-        return;
-    }
-
-    shield.dec_to_segments(display_value);
-}
-
-using test_pin = pcb::ard_d05;
-
-void configure_timer_2() {
-    test_pin::mode<zoal::gpio::pin_mode::output>();
-
-    // 10000 Hz (16000000/((24+1)*64))
-    OCR2A = 24;
-    // CTC
-    TCCR2A = (1 << WGM21);
-    // Prescaler 64
-    TCCR2B = (1 << CS22);
-    // Output Compare Match A Interrupt Enable
-    TIMSK2 = (1 << OCIE2A);
-}
-
-uint32_t invert_bit_order(uint32_t v) {
-    uint32_t result = 0;
-    constexpr auto bits = static_cast<uint8_t>(sizeof(uint32_t) << 3);
-    for (int i = 0; i < bits; i++) {
-        result <<= 1;
-        result |= v & 1;
-        v >>= 1;
-    }
-
-    return result;
-}
-
-template<class T>
-void print_hex(T value) {
-    constexpr uint8_t nibbles = sizeof(value) << 1;
-
-    transport.send_byte('0');
-    transport.send_byte('x');
-    for (int i = nibbles - 1; i >= 0; i--) {
-        auto h = (value >> (i << 2)) & 0xF;
-        uint8_t ch = h < 10 ? ('0' + h) : ('A' + h - 10);
-        transport.send_byte(ch);
-    }
-}
-
-void handle_ir_remote() {
-    if (!ir_receiver.processed()) {
-        return;
-    }
-
-    uint32_t value;
-    {
-        zoal::utils::interrupts_off scope_off;
-        value = ir_receiver.result();
-        ir_receiver.start();
-    }
-
-    switch (value) {
-    case 0x20DFE01Ful:
-        terminal.cursor(terminal.cursor() - 1);
-        break;
-    case 0x20DF609Ful:
-        terminal.cursor(terminal.cursor() + 1);
-        break;
-    case 0x20DF22DDul:
-        rx_buffer.push_back(13);
-        break;
-    case 0x00000001ul:
-        break;
-    default:
-        stream << "\033[2K\r" << zoal::io::hexadecimal(value) << "\r\n";
-        terminal.sync();
-        break;
-    }
-}
+using sh1106_interface = zoal::ic::sh1106_interface_i2c<0x3C>;
+using display_type = zoal::ic::sh1106<128, 64, sh1106_interface>;
+display_type display;
 
 int main() {
     initialize_hardware();
@@ -287,26 +185,25 @@ int main() {
     terminal.input_callback(&input_callback);
     terminal.greeting(terminal_greeting);
     terminal.clear();
-
-    stream << "ir prescaler: " << ir_calc::prescaler << "\r\n";
-    stream << "ir compare_value: " << ir_calc::compare_value << "\r\n";
-    stream << "ir delta_freq_abs: " << ir_calc::delta_freq_abs << "\r\n";
-
-    stream << "overflow_to_tick_v2 us_per_tick: " << overflow_to_tick_v2::us_per_tick << "\r\n";
-    stream << "overflow_to_tick_v2 fraction_inc: " << overflow_to_tick_v2::fraction_inc << "\r\n";
-    stream << "overflow_to_tick_v2 us_inc: " << overflow_to_tick_v2::us_inc << "\r\n";
-
-    stream << "overflow_to_tick us_per_tick: " << overflow_to_tick::us_per_tick << "\r\n";
-    stream << "overflow_to_tick fraction_inc: " << overflow_to_tick::fraction_inc << "\r\n";
-    stream << "overflow_to_tick us_inc: " << overflow_to_tick::us_inc << "\r\n";
-
     stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
-    terminal.sync();
 
-    ir_receiver.start();
+    scanner.device_found = [&](uint8_t addr) { stream << "Device: " << addr << "\r\n"; };
+    scanner.scan(i2c_req_dispatcher)([&](int) {
+        stream << "Done!"
+               << "\r\n";
+        terminal.sync();
+    });
+    i2c_req_dispatcher.handle_until_finished();
 
-    test_pin::mode<zoal::gpio::pin_mode::output_push_pull>();
-    configure_timer_2();
+    display.init(i2c_req_dispatcher)([&](int){});
+    i2c_req_dispatcher.handle_until_finished();
+
+    using adapter = zoal::ic::sh1106_adapter_0<128, 64>;
+    using graphics = zoal::gfx::renderer<uint8_t, adapter>;
+    auto g = graphics::from_memory(display.buffer.canvas);
+    g->clear(0x00);
+    g->draw_circle(16, 16, 10, 1);
+    display.display(i2c_req_dispatcher)([](int) { terminal.sync(); });
 
     while (true) {
         uint8_t rx_byte = 0;
@@ -320,31 +217,15 @@ int main() {
             terminal.push(&rx_byte, 1);
         }
 
-        handle_ir_remote();
-        shield.dynamic_indication();
-
-        if (time_divider & 0xF8) {
-            time_divider = 0;
-            scheduler.handle();
-            shield.handle_buttons(counter::now(), button_handler);
-            shield.dec_to_segments(milliseconds / 100);
-            shield.segments[2] &= ~0x80;
-        }
+        scheduler.handle();
+        i2c_req_dispatcher.handle();
     }
 }
 
 #pragma clang diagnostic pop
 
 ISR(TIMER0_OVF_vect) {
-    //    ms_trigger = true;
-    //    milliseconds += overflow_to_tick::step();
-}
-
-ISR(TIMER2_COMPA_vect) {
-    test_pin::toggle();
-    time_divider++;
-    milliseconds += overflow_to_tick_v2::step();
-    ir_receiver.handle();
+    milliseconds += overflow_to_tick::step();
 }
 
 ISR(USART_RX_vect) {
@@ -353,4 +234,8 @@ ISR(USART_RX_vect) {
 
 ISR(USART_UDRE_vect) {
     usart::tx_handler([](uint8_t &value) { return usart_tx_transport::tx_buffer.pop_front(value); });
+}
+
+ISR(TWI_vect) {
+    i2c::handle_request_irq(request);
 }
