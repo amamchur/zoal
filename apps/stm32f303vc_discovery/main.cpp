@@ -25,7 +25,7 @@ using mcu = zoal::mcu::stm32f303vctx;
 using counter = zoal::utils::ms_counter<uint32_t, &uwTick>;
 using i2c_01 = mcu::i2c_01;
 
-zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> i2c_02_events;
+zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> io_events;
 
 [[noreturn]] void zoal_main_task(void *);
 
@@ -57,7 +57,7 @@ static void test_i2c() {
     pcb::led_gpio_cfg();
 
     for (;;) {
-        auto bits = i2c_02_events.wait(1);
+        auto bits = io_events.wait(1);
         if (bits) {
             i2c_req_dispatcher.handle();
         }
@@ -85,9 +85,9 @@ int main() {
 }
 
 extern "C" void I2C1_EV_IRQHandler() {
-    i2c_01::handle_request_irq(request, []() { i2c_02_events.set_isr(1); });
+    i2c_01::handle_request_irq(request, []() { io_events.set_isr(1); });
 }
 
 extern "C" void I2C1_ER_IRQHandler() {
-    i2c_01::handle_request_irq(request, []() { i2c_02_events.set_isr(1); });
+    i2c_01::handle_request_irq(request, []() { io_events.set_isr(1); });
 }

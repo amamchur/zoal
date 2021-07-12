@@ -109,9 +109,13 @@ function initSources(result, projectPath) {
     array = array.map((v) => {
         let regexp = /^.*STM32Cube\/Repository\//;
         if (v.match(regexp)) {
-            return v.replace(/^.*STM32Cube\/Repository\//, `${STM32_FM_REPO}/`);
+            let p = v.replace(/^.*STM32Cube\/Repository\//, `${STM32_FM_REPO}/`);
+            p = p.replace(/\\/g, "/");
+            return p;
         }
-        return path.join(relPath, v);
+        let p = path.join(relPath, v);
+        p = p.replace(/\\/g, "/");
+        return p;
     });
     array = array.filter(function (item, pos) {
         return array.indexOf(item) === pos;
@@ -130,9 +134,14 @@ function initIncludesDir(result, projectPath) {
     array = array.map((v) => {
         let regexp = /^.*STM32Cube\/Repository\//;
         if (v.match(regexp)) {
-            return v.replace(/^.*STM32Cube\/Repository\//, `${STM32_FM_REPO}/`);
+            let p = v.replace(/^.*STM32Cube\/Repository\//, `${STM32_FM_REPO}/`);
+            p = p.replace(/\\/g, "/");
+            return p;
         }
-        return path.join(relPath, v);
+
+        let p = path.join(relPath, v);
+        p = p.replace(/\\/g, "/");
+        return p
     });
     array = array.filter(function (item, pos) {
         return array.indexOf(item) === pos;
@@ -161,8 +170,8 @@ function initFlashLinkerScript(result, projectPath) {
     let target = result['TARGET'].toUpperCase() + '_FLASH_LD';
     let LDSCRIPT = result['LDSCRIPT'];
     let relPath = path.relative(__dirname, projectPath);
-
-    return `set(${target} ${relPath}/${LDSCRIPT})`;
+    let p =  relPath.replace(/\\/g, "/");
+    return `set(${target} ${p}/${LDSCRIPT})`;
 }
 
 function processMakeSettings(lines, projectPath) {
@@ -172,10 +181,11 @@ function processMakeSettings(lines, projectPath) {
 
     let map = collectVariables(array);
     map = calculateVaribles(map);
+    let p =  projectPath.replace(/\\/g, "/");
 
     return [
         '',
-        `# STM32CubeMX project variables for ${projectPath}`,
+        `# STM32CubeMX project variables for ${p}`,
         initSources(map, projectPath),
         initIncludesDir(map, projectPath),
         initCompileDefinitions(map, projectPath),
@@ -212,7 +222,7 @@ fs.readdirSync(mxProjectFolder).forEach(file => {
 });
 
 let content = fs.readFileSync('CMakeLists.txt', "utf8");
-let lines = content.split(/\n/);
+let lines = content.split(/\r?\n/);
 let startPos = lines.indexOf('# Begin cubemx-proj variables');
 let endPos = lines.indexOf('# End cubemx-proj variables')
 

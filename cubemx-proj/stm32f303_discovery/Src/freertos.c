@@ -55,10 +55,10 @@ uint32_t mainBuffer[ 256 ];
 osStaticThreadDef_t mainControlBlock;
 const osThreadAttr_t main_attributes = {
   .name = "main",
-  .stack_mem = &mainBuffer[0],
-  .stack_size = sizeof(mainBuffer),
   .cb_mem = &mainControlBlock,
   .cb_size = sizeof(mainControlBlock),
+  .stack_mem = &mainBuffer[0],
+  .stack_size = sizeof(mainBuffer),
   .priority = (osPriority_t) osPriorityNormal,
 };
 
