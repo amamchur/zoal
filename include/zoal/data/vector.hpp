@@ -79,6 +79,14 @@ namespace zoal { namespace data {
             z /= m;
             return *this;
         }
+
+        inline T operator[](int i) const {
+            return *(&x + i);
+        }
+
+        inline T& operator[](int i) {
+            return *(&x + i);
+        }
     };
 }}
 

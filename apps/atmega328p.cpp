@@ -32,10 +32,10 @@ using delay = tools::delay;
 
 zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 
-using usart_tx_transport = zoal::utils::usart_transmitter<usart, 32, zoal::utils::interrupts_off>;
-usart_tx_transport transport;
-using tx_stream_type = zoal::io::output_stream<usart_tx_transport>;
-tx_stream_type stream(transport);
+using usart_tx_target = zoal::utils::usart_transmitter<usart, 32, zoal::utils::interrupts_off>;
+usart_tx_target tx_target;
+using tx_stream_type = zoal::io::output_stream<usart_tx_target>;
+tx_stream_type stream(tx_target);
 
 zoal::utils::i2c_scanner scanner;
 using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c, sizeof(void *) * 4>;
@@ -120,7 +120,7 @@ void led_off(void *) {
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
 void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
-    transport.send_data(s, e - s);
+    tx_target.send_data(s, e - s);
 }
 
 void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
@@ -233,7 +233,7 @@ ISR(USART_RX_vect) {
 }
 
 ISR(USART_UDRE_vect) {
-    usart::tx_handler([](uint8_t &value) { return usart_tx_transport::tx_buffer.pop_front(value); });
+    usart::tx_handler([](uint8_t &value) { return usart_tx_target::tx_buffer.pop_front(value); });
 }
 
 ISR(TWI_vect) {

@@ -28,7 +28,7 @@ public:
 };
 
 using tx_stream_type = zoal::io::output_stream<usart_debug_tx_transport>;
-extern usart_debug_tx_transport transport;
+extern usart_debug_tx_transport tx_target;
 extern tx_stream_type tx_stream;
 
 void zoal_init_hardware();

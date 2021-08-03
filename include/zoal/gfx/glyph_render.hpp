@@ -62,7 +62,7 @@ namespace zoal { namespace gfx {
             return 0;
         }
 
-        void draw(const wchar_t ch, pixel_type fg) {
+        void draw(const wchar_t ch) {
             const zoal::text::unicode_range *range = nullptr;
             auto code = (uint16_t)ch;
             for (size_t i = 0; i < font_->ranges_count; i++) {
@@ -82,24 +82,24 @@ namespace zoal { namespace gfx {
 
             auto pos = code - range->start + range->base;
             auto g = MemReader::template read_mem<zoal::text::glyph>(font_->glyphs + pos);
-            render_glyph(&g, fg);
+            render_glyph(&g);
         }
 
-        void draw(const wchar_t *text, pixel_type fg) {
+        void draw(const wchar_t *text) {
             while (*text) {
-                draw(*text++, fg);
+                draw(*text++);
             }
         }
 
-        void draw(const char *text, pixel_type fg) {
+        void draw(const char *text) {
             while (*text) {
-                draw(*text++, fg);
+                draw(*text++);
             }
         }
 
-        void draw(const char *start, const char *end, pixel_type fg) {
+        void draw(const char *start, const char *end) {
             while (start != end) {
-                draw(*start++, fg);
+                draw(*start++);
             }
         }
 
@@ -110,8 +110,26 @@ namespace zoal { namespace gfx {
             return *this;
         }
 
+        pixel_type color() const {
+            return color_;
+        }
+
+        void color(pixel_type c) {
+            color_ = c;
+        }
+
+        void send_byte(uint8_t v) {
+            draw(v);
+        }
+
+        void send_data(const void *data, size_t size) {
+            auto d = reinterpret_cast<const uint8_t *>(data);
+            for (size_t i = 0; i < size; i++) {
+                draw(d[i]);
+            }
+        }
     private:
-        void render_glyph(const zoal::text::glyph *g, pixel_type fg) {
+        void render_glyph(const zoal::text::glyph *g) {
             const uint8_t *data = font_->bitmap + g->bitmap_offset;
             const uint8_t bytes_per_row = (g->width + 7) >> 3;
             for (int y = 0; y < g->height; y++) {
@@ -122,7 +140,7 @@ namespace zoal { namespace gfx {
                     auto qqq = MemReader::template read_mem<uint8_t>(ptr);
                     int value = qqq & mask;
                     if (value) {
-                        graphics_->pixel(x_ + x + g->x_offset, y_ + y + g->y_offset, fg);
+                        graphics_->pixel(x_ + x + g->x_offset, y_ + y + g->y_offset, color_);
                     }
                 }
             }
@@ -134,6 +152,7 @@ namespace zoal { namespace gfx {
         int x_{0};
         int y_{0};
         uint16_t last_char_code_{0};
+        pixel_type color_;
     };
 }}
 

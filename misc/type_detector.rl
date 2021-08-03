@@ -12,6 +12,7 @@
     date = year . '.' . month . '.' day;
 
     date_time = date . space . time;
+    integer = '-'? . digit*;
 
     main := |*
     date_time => {
@@ -26,9 +27,13 @@
         handler_(this, value_type::time);
         fbreak;
     };
+    integer => {
+        handler_(this, value_type::integer);
+        fbreak;
+    };
     space;
-    any => {
-        handler_(this, value_type::unknown);
+    any+ => {
+        handler_(this, value_type::string);
     };
 	*|;
 }%%

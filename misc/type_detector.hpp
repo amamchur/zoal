@@ -6,7 +6,7 @@
 #include <zoal/parse/ragel_scanner.hpp>
 
 namespace zoal { namespace misc {
-    enum class value_type { unknown, date_time, date, time };
+    enum class value_type { string, date_time, date, time, integer };
 
     class type_detector_machine : public zoal::parse::scanner_machine<type_detector_machine *, value_type> {
     public:
@@ -24,7 +24,7 @@ namespace zoal { namespace misc {
             : zoal::parse::ragel_scanner<type_detector_machine>(nullptr, 0) {}
 
         const char* detect(const void *start, const void *end, const void *eof = nullptr) {
-            this->type_ = value_type::unknown;
+            this->type_ = value_type::string;
             this->callback(&type_callback);
             this->scan(start, end, eof);
             return this->pos_;
@@ -46,7 +46,7 @@ namespace zoal { namespace misc {
         }
 
         const char *pos_{nullptr};
-        value_type type_{value_type::unknown};
+        value_type type_{value_type::string};
     };
 }}
 

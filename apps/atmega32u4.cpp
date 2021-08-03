@@ -1,11 +1,9 @@
+#include "../misc/cmd_argument.hpp"
 #include "../misc/cmd_line_parser.hpp"
 #include "../misc/terminal_input.hpp"
-#include "../misc/type_detector.hpp"
 #include "./data/font_5x8.hpp"
 #include "./data/roboto_regular_16.hpp"
 
-#include <avr/io.h>
-#include <avr/pgmspace.h>
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/arch/avr/utils/progmem_reader.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
@@ -18,19 +16,13 @@
 #include <zoal/ic/ssd1306.hpp>
 #include <zoal/io/button.hpp>
 #include <zoal/parse/type_parser.hpp>
-#include <zoal/periph/adc.hpp>
 #include <zoal/periph/i2c.hpp>
 #include <zoal/periph/i2c_request_dispatcher.hpp>
 #include <zoal/periph/software_spi.hpp>
-#include <zoal/periph/spi.hpp>
 #include <zoal/shield/uno_accessory.hpp>
 #include <zoal/utils/i2c_scanner.hpp>
 #include <zoal/utils/ms_counter.hpp>
-#include <zoal/utils/new.hpp>
 #include <zoal/utils/tool_set.hpp>
-#include <zoal/utils/vt100.hpp>
-
-using namespace zoal::utils::vt100;
 
 volatile uint32_t milliseconds = 0;
 
@@ -45,35 +37,36 @@ using timer = pcb::mcu::timer_00;
 using blink_pin = pcb::ard_d13;
 
 using ms_counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 32, 256>;
+using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
 using delay = zoal::utils::delay<F_CPU, ms_counter>;
 using tools = zoal::utils::tool_set<mcu, F_CPU, ms_counter, void>;
 
-using usart_tx_transport = zoal::utils::usart_transmitter<usart, 32, zoal::utils::interrupts_off>;
-using tx_stream_type = zoal::io::output_stream<usart_tx_transport>;
-
-usart_tx_transport transport;
-using scheduler_type = zoal::utils::function_scheduler<ms_counter, 8, void *>;
+using usart_tx_target = zoal::utils::usart_transmitter<usart, 32, zoal::utils::interrupts_off>;
+using tx_stream_type = zoal::io::output_stream<usart_tx_target>;
 using command_line_parser = zoal::misc::command_line_parser;
 char terminal_buffer[32];
 auto terminal_greeting = "\033[0;32mroot@mcu\033[m$ ";
 auto terminal = zoal::misc::terminal_input(terminal_buffer, sizeof(terminal_buffer));
 
+zoal::data::ring_buffer<uint8_t, 32> rx_buffer;
+usart_tx_target tx_target;
+tx_stream_type stream(tx_target);
+
 using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c, sizeof(void *) * 4>;
 using shield = zoal::shield::uno_accessory<delay, pcb>;
 using buzzer = shield::buzzer;
+using adapter = zoal::ic::ssd1306_adapter_0<128, 64>;
+using graphics = zoal::gfx::renderer<uint8_t, adapter>;
 shield::display_type display;
 shield::thermometer_type temp_sensor;
 shield::clock_type clock;
 shield::accelerometer_type accelerometer;
 
-zoal::data::ring_buffer<uint8_t, 32> rx_buffer;
-tx_stream_type stream(transport);
-
 zoal::utils::i2c_scanner scanner;
 i2c_req_dispatcher_type i2c_req_dispatcher;
 zoal::periph::i2c_request &request = i2c_req_dispatcher.request;
 
+using scheduler_type = zoal::utils::function_scheduler<ms_counter, 8, void *>;
 scheduler_type scheduler;
 
 void initialize_hardware() {
@@ -171,16 +164,17 @@ const char temp_cmd[] PROGMEM = "temp";
 const char time_cmd[] PROGMEM = "time";
 const char set_time_cmd[] PROGMEM = "set-time";
 const char i2c_scan_cmd[] PROGMEM = "i2c-scan";
-const char oled_render_cmd[] PROGMEM = "oled";
+const char oled_cmd[] PROGMEM = "oled";
 const char axis_cmd[] PROGMEM = "axis";
 const char adc_cmd[] PROGMEM = "adc";
 const char rgb_cmd[] PROGMEM = "rgb";
 const char rgb_off_cmd[] PROGMEM = "rgb-off";
+const char help_cmd[] PROGMEM = "help";
 
 #pragma clang diagnostic pop
 
 void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
-    transport.send_data(s, e - s);
+    tx_target.send_data(s, e - s);
 }
 
 static void oled_render(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
@@ -189,13 +183,12 @@ static void oled_render(zoal::misc::command_line_machine *p, zoal::misc::command
         return;
     }
 
-    using adapter = zoal::ic::ssd1306_adapter_0<128, 64>;
-    using graphics = zoal::gfx::renderer<uint8_t, adapter>;
     auto g = graphics::from_memory(display.buffer.canvas);
     zoal::gfx::glyph_render<graphics, zoal::utils::progmem_reader> gl(g, &roboto_regular_16);
     g->clear(0);
+    gl.color(1);
     gl.position(roboto_regular_16.y_advance, roboto_regular_16.y_advance);
-    gl.draw(p->token_start(), p->token_end(), 1);
+    gl.draw(p->token_start(), p->token_end());
     display.display(i2c_req_dispatcher)([](int) { terminal.sync(); });
 }
 
@@ -265,7 +258,7 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
         scan_i2c();
     }
 
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(oled_render_cmd), ts, te)) {
+    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(oled_cmd), ts, te)) {
         p->callback(&oled_render);
     }
 
@@ -284,6 +277,11 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
 
     if (cmp_progmem_str_token(zoal::io::progmem_str_iter(rgb_off_cmd), ts, te)) {
         shield::rgb_off();
+    }
+
+    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(help_cmd), ts, te)) {
+        stream << "\033[2K\r";
+        stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
     }
 
     terminal.sync();
@@ -307,28 +305,14 @@ void display_initialized(int) {
 }
 
 void initialize_i2c_devices() {
-    bool ssd1306_found = false;
-    bool lm75_found = true;
-    bool ds3231_found = false;
-    bool adxl345_found = false;
-
     shield::ssd1306_slave_address_setup();
-
-    scanner.device_found = [&](uint8_t addr) {
-        ssd1306_found = ssd1306_found || addr == 0x3C;
-        lm75_found = lm75_found || addr == 0x48;
-        ds3231_found = ds3231_found || addr == 0x68;
-        adxl345_found = adxl345_found || addr == 0x53;
-    };
-    scanner.scan(i2c_req_dispatcher)([&](int) { terminal.sync(); });
-    i2c_req_dispatcher.handle_until_finished();
 
     display.init(i2c_req_dispatcher)(display_initialized);
     i2c_req_dispatcher.handle_until_finished();
 }
 
-using joystick_type = typename shield::joystick;
-joystick_type joystick;
+shield::joystick joystick;
+
 auto button_handler = [](zoal::io::button_event e, shield::joystick_button b) {
     if (e != zoal::io::button_event::press) {
         return;
@@ -354,6 +338,28 @@ auto button_handler = [](zoal::io::button_event e, shield::joystick_button b) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
 
+void fetch_axis(void *);
+
+void display_axis(zoal::data::vector<int16_t> v) {
+    using gl_type = zoal::gfx::glyph_render<graphics, zoal::utils::progmem_reader>;
+    auto g = graphics::from_memory(display.buffer.canvas);
+    gl_type gl(g, &roboto_regular_16);
+    zoal::io::output_stream<gl_type> os(gl);
+    g->clear(0);
+    gl.color(1);
+
+    for (int i = 0; i < 3; i++) {
+        gl.position(0, roboto_regular_16.y_advance * (i + 1));
+        os << v[i];
+    }
+
+    display.display(i2c_req_dispatcher)([](int) { scheduler.schedule(20, fetch_axis); });
+}
+
+void fetch_axis(void *) {
+    accelerometer.fecth_axis(i2c_req_dispatcher)([](int) { display_axis(accelerometer.vector()); });
+}
+
 int main() {
     initialize_hardware();
 
@@ -368,12 +374,11 @@ int main() {
     delay::ms(20);
     buzzer::off();
 
-    using adapter = zoal::ic::ssd1306_adapter_0<128, 64>;
-    using graphics = zoal::gfx::renderer<uint8_t, adapter>;
     auto g = graphics::from_memory(display.buffer.canvas);
     g->clear(0);
     display.display(i2c_req_dispatcher)([](int) { terminal.sync(); });
 
+    //    fetch_axis(nullptr);
     while (true) {
         uint8_t rx_byte = 0;
         bool result;
@@ -409,7 +414,7 @@ ISR(USART1_RX_vect) {
 }
 
 ISR(USART1_UDRE_vect) {
-    usart::tx_handler([](uint8_t &value) { return usart_tx_transport::tx_buffer.pop_front(value); });
+    usart::tx_handler([](uint8_t &value) { return usart_tx_target::tx_buffer.pop_front(value); });
 }
 
 ISR(TWI_vect) {

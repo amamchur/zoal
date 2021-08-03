@@ -1,12 +1,8 @@
 #include "input_processor.hpp"
 
 #include "command_queue.hpp"
-#include "constants.hpp"
 #include "hardware.hpp"
 #include "task.h"
-#include "types.hpp"
-
-#include <FreeRTOS.h>
 
 static user_button_1_type user_button_1;
 static user_button_2_type user_button_2;

@@ -10,21 +10,21 @@
 #include <stdlib.h>
 
 namespace zoal { namespace io {
-    template<class Transport>
+    template<class Target>
     class output_stream {
     public:
-        explicit output_stream(Transport &t)
-            : transport(t) {}
+        explicit output_stream(Target &t)
+            : target(t) {}
 
         output_stream &operator<<(char ch) {
-            transport.send_byte(static_cast<uint8_t>(ch));
+            target.send_byte(static_cast<uint8_t>(ch));
             return *this;
         }
 
         output_stream &operator<<(const char *str) {
             auto end = str;
             while (*end) end++;
-            transport.send_data(str, end - str);
+            target.send_data(str, end - str);
             return *this;
         }
 
@@ -37,10 +37,10 @@ namespace zoal { namespace io {
             auto value = reinterpret_cast<uintptr_t>(ptr);
             for (int i = sizeof(ptr) * 8 - 4, k = 2; i >= 0; i -= 4, k++) {
                 auto h = (value & (0xF << i)) >> i;
-                buffer[k] = h < 10 ? ('0' + h) : ('A' + h - 10);
+                buffer[k] = static_cast<char>(h < 10 ? ('0' + h) : ('A' + h - 10));
             }
 
-            transport.send_data(buffer, sizeof(buffer));
+            target.send_data(buffer, sizeof(buffer));
 
             return *this;
         }
@@ -51,7 +51,7 @@ namespace zoal { namespace io {
             ptr = backward_number_format(ptr, value, radix);
 
             auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
-            transport.send_data(ptr, length);
+            target.send_data(ptr, length);
             return *this;
         }
 
@@ -67,7 +67,7 @@ namespace zoal { namespace io {
             bool negative = value < 0;
             if (negative) {
                 value = -value;
-                transport.send_byte('-');
+                target.send_byte('-');
             }
 
             uint8_t buffer[32];
@@ -75,7 +75,7 @@ namespace zoal { namespace io {
             ptr = backward_number_format(ptr, static_cast<uint32_t>(value), radix);
 
             auto length = static_cast<size_t>(sizeof(buffer) - (ptr - buffer));
-            transport.send_data(ptr, length);
+            target.send_data(ptr, length);
             return *this;
         }
 
@@ -91,7 +91,7 @@ namespace zoal { namespace io {
             bool negative = value < 0.0;
             if (negative) {
                 value = -value;
-                transport.send_byte('-');
+                target.send_byte('-');
             }
 
             double e = 0.5;
@@ -109,13 +109,13 @@ namespace zoal { namespace io {
                 return *this;
             }
 
-            transport.send_byte('.');
+            target.send_byte('.');
 
             for (uint8_t i = 0; i < precision; i++) {
                 fraction *= 10.0;
                 int_part = static_cast<uint32_t>(fraction);
                 fraction -= int_part;
-                transport.send_byte(static_cast<uint8_t>(int_part + '0'));
+                target.send_byte(static_cast<uint8_t>(int_part + '0'));
             }
 
             return *this;
@@ -138,19 +138,19 @@ namespace zoal { namespace io {
 
         template<class F>
         inline output_stream &operator<<(::zoal::io::output_stream_functor<F> &fn) {
-            static_cast<F &>(fn).template write<Transport>(transport);
+            static_cast<F &>(fn).template write<Target>(target);
             return *this;
         }
 
         template<class F>
         inline output_stream &operator<<(::zoal::io::output_stream_functor<F> &&fn) {
-            static_cast<F &>(fn).template write<Transport>(transport);
+            static_cast<F &>(fn).template write<Target>(target);
             return *this;
         }
 
         template<class F>
         inline output_stream &operator<<(::zoal::io::transport_functor<F> &&fn) {
-            transport.apply_functor(fn);
+            target.apply_functor(fn);
             return *this;
         }
 
@@ -167,7 +167,7 @@ namespace zoal { namespace io {
 
         uint8_t radix{10};
         uint8_t precision{2};
-        Transport &transport;
+        Target &target;
     };
 }}
 

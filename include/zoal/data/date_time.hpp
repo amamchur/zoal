@@ -32,7 +32,7 @@ zoal::io::output_stream<T> &operator<<(zoal::io::output_stream<T> &os, const zoa
     os.backward_number_format(p += 3, dt.hours, 10);
     os.backward_number_format(p += 3, dt.minutes, 10);
     os.backward_number_format(p + 3, dt.seconds, 10);
-    os.transport.send_data(buffer, sizeof(buffer) - 1);
+    os.target.send_data(buffer, sizeof(buffer) - 1);
     return os;
 }
 

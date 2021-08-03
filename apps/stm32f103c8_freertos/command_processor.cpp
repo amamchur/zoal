@@ -4,26 +4,54 @@
 #include "command_queue.hpp"
 #include "constants.hpp"
 #include "hardware.hpp"
-#include "rtc.h"
-#include "stm32f1xx_hal.h"
 #include "task.h"
 #include "terminal.hpp"
-#include "types.hpp"
 
-static inline void format_byte(char *ptr, uint8_t v) {
-    ptr[0] = static_cast<char>(v % 10 + '0');
-    ptr[-1] = static_cast<char>(v / 10 + '0');
+static uint8_t eeprom_mem[32];
+
+static void read_eeprom() {
+    eeprom.read(i2c_req_dispatcher, 0, eeprom_mem, 4)([](int code) {
+        if (code == 0) {
+            tx_stream << "\033[2K\r"
+                      << "EEPROM:\r\n";
+            for (int i = 0; i < 16; i++) {
+                tx_stream << zoal::io::hexadecimal(eeprom_mem[i]) << "\r\n";
+            }
+        } else {
+            tx_stream << "\033[2K\r"
+                      << "Error"
+                      << "\r\n";
+        }
+        terminal.sync();
+    });
 }
 
-void print_time() {
-    RTC_TimeTypeDef time;
-    char buffer[] = "00:00:00\r\n";
+static void scan_i2c_devs() {
+    scanner.device_found = [](uint8_t addr) {
+        tx_stream << "\033[2K\r"
+                  << "I2C Device found: " << zoal::io::hexadecimal(addr) << "\r\n";
+    };
+    scanner.scan(i2c_req_dispatcher)([](int code) {
+        if (code == 0) {
+            tx_stream << "\033[2K\r"
+                      << "Done\r\n";
+        } else {
+            tx_stream << "\033[2K\r"
+                      << "Error\r\n";
+        }
+        terminal.sync();
+    });
+}
 
-    HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BIN);
-    format_byte(buffer + 1, time.Hours);
-    format_byte(buffer + 4, time.Minutes);
-    format_byte(buffer + 7, time.Seconds);
-    tx_stream << buffer;
+static void read_rtc() {
+    clock.fetch(i2c_req_dispatcher)([](int) {
+        auto dt = clock.date_time();
+        tx_stream << "\033[2K\r"
+                  << "Date time: "
+                  << "\r\n"
+                  << dt << "\r\n";
+        terminal.sync();
+    });
 }
 
 [[noreturn]] void zoal_cmd_processor(void *) {
@@ -61,10 +89,11 @@ void print_time() {
             tx_stream << help_message;
             break;
         case app_cmd_time_print:
-            print_time();
+            read_rtc();
             break;
         case app_cmd_time_set:
-            HAL_RTC_SetTime(&hrtc, &msg.update_time.time, RTC_FORMAT_BIN);
+            clock.date_time(msg.date_time);
+            clock.update(i2c_req_dispatcher)([](int){});
             break;
         case app_cmd_task_info: {
             TaskHandle_t xTask = xTaskGetHandle(msg.task_name);
@@ -83,6 +112,12 @@ void print_time() {
             }
             break;
         }
+        case app_cmd_scan_i2c:
+            scan_i2c_devs();
+            break;
+        case app_cmd_read_eeprom:
+            read_eeprom();
+            break;
         default:
             break;
         }

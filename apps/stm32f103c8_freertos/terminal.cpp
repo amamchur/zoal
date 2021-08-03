@@ -6,6 +6,8 @@
 #include "./constants.hpp"
 #include "./hardware.hpp"
 
+#include <zoal/parse/type_parser.hpp>
+
 using command_line_parser = zoal::misc::command_line_parser;
 zoal::mem::reserve_mem<zoal::misc::terminal_input, input_string_length> terminal;
 char command_history[input_string_length] = {0};
@@ -40,35 +42,23 @@ static void take_task_name(zoal::misc::command_line_machine *p, zoal::misc::comm
     command_queue.push(msg);
 }
 
-static uint8_t parse_time_component(const char *ptr) {
-    return (ptr[0] - '0') * 10 + (ptr[1] - '0');
-}
-
-static void type_callback(zoal::misc::type_detector_machine *pm, zoal::misc::value_type t) {
-    pm->callback(&zoal::misc::type_detector_machine::empty_callback);
-    if (t != zoal::misc::value_type::time) {
-        command_queue.push(command_msg(app_cmd_not_found));
-        return;
-    }
-
-    auto ptr = pm->token_start();
-    command_msg msg(app_cmd_time_set);
-    msg.update_time.time.Hours = parse_time_component(ptr);
-    msg.update_time.time.Minutes = parse_time_component(ptr + 3);
-    msg.update_time.time.Seconds = parse_time_component(ptr + 6);
-    command_queue.push(msg);
-}
-
 static void parser_time(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
     p->callback(&command_line_parser::empty_callback);
     if (e == zoal::misc::command_line_event::line_end) {
-        command_queue.push(command_msg(app_cmd_time_print));
         return;
     }
 
-    zoal::misc::type_detector detector(nullptr, 0);
-    detector.callback(&type_callback);
-    detector.scan(p->token_start(), p->token_end());
+    zoal::misc::type_detector_v2 td;
+    auto pos = td.detect(p->token_start(), p->token_end(), p->token_end());
+    if (td.type() != zoal::misc::value_type::date_time) {
+        tx_stream << "\r\n" << "Invalid date-time format" << "\r\n";
+        return;
+    }
+
+    command_msg msg;
+    msg.date_time = zoal::parse::type_parser<zoal::data::date_time>::parse(pos);
+    msg.command = app_cmd_time_set;
+    command_queue.push(msg);
 }
 
 static void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
@@ -99,9 +89,14 @@ static void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc:
     } else if (cmp_str_token("task-info", ts, te)) {
         p->callback(&take_task_name);
         return;
+    } else if (cmp_str_token("scan-i2c", ts, te)) {
+        msg.command = app_cmd_scan_i2c;
+    } else if (cmp_str_token("read-eeprom", ts, te)) {
+        msg.command = app_cmd_read_eeprom;
     } else {
         msg.command = app_cmd_not_found;
     }
+
     command_queue.push(msg);
 }
 
@@ -139,7 +134,7 @@ static void vt100_callback(const zoal::misc::terminal_input *, const char *s, co
     usart_01_tx_transport::send_data(s, e - s);
 }
 
-[[noreturn]] void zoal_terminal_rx_task(void *) {
+void init_terminal() {
     static auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
     terminal.vt100_feedback(&vt100_callback);
     terminal.input_callback(&input_callback);
@@ -149,14 +144,4 @@ static void vt100_callback(const zoal::misc::terminal_input *, const char *s, co
 
     tx_stream << zoal_ascii_logo << help_message;
     terminal.sync();
-
-    for (;;) {
-        uint8_t rx_buffer[8];
-        auto size = rx_stream_buffer.receive(rx_buffer, sizeof(rx_buffer));
-        if (size == 0) {
-            continue;
-        }
-
-        terminal.push(rx_buffer, size);
-    }
 }

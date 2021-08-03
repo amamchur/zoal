@@ -30,7 +30,7 @@ namespace zoal { namespace utils {
         }
 
         log_stream(const log_stream &log)
-            : zoal::io::output_stream<Transport>(log.transport) {
+            : zoal::io::output_stream<Transport>(log.target) {
             log.final = false;
             this->precision = log.precision;
             this->radix = log.radix;

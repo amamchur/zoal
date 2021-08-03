@@ -13,7 +13,9 @@ enum app_cmd {
     app_cmd_help,
     app_cmd_time_print,
     app_cmd_time_set,
-    app_cmd_not_found
+    app_cmd_not_found,
+    app_cmd_scan_i2c,
+    app_cmd_read_eeprom
 };
 
 #endif
