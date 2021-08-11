@@ -5,6 +5,7 @@ namespace zoal { namespace func {
     template<class Ret, class... Args>
     class abstract_invocation {
     public:
+//        virtual ~abstract_invocation() = default;
         virtual Ret operator()(Args... args) = 0;
     };
 
@@ -43,6 +44,13 @@ namespace zoal { namespace func {
             return (*invocation_)(args...);
         }
 
+        void reset() {
+            if (invocation_ != nullptr) {
+                invocation_->~abstract_invocation<void, Args...>();
+                invocation_ = nullptr;
+            }
+        }
+
     protected:
         invocation_type *invocation_{nullptr};
     };
@@ -54,6 +62,13 @@ namespace zoal { namespace func {
 
         void operator()(Args... args) {
             (*invocation_)(args...);
+        }
+
+        void reset() {
+            if (invocation_ != nullptr) {
+                invocation_->~abstract_invocation<void, Args...>();
+                invocation_ = nullptr;
+            }
         }
 
     protected:

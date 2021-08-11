@@ -16,11 +16,11 @@ struct command_msg {
     app_cmd command;
     union {
         zoal::data::date_time date_time;
-        char task_name[configMAX_TASK_NAME_LEN];
+        char task_name[configMAX_TASK_NAME_LEN]{0};
     };
 };
 
 using queue_type = zoal::freertos::queue<command_msg, zoal::freertos::freertos_allocation_type::static_mem>;
-extern zoal::mem::reserve_mem<queue_type, 3, queue_type::item_type> command_queue;
+extern zoal::mem::reserve_mem<queue_type, 5, queue_type::item_type> command_queue;
 
 #endif

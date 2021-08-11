@@ -42,6 +42,7 @@ TEST(i2c_request, write_data) {
     while (!request.eos()) {
         data.push_back(request.pull());
     }
+    EXPECT_EQ(request.pull(), 0);
 
     ASSERT_EQ(data.size(), 5);
     EXPECT_EQ(data[0], 1);
@@ -70,6 +71,9 @@ TEST(i2c_request, read_data) {
         fib_prev = fib;
         fib = f;
     }
+
+    request.push(0xFF); // Must be ignored
+    request.push(0xFF);
 
     EXPECT_EQ(buffer[0], 2);
     EXPECT_EQ(buffer[1], 3);

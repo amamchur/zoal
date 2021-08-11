@@ -8,7 +8,7 @@
 #include <zoal/arch/avr/utils/progmem_reader.hpp>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
 #include <zoal/board/arduino_leonardo.hpp>
-#include <zoal/gfx/glyph_render.hpp>
+#include <zoal/gfx/glyph_renderer.hpp>
 #include <zoal/gfx/renderer.hpp>
 #include <zoal/ic/adxl345.hpp>
 #include <zoal/ic/ds3231.hpp>
@@ -66,7 +66,7 @@ zoal::utils::i2c_scanner scanner;
 i2c_req_dispatcher_type i2c_req_dispatcher;
 zoal::periph::i2c_request &request = i2c_req_dispatcher.request;
 
-using scheduler_type = zoal::utils::function_scheduler<ms_counter, 8, void *>;
+using scheduler_type = zoal::utils::lambda_scheduler<uint32_t, 4, 8, uint8_t>;
 scheduler_type scheduler;
 
 void initialize_hardware() {
@@ -100,20 +100,22 @@ void initialize_hardware() {
     zoal::utils::interrupts::on();
 }
 
-void led_on(void *);
-void led_off(void *);
+void led_on();
+void led_off();
+constexpr scheduler_type::id_type led_on_id = 1;
+constexpr scheduler_type::id_type led_off_id = 2;
 
-void led_on(void *) {
+void led_on() {
     ::blink_pin::high();
-    scheduler.schedule(500, led_off);
+    scheduler.schedule(500, led_off, led_off_id);
 }
 
-void led_off(void *) {
+void led_off() {
     ::blink_pin::low();
-    scheduler.schedule(500, led_on);
+    scheduler.schedule(500, led_on, led_on_id);
 }
 
-void request_temp(void *) {
+void request_temp() {
     temp_sensor.fetch(i2c_req_dispatcher)([&](int) {
         stream << "\033[2K\r" << temp_sensor.temperature() << " C"
                << "\r\n";
@@ -121,7 +123,7 @@ void request_temp(void *) {
     });
 }
 
-void request_time(void *) {
+void request_time() {
     clock.fetch(i2c_req_dispatcher)([&](int) {
         stream << "\033[2K\r" << clock.date_time() << "\r\n";
         terminal.sync();
@@ -184,21 +186,22 @@ static void oled_render(zoal::misc::command_line_machine *p, zoal::misc::command
     }
 
     auto g = graphics::from_memory(display.buffer.canvas);
-    zoal::gfx::glyph_render<graphics, zoal::utils::progmem_reader> gl(g, &roboto_regular_16);
+    zoal::gfx::glyph_renderer<graphics, zoal::utils::progmem_reader> gl(g, &roboto_regular_16);
     g->clear(0);
     gl.color(1);
-    gl.position(roboto_regular_16.y_advance, roboto_regular_16.y_advance);
+    gl.position(0, roboto_regular_16.y_advance);
     gl.draw(p->token_start(), p->token_end());
     display.display(i2c_req_dispatcher)([](int) { terminal.sync(); });
 }
 
 void read_axis() {
-    accelerometer.fecth_axis(i2c_req_dispatcher)([](int) {
+    accelerometer.fetch_axis(i2c_req_dispatcher)([](int) {
         auto axis = accelerometer.vector();
         stream << "\033[2K\r";
         stream << "x: " << axis.x << "\r\n";
         stream << "y: " << axis.y << "\r\n";
         stream << "z: " << axis.z << "\r\n";
+
         terminal.sync();
     });
 }
@@ -232,14 +235,14 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
     stream << "\r\n";
 
     if (cmp_progmem_str_token(zoal::io::progmem_str_iter(start_blink_cmd), ts, te)) {
-        scheduler.clear_handle(led_on);
-        scheduler.clear_handle(led_off);
+        scheduler.remove(led_on_id);
+        scheduler.remove(led_off_id);
         scheduler.schedule(0, led_on);
     }
 
     if (cmp_progmem_str_token(zoal::io::progmem_str_iter(stop_blink_cmd), ts, te)) {
-        scheduler.clear_handle(led_on);
-        scheduler.clear_handle(led_off);
+        scheduler.remove(led_on_id);
+        scheduler.remove(led_off_id);
     }
 
     if (cmp_progmem_str_token(zoal::io::progmem_str_iter(temp_cmd), ts, te)) {
@@ -338,26 +341,28 @@ auto button_handler = [](zoal::io::button_event e, shield::joystick_button b) {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
 
-void fetch_axis(void *);
+void fetch_axis();
 
-void display_axis(zoal::data::vector<int16_t> v) {
-    using gl_type = zoal::gfx::glyph_render<graphics, zoal::utils::progmem_reader>;
+void display_axis(const zoal::data::vector<int16_t>& v) {
+    using gl_type = zoal::gfx::glyph_renderer<graphics, zoal::utils::progmem_reader>;
     auto g = graphics::from_memory(display.buffer.canvas);
     gl_type gl(g, &roboto_regular_16);
     zoal::io::output_stream<gl_type> os(gl);
     g->clear(0);
     gl.color(1);
 
+    auto gvect = v.convert<float>() / 256;
+
     for (int i = 0; i < 3; i++) {
         gl.position(0, roboto_regular_16.y_advance * (i + 1));
-        os << v[i];
+        os << gvect[i];
     }
 
     display.display(i2c_req_dispatcher)([](int) { scheduler.schedule(20, fetch_axis); });
 }
 
-void fetch_axis(void *) {
-    accelerometer.fecth_axis(i2c_req_dispatcher)([](int) { display_axis(accelerometer.vector()); });
+void fetch_axis() {
+    accelerometer.fetch_axis(i2c_req_dispatcher)([](int) { display_axis(accelerometer.vector()); });
 }
 
 int main() {
@@ -378,7 +383,6 @@ int main() {
     g->clear(0);
     display.display(i2c_req_dispatcher)([](int) { terminal.sync(); });
 
-    //    fetch_axis(nullptr);
     while (true) {
         uint8_t rx_byte = 0;
         bool result;
@@ -392,7 +396,7 @@ int main() {
         }
 
         i2c_req_dispatcher.handle();
-        scheduler.handle();
+        scheduler.handle(milliseconds);
 
         auto time = ms_counter::now();
         joystick.handle(time, button_handler);

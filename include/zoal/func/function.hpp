@@ -45,15 +45,13 @@ namespace zoal { namespace func {
             return this->invocation_ != nullptr;
         }
 
-        void reset() {
-            this->invocation_ = nullptr;
-        }
-
         template<class L>
         void assign(L l) {
             using inv_type = lambda_invocation<L, Ret, Args...>;
             static constexpr bool has_spaces = sizeof(inv_type) < ClosureBankSize;
             static_assert(has_spaces, "Handler size is too big. Please increase closure bank size.");
+
+            this->reset();
 
             auto instance = new (mem_bank) inv_type(l);
             this->invocation_ = instance;

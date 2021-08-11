@@ -1,16 +1,18 @@
-#ifndef ZOAL_GLYPH_RENDER_HPP
-#define ZOAL_GLYPH_RENDER_HPP
+#ifndef ZOAL_GLYPH_RENDERER_HPP
+#define ZOAL_GLYPH_RENDERER_HPP
 
 #include "../text/types.hpp"
+#include "bitmap_renderer.hpp"
 
 namespace zoal { namespace gfx {
     template<class Graphics, class MemReader>
-    class glyph_render {
+    class glyph_renderer {
     public:
-        using self_type = glyph_render<Graphics, MemReader>;
+        using self_type = glyph_renderer<Graphics, MemReader>;
         using pixel_type = typename Graphics::pixel_type;
+        using bmp_renderer_type = bitmap_renderer<Graphics, MemReader>;
 
-        glyph_render(Graphics *g, const zoal::text::font *font)
+        glyph_renderer(Graphics *g, const zoal::text::font *font)
             : graphics_(g)
             , font_(font) {}
 
@@ -77,8 +79,8 @@ namespace zoal { namespace gfx {
                 return;
             }
 
-            x_ += get_kerning(last_char_code_, ch);
-            last_char_code_ = ch;
+            x_ += get_kerning(prev_char_code_, ch);
+            prev_char_code_ = ch;
 
             auto pos = code - range->start + range->base;
             auto g = MemReader::template read_mem<zoal::text::glyph>(font_->glyphs + pos);
@@ -106,7 +108,7 @@ namespace zoal { namespace gfx {
         self_type &position(int x, int y) {
             x_ = x;
             y_ = y;
-            last_char_code_ = 0;
+            prev_char_code_ = 0;
             return *this;
         }
 
@@ -128,22 +130,19 @@ namespace zoal { namespace gfx {
                 draw(d[i]);
             }
         }
+
     private:
         void render_glyph(const zoal::text::glyph *g) {
-            const uint8_t *data = font_->bitmap + g->bitmap_offset;
-            const uint8_t bytes_per_row = (g->width + 7) >> 3;
-            for (int y = 0; y < g->height; y++) {
-                auto row = data + y * bytes_per_row;
-                for (int x = 0; x < g->width; x++) {
-                    auto ptr = row + (x >> 3);
-                    int mask = 0x80 >> (x & 7);
-                    auto qqq = MemReader::template read_mem<uint8_t>(ptr);
-                    int value = qqq & mask;
-                    if (value) {
-                        graphics_->pixel(x_ + x + g->x_offset, y_ + y + g->y_offset, color_);
-                    }
-                }
-            }
+            auto glyph_bitmap = font_->bitmap + g->bitmap_offset;
+            bmp_renderer_type::draw(
+                //
+                graphics_,
+                glyph_bitmap,
+                x_ + g->x_offset,
+                y_ + g->y_offset,
+                g->width,
+                g->height,
+                color_);
             x_ += g->x_advance;
         }
 
@@ -151,7 +150,7 @@ namespace zoal { namespace gfx {
         const zoal::text::font *font_{nullptr};
         int x_{0};
         int y_{0};
-        uint16_t last_char_code_{0};
+        uint16_t prev_char_code_{0};
         pixel_type color_;
     };
 }}

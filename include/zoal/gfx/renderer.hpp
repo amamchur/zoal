@@ -11,7 +11,7 @@ namespace zoal { namespace gfx {
         using pixel_type = Pixel;
         using adapter_type = Adapter;
 
-        static self_type *from_memory(void *buffer) {
+        static inline self_type *from_memory(void *buffer) {
             return reinterpret_cast<self_type *>(buffer);
         }
 
@@ -21,12 +21,6 @@ namespace zoal { namespace gfx {
 
         inline void pixel(int x, int y, pixel_type c) {
             adapter_type::pixel(buffer, x, y, c);
-        }
-
-        void swap(pixel_type &a, pixel_type &b) {
-            auto tmp = a;
-            a = b;
-            b = tmp;
         }
 
         void draw_line(int x0, int y0, int x1, int y1, pixel_type color) {

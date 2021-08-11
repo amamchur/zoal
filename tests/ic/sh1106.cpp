@@ -41,9 +41,10 @@ TEST(sh1106, display) {
         vect.push_back(request.pull());
     }
 
+    EXPECT_FALSE(finished);
     ASSERT_EQ(vect.size(), 135);
     EXPECT_EQ(vect[0], 0x80);
-    EXPECT_EQ(vect[1], 0xB0);
+    EXPECT_EQ(vect[1], 0xB0); // Page 0
     EXPECT_EQ(vect[2], 0x80);
     EXPECT_EQ(vect[3], 0x02);
     EXPECT_EQ(vect[4], 0x80);
@@ -53,11 +54,112 @@ TEST(sh1106, display) {
     EXPECT_EQ(vect[8], 0x02);
     EXPECT_EQ(vect[9], 0x03);
     EXPECT_EQ(vect[10], 0x04);
-    //
-    //    // Canvas start
-    //    EXPECT_EQ(ptr + 13, display.buffer.canvas);
-    //    EXPECT_EQ(ptr[13], 0x01);
-    //    EXPECT_EQ(ptr[14], 0x02);
-    //    EXPECT_EQ(ptr[15], 0x03);
-    //    EXPECT_EQ(ptr[16], 0x04);
+
+    vect.clear();
+    request.status = zoal::periph::i2c_request_status::finished;
+    dispatcher.handle();
+    while (!request.eos()) {
+        vect.push_back(request.pull());
+    }
+
+    EXPECT_FALSE(finished);
+    ASSERT_EQ(vect.size(), 135);
+    EXPECT_EQ(vect[0], 0x80);
+    EXPECT_EQ(vect[1], 0xB1); // Page 1
+    EXPECT_EQ(vect[2], 0x80);
+    EXPECT_EQ(vect[3], 0x02);
+
+    vect.clear();
+    request.status = zoal::periph::i2c_request_status::finished;
+    dispatcher.handle();
+    while (!request.eos()) {
+        vect.push_back(request.pull());
+    }
+
+    EXPECT_FALSE(finished);
+    ASSERT_EQ(vect.size(), 135);
+    EXPECT_EQ(vect[0], 0x80);
+    EXPECT_EQ(vect[1], 0xB2); // Page 2
+    EXPECT_EQ(vect[2], 0x80);
+    EXPECT_EQ(vect[3], 0x02);
+
+    vect.clear();
+    request.status = zoal::periph::i2c_request_status::finished;
+    dispatcher.handle();
+    while (!request.eos()) {
+        vect.push_back(request.pull());
+    }
+
+    EXPECT_FALSE(finished);
+    ASSERT_EQ(vect.size(), 135);
+    EXPECT_EQ(vect[0], 0x80);
+    EXPECT_EQ(vect[1], 0xB3); // Page 3
+    EXPECT_EQ(vect[2], 0x80);
+    EXPECT_EQ(vect[3], 0x02);
+
+    vect.clear();
+    request.status = zoal::periph::i2c_request_status::finished;
+    dispatcher.handle();
+    while (!request.eos()) {
+        vect.push_back(request.pull());
+    }
+
+    EXPECT_FALSE(finished);
+    ASSERT_EQ(vect.size(), 135);
+    EXPECT_EQ(vect[0], 0x80);
+    EXPECT_EQ(vect[1], 0xB4); // Page 4
+    EXPECT_EQ(vect[2], 0x80);
+    EXPECT_EQ(vect[3], 0x02);
+
+    vect.clear();
+    request.status = zoal::periph::i2c_request_status::finished;
+    dispatcher.handle();
+    while (!request.eos()) {
+        vect.push_back(request.pull());
+    }
+
+    EXPECT_FALSE(finished);
+    ASSERT_EQ(vect.size(), 135);
+    EXPECT_EQ(vect[0], 0x80);
+    EXPECT_EQ(vect[1], 0xB5); // Page 5
+    EXPECT_EQ(vect[2], 0x80);
+    EXPECT_EQ(vect[3], 0x02);
+
+    vect.clear();
+    request.status = zoal::periph::i2c_request_status::finished;
+    dispatcher.handle();
+    while (!request.eos()) {
+        vect.push_back(request.pull());
+    }
+
+    EXPECT_FALSE(finished);
+    ASSERT_EQ(vect.size(), 135);
+    EXPECT_EQ(vect[0], 0x80);
+    EXPECT_EQ(vect[1], 0xB6); // Page 6
+    EXPECT_EQ(vect[2], 0x80);
+    EXPECT_EQ(vect[3], 0x02);
+
+    vect.clear();
+    request.status = zoal::periph::i2c_request_status::finished;
+    dispatcher.handle();
+    while (!request.eos()) {
+        vect.push_back(request.pull());
+    }
+
+    EXPECT_FALSE(finished);
+    ASSERT_EQ(vect.size(), 135);
+    EXPECT_EQ(vect[0], 0x80);
+    EXPECT_EQ(vect[1], 0xB7); // Page 7
+    EXPECT_EQ(vect[2], 0x80);
+    EXPECT_EQ(vect[3], 0x02);
+
+    vect.clear();
+    request.status = zoal::periph::i2c_request_status::finished;
+    dispatcher.handle();
+    while (!request.eos()) {
+        vect.push_back(request.pull());
+    }
+
+    EXPECT_TRUE(finished);
+    ASSERT_EQ(vect.size(), 0);
 }

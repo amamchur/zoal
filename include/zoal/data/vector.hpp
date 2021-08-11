@@ -32,7 +32,7 @@ namespace zoal { namespace data {
             , z(v.z) {}
 
         template<class U>
-        vector<U> convert() {
+        vector<U> convert() const {
             return vector<U>(static_cast<T>(x), static_cast<T>(y), static_cast<T>(z));
         }
 
@@ -52,11 +52,19 @@ namespace zoal { namespace data {
             return *this;
         }
 
+        vector operator+(T m) const {
+            return {x + m, y + m, z + m};
+        }
+
         vector &operator+=(T m) {
             x += m;
             y += m;
             z += m;
             return *this;
+        }
+
+        vector operator-(T m) const {
+            return {x - m, y - m, z - m};
         }
 
         vector &operator-=(T m) {
@@ -66,11 +74,19 @@ namespace zoal { namespace data {
             return *this;
         }
 
+        vector operator*(T m) const {
+            return {x * m, y * m, z * m};
+        }
+
         vector &operator*=(T m) {
             x *= m;
             y *= m;
             z *= m;
             return *this;
+        }
+
+        vector operator/(T m) const {
+            return {x / m, y / m, z / m};
         }
 
         vector &operator/=(T m) {
@@ -84,7 +100,7 @@ namespace zoal { namespace data {
             return *(&x + i);
         }
 
-        inline T& operator[](int i) {
+        inline T &operator[](int i) {
             return *(&x + i);
         }
     };

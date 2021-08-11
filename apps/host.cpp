@@ -7,7 +7,10 @@
 #include <iostream>
 #include <zoal/ct/type_list.hpp>
 #include <zoal/data/vector.hpp>
+#include <zoal/func/function.hpp>
 #include <zoal/parse/type_parser.hpp>
+#include <zoal/utils/ms_counter.hpp>
+#include <zoal/utils/scheduler.hpp>
 
 using command_line_parser = zoal::misc::command_line_parser;
 
@@ -72,7 +75,7 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
 
 char cmd[] = "test asdas asd as";
 
-int main() {
+void test_args() {
     auto s = cmd;
     auto e = cmd + sizeof(cmd) - 1;
     command_line_parser cmd_parser(nullptr, 0);
@@ -104,5 +107,55 @@ int main() {
         }
         iter = iter->next();
     }
+}
+
+volatile uint32_t milliseconds = 0;
+using ms_counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
+using scheduler_type = zoal::utils::lambda_scheduler<uint32_t, 8>;
+
+scheduler_type scheduler;
+
+class TestCls {
+public:
+    TestCls() {
+        std::cout << "TestCls" << std::endl;
+    }
+
+    TestCls(const TestCls& obj) : q(obj.q) {
+        std::cout << "TestCls copy" << std::endl;
+    }
+
+    ~TestCls() {
+        std::cout << "~TestCls" << std::endl;
+    }
+
+    int q{0};
+};
+
+zoal::func::function<32, void> fn;
+
+int main() {
+    TestCls obj;
+    obj.q = 1234;
+    std::cout << "----" << std::endl;
+
+    fn.assign([obj](){
+        std::cout << obj.q << std::endl;
+    });
+    fn();
+
+    fn.assign([](){
+        std::cout << "Hello 2!" << std::endl;
+    });
+    fn();
+
+    //test_args();
+
+    scheduler.clear();
+    scheduler.remove(0);
+    scheduler.schedule(0, []() {
+        std::cout << "Callback!" << std::endl;
+    });
+    scheduler.handle(1);
     return 0;
 }

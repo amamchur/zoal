@@ -1,6 +1,8 @@
 #ifndef ZOAL_UTILS_SCHEDULER_HPP
 #define ZOAL_UTILS_SCHEDULER_HPP
 
+#include "../func/function.hpp"
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -205,6 +207,88 @@ namespace zoal { namespace utils {
 
     private:
         T *instance;
+    };
+
+    template<class TickType, class Handler, class Id>
+    class lambda_schedule_item {
+    public:
+        Id id{0};
+        TickType time{0};
+        Handler handler;
+    };
+
+    template<class TicksType, size_t Capacity, size_t ClosureBankSize = sizeof(void *) * 4, class Id = int>
+    class lambda_scheduler {
+    public:
+        using ticks_type = TicksType;
+        using id_type = Id;
+        using handler_type = zoal::func::function<ClosureBankSize, void>;
+        using item_type = lambda_schedule_item<ticks_type, handler_type, id_type>;
+
+        template<class Handler>
+        bool schedule(ticks_type dt, Handler h, id_type id = 0) {
+            auto item = find_free_item();
+            if (item != nullptr) {
+                item->id = id;
+                item->time = dt;
+                item->handler.template assign(h);
+            }
+            return item != nullptr;
+        }
+
+        void handle(ticks_type now) {
+            auto dt = now - prev_time;
+            if (dt == 0) {
+                return;
+            }
+
+            prev_time = now;
+
+            for (size_t i = 0; i < Capacity; i++) {
+                auto &item = this->items[i];
+                if (!item.handler) {
+                    continue;
+                }
+
+                auto tm = item.time - dt;
+                if (tm == 0 || tm > item.time) {
+                    item_type clone = item;
+                    item.handler.reset();
+                    clone.handler();
+                } else {
+                    item.time = tm;
+                }
+            }
+        }
+
+        void clear() {
+            for (size_t i = 0; i < Capacity; i++) {
+                this->items[i].handler.reset();
+            }
+        }
+
+        void remove(id_type id) {
+            for (size_t i = 0; i < Capacity; i++) {
+                auto &item = this->items[i];
+                if (item.id == id) {
+                    this->items[i].handler.reset();
+                }
+            }
+        }
+
+    private:
+        item_type *find_free_item() {
+            for (size_t i = 0; i < Capacity; i++) {
+                auto &item = this->items[i];
+                if (!item.handler) {
+                    return &item;
+                }
+            }
+            return nullptr;
+        }
+
+        ticks_type prev_time{0};
+        item_type items[Capacity];
     };
 }}
 

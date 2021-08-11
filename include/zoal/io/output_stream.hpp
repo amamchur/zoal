@@ -154,7 +154,7 @@ namespace zoal { namespace io {
             return *this;
         }
 
-        uint8_t *backward_number_format(uint8_t *ptr, uint32_t value, uint8_t rdx) {
+        static uint8_t *backward_number_format(uint8_t *ptr, uint32_t value, uint8_t rdx) {
             do {
                 auto v = static_cast<uint8_t>(value % rdx);
                 value /= rdx;

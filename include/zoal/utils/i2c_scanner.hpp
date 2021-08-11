@@ -19,22 +19,22 @@ namespace zoal { namespace utils {
 
     private:
         template<class Dispatcher>
-        void scan_next(Dispatcher &m) {
+        void scan_next(Dispatcher &dispatcher) {
             using zoal::periph::i2c_request_status;
 
-            auto req = m.acquire_request();
+            auto req = dispatcher.acquire_request();
             if (req->status == i2c_request_status::finished && device_found) {
                 device_found(address);
             }
 
             if (++address >= 0x7F) {
-                m.finish_sequence(0);
+                dispatcher.finish_sequence(0);
                 return;
             }
 
             auto cb = [this](Dispatcher &dispatcher, i2c_request_status) { scan_next(dispatcher); };
             req->write(address, nullptr, nullptr);
-            next_sequence(m, cb);
+            next_sequence(dispatcher, cb);
         }
 
         uint8_t address{0};
