@@ -2,7 +2,7 @@
 #define ZOAL_UTILS_MS_COUNTER_HPP
 
 #include "defs.hpp"
-#include "volatile_value_reader.hpp"
+#include "interrupts.hpp"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -15,7 +15,8 @@ namespace zoal { namespace utils {
         static constexpr volatile T *value_ptr = Pointer;
 
         static volatile T now() {
-            return volatile_value_reader<T, Pointer>();
+            zoal::utils::interrupts_off off;
+            return *value_ptr;
         }
     };
 

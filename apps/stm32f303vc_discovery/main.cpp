@@ -43,7 +43,7 @@ static void test_i2c() {
         tx_stream << "\033[2K\r"
                   << "I2C Device found: " << zoal::io::hexadecimal(addr) << "\r\n";
     };
-    scanner.scan(i2c_req_dispatcher)([](int code) {
+    scanner.scan(i2c_dispatcher)([](int code) {
         if (code == 0) {
             tx_stream << "Done\r\n";
         } else {
@@ -59,7 +59,7 @@ static void test_i2c() {
     for (;;) {
         auto bits = io_events.wait(1);
         if (bits) {
-            i2c_req_dispatcher.handle();
+            i2c_dispatcher.handle();
         }
 
         vTaskDelay(1);

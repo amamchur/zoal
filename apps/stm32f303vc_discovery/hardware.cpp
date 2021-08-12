@@ -4,11 +4,11 @@
 
 #include <zoal/periph/usart.hpp>
 
-i2c_req_dispatcher_type i2c_req_dispatcher;
-zoal::periph::i2c_request &request = i2c_req_dispatcher.request;
+i2c_req_dispatcher_type i2c_dispatcher;
+zoal::periph::i2c_request &request = i2c_dispatcher.request;
 
-usart_debug_tx_transport tx_target;
-tx_stream_type tx_stream(tx_target);
+usart_debug_tx_transport usart_tx;
+usart_tx_stream_type tx_stream(usart_tx);
 
 void zoal_init_hardware() {
     using api = zoal::gpio::api;
@@ -38,6 +38,6 @@ void usart_debug_tx_transport::send_data(const void *data, size_t size) {
 }
 
 extern "C" void USART3_IRQHandler() {
-    debug_usart::tx_handler([](uint8_t &value) { return tx_target.txs.receive_isr(&value, 1) > 0; });
-    debug_usart::rx_handler([](uint8_t byte) { tx_target.rxs.send_isr(byte); });
+    debug_usart::tx_handler([](uint8_t &value) { return usart_tx.txs.receive_isr(&value, 1) > 0; });
+    debug_usart::rx_handler([](uint8_t byte) { usart_tx.rxs.send_isr(byte); });
 }

@@ -26,11 +26,11 @@ public:
     static void send_data(const void *data, size_t size);
 };
 
-using tx_stream_type = zoal::io::output_stream<usart_01_tx_transport>;
-extern tx_stream_type tx_stream;
+using usart_tx_stream_type = zoal::io::output_stream<usart_01_tx_transport>;
+extern usart_tx_stream_type tx_stream;
 
 using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c_02, sizeof(void *) * 8>;
-extern i2c_req_dispatcher_type i2c_req_dispatcher;
+extern i2c_req_dispatcher_type i2c_dispatcher;
 extern zoal::periph::i2c_request &request;
 
 constexpr uint32_t i2c_event = 1 << 0;

@@ -48,8 +48,8 @@ namespace zoal { namespace func {
         template<class L>
         void assign(L l) {
             using inv_type = lambda_invocation<L, Ret, Args...>;
-            static constexpr bool has_spaces = sizeof(inv_type) < ClosureBankSize;
-            static_assert(has_spaces, "Handler size is too big. Please increase closure bank size.");
+            static constexpr bool has_space = sizeof(inv_type) < ClosureBankSize;
+            static_assert(has_space, "Handler size is too big. Please increase closure bank size.");
 
             this->reset();
 

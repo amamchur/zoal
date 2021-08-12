@@ -27,7 +27,7 @@ __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> main_task(zoal_main
     for (;;) {
         auto bits = hardware_events.wait(all_hardware_events);
         if ((bits & i2c_event) == i2c_event) {
-            i2c_req_dispatcher.handle();
+            i2c_dispatcher.handle();
         }
 
         if ((bits & usart_event) == usart_event) {

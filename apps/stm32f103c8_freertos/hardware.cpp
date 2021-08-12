@@ -7,11 +7,11 @@
 zoal::mem::reserve_mem<stream_buffer_type, 32> rx_stream_buffer(1);
 zoal::mem::reserve_mem<stream_buffer_type, 32> tx_stream_buffer(1);
 
-usart_01_tx_transport tx_target;
-tx_stream_type tx_stream(tx_target);
+usart_01_tx_transport usart_tx;
+usart_tx_stream_type tx_stream(usart_tx);
 
-i2c_req_dispatcher_type i2c_req_dispatcher;
-zoal::periph::i2c_request &request = i2c_req_dispatcher.request;
+i2c_req_dispatcher_type i2c_dispatcher;
+zoal::periph::i2c_request &request = i2c_dispatcher.request;
 
 zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> hardware_events;
 

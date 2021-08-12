@@ -153,7 +153,7 @@ int main() {
 
     scheduler.clear();
     scheduler.remove(0);
-    scheduler.schedule(0, []() {
+    scheduler.schedule(0, 0, []() {
         std::cout << "Callback!" << std::endl;
     });
     scheduler.handle(1);

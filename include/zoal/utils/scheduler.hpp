@@ -7,73 +7,56 @@
 #include <stdint.h>
 
 namespace zoal { namespace utils {
-    template<class CounterValueType, class Callback, class Token>
-    class schedule_item {
+    template<class TicksType, class Handler, class Token, class Id>
+    class function_schedule_item {
     public:
-        CounterValueType time;
-        Callback handler;
+        TicksType time;
+        Handler handler;
+        Id id;
         Token token;
 
-        bool match(const schedule_item &item) const {
-            return handler == item.handler && token == item.token;
-        }
+        function_schedule_item() = default;
 
-        schedule_item() = default;
+        function_schedule_item(Id idn, TicksType dt, Handler h)
+            : time(dt)
+            , handler(h)
+            , id(idn) {}
 
-        schedule_item(CounterValueType tm, Callback c)
-            : time(tm)
-            , handler(c) {}
-
-        schedule_item(CounterValueType tm, Callback c, Token t)
-            : time(tm)
-            , handler(c)
+        function_schedule_item(Id idn, TicksType dt, Handler h, Token t)
+            : time(dt)
+            , handler(h)
+            , id(idn)
             , token(t) {}
     };
 
-    template<class CounterValueType, class Callback>
-    class schedule_item<CounterValueType, Callback, void> {
+    template<class TicksType, size_t Capacity, class Token, class Id = int>
+    class function_scheduler {
     public:
-        CounterValueType time;
-        Callback handler;
-
-        bool match(const schedule_item &item) const {
-            return handler == item.handler;
-        }
-
-        schedule_item() = default;
-
-        schedule_item(CounterValueType tm, Callback c)
-            : time(tm)
-            , handler(c) {}
-    };
-
-    template<class Counter, size_t Capacity, class Callback, class Token>
-    class base_scheduler {
-    public:
+        using ticks_type = TicksType;
+        using id_type = Id;
         using token_type = Token;
-        using counter_type = typename Counter::value_type;
-        using item_type = schedule_item<counter_type, Callback, token_type>;
+        using handler_type = void (*)(Token);
+        using item_type = function_schedule_item<TicksType, handler_type, token_type, Id>;
 
-        base_scheduler() noexcept
-            : prev_time(Counter::now()) {
-            clear();
+        function_scheduler() noexcept {
+            memset(items, 0, sizeof(items));
         }
 
         template<typename... Args>
-        bool schedule(counter_type dt, Args... args) {
-            for (size_t i = 0; i < Capacity; i++) {
-                auto &item = this->items[i];
-                if (item.handler == nullptr) {
-                    item = item_type(dt, args...);
-                    return true;
-                }
+        bool schedule(id_type id, ticks_type dt, handler_type handler, Args... args) {
+            auto item = find_free_item();
+            if (item != nullptr) {
+                *item = item_type(id, dt, handler, args...);
             }
-            return false;
+            return item != nullptr;
         }
 
-        template<class Invoker>
-        void handle(Invoker &invoker) {
-            auto now = Counter::now();
+        template<typename... Args>
+        bool schedule(id_type id, ticks_type dt, void (*handler)(), Args... args) {
+            return schedule(id, dt, reinterpret_cast<void (*)(Token)>(handler), args...);
+        }
+
+        void handle(ticks_type now) {
             auto dt = now - prev_time;
             if (dt == 0) {
                 return;
@@ -91,31 +74,9 @@ namespace zoal { namespace utils {
                 if (tm == 0 || tm > item.time) {
                     auto clone = item;
                     item.handler = nullptr;
-                    invoker(clone);
+                    clone.handler(clone.token);
                 } else {
                     item.time = tm;
-                }
-            }
-        }
-
-        template<typename... Args>
-        void clear_exect(Args... args) {
-            item_type itm(0, args...);
-            for (size_t i = 0; i < Capacity; i++) {
-                auto &item = this->items[i];
-                if (itm.match(item)) {
-                    item.handler = nullptr;
-                }
-            }
-        }
-
-        template<typename... Args>
-        void clear_handle(Args... args) {
-            item_type itm(0, args...);
-            for (size_t i = 0; i < Capacity; i++) {
-                auto &item = this->items[i];
-                if (itm.handler == item.handler) {
-                    item.handler = nullptr;
                 }
             }
         }
@@ -126,95 +87,36 @@ namespace zoal { namespace utils {
             }
         }
 
+        void remove(id_type id) {
+            for (size_t i = 0; i < Capacity; i++) {
+                auto &item = this->items[i];
+                if (item.id == id) {
+                    this->items[i].handler = nullptr;
+                }
+            }
+        }
+
     private:
-        counter_type prev_time;
+        item_type *find_free_item() {
+            for (size_t i = 0; i < Capacity; i++) {
+                auto &item = this->items[i];
+                if (!item.handler) {
+                    return &item;
+                }
+            }
+            return nullptr;
+        }
+
+        TicksType prev_time;
         item_type items[Capacity];
-    };
-
-    template<class Token>
-    struct function_callback {
-        using type = void (*)(Token);
-
-        template<class T>
-        static void invoke(const T &item) {
-            item.handler(item.token);
-        }
-    };
-
-    template<>
-    struct function_callback<void> {
-        using type = void (*)();
-
-        template<class T>
-        static void invoke(const T &item) {
-            item.handler();
-        }
-    };
-
-    template<class Counter, size_t Capacity, class Token>
-    class function_scheduler : public base_scheduler<Counter, Capacity, typename function_callback<Token>::type, Token> {
-    public:
-        using TF = function_callback<Token>;
-        using base_type = base_scheduler<Counter, Capacity, typename function_callback<Token>::type, Token>;
-        using item = typename base_type::item_type;
-
-        void handle() {
-            this->base_type::template handle<function_scheduler>(*this);
-        }
-
-        void operator()(const item &item) {
-            TF::invoke(item);
-        }
-    };
-
-    template<class Class, class Token>
-    struct method_callback {
-        using type = void (Class::*)(Token);
-
-        template<class T>
-        static void invoke(Class *c, const T &item) {
-            (c->*item.handler)(item.token);
-        }
-    };
-
-    template<class Class>
-    struct method_callback<Class, void> {
-        using type = void (Class::*)();
-
-        template<class T>
-        static void invoke(Class *c, const T &item) {
-            (c->*item.handler)();
-        }
-    };
-
-    template<class T, class Counter, size_t Capacity, class Token>
-    class method_scheduler : public base_scheduler<Counter, Capacity, typename method_callback<T, Token>::type, Token> {
-    public:
-        using timeout_method_type = method_callback<T, Token>;
-        using base_type = base_scheduler<Counter, Capacity, typename method_callback<T, Token>::type, Token>;
-        using item_type = typename base_type::item_type;
-
-        explicit method_scheduler(T *obj)
-            : instance(obj) {}
-
-        void handle() {
-            this->base_type::template handle<method_scheduler>(*this);
-        }
-
-        void operator()(const item_type &item) {
-            timeout_method_type::invoke(instance, item);
-        }
-
-    private:
-        T *instance;
     };
 
     template<class TickType, class Handler, class Id>
     class lambda_schedule_item {
     public:
-        Id id{0};
         TickType time{0};
         Handler handler;
+        Id id{0};
     };
 
     template<class TicksType, size_t Capacity, size_t ClosureBankSize = sizeof(void *) * 4, class Id = int>
@@ -225,8 +127,12 @@ namespace zoal { namespace utils {
         using handler_type = zoal::func::function<ClosureBankSize, void>;
         using item_type = lambda_schedule_item<ticks_type, handler_type, id_type>;
 
+        lambda_scheduler() noexcept {
+            clear();
+        }
+
         template<class Handler>
-        bool schedule(ticks_type dt, Handler h, id_type id = 0) {
+        bool schedule(id_type id, ticks_type dt, Handler h) {
             auto item = find_free_item();
             if (item != nullptr) {
                 item->id = id;

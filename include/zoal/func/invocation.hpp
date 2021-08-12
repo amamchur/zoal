@@ -1,11 +1,15 @@
 #ifndef ZOAL_FUNC_INVOCATION_HPP
 #define ZOAL_FUNC_INVOCATION_HPP
 
+//#define ZOAL_ABSTRACT_INVOCATION_DESTRUCTOR 1
+
 namespace zoal { namespace func {
     template<class Ret, class... Args>
     class abstract_invocation {
     public:
-//        virtual ~abstract_invocation() = default;
+#if ZOAL_ABSTRACT_INVOCATION_DESTRUCTOR
+        virtual ~abstract_invocation() = default;
+#endif
         virtual Ret operator()(Args... args) = 0;
     };
 
@@ -46,7 +50,7 @@ namespace zoal { namespace func {
 
         void reset() {
             if (invocation_ != nullptr) {
-                invocation_->~abstract_invocation<void, Args...>();
+                //                invocation_->~abstract_invocation<void, Args...>();
                 invocation_ = nullptr;
             }
         }
@@ -65,10 +69,14 @@ namespace zoal { namespace func {
         }
 
         void reset() {
+#if ZOAL_ABSTRACT_INVOCATION_DESTRUCTOR
             if (invocation_ != nullptr) {
                 invocation_->~abstract_invocation<void, Args...>();
                 invocation_ = nullptr;
             }
+#else
+            invocation_ = nullptr;
+#endif
         }
 
     protected:

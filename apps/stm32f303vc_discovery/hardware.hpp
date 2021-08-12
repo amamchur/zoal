@@ -27,15 +27,15 @@ public:
     mutex_type mutex;
 };
 
-using tx_stream_type = zoal::io::output_stream<usart_debug_tx_transport>;
-extern usart_debug_tx_transport tx_target;
-extern tx_stream_type tx_stream;
+using usart_tx_stream_type = zoal::io::output_stream<usart_debug_tx_transport>;
+extern usart_debug_tx_transport usart_tx;
+extern usart_tx_stream_type tx_stream;
 
 void zoal_init_hardware();
 
 using i2c_01 = mcu::i2c_01;
 using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c_01, sizeof(void *) * 8>;
-extern i2c_req_dispatcher_type i2c_req_dispatcher;
+extern i2c_req_dispatcher_type i2c_dispatcher;
 extern zoal::periph::i2c_request &request;
 
 #endif

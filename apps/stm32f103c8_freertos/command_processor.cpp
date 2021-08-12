@@ -10,7 +10,7 @@
 static uint8_t eeprom_mem[32];
 
 static void read_eeprom() {
-    eeprom.read(i2c_req_dispatcher, 0, eeprom_mem, 4)([](int code) {
+    eeprom.read(i2c_dispatcher, 0, eeprom_mem, 4)([](int code) {
         if (code == 0) {
             tx_stream << "\033[2K\r"
                       << "EEPROM:\r\n";
@@ -31,7 +31,7 @@ static void scan_i2c_devs() {
         tx_stream << "\033[2K\r"
                   << "I2C Device found: " << zoal::io::hexadecimal(addr) << "\r\n";
     };
-    scanner.scan(i2c_req_dispatcher)([](int code) {
+    scanner.scan(i2c_dispatcher)([](int code) {
         if (code == 0) {
             tx_stream << "\033[2K\r"
                       << "Done\r\n";
@@ -44,7 +44,7 @@ static void scan_i2c_devs() {
 }
 
 static void read_rtc() {
-    clock.fetch(i2c_req_dispatcher)([](int) {
+    clock.fetch(i2c_dispatcher)([](int) {
         auto dt = clock.date_time();
         tx_stream << "\033[2K\r"
                   << "Date time: "
@@ -93,7 +93,7 @@ static void read_rtc() {
             break;
         case app_cmd_time_set:
             clock.date_time(msg.date_time);
-            clock.update(i2c_req_dispatcher)([](int){});
+            clock.update(i2c_dispatcher)([](int){});
             break;
         case app_cmd_task_info: {
             TaskHandle_t xTask = xTaskGetHandle(msg.task_name);

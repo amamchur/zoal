@@ -123,12 +123,12 @@ static void input_callback(const zoal::misc::terminal_input *, const char *s, co
 }
 
 static void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
-    tx_target.send_data(s, e - s);
+    usart_tx.send_data(s, e - s);
 }
 
 [[noreturn]] void zoal_terminal_rx_task(void *) {
     {
-        __unused usart_debug_tx_transport::scoped_lock lock(tx_target.mutex);
+        __unused usart_debug_tx_transport::scoped_lock lock(usart_tx.mutex);
 
         static auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
         terminal.vt100_feedback(&vt100_callback);
@@ -150,7 +150,7 @@ static void vt100_callback(const zoal::misc::terminal_input *, const char *s, co
 
     for (;;) {
         uint8_t rx_buffer[8];
-        auto size = tx_target.rxs.receive(rx_buffer, sizeof(rx_buffer));
+        auto size = usart_tx.rxs.receive(rx_buffer, sizeof(rx_buffer));
         if (size == 0) {
             continue;
         }

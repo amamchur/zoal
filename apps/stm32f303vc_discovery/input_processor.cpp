@@ -30,13 +30,13 @@ zoal::ic::lsm303dlhc<> lsm303dlhc;
         tx_stream << "ctrl_reg1_a_initialized: " << code << "\r\n";
 
         if (code == 0) {
-            lsm303dlhc.config(i2c_req_dispatcher, acc::ctrl_reg4_a, reg4)(ctrl_reg4_a_initialized);
+            lsm303dlhc.config(i2c_dispatcher, acc::ctrl_reg4_a, reg4)(ctrl_reg4_a_initialized);
         }
     };
 
     auto button_callback = [](zoal::io::button_event e) {
         if (e == zoal::io::button_event::press) {
-            lsm303dlhc.fetch(i2c_req_dispatcher)([](int code) {
+            lsm303dlhc.fetch(i2c_dispatcher)([](int code) {
                 if (code == 0) {
                     auto v = lsm303dlhc.vector_sing();
                     auto dv = v.convert<double>();
@@ -49,7 +49,7 @@ zoal::ic::lsm303dlhc<> lsm303dlhc;
         }
     };
 
-    lsm303dlhc.config(i2c_req_dispatcher, acc::ctrl_reg1_a, reg1)(ctrl_reg1_a_initialized);
+    lsm303dlhc.config(i2c_dispatcher, acc::ctrl_reg1_a, reg1)(ctrl_reg1_a_initialized);
 
     while (true) {
         auto time = xTaskGetTickCount();

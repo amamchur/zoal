@@ -19,11 +19,11 @@ using usart = mcu::usart_00;
 using blink_pin = pcb::ard_d13;
 
 zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
-using usart_tx_target = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;
-using tx_stream_type = zoal::io::output_stream<usart_tx_target>;
+using usart_tx_type = zoal::utils::usart_transmitter<usart, 16, zoal::utils::interrupts_off>;
+using usart_tx_stream_type = zoal::io::output_stream<usart_tx_type>;
 
-usart_tx_target tx_target;
-tx_stream_type stream(tx_target);
+usart_tx_type usart_tx;
+usart_tx_stream_type stream(usart_tx);
 
 void initialize_hardware() {
     using namespace zoal::gpio;
@@ -78,5 +78,5 @@ ISR(USART0_RX_vect) {
 }
 
 ISR(USART0_UDRE_vect) {
-    usart::tx_handler([](uint8_t &value) { return usart_tx_target::tx_buffer.pop_front(value); });
+    usart::tx_handler([](uint8_t &value) { return usart_tx_type::tx_buffer.pop_front(value); });
 }

@@ -18,7 +18,7 @@
         }
 
         {
-            __unused usart_debug_tx_transport::scoped_lock lock(tx_target.mutex);
+            __unused usart_debug_tx_transport::scoped_lock lock(usart_tx.mutex);
             tx_stream << "\r\n";
             switch (msg.command) {
             case app_cmd_ticks:

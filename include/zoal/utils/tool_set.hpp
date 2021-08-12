@@ -20,9 +20,6 @@ namespace zoal { namespace utils {
 
         template<size_t Capacity, class Token = void>
         using function_scheduler = typename ::zoal::utils::function_scheduler<counter, Capacity, Token>;
-
-        template<class T, size_t Capacity, class Token = void>
-        using method_scheduler = typename ::zoal::utils::method_scheduler<T, counter, Capacity, Token>;
     };
 
     template<class T>

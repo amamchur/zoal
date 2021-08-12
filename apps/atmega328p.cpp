@@ -32,19 +32,18 @@ using delay = tools::delay;
 
 zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
 
-using usart_tx_target = zoal::utils::usart_transmitter<usart, 32, zoal::utils::interrupts_off>;
-usart_tx_target tx_target;
-using tx_stream_type = zoal::io::output_stream<usart_tx_target>;
-tx_stream_type stream(tx_target);
+using usart_tx_type = zoal::utils::usart_transmitter<usart, 32, zoal::utils::interrupts_off>;
+usart_tx_type usart_tx;
+using usart_tx_stream_type = zoal::io::output_stream<usart_tx_type>;
+usart_tx_stream_type stream(usart_tx);
 
 zoal::utils::i2c_scanner scanner;
 using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c, sizeof(void *) * 4>;
-i2c_req_dispatcher_type i2c_req_dispatcher;
-zoal::periph::i2c_request &request = i2c_req_dispatcher.request;
+i2c_req_dispatcher_type i2c_dispatcher;
 
 using api = zoal::gpio::api;
 using blink_pin = pcb::ard_d13;
-using scheduler_type = zoal::utils::function_scheduler<counter, 8, void *>;
+using scheduler_type = zoal::utils::function_scheduler<uint32_t, 8, void *>;
 
 scheduler_type scheduler;
 constexpr size_t terminal_str_size = 64;
@@ -102,17 +101,19 @@ void initialize_hardware() {
 }
 
 void led_on(void *);
-
 void led_off(void *);
+
+constexpr scheduler_type::id_type led_on_id = 1;
+constexpr scheduler_type::id_type led_off_id = 2;
 
 void led_on(void *) {
     ::blink_pin::high();
-    scheduler.schedule(500, led_off);
+    scheduler.schedule(led_off_id, 500, led_off);
 }
 
 void led_off(void *) {
     ::blink_pin::low();
-    scheduler.schedule(500, led_on);
+    scheduler.schedule(led_off_id, 500, led_on);
 }
 
 #pragma clang diagnostic push
@@ -120,7 +121,7 @@ void led_off(void *) {
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 
 void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
-    tx_target.send_data(s, e - s);
+    usart_tx.send_data(s, e - s);
 }
 
 void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
@@ -144,14 +145,14 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
     }
 
     if (cmp_progmem_str_token(zoal::io::progmem_str_iter(start_blink_cmd), ts, te)) {
-        scheduler.clear_handle(led_on);
-        scheduler.clear_handle(led_off);
-        scheduler.schedule(0, led_on);
+        scheduler.remove(led_on_id);
+        scheduler.remove(led_off_id);
+        scheduler.schedule(0, 0, led_on);
     }
 
     if (cmp_progmem_str_token(zoal::io::progmem_str_iter(stop_blink_cmd), ts, te)) {
-        scheduler.clear_handle(led_on);
-        scheduler.clear_handle(led_off);
+        scheduler.remove(led_on_id);
+        scheduler.remove(led_off_id);
     }
 
     terminal.sync();
@@ -188,22 +189,22 @@ int main() {
     stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
 
     scanner.device_found = [&](uint8_t addr) { stream << "Device: " << addr << "\r\n"; };
-    scanner.scan(i2c_req_dispatcher)([&](int) {
+    scanner.scan(i2c_dispatcher)([&](int) {
         stream << "Done!"
                << "\r\n";
         terminal.sync();
     });
-    i2c_req_dispatcher.handle_until_finished();
+    i2c_dispatcher.handle_until_finished();
 
-    display.init(i2c_req_dispatcher)([&](int){});
-    i2c_req_dispatcher.handle_until_finished();
+    display.init(i2c_dispatcher)([&](int) {});
+    i2c_dispatcher.handle_until_finished();
 
     using adapter = zoal::ic::sh1106_adapter_0<128, 64>;
     using graphics = zoal::gfx::renderer<uint8_t, adapter>;
     auto g = graphics::from_memory(display.buffer.canvas);
     g->clear(0x00);
     g->draw_circle(16, 16, 10, 1);
-    display.display(i2c_req_dispatcher)([](int) { terminal.sync(); });
+    display.display(i2c_dispatcher)([](int) { terminal.sync(); });
 
     while (true) {
         uint8_t rx_byte = 0;
@@ -217,8 +218,8 @@ int main() {
             terminal.push(&rx_byte, 1);
         }
 
-        scheduler.handle();
-        i2c_req_dispatcher.handle();
+        scheduler.handle(milliseconds);
+        i2c_dispatcher.handle();
     }
 }
 
@@ -233,9 +234,9 @@ ISR(USART_RX_vect) {
 }
 
 ISR(USART_UDRE_vect) {
-    usart::tx_handler([](uint8_t &value) { return usart_tx_target::tx_buffer.pop_front(value); });
+    usart::tx_handler([](uint8_t &value) { return usart_tx_type::tx_buffer.pop_front(value); });
 }
 
 ISR(TWI_vect) {
-    i2c::handle_request_irq(request);
+    i2c::handle_request_irq(i2c_dispatcher.request);
 }
