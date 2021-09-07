@@ -3,12 +3,12 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include <zoal/parse/ragel_scanner.hpp>
+#include <zoal/parse/ragel_parser.hpp>
 
 namespace zoal { namespace misc {
     enum class value_type { string, date_time, date, time, integer };
 
-    class type_detector_machine : public zoal::parse::scanner_machine<type_detector_machine *, value_type> {
+    class type_detector_machine : public zoal::parse::ragel_scanner<type_detector_machine *, value_type> {
     public:
         void init_machine();
         int start_state() const;
@@ -16,12 +16,12 @@ namespace zoal { namespace misc {
         const char *run_machine(const char *p, const char *pe);
     };
 
-    using type_detector = zoal::parse::ragel_scanner<type_detector_machine>;
+    using type_detector = zoal::parse::ragel_parser<type_detector_machine>;
 
-    class type_detector_v2 : protected zoal::parse::ragel_scanner<type_detector_machine> {
+    class type_detector_v2 : protected zoal::parse::ragel_parser<type_detector_machine> {
     public:
         type_detector_v2()
-            : zoal::parse::ragel_scanner<type_detector_machine>(nullptr, 0) {}
+            : zoal::parse::ragel_parser<type_detector_machine>(nullptr, 0) {}
 
         const char* detect(const void *start, const void *end, const void *eof = nullptr) {
             this->type_ = value_type::string;

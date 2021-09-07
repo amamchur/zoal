@@ -15,7 +15,7 @@ using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
 using delay = zoal::utils::delay<F_CPU, counter>;
 ;
-using usart = mcu::usart_00;
+using usart = mcu::usart_01;
 using blink_pin = pcb::ard_d13;
 
 zoal::data::ring_buffer<uint8_t, 16> rx_buffer;
@@ -27,12 +27,15 @@ usart_tx_stream_type stream(usart_tx);
 
 void initialize_hardware() {
     using namespace zoal::gpio;
-    using usart_cfg = zoal::periph::usart_115200<F_CPU>;
+    using usart_cfg = zoal::periph::usart_9600<F_CPU>;
 
     api::optimize<api::disable<usart, timer>>();
     api::optimize<
         //
-        mcu::mux::usart<usart, mcu::pe_00, mcu::pe_01>::connect,
+//        mcu::mux::usart<usart, mcu::pe_00, mcu::pe_01>::connect,
+//        mcu::cfg::usart<usart, usart_cfg>::apply,
+
+        mcu::mux::usart<usart, mcu::pd_02, mcu::pd_03>::connect,
         mcu::cfg::usart<usart, usart_cfg>::apply,
 
         mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply,
@@ -73,10 +76,10 @@ ISR(TIMER0_OVF_vect) {
     milliseconds += overflow_to_tick::step();
 }
 
-ISR(USART0_RX_vect) {
+ISR(USART1_RX_vect) {
     usart::rx_handler<>([](uint8_t value) { rx_buffer.push_back(value); });
 }
 
-ISR(USART0_UDRE_vect) {
+ISR(USART1_UDRE_vect) {
     usart::tx_handler([](uint8_t &value) { return usart_tx_type::tx_buffer.pop_front(value); });
 }

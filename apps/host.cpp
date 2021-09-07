@@ -2,6 +2,7 @@
 #include "../misc/cmd_line_parser.hpp"
 #include "../misc/timer_freq_calculator.hpp"
 #include "../misc/type_detector.hpp"
+#include "../misc/test_machine.hpp"
 
 #include <cstdint>
 #include <iostream>
@@ -12,150 +13,22 @@
 #include <zoal/utils/ms_counter.hpp>
 #include <zoal/utils/scheduler.hpp>
 
-using command_line_parser = zoal::misc::command_line_parser;
+zoal::misc::test_parser tp(nullptr, 0);
 
-//cmd_args command_args;
-uint8_t buffer[256]{0};
-zoal::misc::cmd_argument *arg = zoal::misc::cmd_argument::from_buffer(buffer);
+char test[] = "step -115";
 
-void parser_argument(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
-    if (e == zoal::misc::command_line_event::line_end) {
-        p->callback(&command_line_parser::empty_callback);
-        return;
-    }
+void cb(zoal::misc::test_machine *m, int c, int argc, zoal::misc::test_argument *argv) {
+    std::cout << "cmd: " << c << std::endl;
+    std::cout << "args: " << argc << std::endl;
 
-    arg = arg->prepare_next();
-
-    zoal::misc::type_detector_v2 td;
-    auto ts = td.detect(p->token_start(), p->token_end(), p->token_end());
-    auto te = p->token_end();
-    ptrdiff_t mem_used = (reinterpret_cast<uint8_t *>(arg) - buffer);
-    ptrdiff_t left_mem = (ptrdiff_t)sizeof(buffer) - mem_used;
-    ptrdiff_t mem_required = (te - ts + 1) + (ptrdiff_t)sizeof(zoal::misc::cmd_argument) * 2;
-    if (left_mem <= mem_required) {
-        std::cout << "Out of memory!" << std::endl;
-        p->callback(&command_line_parser::empty_callback);
-        return;
-    }
-
-    switch (td.type()) {
-    case zoal::misc::value_type::string:
-        arg->string(ts, te);
-        break;
-    case zoal::misc::value_type::date_time: {
-        auto dt = zoal::parse::type_parser<zoal::data::date_time>::parse(ts);
-        arg->set(zoal::misc::value_type::date_time, dt);
-        break;
-    }
-    case zoal::misc::value_type::date: {
-        auto dt = zoal::parse::type_parser<zoal::data::date_time>::parse_date(ts);
-        arg->set(zoal::misc::value_type::date, dt);
-        break;
-    }
-    case zoal::misc::value_type::time: {
-        auto dt = zoal::parse::type_parser<zoal::data::date_time>::parse_time(ts);
-        arg->set(zoal::misc::value_type::time, dt);
-        break;
-    }
-    case zoal::misc::value_type::integer:
-        arg->integer(ts, te);
-        break;
-    default:
-        break;
+    for (int i = 0; i < argc; i++) {
+        std::string str(argv[i].start, argv[i].end);
+        std::cout << "a: " <<  str << std::endl;
     }
 }
-
-void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
-    auto ts = p->token_start();
-    auto te = p->token_end();
-    std::string str(ts, te);
-    std::cout << str << std::endl;
-    p->callback(&parser_argument);
-}
-
-char cmd[] = "test asdas asd as";
-
-void test_args() {
-    auto s = cmd;
-    auto e = cmd + sizeof(cmd) - 1;
-    command_line_parser cmd_parser(nullptr, 0);
-    cmd_parser.callback(cmd_select_callback);
-    cmd_parser.scan(s, e, e);
-
-    std::cout << "argument: " << sizeof(zoal::misc::cmd_argument) << std::endl;
-
-    arg = arg->prepare_next();
-
-    auto args_size = reinterpret_cast<uint8_t *>(arg) - buffer;
-    std::cout << "args_size: " << args_size << std::endl;
-
-    auto iter = reinterpret_cast<zoal::misc::cmd_argument *>(buffer);
-    while (iter) {
-        switch (iter->type) {
-        case zoal::misc::value_type::string:
-            std::cout << "String: " << iter->string() << std::endl;
-            break;
-        case zoal::misc::value_type::date_time:
-            break;
-        case zoal::misc::value_type::date:
-            break;
-        case zoal::misc::value_type::time:
-            break;
-        case zoal::misc::value_type::integer:
-            std::cout << "Integer: " << iter->integer() << std::endl;
-            break;
-        }
-        iter = iter->next();
-    }
-}
-
-volatile uint32_t milliseconds = 0;
-using ms_counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
-using scheduler_type = zoal::utils::lambda_scheduler<uint32_t, 8>;
-
-scheduler_type scheduler;
-
-class TestCls {
-public:
-    TestCls() {
-        std::cout << "TestCls" << std::endl;
-    }
-
-    TestCls(const TestCls& obj) : q(obj.q) {
-        std::cout << "TestCls copy" << std::endl;
-    }
-
-    ~TestCls() {
-        std::cout << "~TestCls" << std::endl;
-    }
-
-    int q{0};
-};
-
-zoal::func::function<32, void> fn;
 
 int main() {
-    TestCls obj;
-    obj.q = 1234;
-    std::cout << "----" << std::endl;
-
-    fn.assign([obj](){
-        std::cout << obj.q << std::endl;
-    });
-    fn();
-
-    fn.assign([](){
-        std::cout << "Hello 2!" << std::endl;
-    });
-    fn();
-
-    //test_args();
-
-    scheduler.clear();
-    scheduler.remove(0);
-    scheduler.schedule(0, 0, []() {
-        std::cout << "Callback!" << std::endl;
-    });
-    scheduler.handle(1);
+    tp.callback(cb);
+    tp.run_machine(test, test + sizeof(test) - 1);
     return 0;
 }

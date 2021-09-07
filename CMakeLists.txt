@@ -21,8 +21,8 @@ function(RAGEL_GENERATE_CPP RGL_SRC CPP_SRC)
 
     add_custom_command(
             OUTPUT "${ABS_CPP_SRC}"
-            COMMAND ragel
-            ARGS -G1 -L -o "${ABS_CPP_SRC}" "${ABS_FIL}"
+            COMMAND ragel -G1 -L -o "${ABS_CPP_SRC}" "${ABS_FIL}"
+            COMMAND ragel -V -o "${ABS_CPP_SRC}.dot" "${ABS_FIL}"
             DEPENDS "${ABS_FIL}"
             COMMENT "Running ragel file ${FILE_NAME}"
             VERBATIM)
@@ -36,6 +36,7 @@ ragel_generate_cpp(apps/stepper_28byj_machine.rl STEPPER_STATE_MACHINE_SRC)
 ragel_generate_cpp(misc/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)
 ragel_generate_cpp(misc/terminal_machine.rl TERMINAL_STATE_MACHINE_SRC)
 ragel_generate_cpp(misc/type_detector.rl TYPE_DETECTOR_STATE_MACHINE_SRC)
+ragel_generate_cpp(misc/test_machine.rl TEST_STATE_MACHINE_SRC)
 
 # --- atmega Projects ---
 add_mcu_executable(ATmega328p atmega328p
@@ -338,6 +339,7 @@ add_host_executable(host
         ${TERMINAL_STATE_MACHINE_SRC}
         ${CMD_STATE_MACHINE_SRC}
         ${TYPE_DETECTOR_STATE_MACHINE_SRC}
+        ${TEST_STATE_MACHINE_SRC}
         )
 
 add_zoal_tests()

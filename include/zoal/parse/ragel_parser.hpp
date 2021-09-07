@@ -6,12 +6,39 @@
 #include <stddef.h>
 
 namespace zoal { namespace parse {
-    template<class T = void *, class E = int>
-    class scanner_callback {
+    template<class T = void *, class ... Args>
+    class ragel_machine {
     public:
-        typedef void (*scanner_machine_callback)(T parser, E event);
+        typedef void (*ragel_machine_callback)(T parser, Args... args);
 
-        static void empty_callback(T p, E e) {}
+        inline void callback(ragel_machine_callback cb) {
+            this->handler_ = cb;
+        }
+
+        inline ragel_machine_callback callback() const {
+            return this->handler_;
+        }
+
+        static void empty_callback(T, Args...) {}
+    protected:
+        int cs{0};
+        const char *p{nullptr};
+        const char *eof{nullptr};
+        ragel_machine_callback handler_{&empty_callback};
+    };
+
+    template<class T = void *, class ... Args>
+    class ragel_scanner {
+    public:
+        typedef void (*scanner_machine_callback)(T parser, Args... args);
+
+        inline const char *token_start() const {
+            return ts;
+        }
+
+        inline const char *token_end() const {
+            return te;
+        }
 
         inline void callback(scanner_machine_callback cb) {
             this->handler_ = cb;
@@ -21,21 +48,7 @@ namespace zoal { namespace parse {
             return this->handler_;
         }
 
-    protected:
-        scanner_machine_callback handler_{&empty_callback};
-    };
-
-    template<class T = void *, class E = int>
-    class scanner_machine : public scanner_callback<T, E> {
-    public:
-        inline const char *token_start() const {
-            return ts;
-        }
-
-        inline const char *token_end() const {
-            return te;
-        }
-
+        static void empty_callback(T, Args...) {}
     protected:
         int cs{0};
         int act{0};
@@ -43,12 +56,13 @@ namespace zoal { namespace parse {
         const char *ts{nullptr};
         const char *te{nullptr};
         const char *eof{nullptr};
+        scanner_machine_callback handler_{&empty_callback};
     };
 
     template<class Machine>
-    class ragel_scanner : public Machine {
+    class ragel_parser : public Machine {
     public:
-        ragel_scanner(void *buffer, size_t buffer_size)
+        ragel_parser(void *buffer, size_t buffer_size) noexcept
             : buffer_(reinterpret_cast<char *>(buffer))
             , buffer_size_(buffer_size) {
             reset();
