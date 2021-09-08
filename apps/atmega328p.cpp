@@ -161,7 +161,7 @@ void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::comman
 void input_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
     command_line_parser cmd_parser(nullptr, 0);
     cmd_parser.callback(cmd_select_callback);
-    cmd_parser.scan(s, e, e);
+    cmd_parser.exec_machine(s, e, e);
     terminal.sync();
 }
 
@@ -215,7 +215,7 @@ int main() {
         }
 
         if (result) {
-            terminal.push(&rx_byte, 1);
+            terminal.push_and_scan(&rx_byte, 1);
         }
 
         scheduler.handle(milliseconds);

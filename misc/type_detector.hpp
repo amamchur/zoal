@@ -26,7 +26,7 @@ namespace zoal { namespace misc {
         const char* detect(const void *start, const void *end, const void *eof = nullptr) {
             this->type_ = value_type::string;
             this->callback(&type_callback);
-            this->scan(start, end, eof);
+            this->exec_machine(start, end, eof);
             return this->pos_;
         }
 

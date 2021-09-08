@@ -23,7 +23,6 @@ namespace zoal { namespace parse {
     protected:
         int cs{0};
         const char *p{nullptr};
-        const char *eof{nullptr};
         ragel_machine_callback handler_{&empty_callback};
     };
 
@@ -74,19 +73,18 @@ namespace zoal { namespace parse {
             this->init_machine();
         }
 
-        void scan(const void *data, size_t size, const void *eof = nullptr) {
-            scan(data, reinterpret_cast<const char *>(data) + size, eof);
+        void exec_machine(const void *data, size_t size, const void *eof = nullptr) {
+            exec_machine(data, reinterpret_cast<const char *>(data) + size, eof);
         }
 
-        void scan(const void *start, const void *end, const void *eof = nullptr) {
+        void exec_machine(const void *start, const void *end, const void *eof = nullptr) {
             auto dp = reinterpret_cast<const char *>(start);
             auto be = reinterpret_cast<const char *>(end);
             this->eof = reinterpret_cast<const char *>(eof);
             this->run_machine(dp, be);
-            reset();
         }
 
-        void push(const void *data, size_t size, const void *eof = nullptr) {
+        void push_and_scan(const void *data, size_t size, const void *eof = nullptr) {
             auto dp = reinterpret_cast<const char *>(data);
             auto de = reinterpret_cast<const char *>(eof);
             do {

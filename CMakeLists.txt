@@ -20,13 +20,16 @@ function(RAGEL_GENERATE_CPP RGL_SRC CPP_SRC)
     set(ABS_CPP_SRC ${ABS_FIL}.cpp)
 
     add_custom_command(
-            OUTPUT "${ABS_CPP_SRC}"
-            COMMAND ragel -G1 -L -o "${ABS_CPP_SRC}" "${ABS_FIL}"
-            COMMAND ragel -V -o "${ABS_CPP_SRC}.dot" "${ABS_FIL}"
+            OUTPUT "${ABS_CPP_SRC}" "${ABS_FIL}.dot" "${ABS_FIL}.svg"
+            COMMAND ragel -G2 -L -o "${ABS_CPP_SRC}" "${ABS_FIL}"
+            COMMAND ragel -V -o "${ABS_FIL}.dot" "${ABS_FIL}"
+            COMMAND dot -o "${ABS_FIL}.svg" -Tsvg "${ABS_FIL}.dot"
             DEPENDS "${ABS_FIL}"
             COMMENT "Running ragel file ${FILE_NAME}"
             VERBATIM)
-    set_source_files_properties(${CPP_SRC} PROPERTIES GENERATED TRUE)
+    set_source_files_properties("${ABS_CPP_SRC}" PROPERTIES GENERATED TRUE)
+    set_source_files_properties("${ABS_FIL}.dot" PROPERTIES GENERATED TRUE)
+    set_source_files_properties("${ABS_FIL}.svg" PROPERTIES GENERATED TRUE)
     set(${CPP_SRC} ${ABS_CPP_SRC} PARENT_SCOPE)
 endfunction()
 
@@ -47,14 +50,16 @@ add_mcu_executable(ATmega328p atmega328p
         )
 target_compile_definitions(ATmega328p PRIVATE F_CPU=16000000UL)
 
+ragel_generate_cpp(apps/atmega32u4/command_machine.rl ATMEGA32U4_STATE_MACHINE_SRC)
 add_mcu_executable(ATmega32u4 atmega32u4
-        apps/atmega32u4.cpp
+        apps/atmega32u4/atmega32u4.cpp
         apps/data/roboto_regular_16.cpp
         apps/data/free_sans_regular_16.cpp
         misc/terminal_input.cpp
         ${TERMINAL_STATE_MACHINE_SRC}
         ${TYPE_DETECTOR_STATE_MACHINE_SRC}
         ${CMD_STATE_MACHINE_SRC}
+        ${ATMEGA32U4_STATE_MACHINE_SRC}
         )
 target_compile_definitions(ATmega32u4 PRIVATE F_CPU=16000000UL)
 
@@ -339,7 +344,7 @@ add_host_executable(host
         ${TERMINAL_STATE_MACHINE_SRC}
         ${CMD_STATE_MACHINE_SRC}
         ${TYPE_DETECTOR_STATE_MACHINE_SRC}
-        ${TEST_STATE_MACHINE_SRC}
+        ${ATMEGA32U4_STATE_MACHINE_SRC}
         )
 
 add_zoal_tests()

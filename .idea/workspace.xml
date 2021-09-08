@@ -50,20 +50,21 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Add lambda_scheduler">
-      <change afterPath="$PROJECT_DIR$/misc/test_machine.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/misc/test_machine.rl" afterDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Refactor function_scheduler">
+      <change afterPath="$PROJECT_DIR$/apps/atmega32u4/command_machine.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/atmega32u4/command_machine.rl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4/atmega32u4.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/parse/ragel_scanner.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/parse/ragel_parser.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/utils/new.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/new.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/cmd_line_parser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/cmd_line_parser.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/cmd_line_parser.rl" beforeDir="false" afterPath="$PROJECT_DIR$/misc/cmd_line_parser.rl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_input.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_input.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_machine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_machine.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/terminal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/terminal.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/terminal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/terminal.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/parse/ragel_parser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/parse/ragel_parser.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/test_machine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/test_machine.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/test_machine.rl" beforeDir="false" afterPath="$PROJECT_DIR$/misc/test_machine.rl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/misc/type_detector.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/type_detector.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -87,7 +88,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug Host" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release AVR" />
   <component name="Git.Merge.Settings">
     <option name="BRANCH" value="stm32f1_i2c" />
   </component>
@@ -127,7 +128,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/include/zoal/ic" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/atmega32u4" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -142,18 +143,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\amam\CLionProjects\zoal\apps\atmega32u4" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\ic" />
       <recent name="C:\Users\amam\CLionProjects\zoal\apps\data" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\text" />
       <recent name="$PROJECT_DIR$/apps/stm32f303vc_discovery" />
-      <recent name="$PROJECT_DIR$/apps/stm32f303_discovery" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\amam\CLionProjects\zoal\apps\atmega32u4" />
       <recent name="$PROJECT_DIR$/tests/arch" />
       <recent name="$PROJECT_DIR$/include/zoal/ic" />
       <recent name="$PROJECT_DIR$/include/zoal/parser" />
       <recent name="$PROJECT_DIR$/tests/io" />
-      <recent name="$PROJECT_DIR$/tests/gpio" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -161,7 +162,7 @@
       <command value="vTaskDelay(1);" />
     </option>
   </component>
-  <component name="RunManager" selected="CMake Application.host">
+  <component name="RunManager" selected="CMake Application.ATmega32u4">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
@@ -310,11 +311,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -343,6 +339,11 @@
     <configuration name="stm32f303_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_nucleo" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_nucleo">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
@@ -549,6 +550,8 @@
       <workItem from="1630557559048" duration="205000" />
       <workItem from="1630685365495" duration="8000" />
       <workItem from="1630947049999" duration="8251000" />
+      <workItem from="1631018673200" duration="5804000" />
+      <workItem from="1631106558287" duration="8785000" />
     </task>
     <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
       <created>1609104248255</created>

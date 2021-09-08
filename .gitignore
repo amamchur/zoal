@@ -2,8 +2,8 @@ cmake-build-*
 cube-repo
 docs
 node_modules
-
-*.rl.cpp
 coverage
 coverage.info
 coverage_full.info
+
+*.rl.*

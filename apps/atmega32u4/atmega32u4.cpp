@@ -1,8 +1,7 @@
-#include "../misc/cmd_argument.hpp"
-#include "../misc/cmd_line_parser.hpp"
-#include "../misc/terminal_input.hpp"
-#include "./data/font_5x8.hpp"
-#include "./data/roboto_regular_16.hpp"
+#include "../../misc/cmd_argument.hpp"
+#include "../../misc/terminal_input.hpp"
+#include "../data/roboto_regular_16.hpp"
+#include "command_machine.hpp"
 
 #include <zoal/arch/avr/stream.hpp>
 #include <zoal/arch/avr/utils/progmem_reader.hpp>
@@ -42,7 +41,6 @@ using delay = zoal::utils::delay<F_CPU, ms_counter>;
 
 using usart_tx_type = zoal::utils::usart_transmitter<usart, 32, zoal::utils::interrupts_off>;
 using usart_tx_stream_type = zoal::io::output_stream<usart_tx_type>;
-using command_line_parser = zoal::misc::command_line_parser;
 char terminal_buffer[32];
 auto terminal_greeting = "\033[0;32mroot@mcu\033[m$ ";
 auto terminal = zoal::misc::terminal_input(terminal_buffer, sizeof(terminal_buffer));
@@ -141,28 +139,17 @@ const char zoal_ascii_logo[] PROGMEM = "  __________          _\r\n"
                                        "\r\n";
 const char help_msg[] PROGMEM = "ZOAL ATmega32u4 Demo Application\r\n"
                                 "Commands: \r\n"
-                                "\tstart-blink\tstart blinking\r\n"
-                                "\tstop-blink\tstop blinking\r\n"
-                                "\ttemp\t\tdisplay temperature\r\n"
-                                "\ttime\t\tdisplay date time\r\n"
-                                "\tset-time\tset date time\r\n"
-                                "\ti2c-scan\tscan i2c devises\r\n"
-                                "\toled\t\tprint text on OLED screen\r\n"
-                                "\tadc\t\tread adc value\r\n"
-                                "\trgb\t\trgb\r\n"
-                                "\trgb-off\t\trgb off\r\n";
-const char start_blink_cmd[] PROGMEM = "start-blink";
-const char stop_blink_cmd[] PROGMEM = "stop-blink";
-const char temp_cmd[] PROGMEM = "temp";
-const char time_cmd[] PROGMEM = "time";
-const char set_time_cmd[] PROGMEM = "set-time";
-const char i2c_scan_cmd[] PROGMEM = "i2c-scan";
-const char oled_cmd[] PROGMEM = "oled";
-const char axis_cmd[] PROGMEM = "axis";
-const char adc_cmd[] PROGMEM = "adc";
-const char rgb_cmd[] PROGMEM = "rgb";
-const char rgb_off_cmd[] PROGMEM = "rgb-off";
-const char help_cmd[] PROGMEM = "help";
+                                "\tadc\t\t\t\tread adc value\r\n"
+                                "\taxis\t\t\t\tread accelerometer\r\n"
+                                "\tblink 0 or 1\t\t\tstart/stop blinking\r\n"
+                                "\thelp\t\t\t\tdisplay help\r\n"
+                                "\ti2c\t\t\t\tscan i2c devises\r\n"
+                                "\toled \"msg\"\t\t\tprint text on OLED screen\r\n"
+                                "\trgb r g b\t\t\tset rgb LED color\r\n"
+                                "\trgb off\t\t\t\trgb off\r\n"
+                                "\ttemp\t\t\t\tdisplay temperature\r\n"
+                                "\ttime\t\t\t\tdisplay date time\r\n"
+                                "\ttime yyyy.MM.dd HH:mm::ss\tset date time\r\n";
 
 #pragma clang diagnostic pop
 
@@ -170,18 +157,13 @@ void vt100_callback(const zoal::misc::terminal_input *, const char *s, const cha
     usart_tx.send_data(s, e - s);
 }
 
-static void oled_render(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
-    p->callback(&command_line_parser::empty_callback);
-    if (e == zoal::misc::command_line_event::line_end) {
-        return;
-    }
-
+static void oled_render(const char *s, const char *e) {
     auto g = graphics::from_memory(oled.buffer.canvas);
     zoal::gfx::glyph_renderer<graphics, zoal::utils::progmem_reader> gl(g, &roboto_regular_16);
     g->clear(0);
     gl.color(1);
     gl.position(0, roboto_regular_16.y_advance);
-    gl.draw(p->token_start(), p->token_end());
+    gl.draw(s, e);
     oled.display(i2c_dispatcher)([](int) { terminal.sync(); });
 }
 
@@ -197,92 +179,65 @@ void read_axis() {
     });
 }
 
-static void parser_time(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
-    p->callback(&command_line_parser::empty_callback);
-    if (e == zoal::misc::command_line_event::line_end) {
-        return;
-    }
-
-    zoal::misc::type_detector_v2 td;
-    auto pos = td.detect(p->token_start(), p->token_end(), p->token_end());
-    if (td.type() != zoal::misc::value_type::date_time) {
-        return;
-    }
-
-    auto dt = zoal::parse::type_parser<zoal::data::date_time>::parse(pos);
-    clock.date_time(dt);
-    clock.update(i2c_dispatcher)([](int) { terminal.sync(); });
-}
-
-void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc::command_line_event e) {
-    if (e == zoal::misc::command_line_event::line_end) {
-        return;
-    }
-
-    auto ts = p->token_start();
-    auto te = p->token_end();
-    p->callback(&command_line_parser::empty_callback);
-
-    stream << "\r\n";
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(start_blink_cmd), ts, te)) {
-        scheduler.remove(toggle_led_id);
-        toggle_led(1);
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(stop_blink_cmd), ts, te)) {
-        scheduler.remove(toggle_led_id);
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(temp_cmd), ts, te)) {
-        request_temp();
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(time_cmd), ts, te)) {
-        request_time();
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(set_time_cmd), ts, te)) {
-        p->callback(&parser_time);
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(i2c_scan_cmd), ts, te)) {
-        scan_i2c();
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(oled_cmd), ts, te)) {
-        p->callback(&oled_render);
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(axis_cmd), ts, te)) {
+void command_callback(zoal::misc::command_machine *, zoal::misc::command cmd, int argc, zoal::misc::cmd_arg *argv) {
+    switch (cmd) {
+    case zoal::misc::command::adc:
+        stream << "\033[2K\r" << adc::read() << "\r\n";
+        break;
+    case zoal::misc::command::axis:
         read_axis();
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(adc_cmd), ts, te)) {
-        auto v = adc::read();
-        stream << "\033[2K\r" << v << "\r\n";
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(rgb_cmd), ts, te)) {
-        shield::rgb(0, 0, 1);
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(rgb_off_cmd), ts, te)) {
-        shield::rgb_off();
-    }
-
-    if (cmp_progmem_str_token(zoal::io::progmem_str_iter(help_cmd), ts, te)) {
+        break;
+    case zoal::misc::command::blink:
+        scheduler.remove(toggle_led_id);
+        if ((int)*argv != 0) {
+            toggle_led(1);
+        }
+        break;
+    case zoal::misc::command::help:
         stream << "\033[2K\r";
         stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
-    }
+        break;
+    case zoal::misc::command::i2c:
+        scan_i2c();
+        break;
+    case zoal::misc::command::oled:
+        oled_render(argv->start + 1, argv->end - 1);
+        break;
+    case zoal::misc::command::rgb:
+        shield::rgb((int)argv[0], (int)argv[1], (int)argv[2]);
+        break;
+    case zoal::misc::command::rgb_off:
+        shield::rgb_off();
+        break;
+    case zoal::misc::command::temp:
+        request_temp();
+        break;
+    case zoal::misc::command::time:
+        request_time();
+        break;
+    case zoal::misc::command::time_set: {
+        zoal::misc::type_detector_v2 td;
+        auto pos = td.detect(argv->start, argv->end, argv->end);
+        if (td.type() != zoal::misc::value_type::date_time) {
+            return;
+        }
 
-    terminal.sync();
+        auto dt = zoal::parse::type_parser<zoal::data::date_time>::parse(pos);
+        clock.date_time(dt);
+        clock.update(i2c_dispatcher)([](int) { terminal.sync(); });
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void input_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
-    command_line_parser cmd_parser(nullptr, 0);
-    cmd_parser.callback(cmd_select_callback);
-    cmd_parser.scan(s, e, e);
+    stream << "\r\n";
+
+    zoal::misc::command_machine cm;
+    cm.callback(command_callback);
+    cm.run_machine(s, e, e);
     terminal.sync();
 }
 
@@ -333,19 +288,19 @@ auto button_handler = [](zoal::io::button_event e, shield::joystick_button b) {
 void fetch_axis();
 
 void display_axis(const zoal::data::vector<int16_t> &v) {
-    using gl_type = zoal::gfx::glyph_renderer<graphics, zoal::utils::progmem_reader>;
-    auto g = graphics::from_memory(oled.buffer.canvas);
-    gl_type gl(g, &roboto_regular_16);
-    zoal::io::output_stream<gl_type> os(gl);
-    g->clear(0);
-    gl.color(1);
-
-    auto gvect = v.convert<float>() / 256;
-
-    for (int i = 0; i < 3; i++) {
-        gl.position(0, roboto_regular_16.y_advance * (i + 1));
-        os << gvect[i];
-    }
+    //    using gl_type = zoal::gfx::glyph_renderer<graphics, zoal::utils::progmem_reader>;
+    //    auto g = graphics::from_memory(oled.buffer.canvas);
+    //    gl_type gl(g, &roboto_regular_16);
+    //    zoal::io::output_stream<gl_type> os(gl);
+    //    g->clear(0);
+    //    gl.color(1);
+    //
+    //    auto gvect = v.convert<float>() / 256;
+    //
+    //    for (int i = 0; i < 3; i++) {
+    //        gl.position(0, roboto_regular_16.y_advance * (i + 1));
+    //        os << gvect[i];
+    //    }
 
     oled.display(i2c_dispatcher)([](int) { scheduler.schedule(0, 20, fetch_axis); });
 }
@@ -381,7 +336,7 @@ int main() {
         }
 
         if (result) {
-            terminal.push(&rx_byte, 1);
+            terminal.push_and_scan(&rx_byte, 1);
         }
 
         i2c_dispatcher.handle();

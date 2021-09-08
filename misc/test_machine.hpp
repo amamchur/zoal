@@ -1,4 +1,4 @@
-#ifndef ZOAL_TEST_MACHINE_HPP
+#ifndef ZOAL_COMMAND_MACHINE_HPP
 #define ZOAL_TEST_MACHINE_HPP
 
 #include <zoal/parse/ragel_parser.hpp>
@@ -14,7 +14,7 @@ namespace zoal { namespace misc {
     public:
         void init_machine();
         static int start_state();
-        const char *run_machine(const char *p, const char *pe);
+        const char *run_machine(const char *p, const char *pe, const char *eof);
     private:
         int command_{-1};
         test_argument argv[2];

@@ -36,7 +36,7 @@ __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> main_task(zoal_main
             do {
                 size = rx_stream_buffer.receive(rx_buffer, sizeof(rx_buffer), 0);
                 if (size != 0) {
-                    terminal.push(rx_buffer, size);
+                    terminal.push_and_scan(rx_buffer, size);
                 }
             } while (size == sizeof(rx_buffer));
         }

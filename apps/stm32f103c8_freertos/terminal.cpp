@@ -127,7 +127,7 @@ static void input_callback(const zoal::misc::terminal_input *, const char *s, co
 
     command_line_parser parser(nullptr, 0);
     parser.callback(cmd_select_callback);
-    parser.scan(s, e, e);
+    parser.exec_machine(s, e, e);
 }
 
 static void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
