@@ -60,6 +60,7 @@
 
 namespace zoal { namespace misc {
     %% write data noerror nofinal noentry;
+
     command_machine::command_machine() noexcept {
         reset();
     }

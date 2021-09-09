@@ -102,11 +102,9 @@ static void cmd_select_callback(zoal::misc::command_line_machine *p, zoal::misc:
 
 static void handle_v100(const zoal::misc::terminal_input *, zoal::misc::terminal_machine_event e) {
     switch (e) {
-    case zoal::misc::terminal_machine_event::ctrl_up_key:
     case zoal::misc::terminal_machine_event::up_key:
         terminal.value(command_history);
         break;
-    case zoal::misc::terminal_machine_event::ctrl_down_key:
     case zoal::misc::terminal_machine_event::down_key:
         terminal.value("");
         break;

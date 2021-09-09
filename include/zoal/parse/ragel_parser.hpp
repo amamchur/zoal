@@ -6,10 +6,10 @@
 #include <stddef.h>
 
 namespace zoal { namespace parse {
-    template<class T = void *, class ... Args>
+    template<class ... Args>
     class ragel_machine {
     public:
-        typedef void (*ragel_machine_callback)(T parser, Args... args);
+        typedef void (*ragel_machine_callback)(Args... args);
 
         inline void callback(ragel_machine_callback cb) {
             this->handler_ = cb;
@@ -19,7 +19,7 @@ namespace zoal { namespace parse {
             return this->handler_;
         }
 
-        static void empty_callback(T, Args...) {}
+        static void empty_callback(Args...) {}
     protected:
         int cs{0};
         const char *p{nullptr};

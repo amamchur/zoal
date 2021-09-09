@@ -63,7 +63,7 @@ int main() {
 
     mcu::irq::on();
 
-//    max7219::spi::enable();
+    //    max7219::spi::enable();
     max7219::init(matrix_type::devices);
 
     mcu::pb_00::mode<pin_mode::input>();

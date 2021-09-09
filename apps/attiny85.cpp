@@ -7,11 +7,7 @@
 #include <zoal/utils/helpers.hpp>
 #include <zoal/utils/ms_counter.hpp>
 
-enum : uint8_t
-{
-    update_adc = 0x01,
-    update_ms = 0x02
-};
+enum : uint8_t { update_adc = 0x01, update_ms = 0x02 };
 
 using matrix_type = zoal::ic::max72xx_data<1>;
 
@@ -42,7 +38,7 @@ int main() {
 
     zoal::utils::interrupts::on();
 
-//    max7219::spi::enable();
+    //    max7219::spi::enable();
     max7219::init(matrix_type::devices);
     max7219::send(matrix_type::devices, max7219::intensity0);
 

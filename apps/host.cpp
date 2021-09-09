@@ -28,6 +28,9 @@ void cb(zoal::misc::command_machine *m, zoal::misc::command c, int argc, zoal::m
 }
 
 int main() {
+    std::cout << (void *)"test" << std::endl;
+    std::cout << (void *)"test" << std::endl;
+
     auto s = test;
     auto e = s + strlen(test);
     zoal::misc::command_machine tp;

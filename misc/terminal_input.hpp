@@ -43,7 +43,10 @@ namespace zoal { namespace misc {
             return context_;
         }
 
-    public:
+        void cursor(char *c);
+        char *cursor() const;
+
+    private:
         char scanner_buffer_[8]{0};
 
         const char *greeting_{nullptr};
@@ -57,8 +60,6 @@ namespace zoal { namespace misc {
         callback_fn input_callback_{&empty_callback};
         handle_v100_fn handle_v100_fn_{nullptr};
 
-        void cursor(char *c);
-        char *cursor() const;
         void insert_char(char ch);
         void do_backspace();
         void do_delete();

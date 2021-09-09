@@ -62,11 +62,12 @@ shield::accelerometer_type accelerometer;
 zoal::utils::i2c_scanner scanner;
 i2c_req_dispatcher_type i2c_dispatcher;
 
-//using scheduler_type = zoal::utils::lambda_scheduler<uint32_t, 4, 8, uint8_t>;
 using scheduler_type = zoal::utils::function_scheduler<uint32_t, 4, uint8_t>;
 scheduler_type scheduler;
 
-void initialize_hardware() {
+constexpr scheduler_type::id_type toggle_led_id = 1;
+
+static void initialize_hardware() {
     using namespace zoal::gpio;
     using usart_cfg = zoal::periph::usart_115200<F_CPU>;
     using i2c_cfg = zoal::periph::i2c_fast_mode<F_CPU>;
@@ -97,14 +98,12 @@ void initialize_hardware() {
     zoal::utils::interrupts::on();
 }
 
-constexpr scheduler_type::id_type toggle_led_id = 1;
-
-void toggle_led(uint8_t v) {
+static void toggle_led(uint8_t v) {
     ::blink_pin::write(v);
     scheduler.schedule(toggle_led_id, 500, toggle_led, 1 - v);
 }
 
-void request_temp() {
+static void request_temp() {
     temp_sensor.fetch(i2c_dispatcher)([&](int) {
         stream << "\033[2K\r" << temp_sensor.temperature() << " C"
                << "\r\n";
@@ -112,14 +111,14 @@ void request_temp() {
     });
 }
 
-void request_time() {
+static void request_time() {
     clock.fetch(i2c_dispatcher)([&](int) {
         stream << "\033[2K\r" << clock.date_time() << "\r\n";
         terminal.sync();
     });
 }
 
-void scan_i2c() {
+static void scan_i2c() {
     scanner.device_found = [](uint8_t addr) {
         stream << "\033[2K\r"
                << "i2c device: " << addr << "\r\n";
@@ -153,7 +152,7 @@ const char help_msg[] PROGMEM = "ZOAL ATmega32u4 Demo Application\r\n"
 
 #pragma clang diagnostic pop
 
-void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
+static void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
     usart_tx.send_data(s, e - s);
 }
 
@@ -167,7 +166,7 @@ static void oled_render(const char *s, const char *e) {
     oled.display(i2c_dispatcher)([](int) { terminal.sync(); });
 }
 
-void read_axis() {
+static void read_axis() {
     accelerometer.fetch_axis(i2c_dispatcher)([](int) {
         auto axis = accelerometer.vector();
         stream << "\033[2K\r";
@@ -179,7 +178,7 @@ void read_axis() {
     });
 }
 
-void command_callback(zoal::misc::command_machine *, zoal::misc::command cmd, int argc, zoal::misc::cmd_arg *argv) {
+static void command_callback(zoal::misc::command_machine *, zoal::misc::command cmd, int argc, zoal::misc::cmd_arg *argv) {
     switch (cmd) {
     case zoal::misc::command::adc:
         stream << "\033[2K\r" << adc::read() << "\r\n";
@@ -232,7 +231,7 @@ void command_callback(zoal::misc::command_machine *, zoal::misc::command cmd, in
     }
 }
 
-void input_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
+static void input_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
     stream << "\r\n";
 
     zoal::misc::command_machine cm;
@@ -241,17 +240,17 @@ void input_callback(const zoal::misc::terminal_input *, const char *s, const cha
     terminal.sync();
 }
 
-void accelerometer_initialized(int) {
+static void accelerometer_initialized(int) {
     stream << "\033[2K\r";
     stream << zoal::io::progmem_str(zoal_ascii_logo) << zoal::io::progmem_str(help_msg);
     terminal.sync();
 }
 
-void display_initialized(int) {
+static void display_initialized(int) {
     accelerometer.power_on(i2c_dispatcher)(accelerometer_initialized);
 }
 
-void initialize_i2c_devices() {
+static void initialize_i2c_devices() {
     shield::ssd1306_slave_address_setup();
 
     oled.init(i2c_dispatcher)(display_initialized);
@@ -260,7 +259,7 @@ void initialize_i2c_devices() {
 
 shield::joystick joystick;
 
-auto button_handler = [](zoal::io::button_event e, shield::joystick_button b) {
+static void button_handler(zoal::io::button_event e, shield::joystick_button b) {
     if (e != zoal::io::button_event::press) {
         return;
     }
@@ -284,30 +283,6 @@ auto button_handler = [](zoal::io::button_event e, shield::joystick_button b) {
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
-
-void fetch_axis();
-
-void display_axis(const zoal::data::vector<int16_t> &v) {
-    //    using gl_type = zoal::gfx::glyph_renderer<graphics, zoal::utils::progmem_reader>;
-    //    auto g = graphics::from_memory(oled.buffer.canvas);
-    //    gl_type gl(g, &roboto_regular_16);
-    //    zoal::io::output_stream<gl_type> os(gl);
-    //    g->clear(0);
-    //    gl.color(1);
-    //
-    //    auto gvect = v.convert<float>() / 256;
-    //
-    //    for (int i = 0; i < 3; i++) {
-    //        gl.position(0, roboto_regular_16.y_advance * (i + 1));
-    //        os << gvect[i];
-    //    }
-
-    oled.display(i2c_dispatcher)([](int) { scheduler.schedule(0, 20, fetch_axis); });
-}
-
-void fetch_axis() {
-    accelerometer.fetch_axis(i2c_dispatcher)([](int) { display_axis(accelerometer.vector()); });
-}
 
 int main() {
     initialize_hardware();
