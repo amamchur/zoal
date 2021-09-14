@@ -16,8 +16,8 @@ namespace zoal { namespace ic {
             : address_(addr) {}
 
         template<class Dispatcher>
-        typename Dispatcher::finisher_type write(Dispatcher &disp, uint32_t pos, void *src, size_t size) {
-            buffer->command[0] = static_cast<uint8_t>(pos >> 16);
+        typename Dispatcher::finisher_type write(Dispatcher &disp, uint16_t pos, void *src, size_t size) {
+            buffer->command[0] = static_cast<uint8_t>(pos >> 8);
             buffer->command[1] = static_cast<uint8_t>(pos & 0xFF);
 
             auto req = disp.acquire_request();
@@ -29,10 +29,10 @@ namespace zoal { namespace ic {
         }
 
         template<class Dispatcher>
-        typename Dispatcher::finisher_type read(Dispatcher &disp, uint32_t pos, void *dst, size_t size) {
+        typename Dispatcher::finisher_type read(Dispatcher &disp, uint16_t pos, void *dst, size_t size) {
             using zoal::periph::i2c_request_status;
 
-            buffer->command[0] = static_cast<uint8_t>(pos >> 16);
+            buffer->command[0] = static_cast<uint8_t>(pos >> 8);
             buffer->command[1] = static_cast<uint8_t>(pos & 0xFF);
 
             auto address_assigned = [this, dst, size](Dispatcher &dispatcher, i2c_request_status s) {

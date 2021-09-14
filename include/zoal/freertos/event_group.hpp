@@ -1,17 +1,17 @@
 #ifndef ZOAL_FREERTOS_EVENT_GROUP_HPP
 #define ZOAL_FREERTOS_EVENT_GROUP_HPP
 
+#include "./types.hpp"
+
 #include <FreeRTOS.h>
 #include <event_groups.h>
 #include <stdint.h>
-
-#include "./types.hpp"
 
 namespace zoal { namespace freertos {
     template<class Dummy = void>
     class freertos_event_group {
     public:
-        EventBits_t set(EventBits_t bits) {
+        inline EventBits_t set(EventBits_t bits) {
             return xEventGroupSetBits(handle_, bits);
         }
 
@@ -25,10 +25,11 @@ namespace zoal { namespace freertos {
             return xResult == pdTRUE;
         }
 
-        EventBits_t wait(EventBits_t bits, bool clear = true, bool wait_for_all = false, TickType_t ticks_to_wait = portMAX_DELAY) {
+        inline EventBits_t wait(EventBits_t bits, bool clear = true, bool wait_for_all = false, TickType_t ticks_to_wait = portMAX_DELAY) {
             return xEventGroupWaitBits(handle_, bits, static_cast<BaseType_t>(clear), static_cast<BaseType_t>(wait_for_all), ticks_to_wait);
         }
 
+    protected:
         EventGroupHandle_t handle_{nullptr};
     };
 
@@ -47,6 +48,7 @@ namespace zoal { namespace freertos {
             handle_ = xEventGroupCreateStatic(&event_group_buffer);
         };
 
+    protected:
         StaticEventGroup_t event_group_buffer{};
     };
 }}

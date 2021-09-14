@@ -15,8 +15,9 @@ struct command_msg {
 
     app_cmd command;
     union {
-        zoal::data::date_time date_time;
-        char task_name[configMAX_TASK_NAME_LEN]{0};
+        char str_value[configMAX_TASK_NAME_LEN]{0};
+        int int_value;
+        zoal::data::date_time date_time_value;
     };
 };
 

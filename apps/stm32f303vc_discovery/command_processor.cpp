@@ -31,7 +31,7 @@
                 tx_stream << help_message;
                 break;
             case app_cmd_task_info: {
-                TaskHandle_t xTask = xTaskGetHandle(msg.task_name);
+                TaskHandle_t xTask = xTaskGetHandle(msg.str_value);
                 if (xTask) {
                     TaskStatus_t taskStatus;
                     vTaskGetInfo(xTask, &taskStatus, pdTRUE, eInvalid);

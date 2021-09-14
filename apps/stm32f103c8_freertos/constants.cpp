@@ -8,18 +8,16 @@ const char *zoal_ascii_logo = "  __________          _\r\n"
                               " /_____\\____/_/    \\_\\______|\r\n"
                               "\r\n";
 
-const char *help_message = "ZOAL FreeRTOS Demo Application\r\n"
+const char *help_message = "ZOAL STM32F103 FreeRTOS Demo Application\r\n"
                            "Commands: \r\n"
-                           "\t on\t\t\tturn led on\r\n"
-                           "\t off\t\t\tturn led off\r\n"
-                           "\t ticks\t\t\tprint current tick count\r\n"
-                           "\t time\t\t\tprint RTC time\r\n"
-                           "\t set-time [hh:mm::ss]\tset RTC time\r\n"
-                           "\t heap\t\t\tFreeRTOS free heap size \r\n"
-                           "\t task-info [name]\tprint task info (name: main; input, command)\r\n"
-                           "\t scan-i2c\t\tscan i2c devices\r\n"
-                           "\t read-eeprom\t\tread eeprom\r\n"
-                           "\t read-rtc\t\tread RTC\r\n";
+                           "\teeprom\t\t\t\tread eeprom\r\n"
+                           "\theap\t\t\t\tFreeRTOS free heap size \r\n"
+                           "\ti2c\t\t\t\tscan i2c devices\r\n"
+                           "\tled 1\t\t\t\tturn led on/off\r\n"
+                           "\ttask-info \"name\"\t\tprint task info (main; input, command)\r\n"
+                           "\tticks\t\t\t\tprint current tick count\r\n"
+                           "\ttime yyyy.MM.dd HH:mm::ss\tset RTC time\r\n"
+                           "\ttime\t\t\t\tprint RTC time\r\n";
 
 const char key_map[][3] = { //
     {'1', '2', '3'},

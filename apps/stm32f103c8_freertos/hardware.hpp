@@ -33,9 +33,9 @@ using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c_02, siz
 extern i2c_req_dispatcher_type i2c_dispatcher;
 extern zoal::periph::i2c_request &request;
 
-constexpr uint32_t i2c_event = 1 << 0;
-constexpr uint32_t usart_event = 1 << 1;
-constexpr uint32_t all_hardware_events = i2c_event | usart_event;
+constexpr EventBits_t i2c_event = 1 << 0;
+constexpr EventBits_t usart_event = 1 << 1;
+constexpr EventBits_t all_hardware_events = i2c_event | usart_event;
 extern zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> hardware_events;
 
 auto constexpr buffer_mem_type = zoal::periph::device_buffer_type::shared_mem;

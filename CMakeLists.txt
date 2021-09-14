@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.6)
 project(zoal CXX C ASM)
 
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(STM32_FM_REPO cube-repo)
 
 if (NOT CMAKE_BUILD_TYPE)
@@ -13,7 +13,7 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
     add_compile_options("-Os")
 endif ()
 
-function(RAGEL_GENERATE_CPP RGL_SRC CPP_SRC)
+function(RAGEL_GENERATE_CPP RGL_SRC CPP_SRC MT)
     get_filename_component(ABS_FIL ${RGL_SRC} ABSOLUTE)
     get_filename_component(ABS_PATH ${RGL_SRC} PATH)
     get_filename_component(FILE_NAME ${RGL_SRC} NAME)
@@ -21,7 +21,7 @@ function(RAGEL_GENERATE_CPP RGL_SRC CPP_SRC)
 
     add_custom_command(
             OUTPUT "${ABS_CPP_SRC}" "${ABS_FIL}.dot" "${ABS_FIL}.svg"
-            COMMAND ragel -G2 -L -o "${ABS_CPP_SRC}" "${ABS_FIL}"
+            COMMAND ragel ${MT} -L -o "${ABS_CPP_SRC}" "${ABS_FIL}"
             COMMAND ragel -V -o "${ABS_FIL}.dot" "${ABS_FIL}"
             COMMAND dot -o "${ABS_FIL}.svg" -Tsvg "${ABS_FIL}.dot"
             DEPENDS "${ABS_FIL}"
@@ -35,11 +35,10 @@ endfunction()
 
 include_directories(include)
 
-ragel_generate_cpp(apps/stepper_28byj_machine.rl STEPPER_STATE_MACHINE_SRC)
-ragel_generate_cpp(misc/cmd_line_parser.rl CMD_STATE_MACHINE_SRC)
-ragel_generate_cpp(misc/terminal_machine.rl TERMINAL_STATE_MACHINE_SRC)
-ragel_generate_cpp(misc/type_detector.rl TYPE_DETECTOR_STATE_MACHINE_SRC)
-ragel_generate_cpp(misc/test_machine.rl TEST_STATE_MACHINE_SRC)
+ragel_generate_cpp(misc/cmd_line_parser.rl CMD_STATE_MACHINE_SRC "-G2")
+ragel_generate_cpp(misc/terminal_machine.rl TERMINAL_STATE_MACHINE_SRC "-G2")
+ragel_generate_cpp(misc/type_detector.rl TYPE_DETECTOR_STATE_MACHINE_SRC "-G2")
+ragel_generate_cpp(misc/test_machine.rl TEST_STATE_MACHINE_SRC "-G2")
 
 # --- atmega Projects ---
 add_mcu_executable(ATmega328p atmega328p
@@ -50,7 +49,7 @@ add_mcu_executable(ATmega328p atmega328p
         )
 target_compile_definitions(ATmega328p PRIVATE F_CPU=16000000UL)
 
-ragel_generate_cpp(apps/atmega32u4/command_machine.rl ATMEGA32U4_STATE_MACHINE_SRC)
+ragel_generate_cpp(apps/atmega32u4/command_machine.rl ATMEGA32U4_STATE_MACHINE_SRC "-G0")
 add_mcu_executable(ATmega32u4 atmega32u4
         apps/atmega32u4/atmega32u4.cpp
         apps/data/roboto_regular_16.cpp
@@ -300,6 +299,61 @@ set(STM32F303_NUCLEO_INC
 set(STM32F303_NUCLEO_DEFS -DUSE_HAL_DRIVER -DSTM32F303xE)
 set(STM32F303_NUCLEO_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard)
 set(STM32F303_NUCLEO_FLASH_LD cubemx-proj/stm32f303_nucleo/STM32F303RETx_FLASH.ld)
+
+# STM32CubeMX project variables for cubemx-proj/stm32l432_nucleo
+set(STM32L432_NUCLEO_SRC 
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_exti.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ramfunc.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_exti.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_gpio.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_utils.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/list.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/queue.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/timers.c
+        cubemx-proj/stm32l432_nucleo/Core/Src/freertos.c
+        cubemx-proj/stm32l432_nucleo/Core/Src/gpio.c
+        cubemx-proj/stm32l432_nucleo/Core/Src/main.c
+        cubemx-proj/stm32l432_nucleo/Core/Src/stm32l4xx_hal_msp.c
+        cubemx-proj/stm32l432_nucleo/Core/Src/stm32l4xx_it.c
+        cubemx-proj/stm32l432_nucleo/Core/Src/system_stm32l4xx.c
+        cubemx-proj/stm32l432_nucleo/Core/Src/usart.c
+        cubemx-proj/stm32l432_nucleo/startup_stm32l432xx.s)
+set(STM32L432_NUCLEO_INC 
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/CMSIS/Device/ST/STM32L4xx/Include
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/CMSIS/Include
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Inc
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Inc/Legacy
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/include
+        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+        cubemx-proj/stm32l432_nucleo/Core/Inc)
+set(STM32L432_NUCLEO_DEFS -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32L432xx)
+set(STM32L432_NUCLEO_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard)
+set(STM32L432_NUCLEO_FLASH_LD cubemx-proj/stm32l432_nucleo/STM32L432KCUx_FLASH.ld)
 # End cubemx-proj variables
 
 add_mcu_executable(stm32f030 stm32 apps/stm32f030.cpp)
@@ -323,6 +377,8 @@ add_mcu_executable(stm32f303_discovery stm32
         ${TYPE_DETECTOR_STATE_MACHINE_SRC}
         )
 add_mcu_executable(stm32f303_nucleo stm32 apps/stm32f303retx.cpp)
+
+ragel_generate_cpp(apps/stm32f103c8_freertos/command_machine.rl STM32F103_FREERTOS_CMD_MACHINE_SRC "-T1")
 add_mcu_executable(stm32f103_freertos stm32
         apps/stm32f103c8_freertos/main.cpp
         apps/stm32f103c8_freertos/constants.cpp
@@ -333,9 +389,10 @@ add_mcu_executable(stm32f103_freertos stm32
         apps/stm32f103c8_freertos/command_processor.cpp
         misc/terminal_input.cpp
         ${TERMINAL_STATE_MACHINE_SRC}
-        ${CMD_STATE_MACHINE_SRC}
-        ${TYPE_DETECTOR_STATE_MACHINE_SRC}
+        ${STM32F103_FREERTOS_CMD_MACHINE_SRC}
         )
+
+add_mcu_executable(stm32l432_nucleo stm32 apps/stm32l432.cpp)
 
 add_host_executable(host
         apps/host.cpp

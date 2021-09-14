@@ -43,9 +43,9 @@ static void take_task_name(zoal::misc::command_line_machine *p, zoal::misc::comm
     auto te = p->token_end();
     command_msg msg(app_cmd_task_info);
 
-    auto end = msg.task_name + sizeof(msg.task_name) - 1;
+    auto end = msg.str_value + sizeof(msg.str_value) - 1;
     auto src = ts;
-    auto dst = msg.task_name;
+    auto dst = msg.str_value;
     while (src != te && dst != end) *dst++ = *src++;
     *dst = 0;
     command_queue.push(msg);

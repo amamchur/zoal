@@ -10,11 +10,10 @@
 #include <zoal/utils/delay.hpp>
 #include <zoal/utils/ms_counter.hpp>
 
-using ms_counter = zoal::utils::ms_counter<uint32_t, &uwTick>;
-using delay = zoal::utils::delay<72000000, ms_counter>;
-
 [[noreturn]] void zoal_main_task(void *);
 
+using ms_counter = zoal::utils::ms_counter<uint32_t, &uwTick>;
+using delay = zoal::utils::delay<72000000, ms_counter>;
 using task_type = zoal::freertos::task<zoal::freertos::freertos_allocation_type::static_mem>;
 
 __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> command_task(zoal_cmd_processor, "command");

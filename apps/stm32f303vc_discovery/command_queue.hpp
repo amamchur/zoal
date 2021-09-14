@@ -14,7 +14,7 @@ struct command_msg {
 
     app_cmd command;
     union {
-        char task_name[configMAX_TASK_NAME_LEN];
+        char str_value[configMAX_TASK_NAME_LEN];
     };
 };
 

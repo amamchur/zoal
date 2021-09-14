@@ -4,12 +4,12 @@ IndentWidth: 4
 UseTab: Never
 ColumnLimit: 160
 Language: Cpp
-Standard: c++11
+Standard: c++14
 
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: None
 AlignOperands: true
 AlignTrailingComments: false
 AllowAllParametersOfDeclarationOnNextLine: true
@@ -24,24 +24,6 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: false
-
-BreakBeforeBraces: Custom
-BraceWrapping: {
-    AfterClass: 'false'
-    AfterControlStatement: 'false'
-    AfterEnum : 'false'
-    AfterFunction : 'false'
-    AfterNamespace : 'false'
-    AfterStruct : 'false'
-    AfterUnion : 'false'
-    BeforeCatch : 'false'
-    BeforeElse : 'false'
-    IndentBraces : 'false'
-    AfterExternBlock : 'false'
-    SplitEmptyFunction : 'false'
-    SplitEmptyRecord : 'false'
-    SplitEmptyNamespace : 'false'
-}
 
 BreakAfterJavaFieldAnnotations: true
 BreakBeforeInheritanceComma: false
@@ -93,7 +75,7 @@ SpacesInSquareBrackets: false
 SpaceAfterTemplateKeyword: false
 
 SortUsingDeclarations: true
-SortIncludes: true
+SortIncludes: CaseSensitive
 ReflowComments: false
 
 IncludeBlocks: Regroup

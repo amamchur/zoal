@@ -4,6 +4,8 @@
 #include "command_queue.hpp"
 #include "constants.hpp"
 #include "hardware.hpp"
+#include "stm32f1xx_hal_flash.h"
+#include "stm32f1xx_hal_flash_ex.h"
 #include "task.h"
 #include "terminal.hpp"
 
@@ -46,57 +48,81 @@ static void scan_i2c_devs() {
 static void read_rtc() {
     clock.fetch(i2c_dispatcher)([](int) {
         auto dt = clock.date_time();
-        tx_stream << "\033[2K\r"
-                  << "Date time: "
-                  << "\r\n"
-                  << dt << "\r\n";
+        tx_stream << "\033[2K\r" << dt << "\r\n";
         terminal.sync();
     });
 }
 
+constexpr uintptr_t addr = 0x0801FC00;
+
+void flash_write() {
+    HAL_FLASH_Unlock();
+
+    FLASH_EraseInitTypeDef EraseInitStruct;
+    uint32_t PAGEError;
+    uint32_t DATA_32 = 0x12345678;
+
+    EraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
+    EraseInitStruct.PageAddress = addr;
+    EraseInitStruct.NbPages = 1;
+    auto result = HAL_FLASHEx_Erase(&EraseInitStruct, &PAGEError);
+    if (result == HAL_OK) {
+        result = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, addr, DATA_32);
+    }
+
+    tx_stream << "Result: " << result << "\r\n";
+
+    HAL_FLASH_Lock();
+}
+
 [[noreturn]] void zoal_cmd_processor(void *) {
+    auto v = reinterpret_cast<uint32_t *>(addr);
+
+    tx_stream << "\r\n" << "Value: " << zoal::io::hexadecimal(*v) << "\r\n";
+    flash_write();
+    tx_stream << "Value: " << zoal::io::hexadecimal(*v) << "\r\n";
+
     while (true) {
         command_msg msg;
-        command_queue.pop(msg);
-        if (msg.command == app_cmd_none) {
+        auto result = command_queue.pop(msg);
+        if (!result || msg.command == app_cmd::none) {
             continue;
         }
 
-        tx_stream << "\r\n";
+        tx_stream << "\033[2K\r";
+
         switch (msg.command) {
-        case app_cmd_led_on:
-            user_led::on();
+        case app_cmd::led:
+            if (msg.int_value == 0) {
+                user_led::off();
+            } else {
+                user_led::on();
+            }
             break;
-        case app_cmd_led_off:
-            user_led::off();
-            break;
-        case app_cmd_ticks:
+        case app_cmd::ticks:
             tx_stream << xTaskGetTickCount() << "\r\n";
             break;
-        case app_cmd_button1_pressed:
+        case app_cmd::button1_pressed:
             tx_stream << "button1_pressed\r\n";
             break;
-        case app_cmd_button2_pressed:
+        case app_cmd::button2_pressed:
             tx_stream << "button2_pressed\r\n";
             break;
-        case app_cmd_not_found:
-            tx_stream << "Not found\r\n";
+        case app_cmd::print_heap_size:
+            tx_stream << xPortGetFreeHeapSize() << "\r\n";
             break;
-        case app_cmd_print_heap_size:
-            tx_stream << "free heap size: " << xPortGetFreeHeapSize() << "\r\n";
-            break;
-        case app_cmd_help:
+        case app_cmd::help:
             tx_stream << help_message;
             break;
-        case app_cmd_time_print:
+        case app_cmd::time_print:
             read_rtc();
             break;
-        case app_cmd_time_set:
-            clock.date_time(msg.date_time);
-            clock.update(i2c_dispatcher)([](int){});
+        case app_cmd::time_set:
+            clock.date_time(msg.date_time_value);
+            clock.update(i2c_dispatcher)([](int) {});
             break;
-        case app_cmd_task_info: {
-            TaskHandle_t xTask = xTaskGetHandle(msg.task_name);
+        case app_cmd::task_info: {
+            TaskHandle_t xTask = xTaskGetHandle(msg.str_value);
             if (xTask) {
                 TaskStatus_t taskStatus;
                 vTaskGetInfo(xTask, &taskStatus, pdTRUE, eInvalid);
@@ -112,10 +138,10 @@ static void read_rtc() {
             }
             break;
         }
-        case app_cmd_scan_i2c:
+        case app_cmd::scan_i2c:
             scan_i2c_devs();
             break;
-        case app_cmd_read_eeprom:
+        case app_cmd::read_eeprom:
             read_eeprom();
             break;
         default:

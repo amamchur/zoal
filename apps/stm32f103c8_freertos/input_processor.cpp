@@ -16,8 +16,8 @@ static user_button_2_type user_button_2;
 
     while (true) {
         auto time = xTaskGetTickCount();
-        user_button_1.handle(time, button_callback, app_cmd_button1_pressed);
-        user_button_2.handle(time, button_callback, app_cmd_button2_pressed);
+        user_button_1.handle(time, button_callback, app_cmd::button1_pressed);
+        user_button_2.handle(time, button_callback, app_cmd::button2_pressed);
         vTaskDelay(5);
     }
 }

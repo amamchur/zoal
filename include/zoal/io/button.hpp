@@ -113,7 +113,7 @@ namespace zoal { namespace io {
 
         template<class Callback, class... Args>
         void handle(TimeType current_time, Callback callback, Args... args) {
-            handle();
+            handle(current_time);
             this->machine_.invoke_callback(callback, args...);
         }
     protected:

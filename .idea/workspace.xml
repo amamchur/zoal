@@ -7,6 +7,7 @@
     <generated>
       <config projectName="zoal" targetName="ATtiny85" />
       <config projectName="zoal" targetName="ATtiny2313-fuse" />
+      <config projectName="zoal" targetName="stm32l432_nucleo" />
       <config projectName="zoal" targetName="ATmega328p-eeprom" />
       <config projectName="zoal" targetName="ATtiny2313" />
       <config projectName="zoal" targetName="stm32f303_discovery" />
@@ -50,41 +51,54 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Created command parse machine">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Updated STM32 projects">
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_9_7_2021_3_37_PM_[Default_Changelist]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_9_7_2021_3_37_PM__Default_Changelist_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_machine.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_machine.rl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/stm32l432.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/.mxproject" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Inc/FreeRTOSConfig.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Inc/gpio.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Inc/main.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Inc/stm32_assert.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Inc/stm32l4xx_hal_conf.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Inc/stm32l4xx_it.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Inc/usart.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Src/freertos.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Src/gpio.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Src/main.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Src/stm32l4xx_hal_msp.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Src/stm32l4xx_it.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Src/system_stm32l4xx.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Core/Src/usart.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/STM32L432KCUx_FLASH.ld" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/startup_stm32l432xx.s" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32l432_nucleo/stm32l432_nucleo.ioc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.clang-format" beforeDir="false" afterPath="$PROJECT_DIR$/.clang-format" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega32u4/atmega32u4.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4/atmega32u4.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega32u4/command_machine.rl" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega32u4/command_machine.rl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny13.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny13.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny85.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny85.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_processor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_queue.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_queue.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_queue.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/command_queue.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/constants.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/constants.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/input_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/input_processor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/terminal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/terminal.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/terminal.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/terminal.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/types.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/types.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/command_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/command_processor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/command_queue.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/command_queue.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/terminal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/terminal.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f030/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f030/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f030/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f030/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f030/stm32f030.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f030/stm32f030.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_blue_pill/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_blue_pill/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_blue_pill/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_blue_pill/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_blue_pill/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_blue_pill/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_blue_pill/Src/stm32f1xx_hal_timebase_tim.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_blue_pill/Src/stm32f1xx_hal_timebase_tim.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_blue_pill/stm32f103_blue_pill.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_blue_pill/stm32f103_blue_pill.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/FreeRTOSConfig.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/FreeRTOSConfig.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/stm32f1xx_hal_timebase_tim.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/stm32f1xx_hal_timebase_tim.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/stm32f3xx_hal_timebase_tim.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/stm32f3xx_hal_timebase_tim.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/stm32f303_discovery.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/stm32f303_discovery.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_nucleo/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_nucleo/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_nucleo/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_nucleo/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f303_nucleo/stm32f303_nucleo.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f303_nucleo/stm32f303_nucleo.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/parse/ragel_parser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/parse/ragel_parser.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_input.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_machine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_machine.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc/terminal_machine.rl" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_machine.rl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/freertos/event_group.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/freertos/event_group.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/at24cxx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/at24cxx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/io/button.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/io/button.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openocd/interface/stlink-v2-clone.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/openocd/interface/stlink-v2-clone.cfg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +121,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release AVR" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug STM32" />
   <component name="Git.Merge.Settings">
     <option name="BRANCH" value="stm32f1_i2c" />
   </component>
@@ -128,6 +142,9 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedIndex" value="3" />
+  </component>
   <component name="ProjectId" id="1lQK3DU9OsqewWvrbdkSUM1ArgE" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="false" id="Update" />
@@ -147,7 +164,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/atmega32u4" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/stm32f103c8_freertos" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -162,11 +179,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\amam\CLionProjects\zoal\apps\stm32f103c8_freertos" />
       <recent name="C:\Users\amam\CLionProjects\zoal\apps\atmega32u4" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\ic" />
       <recent name="C:\Users\amam\CLionProjects\zoal\apps\data" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\text" />
-      <recent name="$PROJECT_DIR$/apps/stm32f303vc_discovery" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\amam\CLionProjects\zoal\apps\atmega32u4" />
@@ -181,12 +198,7 @@
       <command value="vTaskDelay(1);" />
     </option>
   </component>
-  <component name="RunManager" selected="CMake Application.ATtiny13">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f103_freertos">
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -353,6 +365,16 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="stm32l432_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32l432_nucleo" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32l432_nucleo">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
@@ -398,6 +420,14 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
+    <configuration name="stm32l432_nucleo" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32l432_nucleo" CONFIG_NAME="Debug STM32" version="1" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32l432_nucleo">
+      <openocd version="1" gdb-port="3333" telnet-port="4444" board-config="board/st_nucleo_l4.cfg" reset-type="INIT" download-type="UPDATED_ONLY">
+        <debugger kind="GDB" isBundled="true" />
+      </openocd>
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="CMake Application.All" />
       <item itemvalue="CMake Application.ATmega2560" />
@@ -430,6 +460,7 @@
       <item itemvalue="CMake Application.stm32f103_freertos" />
       <item itemvalue="CMake Application.stm32f303_discovery" />
       <item itemvalue="CMake Application.stm32f303_nucleo" />
+      <item itemvalue="CMake Application.stm32l432_nucleo" />
       <item itemvalue="Google Test.zoal_tests" />
       <item itemvalue="Node.js.cubemx-proj.js" />
       <item itemvalue="Node.js.gen atmega2560" />
@@ -438,6 +469,7 @@
       <item itemvalue="Node.js.gen stm32f303retx.hpp" />
       <item itemvalue="Node.js.gen stm32f303vctx" />
       <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
+      <item itemvalue="OpenOCD Download &amp; Run.stm32l432_nucleo" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f103_blue_pill" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f103_freertos" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f303_discovery" />
