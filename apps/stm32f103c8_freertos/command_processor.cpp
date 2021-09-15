@@ -76,11 +76,11 @@ void flash_write() {
 }
 
 [[noreturn]] void zoal_cmd_processor(void *) {
-    auto v = reinterpret_cast<uint32_t *>(addr);
-
-    tx_stream << "\r\n" << "Value: " << zoal::io::hexadecimal(*v) << "\r\n";
-    flash_write();
-    tx_stream << "Value: " << zoal::io::hexadecimal(*v) << "\r\n";
+//    auto v = reinterpret_cast<uint32_t *>(addr);
+//
+//    tx_stream << "\r\n" << "Value: " << zoal::io::hexadecimal(*v) << "\r\n";
+//    flash_write();
+//    tx_stream << "Value: " << zoal::io::hexadecimal(*v) << "\r\n";
 
     while (true) {
         command_msg msg;
