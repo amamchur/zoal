@@ -69,7 +69,7 @@ namespace zoal { namespace freertos {
             this->handle_ = handle;
         }
 
-        explicit task(void *buffer, size_t buffer_size, TaskFunction_t code, const char *name = nullptr, void *params = nullptr, UBaseType_t priority = 24) {
+        task(void *buffer, size_t buffer_size, TaskFunction_t code, const char *name = nullptr, void *params = nullptr, UBaseType_t priority = 24) {
             start(buffer, buffer_size, code, name, params, priority);
         }
 

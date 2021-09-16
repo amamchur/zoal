@@ -125,20 +125,9 @@ set(STM32F103_BLUE_PILL_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/list.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/port.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/queue.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/timers.c
-        cubemx-proj/stm32f103_blue_pill/Src/freertos.c
+        cubemx-proj/stm32f103_blue_pill/Src/gpio.c
         cubemx-proj/stm32f103_blue_pill/Src/main.c
         cubemx-proj/stm32f103_blue_pill/Src/stm32f1xx_hal_msp.c
-        cubemx-proj/stm32f103_blue_pill/Src/stm32f1xx_hal_timebase_tim.c
         cubemx-proj/stm32f103_blue_pill/Src/stm32f1xx_it.c
         cubemx-proj/stm32f103_blue_pill/Src/system_stm32f1xx.c
         cubemx-proj/stm32f103_blue_pill/startup_stm32f103xb.s)
@@ -148,11 +137,8 @@ set(STM32F103_BLUE_PILL_INC
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/CMSIS/Include
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Inc
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/include
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3
         cubemx-proj/stm32f103_blue_pill/Inc)
-set(STM32F103_BLUE_PILL_DEFS -DUSE_HAL_DRIVER -DSTM32F103xB)
+set(STM32F103_BLUE_PILL_DEFS -DSTM32F103xB -DUSE_HAL_DRIVER)
 set(STM32F103_BLUE_PILL_OPT_MCU -mcpu=cortex-m3 -mthumb)
 set(STM32F103_BLUE_PILL_FLASH_LD cubemx-proj/stm32f103_blue_pill/STM32F103C8Tx_FLASH.ld)
 

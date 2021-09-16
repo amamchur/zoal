@@ -24,14 +24,14 @@
 
     date_time = (date . space . time) >arg_start %arg_finished;
     quoted_string = ('"' ((ascii - cntrl - space - '\\') | [ \t] | '\\'["tvfnr])+ '"') >arg_start %arg_finished;
-	positive = ([1-9] digit*) >arg_start %arg_finished;
-	integer = ('-'? digit+) >arg_start %arg_finished;
+	signed_int = ('-'? digit+) >arg_start %arg_finished;
+	unsigned_int = (digit+) >arg_start %arg_finished;
 
     cmd_eeprom = 'eeprom' %{ this->command_ = app_cmd::read_eeprom; };
     cmd_heap = 'heap' %{ this->command_ = app_cmd::print_heap_size; };
     cmd_help = 'help' %{ this->command_ = app_cmd::help; };
     cmd_i2c = 'i2c' %{ this->command_ = app_cmd::scan_i2c; };
-    cmd_led = ('led' space+ integer) %{ this->command_ = app_cmd::led; };
+    cmd_led = ('led' space+ signed_int) %{ this->command_ = app_cmd::led; };
     cmd_task_info = ('task-info' space+ quoted_string) %{ this->command_ = app_cmd::task_info; };
     cmd_ticks = 'ticks' %{ this->command_ = app_cmd::ticks; };
     cmd_time = 'time' %{ this->command_ = app_cmd::time_print; };

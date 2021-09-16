@@ -44,6 +44,7 @@ static void command_callback(zoal::misc::command_machine *, app_cmd cmd, int arg
 }
 
 static void input_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
+    scoped_lock lock(tx_stream_mutex);
     tx_stream << "\r\n";
 
     if (s < e) {
@@ -62,6 +63,8 @@ static void vt100_callback(const zoal::misc::terminal_input *, const char *s, co
 }
 
 void init_terminal() {
+    scoped_lock lock(tx_stream_mutex);
+
     static auto terminal_greeting = "\033[0;32mmcu\033[m$ ";
     terminal.vt100_feedback(&vt100_callback);
     terminal.input_callback(&input_callback);

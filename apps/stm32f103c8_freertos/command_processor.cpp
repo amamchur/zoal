@@ -30,10 +30,12 @@ static void read_eeprom() {
 
 static void scan_i2c_devs() {
     scanner.device_found = [](uint8_t addr) {
+        scoped_lock lock(tx_stream_mutex);
         tx_stream << "\033[2K\r"
                   << "I2C Device found: " << zoal::io::hexadecimal(addr) << "\r\n";
     };
     scanner.scan(i2c_dispatcher)([](int code) {
+        scoped_lock lock(tx_stream_mutex);
         if (code == 0) {
             tx_stream << "\033[2K\r"
                       << "Done\r\n";
@@ -47,6 +49,7 @@ static void scan_i2c_devs() {
 
 static void read_rtc() {
     clock.fetch(i2c_dispatcher)([](int) {
+        scoped_lock lock(tx_stream_mutex);
         auto dt = clock.date_time();
         tx_stream << "\033[2K\r" << dt << "\r\n";
         terminal.sync();
@@ -54,6 +57,7 @@ static void read_rtc() {
 }
 
 constexpr uintptr_t addr = 0x0801FC00;
+auto test_value = reinterpret_cast<uint32_t *>(addr);
 
 void flash_write() {
     HAL_FLASH_Unlock();
@@ -76,12 +80,6 @@ void flash_write() {
 }
 
 [[noreturn]] void zoal_cmd_processor(void *) {
-//    auto v = reinterpret_cast<uint32_t *>(addr);
-//
-//    tx_stream << "\r\n" << "Value: " << zoal::io::hexadecimal(*v) << "\r\n";
-//    flash_write();
-//    tx_stream << "Value: " << zoal::io::hexadecimal(*v) << "\r\n";
-
     while (true) {
         command_msg msg;
         auto result = command_queue.pop(msg);
@@ -89,6 +87,7 @@ void flash_write() {
             continue;
         }
 
+        scoped_lock lock(tx_stream_mutex);
         tx_stream << "\033[2K\r";
 
         switch (msg.command) {

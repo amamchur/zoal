@@ -28,7 +28,10 @@ enc_type encoder;
 
     while (true) {
         vTaskDelay(1);
-        encoder.handle([](zoal::io::rotary_event e) { tx_stream << (int)e << "\r\n"; });
+        encoder.handle([](zoal::io::rotary_event e) {
+            scoped_lock lock(tx_stream_mutex);
+            tx_stream << (int)e << "\r\n";
+        });
 
         //        auto time = xTaskGetTickCount();
         //        user_button_1.handle(time, button_callback, app_cmd::button1_pressed);

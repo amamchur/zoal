@@ -3,15 +3,16 @@
 #include "stm32f1xx_hal.h"
 
 #include <zoal/periph/i2c.hpp>
+#include <zoal/utils/interrupts.hpp>
 
 zoal::mem::reserve_mem<stream_buffer_type, 32> rx_stream_buffer(1);
 zoal::mem::reserve_mem<stream_buffer_type, 32> tx_stream_buffer(1);
 
 usart_01_tx_transport usart_tx;
 usart_tx_stream_type tx_stream(usart_tx);
+tx_stream_mutex_type tx_stream_mutex;
 
 i2c_req_dispatcher_type i2c_dispatcher;
-zoal::periph::i2c_request &request = i2c_dispatcher.request;
 
 zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> hardware_events;
 
@@ -20,13 +21,16 @@ zoal::ic::ds3231<buffer_mem_type> clock(i2c_shared_buffer);
 zoal::ic::at24cxx<buffer_mem_type> eeprom(i2c_shared_buffer);
 zoal::utils::i2c_scanner scanner;
 
+constexpr uint32_t apb1_periph_clock_freq = 36000000;
+constexpr uint32_t apb2_periph_clock_freq = 72000000;
+
 void zoal_init_hardware() {
     using api = zoal::gpio::api;
-    using i2c_02_cfg = zoal::periph::i2c_fast_mode<36000000>;
+    using i2c_02_cfg = zoal::periph::i2c_fast_mode<apb1_periph_clock_freq>;
     using i2c_mux = mcu::mux::i2c<i2c_02, mcu::pb_11, mcu::pb_10>;
     using i2c_cfg = mcu::cfg::i2c<i2c_02, i2c_02_cfg>;
 
-    using usart_01_cfg = zoal::periph::usart_115200<72000000>;
+    using usart_01_cfg = zoal::periph::usart_115200<apb2_periph_clock_freq>;
     using usart_mux = mcu::mux::usart<tty_usart, mcu::pb_07, mcu::pb_06>;
     using usart_cfg = mcu::cfg::usart<tty_usart, usart_01_cfg>;
 
@@ -67,6 +71,8 @@ void zoal_init_hardware() {
     HAL_NVIC_EnableIRQ(I2C2_ER_IRQn);
 
     tty_usart::enable_rx();
+
+    zoal::utils::interrupts::on();
 }
 
 void usart_01_tx_transport::send_byte(uint8_t value) {
@@ -93,9 +99,9 @@ extern "C" void USART1_IRQHandler() {
 }
 
 extern "C" void I2C2_EV_IRQHandler(void) {
-    i2c_02::handle_request_irq(request, []() { hardware_events.set_isr(i2c_event); });
+    i2c_02::handle_request_irq(i2c_dispatcher.request, []() { hardware_events.set_isr(i2c_event); });
 }
 
 extern "C" void I2C2_ER_IRQHandler(void) {
-    i2c_02::handle_request_irq(request, []() { hardware_events.set_isr(i2c_event); });
+    i2c_02::handle_request_irq(i2c_dispatcher.request, []() { hardware_events.set_isr(i2c_event); });
 }

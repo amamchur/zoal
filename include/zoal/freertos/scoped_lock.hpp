@@ -5,17 +5,18 @@ namespace zoal { namespace freertos {
     template<class Mutex>
     class scoped_lock {
     public:
-        explicit scoped_lock(Mutex &m) noexcept
+        inline explicit scoped_lock(Mutex &m) noexcept
             : mutex(m) {
             mutex.lock();
         }
 
         scoped_lock(const scoped_lock&) = delete;
 
-        ~scoped_lock() noexcept {
+        inline ~scoped_lock() noexcept {
             mutex.unlock();
         }
 
+    private:
         Mutex &mutex;
     };
 }}

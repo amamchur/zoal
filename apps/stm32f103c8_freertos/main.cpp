@@ -44,13 +44,11 @@ __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> main_task(zoal_main
 
 extern "C" void SystemClock_Config(void);
 
-#include <zoal/io/rotary_encoder.hpp>
-
 int main() {
     HAL_Init();
     SystemClock_Config();
-
     MX_GPIO_Init();
+
     zoal_init_hardware();
 
     vTaskStartScheduler();

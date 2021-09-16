@@ -4,6 +4,8 @@
 #include "board.hpp"
 
 #include <zoal/freertos/event_group.hpp>
+#include <zoal/freertos/mutex.hpp>
+#include <zoal/freertos/scoped_lock.hpp>
 #include <zoal/freertos/stream_buffer.hpp>
 #include <zoal/ic/at24cxx.hpp>
 #include <zoal/ic/ds3231.hpp>
@@ -17,9 +19,6 @@ using stream_buffer_type = zoal::freertos::stream_buffer<zoal::freertos::freerto
 extern zoal::mem::reserve_mem<stream_buffer_type, 32> rx_stream_buffer;
 extern zoal::mem::reserve_mem<stream_buffer_type, 32> tx_stream_buffer;
 
-using user_button_1_type = zoal::io::button<TickType_t, mcu::pb_12>;
-using user_button_2_type = zoal::io::button<TickType_t, mcu::pb_13>;
-
 class usart_01_tx_transport {
 public:
     static void send_byte(uint8_t value);
@@ -29,9 +28,12 @@ public:
 using usart_tx_stream_type = zoal::io::output_stream<usart_01_tx_transport>;
 extern usart_tx_stream_type tx_stream;
 
+using tx_stream_mutex_type = zoal::freertos::mutex<zoal::freertos::freertos_allocation_type::static_mem>;
+using scoped_lock = zoal::freertos::scoped_lock<tx_stream_mutex_type>;
+extern tx_stream_mutex_type tx_stream_mutex;
+
 using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c_02, sizeof(void *) * 8>;
 extern i2c_req_dispatcher_type i2c_dispatcher;
-extern zoal::periph::i2c_request &request;
 
 constexpr EventBits_t i2c_event = 1 << 0;
 constexpr EventBits_t usart_event = 1 << 1;
