@@ -10,11 +10,30 @@ zoal::periph::i2c_request &request = i2c_dispatcher.request;
 usart_debug_tx_transport usart_tx;
 usart_tx_stream_type tx_stream(usart_tx);
 
+#include <zoal/ct/type_list.hpp>
+
 void zoal_init_hardware() {
     using api = zoal::gpio::api;
-    using usart_01_cfg = zoal::periph::usart_115200<72000000>;
-    using usart_mux = mcu::mux::usart<debug_usart, mcu::pb_07, mcu::pb_06>;
-    using usart_cfg = mcu::cfg::usart<debug_usart, usart_01_cfg>;
+    using usart_speed_cfg = zoal::periph::usart_115200<36000000>;
+    using usart_mux = mcu::mux::usart<debug_usart, mcu::pb_11, mcu::pb_10>;
+    using usart_cfg = mcu::cfg::usart<debug_usart, usart_speed_cfg>;
+
+    //    api::optimize<
+    //        //
+    //        usart_mux::periph_clock_on,
+    //        usart_cfg::periph_clock_on
+    //        //
+    //        >();
+    //    api::optimize<api::disable<debug_usart>>();
+    //
+    //    // Configuring everything
+    //    api::optimize<
+    //        //
+    //        usart_mux::connect,
+    //        usart_cfg::apply
+    //        //
+    //        >();
+    //    api::optimize<api::enable<debug_usart>>();
 
     HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(USART3_IRQn);

@@ -8,7 +8,6 @@
 #include "spi.h"
 #include "stm32f3xx_hal.h"
 #include "usart.h"
-#include "usb.h"
 
 #include <zoal/freertos/event_group.hpp>
 #include <zoal/freertos/stream_buffer.hpp>
@@ -53,8 +52,29 @@ static void test_i2c() {
     });
 }
 
+class functor {
+public:
+    template<class T>
+    void operator()() {
+        using cas = typename T::type;
+        auto reg = reinterpret_cast<uint32_t *>(cas::address);
+        tx_stream << "ADDR: " << zoal::io::hexadecimal(cas::address) << " " << zoal::io::hexadecimal(cas::clear) << " " << zoal::io::hexadecimal(cas::set);
+        tx_stream << " REG: " << zoal::io::hexadecimal(*reg) << "\r\n";
+    }
+};
+
 [[noreturn]] void zoal_main_task(void *) {
-    pcb::led_gpio_cfg();
+    using api = zoal::gpio::api;
+    using usart_speed_cfg = zoal::periph::usart_115200<36000000>;
+    using usart_mux = mcu::mux::usart<debug_usart, mcu::pb_11, mcu::pb_10>;
+    using usart_cfg = mcu::cfg::usart<debug_usart, usart_speed_cfg>;
+
+    vTaskDelay(100);
+
+
+    functor fn;
+    tx_stream << "\r\n";
+    zoal::ct::type_chain_iterator<usart_cfg::apply>::for_each(fn);
 
     for (;;) {
         auto bits = io_events.wait(1);
@@ -76,7 +96,6 @@ int main() {
     MX_USART3_UART_Init();
     MX_I2C1_Init();
     MX_SPI1_Init();
-    MX_USB_PCD_Init();
 
     zoal_init_hardware();
 

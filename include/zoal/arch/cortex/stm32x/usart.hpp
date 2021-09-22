@@ -31,27 +31,30 @@ namespace zoal { namespace arch { namespace stm32x {
 
         using self_type = usart<Address, Mixin...>;
 
-        static void enable() {
+        using enable_cas = zoal::ct::type_list<typename USARTx_CR1::template cas<0, USARTx_CR1_UE>>;
+        using disable_cas = zoal::ct::type_list<typename USARTx_CR1::template cas<USARTx_CR1_UE, 0>>;
+
+        static inline void enable() {
             USARTx_CR1::ref() |= USARTx_CR1_UE;
         }
 
-        static void disable() {
+        static inline void disable() {
             USARTx_CR1::ref() &= ~USARTx_CR1_UE;
         }
 
-        static void enable_tx() {
+        static inline void enable_tx() {
             USARTx_CR1::ref() |= USARTx_CR1_TXEIE;
         }
 
-        static void disable_tx() {
+        static inline void disable_tx() {
             USARTx_CR1::ref() &= ~USARTx_CR1_TXEIE;
         }
 
-        static void enable_rx() {
+        static inline void enable_rx() {
             USARTx_CR1::ref() |= USARTx_CR1_RXNEIE;
         }
 
-        static void disable_rx() {
+        static inline void disable_rx() {
             USARTx_CR1::ref() &= ~USARTx_CR1_RXNEIE;
         }
 

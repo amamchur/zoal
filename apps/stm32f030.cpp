@@ -16,14 +16,12 @@ using delay = tools::delay;
 extern "C" [[noreturn]] void zoal_main() {
     using namespace zoal::gpio;
 
-    SysTick_Config(SystemCoreClock / 1000);
-
     tty_usart::clock_on();
     mcu::port_a::clock_on();
 
     using usart_01_cfg = zoal::periph::usart_115200<48000000>;
-    mcu::mux::usart<tty_usart, mcu::pa_03, mcu::pa_02>::on();
-    mcu::cfg::usart<tty_usart, usart_01_cfg>::apply();
+//    mcu::mux::usart<tty_usart, mcu::pa_03, mcu::pa_02>::on();
+//    mcu::cfg::usart<tty_usart, usart_01_cfg>::apply();
 //    mcu::enable<tty_usart>::on();
 
     //NVIC_EnableIRQ(USART1_IRQn);

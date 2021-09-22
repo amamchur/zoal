@@ -49,9 +49,10 @@ static void scan_i2c_devs() {
 
 static void read_rtc() {
     clock.fetch(i2c_dispatcher)([](int) {
-        scoped_lock lock(tx_stream_mutex);
+        __attribute__((unused)) scoped_lock lock(tx_stream_mutex);
         auto dt = clock.date_time();
         tx_stream << "\033[2K\r" << dt << "\r\n";
+        tx_stream << clock.temperature() << "\r\n";
         terminal.sync();
     });
 }

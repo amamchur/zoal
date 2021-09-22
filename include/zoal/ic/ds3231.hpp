@@ -46,7 +46,7 @@ namespace zoal { namespace ic {
         typename Dispatcher::finisher_type fetch(Dispatcher &disp) {
             auto address_assigned = [this](Dispatcher &dispatcher, zoal::periph::i2c_request_status) {
                 auto req = dispatcher.acquire_request();
-                auto size = static_cast<uint8_t>(register_address::year) - static_cast<uint8_t>(register_address::seconds) + 1;
+                auto size = static_cast<uint8_t>(register_address::temp_lsb) - static_cast<uint8_t>(register_address::seconds) + 1;
                 req->read(address_, buffer->data, buffer->data + size);
                 next_sequence(dispatcher, notify_client<Dispatcher>);
             };

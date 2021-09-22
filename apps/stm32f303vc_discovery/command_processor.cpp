@@ -31,20 +31,20 @@
                 tx_stream << help_message;
                 break;
             case app_cmd_task_info: {
-                TaskHandle_t xTask = xTaskGetHandle(msg.str_value);
-                if (xTask) {
-                    TaskStatus_t taskStatus;
-                    vTaskGetInfo(xTask, &taskStatus, pdTRUE, eInvalid);
-                    tx_stream << "pcTaskName:\t\t" << taskStatus.pcTaskName << "\r\n";
-                    tx_stream << "eCurrentState:\t\t" << taskStatus.eCurrentState << "\r\n";
-                    tx_stream << "uxCurrentPriority:\t" << taskStatus.uxCurrentPriority << "\r\n";
-                    tx_stream << "uxBasePriority:\t\t" << taskStatus.uxBasePriority << "\r\n";
-                    tx_stream << "ulRunTimeCounter:\t" << taskStatus.ulRunTimeCounter << "\r\n";
-                    tx_stream << "pxStackBase:\t\t" << (void *)taskStatus.pxStackBase << "\r\n";
-                    tx_stream << "usStackHighWaterMark\t" << taskStatus.usStackHighWaterMark << "\r\n";
-                } else {
-                    tx_stream << "Task not found\r\n";
-                }
+//                TaskHandle_t xTask = xTaskGetHandle(msg.str_value);
+//                if (xTask) {
+//                    TaskStatus_t taskStatus;
+//                    vTaskGetInfo(xTask, &taskStatus, pdTRUE, eInvalid);
+//                    tx_stream << "pcTaskName:\t\t" << taskStatus.pcTaskName << "\r\n";
+//                    tx_stream << "eCurrentState:\t\t" << taskStatus.eCurrentState << "\r\n";
+//                    tx_stream << "uxCurrentPriority:\t" << taskStatus.uxCurrentPriority << "\r\n";
+//                    tx_stream << "uxBasePriority:\t\t" << taskStatus.uxBasePriority << "\r\n";
+//                    tx_stream << "ulRunTimeCounter:\t" << taskStatus.ulRunTimeCounter << "\r\n";
+//                    tx_stream << "pxStackBase:\t\t" << (void *)taskStatus.pxStackBase << "\r\n";
+//                    tx_stream << "usStackHighWaterMark\t" << taskStatus.usStackHighWaterMark << "\r\n";
+//                } else {
+//                    tx_stream << "Task not found\r\n";
+//                }
                 break;
             }
             default:

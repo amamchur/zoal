@@ -20,11 +20,12 @@ namespace zoal { namespace metadata {
 }}
 
 namespace zoal { namespace arch { namespace stm32x {
+    using zoal::gpio::api;
+
     template<class Microcontroller>
     class cfg {
     public:
         using mcu = Microcontroller;
-        using api = typename mcu::api;
 
         template<class U, class Cfg>
         class usart {
@@ -39,21 +40,16 @@ namespace zoal { namespace arch { namespace stm32x {
             static constexpr auto c2_clear = sbc2::clear_mask;
             static constexpr auto c2_set = sbc2::set_mask;
 
-            static constexpr double divider = Cfg::clock_frequency / 16.0 / Cfg::baud_rate;
-            static constexpr auto int_part = static_cast<uint16_t>(divider);
-            static constexpr auto mantissa = static_cast<uint16_t>((divider - int_part) * 16);
-            static constexpr uint16_t bbr = (int_part << 4) + mantissa;
+            static constexpr double usart_div = Cfg::clock_frequency / Cfg::baud_rate;
+            static constexpr uint16_t bbr = usart_div;
 
             using USARTx_CR1 = typename U::USARTx_CR1::template cas<c1_clear, c1_set>;
             using USARTx_CR2 = typename U::USARTx_CR2::template cas<c2_clear, c2_set>;
             using USARTx_CR3 = typename U::USARTx_CR3::template cas<0x300, 0>;
             using USARTx_BRR = typename U::USARTx_BRR::template cas<0, bbr>;
-            using cfg = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR2, USARTx_BRR>;
 
-            static void apply() {
-                U::disable();
-                zoal::mem::apply_cas_list<cfg>::apply();
-            }
+            using periph_clock_on = typename api::optimize<typename U::clock_on_cas>;
+            using apply = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR3, USARTx_BRR>;
         };
     };
 }}}
