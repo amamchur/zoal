@@ -357,6 +357,8 @@ add_mcu_executable(stm32f103_blue_pill stm32
         ${TERMINAL_STATE_MACHINE_SRC}
         ${CMD_STATE_MACHINE_SRC}
         )
+
+ragel_generate_cpp(apps/stm32f303vc_discovery/command_machine.rl STM32F303VC_CMD_MACHINE_SRC "-T1")
 add_mcu_executable(stm32f303_discovery stm32
         apps/stm32f303vc_discovery/constants.cpp
         apps/stm32f303vc_discovery/input_processor.cpp
@@ -366,6 +368,7 @@ add_mcu_executable(stm32f303_discovery stm32
         apps/stm32f303vc_discovery/command_queue.cpp
         apps/stm32f303vc_discovery/main.cpp
         misc/terminal_input.cpp
+        ${STM32F303VC_CMD_MACHINE_SRC}
         ${TERMINAL_STATE_MACHINE_SRC}
         ${CMD_STATE_MACHINE_SRC}
         ${TYPE_DETECTOR_STATE_MACHINE_SRC}

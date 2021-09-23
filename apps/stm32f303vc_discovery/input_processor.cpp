@@ -42,8 +42,7 @@ zoal::ic::lsm303dlhc<> lsm303dlhc;
                     auto dv = v.convert<double>();
                     dv /= (1 << 15);
                     dv *= 2; //+- 2g
-                    tx_stream << "length: " << dv.length() << "\r\n";
-                    tx_stream << "lsm303dlhc x: " << dv.x << " y: " << dv.y << " z: " << dv.z << "\r\n";
+                    tx_stream << "lsm303dlhc x: " << dv.x << " y: " << dv.y << " z: " << dv.z << " l: " << dv.length() << "\r\n";
                 }
             });
         }

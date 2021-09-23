@@ -6,6 +6,6 @@
 
 using pcb = zoal::board::discovery_stm32f303vc;
 using mcu = pcb::mcu;
-using debug_usart = mcu::usart_03;
+using tty_usart = mcu::usart_03;
 
 #endif

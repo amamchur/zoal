@@ -110,14 +110,14 @@ namespace zoal { namespace ic {
         }
 
         zoal::data::vector<uint16_t> vector() const {
-            return zoal::data::vector<uint16_t>(static_cast<uint16_t>(buffer->data[1]) << 8 | buffer->data[0],
-                                                static_cast<uint16_t>(buffer->data[3]) << 8 | buffer->data[2],
-                                                static_cast<uint16_t>(buffer->data[5]) << 8 | buffer->data[4]);
+            return {static_cast<uint16_t>(buffer->data[1] << 8 | buffer->data[0]),
+                    static_cast<uint16_t>(buffer->data[3] << 8 | buffer->data[2]),
+                    static_cast<uint16_t>(buffer->data[5] << 8 | buffer->data[4])};
         }
 
         zoal::data::vector<int16_t> vector_sing() const {
             auto ptr = reinterpret_cast<int16_t *>(buffer->data);
-            return zoal::data::vector<int16_t>(ptr[0], ptr[1], ptr[2]);
+            return {ptr[0], ptr[1], ptr[2]};
         }
 
         uint8_t address_{0};

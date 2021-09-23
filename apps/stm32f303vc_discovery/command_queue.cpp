@@ -6,4 +6,4 @@ command_msg::command_msg(app_cmd cmd)
     : command(cmd) {}
 
 command_msg::command_msg()
-    : command(app_cmd_none) {}
+    : command(app_cmd::none) {}

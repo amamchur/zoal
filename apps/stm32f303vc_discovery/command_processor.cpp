@@ -1,52 +1,60 @@
 #include "command_processor.hpp"
 
-#include "FreeRTOS.h"
 #include "command_queue.hpp"
 #include "constants.hpp"
 #include "hardware.hpp"
-#include "stm32f3xx_hal.h"
 #include "task.h"
 #include "terminal.hpp"
-#include "types.hpp"
+
+#include <zoal/utils/i2c_scanner.hpp>
+
+zoal::utils::i2c_scanner scanner;
+
+static void test_i2c() {
+    scanner.device_found = [](uint8_t addr) {
+        scoped_lock lock(tx_stream_mutex);
+        tx_stream << "\033[2K\r"
+                  << "I2C Device found: " << zoal::io::hexadecimal(addr) << "\r\n";
+    };
+    scanner.scan(i2c_dispatcher)([](int code) {
+        scoped_lock lock(tx_stream_mutex);
+        if (code == 0) {
+            tx_stream << "Done\r\n";
+        } else {
+            tx_stream << "Error\r\n";
+        }
+        terminal.sync();
+    });
+}
 
 [[noreturn]] void zoal_cmd_processor(void *) {
     while (true) {
         command_msg msg;
-        command_queue.pop(msg);
-        if (msg.command == app_cmd_none) {
+        auto result = command_queue.pop(msg);
+        if (!result || msg.command == app_cmd::none) {
             continue;
         }
 
         {
-            __unused usart_debug_tx_transport::scoped_lock lock(usart_tx.mutex);
-            tx_stream << "\r\n";
+            scoped_lock lock(tx_stream_mutex);
+            tx_stream << "\033[2K\r";
             switch (msg.command) {
-            case app_cmd_ticks:
+            case app_cmd::ticks:
                 tx_stream << xTaskGetTickCount() << "\r\n";
                 break;
-            case app_cmd_print_heap_size:
-                tx_stream << "free heap size: " << xPortGetFreeHeapSize() << "\r\n";
+            case app_cmd::led:
+                if (msg.int_value == 0) {
+                    ::pcb::led_03::off();
+                } else {
+                    ::pcb::led_03::on();
+                }
                 break;
-            case app_cmd_help:
+            case app_cmd::scan_i2c:
+                test_i2c();
+                break;
+            case app_cmd::help:
                 tx_stream << help_message;
                 break;
-            case app_cmd_task_info: {
-//                TaskHandle_t xTask = xTaskGetHandle(msg.str_value);
-//                if (xTask) {
-//                    TaskStatus_t taskStatus;
-//                    vTaskGetInfo(xTask, &taskStatus, pdTRUE, eInvalid);
-//                    tx_stream << "pcTaskName:\t\t" << taskStatus.pcTaskName << "\r\n";
-//                    tx_stream << "eCurrentState:\t\t" << taskStatus.eCurrentState << "\r\n";
-//                    tx_stream << "uxCurrentPriority:\t" << taskStatus.uxCurrentPriority << "\r\n";
-//                    tx_stream << "uxBasePriority:\t\t" << taskStatus.uxBasePriority << "\r\n";
-//                    tx_stream << "ulRunTimeCounter:\t" << taskStatus.ulRunTimeCounter << "\r\n";
-//                    tx_stream << "pxStackBase:\t\t" << (void *)taskStatus.pxStackBase << "\r\n";
-//                    tx_stream << "usStackHighWaterMark\t" << taskStatus.usStackHighWaterMark << "\r\n";
-//                } else {
-//                    tx_stream << "Task not found\r\n";
-//                }
-                break;
-            }
             default:
                 tx_stream << "Not found\r\n";
                 break;
