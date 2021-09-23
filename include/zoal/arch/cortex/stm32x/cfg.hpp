@@ -40,8 +40,10 @@ namespace zoal { namespace arch { namespace stm32x {
             static constexpr auto c2_clear = sbc2::clear_mask;
             static constexpr auto c2_set = sbc2::set_mask;
 
-            static constexpr double usart_div = Cfg::clock_frequency / Cfg::baud_rate;
+            static constexpr uint16_t usart_div = static_cast<uint16_t>(static_cast<float>(Cfg::clock_frequency) / Cfg::baud_rate + 0.5);
             static constexpr uint16_t bbr = usart_div;
+
+            static_assert(usart_div >= 0x10, "USARTDIV must be greater than or equal to 0d16");
 
             using USARTx_CR1 = typename U::USARTx_CR1::template cas<c1_clear, c1_set>;
             using USARTx_CR2 = typename U::USARTx_CR2::template cas<c2_clear, c2_set>;

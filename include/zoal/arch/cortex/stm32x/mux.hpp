@@ -25,9 +25,9 @@ namespace zoal { namespace arch { namespace stm32x {
             public:
                 using reg = typename zoal::ct::conditional_type < Pin<8, typename Port::GPIOx_AFRL, typename Port::GPIOx_AFRH>::type;
                 static const auto shift = (Pin & 0x7) << 2;
-                using list = zoal::mem::callable_cas_list_variadic<typename Port::GPIOx_OSPEEDR::template cas<0, 0x3 << (Pin * 2)>,
+                using list = zoal::mem::callable_cas_list_variadic<typename Port::GPIOx_MODER::template cas<0x3 << (Pin * 2), 0x2 << (Pin * 2)>,
                                                                    typename Port::GPIOx_OTYPER::template cas<0x1 << Pin, 0>,
-                                                                   typename Port::GPIOx_MODER::template cas<0x3 << (Pin * 2), 0x2 << (Pin * 2)>,
+                                                                   typename Port::GPIOx_OSPEEDR::template cas<0, 0x3 << (Pin * 2)>,
                                                                    typename reg::template cas<0xF << shift, af << shift>>;
                 using connect_cas = api::optimize<list>;
             };
@@ -45,7 +45,10 @@ namespace zoal { namespace arch { namespace stm32x {
 
             // Final merge
             using periph_clock_on = api::optimize<clock_tx_on, clock_rx_on>;
-            using connect = typename stm32_alternate_function_mux<typename PinTX::port, PinTX::offset, tx_af::value>::connect_cas;
+            using connect = api::optimize<
+                //
+                typename stm32_alternate_function_mux<typename PinRX::port, PinRX::offset, rx_af::value>::connect_cas,
+                typename stm32_alternate_function_mux<typename PinTX::port, PinTX::offset, tx_af::value>::connect_cas>;
             using disconnect = api::optimize<api::mode<pin_mode::input, PinTX, PinTX>>;
         };
     };

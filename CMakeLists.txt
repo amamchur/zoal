@@ -38,7 +38,6 @@ include_directories(include)
 ragel_generate_cpp(misc/cmd_line_parser.rl CMD_STATE_MACHINE_SRC "-G2")
 ragel_generate_cpp(misc/terminal_machine.rl TERMINAL_STATE_MACHINE_SRC "-G2")
 ragel_generate_cpp(misc/type_detector.rl TYPE_DETECTOR_STATE_MACHINE_SRC "-G2")
-ragel_generate_cpp(misc/test_machine.rl TEST_STATE_MACHINE_SRC "-G2")
 
 # --- atmega Projects ---
 add_mcu_executable(ATmega328p atmega328p
@@ -94,6 +93,8 @@ set(STM32F030_SRC
         cube-repo/STM32Cube_FW_F0_V1.11.3/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.c
         cube-repo/STM32Cube_FW_F0_V1.11.3/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.c
         cube-repo/STM32Cube_FW_F0_V1.11.3/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.c
+        cube-repo/STM32Cube_FW_F0_V1.11.3/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_uart.c
+        cube-repo/STM32Cube_FW_F0_V1.11.3/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_uart_ex.c
         cubemx-proj/stm32f030/Src/main.c
         cubemx-proj/stm32f030/Src/stm32f0xx_hal_msp.c
         cubemx-proj/stm32f030/Src/stm32f0xx_it.c
@@ -240,7 +241,6 @@ set(STM32F303_DISCOVERY_SRC
         cubemx-proj/stm32f303_discovery/Src/usb.c
         cubemx-proj/stm32f303_discovery/startup_stm32f303xc.s)
 set(STM32F303_DISCOVERY_INC 
-        cube-repo/STM32Cube_FW_F3_V1.11.0/Drivers/CMSIS/Include
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/CMSIS/Device/ST/STM32F3xx/Include
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/CMSIS/Include
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/STM32F3xx_HAL_Driver/Inc
@@ -342,7 +342,15 @@ set(STM32L432_NUCLEO_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-a
 set(STM32L432_NUCLEO_FLASH_LD cubemx-proj/stm32l432_nucleo/STM32L432KCUx_FLASH.ld)
 # End cubemx-proj variables
 
-add_mcu_executable(stm32f030 stm32 apps/stm32f030.cpp)
+ragel_generate_cpp(apps/stm32f030/command_machine.rl STM32F030_CMD_MACHINE_SRC "-T1")
+add_mcu_executable(stm32f030 stm32
+        apps/stm32f030/stm32f030.cpp
+        apps/stm32f030/terminal.cpp
+        apps/stm32f030/hardware.cpp
+        misc/terminal_input.cpp
+        ${STM32F030_CMD_MACHINE_SRC}
+        ${TERMINAL_STATE_MACHINE_SRC})
+
 add_mcu_executable(stm32f103_blue_pill stm32
         apps/stm32f103c8.cpp
         misc/terminal_input.cpp

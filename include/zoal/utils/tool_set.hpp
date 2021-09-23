@@ -17,22 +17,7 @@ namespace zoal { namespace utils {
         using logger = Logger;
         using counter_value_type = typename Counter::value_type;
         using delay = utils::delay<Frequency, counter>;
-
-        template<size_t Capacity, class Token = void>
-        using function_scheduler = typename ::zoal::utils::function_scheduler<counter, Capacity, Token>;
     };
-
-    template<class T>
-    T atomic_read(volatile T &src) {
-        zoal::utils::interrupts ni(false);
-        return src;
-    }
-
-    template<class T>
-    void atomic_write(volatile T &dest, T value) {
-        zoal::utils::interrupts ni(false);
-        dest = value;
-    }
 }}
 
 #endif
