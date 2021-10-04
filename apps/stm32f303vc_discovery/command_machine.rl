@@ -24,29 +24,25 @@
 
     date_time = (date . space . time) >arg_start %arg_finished;
     quoted_string = ('"' ((ascii - cntrl - space - '\\') | [ \t] | '\\'["tvfnr])+ '"') >arg_start %arg_finished;
-	signed_int = ('-'? digit+) >arg_start %arg_finished;
-	unsigned_int = (digit+) >arg_start %arg_finished;
+    bit = [01] >arg_start %arg_finished;
+    natural_number = ([1-9] digit+) >arg_start %arg_finished;
+	int_number = ('-'? digit+) >arg_start %arg_finished;
+	uint_number = ('0' | (digit+)) >arg_start %arg_finished;
 
-    cmd_eeprom = 'eeprom' %{ this->command_ = app_cmd::read_eeprom; };
-    cmd_heap = 'heap' %{ this->command_ = app_cmd::print_heap_size; };
+    cmd_axis = 'axis' %{ this->command_ = app_cmd::axis; };
     cmd_help = 'help' %{ this->command_ = app_cmd::help; };
     cmd_i2c = 'i2c' %{ this->command_ = app_cmd::scan_i2c; };
-    cmd_led = ('led' space+ signed_int) %{ this->command_ = app_cmd::led; };
-    cmd_task_info = ('task-info' space+ quoted_string) %{ this->command_ = app_cmd::task_info; };
+    cmd_led = ('led' uint_number space+ bit) %{ this->command_ = app_cmd::led; };
+    cmd_leds = ('leds' space+ bit) %{ this->command_ = app_cmd::leds; };
     cmd_ticks = 'ticks' %{ this->command_ = app_cmd::ticks; };
-    cmd_time = 'time' %{ this->command_ = app_cmd::time_print; };
-    cmd_time_set = ('time' space+ date_time) %{ this->command_ = app_cmd::time_set; };
 
     commands = (
-        cmd_eeprom |
-        cmd_heap |
+        cmd_axis |
         cmd_help |
         cmd_i2c |
         cmd_led |
-        cmd_task_info |
-        cmd_ticks |
-        cmd_time |
-        cmd_time_set
+        cmd_leds |
+        cmd_ticks
     );
 
 	main := (space* commands space*) %finished;

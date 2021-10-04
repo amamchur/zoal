@@ -55,7 +55,7 @@ namespace zoal { namespace ic {
             ctrl_reg1_a_z_en = 0b0001 << 2,
             ctrl_reg1_a_y_en = 0b0001 << 1,
             ctrl_reg1_a_x_en = 0b0001 << 0,
-            ctrl_reg1_a_x_y_x_en = 0b0111 << 0,
+            ctrl_reg1_a_x_y_z_en = 0b0111 << 0,
 
             ctrl_reg4_a_bdu = 0b01 << 7,
             ctrl_reg4_a_ble = 0b01 << 6,
@@ -116,8 +116,9 @@ namespace zoal { namespace ic {
         }
 
         zoal::data::vector<int16_t> vector_sing() const {
-            auto ptr = reinterpret_cast<int16_t *>(buffer->data);
-            return {ptr[0], ptr[1], ptr[2]};
+            return {static_cast<int16_t>(buffer->data[1] << 8 | buffer->data[0]),
+                    static_cast<int16_t>(buffer->data[3] << 8 | buffer->data[2]),
+                    static_cast<int16_t>(buffer->data[5] << 8 | buffer->data[4])};
         }
 
         uint8_t address_{0};

@@ -10,6 +10,7 @@ usart_tx_stream_type tx_stream(usart_tx);
 tx_stream_mutex_type tx_stream_mutex;
 
 zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> io_events;
+zoal::ic::lsm303dlhc<> lsm303dlhc;
 
 void zoal_init_hardware() {
     using api = zoal::gpio::api;

@@ -9,7 +9,12 @@ const char *zoal_ascii_logo = "  __________          _\r\n"
                               "\r\n";
 
 const char *help_message = "ZOAL FreeRTOS Demo Application\r\n"
-                           "Commands:\r\n";
+                           "Commands:\r\n"
+                           " help\t\tdisplay help\r\n"
+                           " i2c\t\tscan i2c devices\r\n"
+                           " ledN 0|1\tturn led N off/on (N=3..10)\r\n"
+                           " leds 0|1\tturn all leds off/on\r\n"
+                           " ticks\t\tdisplay RTOS ticks\r\n";
 
 const char key_map[][3] = { //
     {'1', '2', '3'},

@@ -7,6 +7,7 @@
 #include <zoal/freertos/mutex.hpp>
 #include <zoal/freertos/scoped_lock.hpp>
 #include <zoal/freertos/stream_buffer.hpp>
+#include <zoal/ic/lsm303dlhc.hpp>
 #include <zoal/io/button.hpp>
 #include <zoal/io/output_stream.hpp>
 #include <zoal/mem/reserve_mem.hpp>
@@ -35,6 +36,7 @@ using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c_01, siz
 extern i2c_req_dispatcher_type i2c_dispatcher;
 extern zoal::periph::i2c_request &request;
 extern zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> io_events;
+extern zoal::ic::lsm303dlhc<> lsm303dlhc;
 
 void zoal_init_hardware();
 

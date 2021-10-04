@@ -45,7 +45,7 @@ namespace zoal { namespace misc {
 
     private:
         app_cmd command_{app_cmd::none};
-        cmd_arg argv[1];
+        cmd_arg argv[4];
         int argc{0};
     };
 }}

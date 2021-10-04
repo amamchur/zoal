@@ -72,8 +72,8 @@ static void command_callback(zoal::misc::command_machine *, app_cmd cmd, int arg
         argv->strcpy(msg.str_value);
         break;
     default:
-        if (argc == 1) {
-            msg.int_value = (int)*argv;
+        for (int i = 0; i < argc; i++) {
+            msg.int_values[i] = (int)argv[i];
         }
         break;
     }
@@ -83,9 +83,9 @@ static void command_callback(zoal::misc::command_machine *, app_cmd cmd, int arg
 
 static void input_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
     scoped_lock lock(tx_stream_mutex);
-    if (s == e) {
-        tx_stream << "\r\n";
+    tx_stream << "\r\n";
 
+    if (s < e) {
         zoal::misc::command_machine cm;
         cm.callback(command_callback);
         cm.run_machine(s, e, e);

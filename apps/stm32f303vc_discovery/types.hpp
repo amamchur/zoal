@@ -3,7 +3,9 @@
 
 enum class app_cmd {
     none,
+    axis,
     led,
+    leds,
     ticks,
     button1_pressed,
     button2_pressed,

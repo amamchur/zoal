@@ -31,7 +31,7 @@ __unused zoal::mem::reserve_mem<task_type, 512, StackType_t> input_task(zoal_inp
 __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> terminal_task(zoal_terminal_rx_task, "terminal");
 __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> main_task(zoal_main_task, "main");
 __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> command_task(zoal_cmd_processor, "command");
-__unused zoal::mem::reserve_mem<task_type, 128, StackType_t> leds_task(zoal_leds, "command");
+//__unused zoal::mem::reserve_mem<task_type, 128, StackType_t> leds_task(zoal_leds, "leds");
 
 [[noreturn]] void zoal_leds(void *) {
     constexpr TickType_t pause_ms = 100;
