@@ -17,7 +17,7 @@ volatile uint8_t update_flags = update_adc;
 volatile uint8_t milliseconds = 0;
 
 constexpr auto pwm_channel = 0;
-using mcu = zoal::mcu::attiny85<F_CPU>;
+using mcu = zoal::mcu::attiny85;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
 using adc = mcu::adc_00;
@@ -31,7 +31,7 @@ int main() {
     mcu::cfg::adc<adc>::apply();
     mcu::cfg::timer<timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply();
     mcu::mux::adc<adc, mcu::pb_04>::connect();
-    mcu::mux::timer<timer, mcu::pb_00, pwm_channel>::connect();
+    mcu::mux::timer<timer, mcu::pb_00>::connect();
     mcu::irq::timer<timer>::enable_overflow_interrupt();
     mcu::irq::adc<adc>::enable();
     mcu::enable<timer, adc>::on();

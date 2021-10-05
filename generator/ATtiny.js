@@ -97,7 +97,6 @@ class ATtiny extends Avr {
             `#include <zoal/ct/signature.hpp>`,
             ``,
             `namespace zoal { namespace mcu {`,
-            `    template<uint32_t Frequency>`,
             `    class ${nameLower} {`,
             `    public:`,
             `       using self_type = ${nameLower};`,

@@ -6,7 +6,7 @@
 
 volatile uint16_t milliseconds = 0;
 
-using mcu = zoal::mcu::attiny2313a<F_CPU>;
+using mcu = zoal::mcu::attiny2313a;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
 using logger = zoal::utils::plain_logger<void>;

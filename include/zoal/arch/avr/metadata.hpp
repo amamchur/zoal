@@ -58,11 +58,11 @@ namespace zoal { namespace metadata {
     template<class Sign, class Adc, class Pin>
     struct adc_mapping : pin_to_adc_channel<Sign, Adc::address, Pin::port::address, Pin::offset> {};
 
-    template<class Sign, uintptr_t TimerAddress, uintptr_t PortAddress, uint8_t PinOffset, uint8_t Channel>
-    struct pin_to_pwm_channel : zoal::ct::integral_constant<bool, false> {};
+    template<class Sign, uintptr_t TimerAddress, uintptr_t PortAddress, uint8_t PinOffset>
+    struct pin_to_pwm_channel : zoal::ct::integral_constant<int, -1> {};
 
-    template<class Sign, class Timer, class Pin, uint8_t Channel>
-    struct pwm_channel_mapping : pin_to_pwm_channel<Sign, Timer::address, Pin::port::address, Pin::offset, Channel> {};
+    template<class Sign, class Timer, class Pin>
+    struct pwm_channel_mapping : pin_to_pwm_channel<Sign, Timer::address, Pin::port::address, Pin::offset> {};
 }}
 
 #endif

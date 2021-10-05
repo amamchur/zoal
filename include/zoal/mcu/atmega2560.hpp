@@ -201,40 +201,40 @@ namespace zoal { namespace metadata {
     using atmega2560_sign = zoal::ct::signature<'A', 'T', 'm', 'e', 'g', 'a', '2', '5', '6', '0'>;
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x0044, 0x0032, 5, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x0044, 0x0032, 5> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x0044, 0x0023, 7, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x0044, 0x0023, 7> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x0080, 0x0109, 3, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x0080, 0x0109, 3> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x0080, 0x0109, 4, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x0080, 0x0109, 4> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x00B0, 0x0023, 4, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x00B0, 0x0023, 4> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x00B0, 0x0100, 6, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x00B0, 0x0100, 6> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x0090, 0x0109, 3, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x0090, 0x0109, 3> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x0090, 0x0109, 4, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x0090, 0x0109, 4> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x00A0, 0x0109, 3, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x00A0, 0x0109, 3> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x00A0, 0x0109, 4, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x00A0, 0x0109, 4> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x0120, 0x0109, 3, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x0120, 0x0109, 3> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega2560_sign, 0x0120, 0x0109, 4, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega2560_sign, 0x0120, 0x0109, 4> : integral_constant<int, 1> {};
 
     template<>
     struct usart_mapping<atmega2560_sign, 0x00C0, 0x002C, 1> : base_usart_mapping<-1, 0, -1> {};

@@ -19,7 +19,7 @@ namespace zoal { namespace metadata {
     template<class Sign, class Adc, class Pin>
     struct adc_mapping;
 
-    template<class Sign, class Timer, class Pin, uint8_t Channel>
+    template<class Sign, class Timer, class Pin>
     struct pwm_channel_mapping;
 }}
 
@@ -72,15 +72,16 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using disconnect = zoal::mem::null_cas_list;
         };
 
-        template<class T, class Pin, uint8_t Channel>
+        template<class T, class Pin>
         class timer {
         public:
-            static_assert(Channel < 2, "Channel index if out of range");
-            static_assert(pwm_channel_mapping<sign, T, Pin, Channel>::value, "Unsupported PWM connection");
+            using pwm_mapping = pwm_channel_mapping<sign, T, Pin>;
+            static constexpr auto channel = pwm_mapping::value;
+            static_assert(channel >= 0, "Unsupported PWM connection");
 
             static constexpr auto pwm_mode = 1;
-            static constexpr auto mask_shift = Channel == 0 ? 7 : 5;
-            static constexpr auto clear_mask = Channel == 0 ? T::TCCRxA_COMxA : T::TCCRxA_COMxB;
+            static constexpr auto mask_shift = channel == 0 ? 7 : 5;
+            static constexpr auto clear_mask = channel == 0 ? T::TCCRxA_COMxA : T::TCCRxA_COMxB;
             static constexpr auto set_mask = static_cast<uint8_t>(pwm_mode << mask_shift);
             static_assert((set_mask & clear_mask) == set_mask, "Ops, wrong metadata");
 

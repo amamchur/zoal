@@ -20,7 +20,7 @@ volatile uint16_t adc_value = 0;
 volatile uint8_t update_flags = update_adc | update_display;
 volatile uint8_t milliseconds = 0;
 
-using mcu = zoal::mcu::attiny13a<F_CPU>;
+using mcu = zoal::mcu::attiny13a;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
 using adc = mcu::adc_00;

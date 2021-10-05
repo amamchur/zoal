@@ -86,6 +86,13 @@ static void input_callback(const zoal::misc::terminal_input *, const char *s, co
     tx_stream << "\r\n";
 
     if (s < e) {
+        auto src = s;
+        auto dst = command_history;
+        while (src < e) {
+            *dst++ = *src++;
+        }
+        *dst = 0;
+
         zoal::misc::command_machine cm;
         cm.callback(command_callback);
         cm.run_machine(s, e, e);

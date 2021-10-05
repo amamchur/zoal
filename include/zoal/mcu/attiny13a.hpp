@@ -21,7 +21,6 @@
 #include <zoal/gpio/pin.hpp>
 
 namespace zoal { namespace mcu {
-    template<uint32_t Frequency>
     class attiny13a {
     public:
         using self_type = attiny13a;
@@ -103,10 +102,10 @@ namespace zoal { namespace metadata {
     using attiny13a_sign = zoal::ct::signature<'A', 'T', 't', 'i', 'n', 'y', '1', '3', 'A'>;
 
     template<>
-    struct pin_to_pwm_channel<attiny13a_sign, 0x0049, 0x0036, 1, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<attiny13a_sign, 0x0049, 0x0036, 1> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<attiny13a_sign, 0x0049, 0x0036, 0, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<attiny13a_sign, 0x0049, 0x0036, 0> : integral_constant<int, 0> {};
 
     template<>
     struct pin_to_adc_channel<attiny13a_sign, 0x0023, 0x0036, 5> : integral_constant<int, 0> {};

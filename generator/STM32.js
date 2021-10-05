@@ -136,6 +136,7 @@ const familyMap = {
             '#include <zoal/arch/cortex/stm32x/rcc.hpp>',
             '#include <zoal/arch/cortex/stm32x/usart.hpp>',
             '#include <zoal/arch/cortex/stm32x/i2c.hpp>',
+            '#include <zoal/arch/cortex/stm32x/timer.hpp>',
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
@@ -184,11 +185,18 @@ const familyMap = {
             spi1: null,
             spi2: null,
             spi3: null,
-            tim1: null,
-            tim15: null,
-            tim16: null,
-            tim17: null,
-            tim8: null,
+            tim1: {bus: 'apb2', address: 0x40012C00, busClockMask: 0x00000200},
+            tim2: {bus: 'apb1', address: 0x40000000, busClockMask: 0x00000001},
+            tim3: {bus: 'apb1', address: 0x40000400, busClockMask: 0x00000002},
+            tim4: {bus: 'apb1', address: 0x40000800, busClockMask: 0x00000004},
+            tim5: {bus: 'apb2', address: 0x40000800, busClockMask: 0x00000000},
+            tim6: {bus: 'apb1', address: 0x40001000, busClockMask: 0x00000010},
+            tim7: {bus: 'apb1', address: 0x40001400, busClockMask: 0x00000020},
+            tim8: {bus: 'apb2', address: 0x40013400, busClockMask: 0x00000800},
+            tim15: {bus: 'apb2', address: 0x40014000, busClockMask: 0x00004000},
+            tim16: {bus: 'apb2', address: 0x40014400, busClockMask: 0x00020000},
+            tim17: {bus: 'apb2', address: 0x40014800, busClockMask: 0x00040000},
+            tim20: {bus: 'apb2', address: 0x40015000, busClockMask: 0x00100000},
             tsc_g1: null,
             tsc_g2: null,
             tsc_g3: null,
@@ -332,7 +340,7 @@ class STM32 extends BaseGenerator {
             let name = array[i];
             name = name.toLowerCase();
 
-            let nn = name.match(/(\w+)(\d+)/);
+            let nn = name.match(/(\w+[a-z])(\d+)/);
             if (lastGroup !== nn[1]) {
                 result.push(``);
                 lastGroup = nn[1];

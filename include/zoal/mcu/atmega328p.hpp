@@ -104,22 +104,22 @@ namespace zoal { namespace metadata {
     using atmega328p_sign = zoal::ct::signature<'A', 'T', 'm', 'e', 'g', 'a', '3', '2', '8', 'P'>;
 
     template<>
-    struct pin_to_pwm_channel<atmega328p_sign, 0x0044, 0x0029, 5, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x0044, 0x0029, 5> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega328p_sign, 0x0044, 0x0029, 6, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x0044, 0x0029, 6> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega328p_sign, 0x0080, 0x0023, 1, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x0080, 0x0023, 1> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega328p_sign, 0x0080, 0x0023, 2, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x0080, 0x0023, 2> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega328p_sign, 0x00B0, 0x0023, 3, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x00B0, 0x0023, 3> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega328p_sign, 0x00B0, 0x0029, 3, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega328p_sign, 0x00B0, 0x0029, 3> : integral_constant<int, 1> {};
 
     template<>
     struct usart_mapping<atmega328p_sign, 0x00C0, 0x0029, 1> : base_usart_mapping<-1, 0, -1> {};

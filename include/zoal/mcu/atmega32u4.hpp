@@ -113,22 +113,22 @@ namespace zoal { namespace metadata {
     using atmega32u4_sign = zoal::ct::signature<'A', 'T', 'm', 'e', 'g', 'a', '3', '2', 'U', '4'>;
 
     template<>
-    struct pin_to_pwm_channel<atmega32u4_sign, 0x0044, 0x0029, 0, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega32u4_sign, 0x0044, 0x0029, 0> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega32u4_sign, 0x0044, 0x0023, 7, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega32u4_sign, 0x0044, 0x0023, 7> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega32u4_sign, 0x0080, 0x0023, 5, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega32u4_sign, 0x0080, 0x0023, 5> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega32u4_sign, 0x0080, 0x0023, 6, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega32u4_sign, 0x0080, 0x0023, 6> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega32u4_sign, 0x0090, 0x0023, 5, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega32u4_sign, 0x0090, 0x0023, 5> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega32u4_sign, 0x0090, 0x0023, 6, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<atmega32u4_sign, 0x0090, 0x0023, 6> : integral_constant<int, 1> {};
 
     template<>
     struct usart_mapping<atmega32u4_sign, 0x00C8, 0x0029, 3> : base_usart_mapping<-1, 0, -1> {};

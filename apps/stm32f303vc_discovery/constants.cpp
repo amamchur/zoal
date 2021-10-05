@@ -10,6 +10,7 @@ const char *zoal_ascii_logo = "  __________          _\r\n"
 
 const char *help_message = "ZOAL FreeRTOS Demo Application\r\n"
                            "Commands:\r\n"
+                           " axis\t\tdisplay axis\r\n"
                            " help\t\tdisplay help\r\n"
                            " i2c\t\tscan i2c devices\r\n"
                            " ledN 0|1\tturn led N off/on (N=3..10)\r\n"

@@ -456,7 +456,7 @@ class Avr extends BaseGenerator {
                 let portHex = Avr.toHex(s.port.address, 4);
                 result.push(``);
                 result.push(`template<>`);
-                result.push(`struct pin_to_pwm_channel<${signName}, ${timerHex}, ${portHex}, ${s.offset}, ${s.channel}> : integral_constant<bool, true> {};`);
+                result.push(`struct pin_to_pwm_channel<${signName}, ${timerHex}, ${portHex}, ${s.offset}> : integral_constant<int, ${s.channel}> {};`);
             }
         }
         return result;

@@ -12,6 +12,7 @@ namespace zoal { namespace metadata {
     enum class signal {
         //
         bkin,
+        bkin2,
         ch1,
         ch1n,
         ch2,

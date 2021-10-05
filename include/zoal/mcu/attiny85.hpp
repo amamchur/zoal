@@ -21,7 +21,6 @@
 #include <zoal/gpio/pin.hpp>
 
 namespace zoal { namespace mcu {
-    template<uint32_t Frequency>
     class attiny85 {
     public:
         using self_type = attiny85;
@@ -138,16 +137,16 @@ namespace zoal { namespace metadata {
     using attiny85_sign = zoal::ct::signature<'A', 'T', 't', 'i', 'n', 'y', '8', '5'>;
 
     template<>
-    struct pin_to_pwm_channel<attiny85_sign, 0x0048, 0x0036, 1, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<attiny85_sign, 0x0048, 0x0036, 1> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<attiny85_sign, 0x0048, 0x0036, 0, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<attiny85_sign, 0x0048, 0x0036, 0> : integral_constant<int, 0> {};
 
     template<>
-    struct pin_to_pwm_channel<attiny85_sign, 0x0043, 0x0036, 4, 1> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<attiny85_sign, 0x0043, 0x0036, 4> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<attiny85_sign, 0x0043, 0x0036, 1, 0> : integral_constant<bool, true> {};
+    struct pin_to_pwm_channel<attiny85_sign, 0x0043, 0x0036, 1> : integral_constant<int, 0> {};
 
     template<>
     struct pin_to_adc_channel<attiny85_sign, 0x0023, 0x0036, 5> : integral_constant<int, 0> {};

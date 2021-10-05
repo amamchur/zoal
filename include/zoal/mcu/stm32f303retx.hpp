@@ -11,10 +11,12 @@
 #include <zoal/arch/cortex/stm32f3/spi.hpp>
 #include <zoal/arch/cortex/stm32x/bus_clock.hpp>
 #include <zoal/arch/cortex/stm32x/cfg.hpp>
+#include <zoal/arch/cortex/stm32x/i2c.hpp>
 #include <zoal/arch/cortex/stm32x/metadata.hpp>
 #include <zoal/arch/cortex/stm32x/mux.hpp>
 #include <zoal/arch/cortex/stm32x/port.hpp>
 #include <zoal/arch/cortex/stm32x/rcc.hpp>
+#include <zoal/arch/cortex/stm32x/timer.hpp>
 #include <zoal/arch/cortex/stm32x/usart.hpp>
 #include <zoal/arch/enable.hpp>
 #include <zoal/arch/power.hpp>
@@ -55,6 +57,19 @@ namespace zoal { namespace mcu {
         using adc_02 = ::zoal::arch::stm32x::adc<0x50000100, clock_ahb<0x10000000>>;
         using adc_03 = ::zoal::arch::stm32x::adc<0x50000400, clock_ahb<0x20000000>>;
         using adc_04 = ::zoal::arch::stm32x::adc<0x50000500, clock_ahb<0x20000000>>;
+
+        using i2c_01 = ::zoal::arch::stm32x::i2c<0x40005400, clock_apb1<0x00200000>>;
+        using i2c_02 = ::zoal::arch::stm32x::i2c<0x40005800, clock_apb1<0x00400000>>;
+        using i2c_03 = ::zoal::arch::stm32x::i2c<0x40007800, clock_apb1<0x40000000>>;
+
+        using timer_01 = zoal::arch::stm32x::timer<0x40012C00, clock_apb2<0x00000200>>;
+        using timer_15 = zoal::arch::stm32x::timer<0x40014000, clock_apb2<0x00004000>>;
+        using timer_16 = zoal::arch::stm32x::timer<0x40014400, clock_apb2<0x00020000>>;
+        using timer_17 = zoal::arch::stm32x::timer<0x40014800, clock_apb2<0x00040000>>;
+        using timer_02 = zoal::arch::stm32x::timer<0x40000000, clock_apb1<0x00000001>>;
+        using timer_03 = zoal::arch::stm32x::timer<0x40000400, clock_apb1<0x00000002>>;
+        using timer_04 = zoal::arch::stm32x::timer<0x40000800, clock_apb1<0x00000004>>;
+        using timer_08 = zoal::arch::stm32x::timer<0x40013400, clock_apb2<0x00000800>>;
 
         using usart_01 = typename ::zoal::arch::stm32x::usart<0x40013800, clock_apb2<0x00004000>>;
         using usart_02 = typename ::zoal::arch::stm32x::usart<0x40004400, clock_apb1<0x00020000>>;
@@ -136,6 +151,110 @@ namespace zoal { namespace metadata {
     using zoal::ct::integral_constant;
     using stm32f303retx_sign = zoal::ct::signature<'s', 't', 'm', '3', '2', 'f', '3', '0', '3', 'r', 'e', 't', 'x'>;
 
+    template<> // PA0 -> TIM2_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x00, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA0 -> TIM2_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x00, signal::etr> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA1 -> TIM2_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x01, signal::ch2> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA2 -> TIM2_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x02, signal::ch3> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA3 -> TIM2_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x03, signal::ch4> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA5 -> TIM2_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x05, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA5 -> TIM2_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x05, signal::etr> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA9 -> TIM2_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x09, signal::ch3> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PA10 -> TIM2_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x0A, signal::ch4> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PA15 -> TIM2_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x0F, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA15 -> TIM2_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000000, 0x0F, signal::etr> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB3 -> TIM2_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000400, 0x03, signal::ch2> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB10 -> TIM2_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000400, 0x0A, signal::ch3> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB11 -> TIM2_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000400, 0x0B, signal::ch4> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PD3 -> TIM2_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000C00, 0x03, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PD3 -> TIM2_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000C00, 0x03, signal::etr> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PD4 -> TIM2_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000C00, 0x04, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PD6 -> TIM2_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000C00, 0x06, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PD7 -> TIM2_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000000, 0x48000C00, 0x07, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PA4 -> TIM3_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000000, 0x04, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PA6 -> TIM3_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000000, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PA7 -> TIM3_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000000, 0x07, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB0 -> TIM3_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000400, 0x00, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB1 -> TIM3_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000400, 0x01, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB3 -> TIM3_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000400, 0x03, signal::etr> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PB4 -> TIM3_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000400, 0x04, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB5 -> TIM3_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000400, 0x05, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB7 -> TIM3_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000400, 0x07, signal::ch4> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PC6 -> TIM3_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000800, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PC7 -> TIM3_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000800, 0x07, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PC8 -> TIM3_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000800, 0x08, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PC9 -> TIM3_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000800, 0x09, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PD2 -> TIM3_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48000C00, 0x02, signal::etr> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE2 -> TIM3_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48001000, 0x02, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE3 -> TIM3_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48001000, 0x03, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE4 -> TIM3_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48001000, 0x04, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE5 -> TIM3_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000400, 0x48001000, 0x05, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PA8 -> TIM4_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000000, 0x08, signal::etr> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PA11 -> TIM4_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000000, 0x0B, signal::ch1> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PA12 -> TIM4_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000000, 0x0C, signal::ch2> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PA13 -> TIM4_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000000, 0x0D, signal::ch3> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PB3 -> TIM4_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000400, 0x03, signal::etr> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB6 -> TIM4_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000400, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB7 -> TIM4_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000400, 0x07, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB8 -> TIM4_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000400, 0x08, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB9 -> TIM4_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000400, 0x09, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PD12 -> TIM4_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000C00, 0x0C, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PD13 -> TIM4_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000C00, 0x0D, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PD14 -> TIM4_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000C00, 0x0E, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PD15 -> TIM4_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48000C00, 0x0F, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE0 -> TIM4_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48001000, 0x00, signal::etr> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF6 -> TIM4_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40000800, 0x48001400, 0x06, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
     template<> // PA0 -> USART2_CTS
     struct stm32_signal_map<stm32f303retx_sign, 0x40004400, 0x48000000, 0x00, signal::cts> : zoal::ct::integral_constant<int, 7> {};
     template<> // PA1 -> USART2_DE
@@ -212,6 +331,174 @@ namespace zoal { namespace metadata {
     struct stm32_signal_map<stm32f303retx_sign, 0x40004800, 0x48001400, 0x06, signal::de> : zoal::ct::integral_constant<int, 7> {};
     template<> // PF6 -> USART3_RTS
     struct stm32_signal_map<stm32f303retx_sign, 0x40004800, 0x48001400, 0x06, signal::rts> : zoal::ct::integral_constant<int, 7> {};
+    template<> // PA14 -> I2C1_SDA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005400, 0x48000000, 0x0E, signal::sda> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PA15 -> I2C1_SCL
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005400, 0x48000000, 0x0F, signal::scl> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PB5 -> I2C1_SMBA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005400, 0x48000400, 0x05, signal::smba> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PB6 -> I2C1_SCL
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005400, 0x48000400, 0x06, signal::scl> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PB7 -> I2C1_SDA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005400, 0x48000400, 0x07, signal::sda> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PB8 -> I2C1_SCL
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005400, 0x48000400, 0x08, signal::scl> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PB9 -> I2C1_SDA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005400, 0x48000400, 0x09, signal::sda> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PA8 -> I2C2_SMBA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005800, 0x48000000, 0x08, signal::smba> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PA9 -> I2C2_SCL
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005800, 0x48000000, 0x09, signal::scl> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PA10 -> I2C2_SDA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005800, 0x48000000, 0x0A, signal::sda> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PB12 -> I2C2_SMBA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005800, 0x48000400, 0x0C, signal::smba> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PF0-OSC_IN -> I2C2_SDA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005800, 0x48001400, 0x00, signal::sda> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PF1-OSC_OUT -> I2C2_SCL
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005800, 0x48001400, 0x01, signal::scl> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PF6 -> I2C2_SCL
+    struct stm32_signal_map<stm32f303retx_sign, 0x40005800, 0x48001400, 0x06, signal::scl> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PA8 -> I2C3_SCL
+    struct stm32_signal_map<stm32f303retx_sign, 0x40007800, 0x48000000, 0x08, signal::scl> : zoal::ct::integral_constant<int, 3> {};
+    template<> // PA9 -> I2C3_SMBA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40007800, 0x48000000, 0x09, signal::smba> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB5 -> I2C3_SDA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40007800, 0x48000400, 0x05, signal::sda> : zoal::ct::integral_constant<int, 8> {};
+    template<> // PC9 -> I2C3_SDA
+    struct stm32_signal_map<stm32f303retx_sign, 0x40007800, 0x48000800, 0x09, signal::sda> : zoal::ct::integral_constant<int, 3> {};
+    template<> // PA6 -> TIM1_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x06, signal::bkin> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PA7 -> TIM1_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x07, signal::ch1n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PA8 -> TIM1_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x08, signal::ch1> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PA9 -> TIM1_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x09, signal::ch2> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PA10 -> TIM1_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x0A, signal::ch3> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PA11 -> TIM1_BKIN2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x0B, signal::bkin2> : zoal::ct::integral_constant<int, 12> {};
+    template<> // PA11 -> TIM1_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x0B, signal::ch1n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PA11 -> TIM1_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x0B, signal::ch4> : zoal::ct::integral_constant<int, 11> {};
+    template<> // PA12 -> TIM1_CH2N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x0C, signal::ch2n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PA12 -> TIM1_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x0C, signal::etr> : zoal::ct::integral_constant<int, 11> {};
+    template<> // PA14 -> TIM1_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x0E, signal::bkin> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PA15 -> TIM1_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000000, 0x0F, signal::bkin> : zoal::ct::integral_constant<int, 9> {};
+    template<> // PB0 -> TIM1_CH2N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000400, 0x00, signal::ch2n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PB1 -> TIM1_CH3N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000400, 0x01, signal::ch3n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PB8 -> TIM1_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000400, 0x08, signal::bkin> : zoal::ct::integral_constant<int, 12> {};
+    template<> // PB12 -> TIM1_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000400, 0x0C, signal::bkin> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PB13 -> TIM1_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000400, 0x0D, signal::ch1n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PB14 -> TIM1_CH2N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000400, 0x0E, signal::ch2n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PB15 -> TIM1_CH3N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000400, 0x0F, signal::ch3n> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PC0 -> TIM1_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000800, 0x00, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PC1 -> TIM1_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000800, 0x01, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PC2 -> TIM1_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000800, 0x02, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PC3 -> TIM1_BKIN2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000800, 0x03, signal::bkin2> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PC3 -> TIM1_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000800, 0x03, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PC4 -> TIM1_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000800, 0x04, signal::etr> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PC13 -> TIM1_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48000800, 0x0D, signal::ch1n> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PE7 -> TIM1_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001000, 0x07, signal::etr> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE8 -> TIM1_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001000, 0x08, signal::ch1n> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE9 -> TIM1_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001000, 0x09, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE10 -> TIM1_CH2N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001000, 0x0A, signal::ch2n> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE11 -> TIM1_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001000, 0x0B, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE12 -> TIM1_CH3N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001000, 0x0C, signal::ch3n> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE13 -> TIM1_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001000, 0x0D, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE14 -> TIM1_BKIN2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001000, 0x0E, signal::bkin2> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PE14 -> TIM1_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001000, 0x0E, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PE15 -> TIM1_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001000, 0x0F, signal::bkin> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF0-OSC_IN -> TIM1_CH3N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40012C00, 0x48001400, 0x00, signal::ch3n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PA0 -> TIM8_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000000, 0x00, signal::bkin> : zoal::ct::integral_constant<int, 9> {};
+    template<> // PA0 -> TIM8_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000000, 0x00, signal::etr> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PA6 -> TIM8_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000000, 0x06, signal::bkin> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PA7 -> TIM8_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000000, 0x07, signal::ch1n> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PA10 -> TIM8_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000000, 0x0A, signal::bkin> : zoal::ct::integral_constant<int, 11> {};
+    template<> // PA14 -> TIM8_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000000, 0x0E, signal::ch2> : zoal::ct::integral_constant<int, 5> {};
+    template<> // PA15 -> TIM8_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000000, 0x0F, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB0 -> TIM8_CH2N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x00, signal::ch2n> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PB1 -> TIM8_CH3N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x01, signal::ch3n> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PB3 -> TIM8_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x03, signal::ch1n> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PB4 -> TIM8_CH2N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x04, signal::ch2n> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PB5 -> TIM8_CH3N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x05, signal::ch3n> : zoal::ct::integral_constant<int, 3> {};
+    template<> // PB6 -> TIM8_BKIN2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x06, signal::bkin2> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PB6 -> TIM8_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 5> {};
+    template<> // PB6 -> TIM8_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x06, signal::etr> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PB7 -> TIM8_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x07, signal::bkin> : zoal::ct::integral_constant<int, 5> {};
+    template<> // PB8 -> TIM8_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x08, signal::ch2> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PB9 -> TIM8_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000400, 0x09, signal::ch3> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PC6 -> TIM8_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000800, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PC7 -> TIM8_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000800, 0x07, signal::ch2> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PC8 -> TIM8_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000800, 0x08, signal::ch3> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PC9 -> TIM8_BKIN2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000800, 0x09, signal::bkin2> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PC9 -> TIM8_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000800, 0x09, signal::ch4> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PC10 -> TIM8_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000800, 0x0A, signal::ch1n> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PC11 -> TIM8_CH2N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000800, 0x0B, signal::ch2n> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PC12 -> TIM8_CH3N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000800, 0x0C, signal::ch3n> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PD1 -> TIM8_BKIN2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000C00, 0x01, signal::bkin2> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PD1 -> TIM8_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000C00, 0x01, signal::ch4> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PD2 -> TIM8_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40013400, 0x48000C00, 0x02, signal::bkin> : zoal::ct::integral_constant<int, 4> {};
     template<> // PA8 -> USART1_CK
     struct stm32_signal_map<stm32f303retx_sign, 0x40013800, 0x48000000, 0x08, signal::ck> : zoal::ct::integral_constant<int, 7> {};
     template<> // PA9 -> USART1_TX
@@ -236,6 +523,96 @@ namespace zoal { namespace metadata {
     struct stm32_signal_map<stm32f303retx_sign, 0x40013800, 0x48001000, 0x00, signal::tx> : zoal::ct::integral_constant<int, 7> {};
     template<> // PE1 -> USART1_RX
     struct stm32_signal_map<stm32f303retx_sign, 0x40013800, 0x48001000, 0x01, signal::rx> : zoal::ct::integral_constant<int, 7> {};
+    template<> // PA1 -> TIM15_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014000, 0x48000000, 0x01, signal::ch1n> : zoal::ct::integral_constant<int, 9> {};
+    template<> // PA2 -> TIM15_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014000, 0x48000000, 0x02, signal::ch1> : zoal::ct::integral_constant<int, 9> {};
+    template<> // PA3 -> TIM15_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014000, 0x48000000, 0x03, signal::ch2> : zoal::ct::integral_constant<int, 9> {};
+    template<> // PA9 -> TIM15_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014000, 0x48000000, 0x09, signal::bkin> : zoal::ct::integral_constant<int, 9> {};
+    template<> // PB14 -> TIM15_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014000, 0x48000400, 0x0E, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB15 -> TIM15_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014000, 0x48000400, 0x0F, signal::ch1n> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PB15 -> TIM15_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014000, 0x48000400, 0x0F, signal::ch2> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PC5 -> TIM15_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014000, 0x48000800, 0x05, signal::bkin> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF9 -> TIM15_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014000, 0x48001400, 0x09, signal::ch1> : zoal::ct::integral_constant<int, 3> {};
+    template<> // PF10 -> TIM15_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014000, 0x48001400, 0x0A, signal::ch2> : zoal::ct::integral_constant<int, 3> {};
+    template<> // PA6 -> TIM16_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014400, 0x48000000, 0x06, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA12 -> TIM16_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014400, 0x48000000, 0x0C, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA13 -> TIM16_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014400, 0x48000000, 0x0D, signal::ch1n> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB4 -> TIM16_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014400, 0x48000400, 0x04, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB5 -> TIM16_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014400, 0x48000400, 0x05, signal::bkin> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB6 -> TIM16_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014400, 0x48000400, 0x06, signal::ch1n> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB8 -> TIM16_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014400, 0x48000400, 0x08, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PE0 -> TIM16_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014400, 0x48001000, 0x00, signal::ch1> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PA7 -> TIM17_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014800, 0x48000000, 0x07, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PA10 -> TIM17_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014800, 0x48000000, 0x0A, signal::bkin> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB4 -> TIM17_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014800, 0x48000400, 0x04, signal::bkin> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PB5 -> TIM17_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014800, 0x48000400, 0x05, signal::ch1> : zoal::ct::integral_constant<int, 10> {};
+    template<> // PB7 -> TIM17_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014800, 0x48000400, 0x07, signal::ch1n> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PB9 -> TIM17_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014800, 0x48000400, 0x09, signal::ch1> : zoal::ct::integral_constant<int, 1> {};
+    template<> // PE1 -> TIM17_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40014800, 0x48001000, 0x01, signal::ch1> : zoal::ct::integral_constant<int, 4> {};
+    template<> // PE0 -> TIM20_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001000, 0x00, signal::etr> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PE1 -> TIM20_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001000, 0x01, signal::ch4> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PE2 -> TIM20_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001000, 0x02, signal::ch1> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PE3 -> TIM20_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001000, 0x03, signal::ch2> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PE4 -> TIM20_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001000, 0x04, signal::ch1n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PE5 -> TIM20_CH2N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001000, 0x05, signal::ch2n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PE6 -> TIM20_CH3N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001000, 0x06, signal::ch3n> : zoal::ct::integral_constant<int, 6> {};
+    template<> // PF2 -> TIM20_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x02, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF3 -> TIM20_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x03, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF4 -> TIM20_CH1N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x04, signal::ch1n> : zoal::ct::integral_constant<int, 3> {};
+    template<> // PF5 -> TIM20_CH2N
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x05, signal::ch2n> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF7 -> TIM20_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x07, signal::bkin> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF8 -> TIM20_BKIN2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x08, signal::bkin2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF9 -> TIM20_BKIN
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x09, signal::bkin> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF10 -> TIM20_BKIN2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x0A, signal::bkin2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF11 -> TIM20_ETR
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x0B, signal::etr> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF12 -> TIM20_CH1
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x0C, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF13 -> TIM20_CH2
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x0D, signal::ch2> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF14 -> TIM20_CH3
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x0E, signal::ch3> : zoal::ct::integral_constant<int, 2> {};
+    template<> // PF15 -> TIM20_CH4
+    struct stm32_signal_map<stm32f303retx_sign, 0x40015000, 0x48001400, 0x0F, signal::ch4> : zoal::ct::integral_constant<int, 2> {};
     template<> // PA0 -> ADC1_IN1
     struct stm32_signal_map<stm32f303retx_sign, 0x50000000, 0x48000000, 0x00, signal::in1> : zoal::ct::integral_constant<int, 0> {};
     template<> // PA1 -> ADC1_IN2
