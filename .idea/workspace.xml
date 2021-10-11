@@ -51,29 +51,25 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Updated STM32F303VC example">
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/timer.hpp" afterDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Implemented timer abstraction for STM32F3">
+      <change afterPath="$PROJECT_DIR$/apps/atmega2560/command_machine.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/atmega2560/command_machine.rl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/zoal/ct/conditional_value.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/zoal/periph/pwm.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny13.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny13.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny2313.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny2313.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/attiny85.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/attiny85.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/constants.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/constants.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f303vc_discovery/terminal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f303vc_discovery/terminal.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/ATtiny.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/ATtiny.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560/atmega2560.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generator/Avr.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/Avr.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/STM32.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/STM32.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/metadata.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/mux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/timer16.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/timer16.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/metadata.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/metadata.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/metadata.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/timer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/timer.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ct/helpers.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ct/helpers.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ct/value_list.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ct/value_list.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega2560.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega2560.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega328p.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega328p.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega32u4.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega32u4.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/attiny13a.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/attiny13a.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/attiny2313a.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/attiny2313a.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/attiny85.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/attiny85.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +92,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug STM32" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release AVR" />
   <component name="Git.Merge.Settings">
     <option name="BRANCH" value="stm32f1_i2c" />
   </component>
@@ -138,7 +134,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/atmega2560" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -152,18 +148,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\amam\CLionProjects\zoal\apps\atmega2560" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\arch\cortex\stm32x" />
       <recent name="C:\Users\amam\CLionProjects\zoal\apps\stm32f303vc_discovery" />
       <recent name="C:\Users\amam\CLionProjects\zoal\apps\stm32f030" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\utils" />
-      <recent name="C:\Users\amam\CLionProjects\zoal\apps\stm32f103c8_freertos" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\amam\CLionProjects\zoal\apps\atmega2560" />
       <recent name="C:\Users\amam\CLionProjects\zoal\apps\stm32f030" />
       <recent name="C:\Users\amam\CLionProjects\zoal\apps\atmega32u4" />
       <recent name="$PROJECT_DIR$/tests/arch" />
       <recent name="$PROJECT_DIR$/include/zoal/ic" />
-      <recent name="$PROJECT_DIR$/include/zoal/parser" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -171,7 +167,12 @@
       <command value="vTaskDelay(1);" />
     </option>
   </component>
-  <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f303_discovery">
+  <component name="RunManager" selected="CMake Application.ATmega2560">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -299,6 +300,11 @@
       </method>
     </configuration>
     <configuration name="All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug Host" EXPLICIT_BUILD_TARGET_NAME="all">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -584,13 +590,10 @@
       <workItem from="1632727518767" duration="3018000" />
       <workItem from="1632826259019" duration="47000" />
       <workItem from="1633337019481" duration="23906000" />
-    </task>
-    <task id="LOCAL-00001" summary="Update STM32 projects to latest firmware">
-      <created>1609104248255</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1609104248256</updated>
+      <workItem from="1633446383298" duration="53000" />
+      <workItem from="1633612923126" duration="9000" />
+      <workItem from="1633942892049" duration="2835000" />
+      <workItem from="1633946927941" duration="17373000" />
     </task>
     <task id="LOCAL-00002" summary="Add terminal input">
       <created>1609174206795</created>
@@ -928,7 +931,14 @@
       <option name="project" value="LOCAL" />
       <updated>1633358603456</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Implemented timer abstraction for STM32F3">
+      <created>1633446410627</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1633446410627</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -962,7 +972,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Update accessory shield" />
     <MESSAGE value="Update multi functional shield" />
     <MESSAGE value="Fix ir_remote_receiver" />
     <MESSAGE value="Re-factor digital sampler" />
@@ -987,7 +996,8 @@
     <MESSAGE value="Updated STM32F3 USART config" />
     <MESSAGE value="Fixed STM32F3 USART config" />
     <MESSAGE value="Updated STM32F303VC example" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated STM32F303VC example" />
+    <MESSAGE value="Implemented timer abstraction for STM32F3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented timer abstraction for STM32F3" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

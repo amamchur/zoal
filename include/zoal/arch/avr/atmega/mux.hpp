@@ -4,6 +4,7 @@
 #include "../../../ct/check.hpp"
 #include "../../../gpio/api.hpp"
 #include "../../../gpio/pin.hpp"
+#include "../../../periph/pwm.hpp"
 #include "../../../utils/helpers.hpp"
 
 namespace zoal { namespace metadata {
@@ -32,6 +33,33 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::metadata::pwm_channel_mapping;
     using zoal::metadata::spi_mapping;
     using zoal::metadata::usart_mapping;
+
+    template<class Sign, class T, class Pin>
+    class pwm_channel_builder {
+    public:
+        using pwm_mapping = pwm_channel_mapping<Sign, T, Pin>;
+        static constexpr auto channel = pwm_mapping::value;
+        static_assert(channel >= 0, "Unsupported PWM connection");
+
+        using oc_regs = zoal::ct::type_list<typename T::OCRxA, typename T::OCRxB, typename T::OCRxC>;
+        using ocr = typename zoal::ct::type_at_index<channel, void, oc_regs>::result;
+
+        using com_shift_list = zoal::ct::value_list<int, 6, 4, 2>;
+        static constexpr auto com_shift = zoal::ct::value_at_index<channel, int, -1, com_shift_list>::result;
+        static constexpr uint8_t TCCRxA_clear = 3 << com_shift;
+        static constexpr uint8_t TCCRxA_set = 2 << com_shift;
+
+        using connect = typename api::optimize<
+            //
+            zoal::mem::callable_cas_list_variadic<typename T::TCCRxA::template cas<TCCRxA_clear, TCCRxA_set>>,
+            api::mode<pin_mode::output, Pin>>;
+        using disconnect = typename api::optimize<
+            //
+            zoal::mem::callable_cas_list_variadic<typename T::TCCRxA::template cas<TCCRxA_clear, 0>>,
+            api::mode<pin_mode::input, Pin>>;
+
+        using result = zoal::periph::pwm_channel<T, Pin, channel, ocr, connect, disconnect>;
+    };
 
     template<class Microcontroller>
     class mux {
@@ -89,6 +117,9 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using disconnect = zoal::mem::callable_cas_list_variadic<typename T::TCCRxA::template cas<clear_mask, 0>>;
         };
 
+        template<class T, class Pin>
+        using pwm_channel = typename pwm_channel_builder<sign, T, Pin>::result;
+
         template<class S, class Mosi, class Miso, class Clock, class SlaveSelect>
         class spi {
         public:
@@ -128,6 +159,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 //
                 api::mode<pin_mode::input_floating, SerialDataLine, SerialClockLine>>;
         };
+
+    private:
     };
 }}}}
 

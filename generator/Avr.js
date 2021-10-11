@@ -32,7 +32,7 @@ class Avr extends BaseGenerator {
         return results;
     }
 
-    static getByInstanceName(modules, regex) {
+    static getByInstanceNameRegex(modules, regex) {
         let results = [];
         for (let i = 0; i < modules.length; i++) {
             let m = modules[i];
@@ -40,6 +40,22 @@ class Avr extends BaseGenerator {
                 let name = m.instance[j].$.name;
                 if (name.match(regex)) {
                     results.push(m);
+                }
+            }
+        }
+
+        return results;
+    }
+
+    static getByInstanceName(modules, value) {
+        let results = [];
+        for (let i = 0; i < modules.length; i++) {
+            let m = modules[i];
+            for (let j = 0; j < m.instance.length; j++) {
+                let instance = m.instance[j];
+                let name = instance.$.name;
+                if (name === value) {
+                    return instance;
                 }
             }
         }
@@ -134,6 +150,8 @@ class Avr extends BaseGenerator {
             timers = timers.concat(timer);
         }
 
+        const channels = ['OCA', 'OCB', 'OCC'];
+
         for (let i = 0; i < timers.length; i++) {
             let t = timers[i];
             let name = t.$.name;
@@ -142,8 +160,12 @@ class Avr extends BaseGenerator {
             let n = name.replace(/TC(\d+)/, '$1');
 
             let regex = new RegExp(t.$.name);
-            let periph = Avr.getByInstanceName(root.devices[0].device[0].peripherals[0].module, regex)[0];
-            let signalNodes = (periph.instance[0].signals || [{}])[0].signal || [];
+            let instance = Avr.getByInstanceName(root.devices[0].device[0].peripherals[0].module, t.$.name);
+            if (!instance) {
+                continue
+            }
+
+            let signalNodes = instance.signals[0].signal || [];
             let signals = [];
             for (let j = 0; j < signalNodes.length; j++) {
                 let s = signalNodes[j];
@@ -152,9 +174,10 @@ class Avr extends BaseGenerator {
                 let port = pad.replace(/p(\w)\d/, '$1');
                 let offset = pad.replace(/p\w(\d)/, '$1');
                 g = g.replace(/\d/, '');
-                if (g === 'OCA' || g === 'OCB') {
+                let channel = channels.indexOf(g);
+                if (channel >= 0) {
                     signals.push({
-                        channel: g === 'OCA' ? 0 : 1,
+                        channel: channel,
                         pad: pad,
                         port: this.mcu.portsMap[port],
                         offset: offset - 0

@@ -19,8 +19,8 @@ namespace zoal { namespace metadata {
     template<::zoal::periph::usart_stop_bits StopBits>
     struct usart_stop_bit_flags;
 
-    template<class T, ::zoal::periph::timer_mode Mode>
-    struct timer_mode;
+    template<class T, int Type, ::zoal::periph::timer_mode Mode, uint16_t Period>
+    struct timer_waveform_generation;
 
     template<class T, bool async, uintptr_t ClockDivider>
     struct timer_clock_divider;
@@ -37,7 +37,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::metadata::adc_clock_divider;
     using zoal::metadata::adc_ref;
     using zoal::metadata::timer_clock_divider;
-    using zoal::metadata::timer_mode;
+    using zoal::metadata::timer_waveform_generation;
     using zoal::metadata::usart_data_bits_flags;
     using zoal::metadata::usart_parity_flags;
     using zoal::metadata::usart_stop_bit_flags;
@@ -142,9 +142,9 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static_assert(Prescale == 1, "Unsupported prescale");
 
             static constexpr auto async = T::async;
-            using timer_mode_cfg = timer_mode<T, Mode>;
+            using wg_mode_cfg = timer_waveform_generation<T, sizeof(typename T::word) * 8, Mode, Period>;
             using clock_divider_cfg = timer_clock_divider<T, async, ClockDivider>;
-            using apply = typename zoal::gpio::api::optimize<timer_mode_cfg, clock_divider_cfg>;
+            using apply = typename zoal::gpio::api::optimize<wg_mode_cfg, clock_divider_cfg>;
         };
 
         template<class A, class Cfg>

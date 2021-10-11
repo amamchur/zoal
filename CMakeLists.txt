@@ -56,12 +56,16 @@ add_mcu_executable(ATmega32u4 atmega32u4
         misc/terminal_input.cpp
         ${TERMINAL_STATE_MACHINE_SRC}
         ${TYPE_DETECTOR_STATE_MACHINE_SRC}
-        ${CMD_STATE_MACHINE_SRC}
         ${ATMEGA32U4_STATE_MACHINE_SRC}
         )
 target_compile_definitions(ATmega32u4 PRIVATE F_CPU=16000000UL)
 
-add_mcu_executable(ATmega2560 atmega2560 apps/atmega2560.cpp)
+ragel_generate_cpp(apps/atmega2560/command_machine.rl ATMEGA2560_STATE_MACHINE_SRC "-G0")
+add_mcu_executable(ATmega2560 atmega2560
+        apps/atmega2560/atmega2560.cpp
+        misc/terminal_input.cpp
+        ${TERMINAL_STATE_MACHINE_SRC}
+        ${ATMEGA2560_STATE_MACHINE_SRC})
 target_compile_definitions(ATmega2560 PRIVATE F_CPU=16000000UL)
 
 add_mcu_executable(ATtiny13 attiny13 apps/attiny13.cpp)

@@ -86,9 +86,4 @@ namespace zoal { namespace arch { namespace avr {
     };
 }}}
 
-namespace zoal { namespace metadata {
-    template<class T, ::zoal::periph::timer_mode Mode>
-    struct timer_mode;
-}}
-
 #endif

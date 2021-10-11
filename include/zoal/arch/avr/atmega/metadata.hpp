@@ -59,64 +59,105 @@ namespace zoal { namespace metadata {
         static constexpr uint8_t flags = 1 << 3;
     };
 
-    enum : uint8_t { WGMx0 = 0, WGMx1 = 1, WGMx2 = 3, WGMx3 = 4, mode_clear_TCCRxA = 1u << WGMx0 | 1u << WGMx1, mode_clear_TCCRxB = 1u << WGMx2 | 1u << WGMx3 };
+    enum : uint8_t {
+        //
+        WGMx0 = 0,
+        WGMx1 = 1,
+        WGMx2 = 3,
+        WGMx3 = 4,
+        mode_clear_TCCRxA = 1u << WGMx0 | 1u << WGMx1,
+        mode_clear_TCCRxB = 1u << WGMx2 | 1u << WGMx3
+    };
+
+    template<class T, int Type, ::zoal::periph::timer_mode Mode, uint16_t Period>
+    struct timer_waveform_generation {
+        static_assert(Type == -1, "Unsupported timer configuration");
+    };
 
     template<class T>
-    struct timer_mode<T, ::zoal::periph::timer_mode::up> : type_list<
-                                                               //
-                                                               typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>,
-                                                               typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
+    struct timer_waveform_generation<T, 8, ::zoal::periph::timer_mode::up, 0xFF>
+        : type_list<
+              //
+              typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>,
+              typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
 
     template<class T>
-    struct timer_mode<T, ::zoal::periph::timer_mode::up_down> : type_list<
-                                                                    //
-                                                                    typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
-                                                                    typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
+    struct timer_waveform_generation<T, 8, ::zoal::periph::timer_mode::up_down, 0xFF> : type_list<
+                                                                                            //
+                                                                                            typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
+                                                                                            typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
+
+    template<class T>
+    struct timer_waveform_generation<T, 16, ::zoal::periph::timer_mode::up, 0xFF>
+        : type_list<
+              //
+              typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
+              typename T::TCCRxB::template cas<mode_clear_TCCRxB, 1u << WGMx2>> {};
+
+    template<class T>
+    struct timer_waveform_generation<T, 16, ::zoal::periph::timer_mode::up, 0x1FF>
+        : type_list<
+              //
+              typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx1>,
+              typename T::TCCRxB::template cas<mode_clear_TCCRxB, 1u << WGMx2>> {};
+
+    template<class T>
+    struct timer_waveform_generation<T, 16, ::zoal::periph::timer_mode::up, 0x3FF>
+        : type_list<
+              //
+              typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>,
+              typename T::TCCRxB::template cas<mode_clear_TCCRxB, 1u << WGMx2>> {};
+
+    template<class T>
+    struct timer_waveform_generation<T, 16, ::zoal::periph::timer_mode::up_down, 0xFF> : type_list<
+                                                                                             //
+                                                                                             typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
+                                                                                             typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
 
     template<class T, uintptr_t Set>
-    using tcd_cas = type_list<typename T::TCCRxB::template cas<0x7, Set>>;
+    using clock_select_cas = type_list<typename T::TCCRxB::template cas<0x7, Set>>;
 
     template<class T>
-    struct timer_clock_divider<T, false, 0> : tcd_cas<T, 0x0> {};
+    struct timer_clock_divider<T, false, 0> : clock_select_cas<T, 0x0> {};
 
     template<class T>
-    struct timer_clock_divider<T, false, 1> : tcd_cas<T, 0x1> {};
+    struct timer_clock_divider<T, false, 1> : clock_select_cas<T, 0x1> {};
 
     template<class T>
-    struct timer_clock_divider<T, false, 8> : tcd_cas<T, 0x2> {};
+    struct timer_clock_divider<T, false, 8> : clock_select_cas<T, 0x2> {};
 
     template<class T>
-    struct timer_clock_divider<T, false, 64> : tcd_cas<T, 0x3> {};
+    struct timer_clock_divider<T, false, 64> : clock_select_cas<T, 0x3> {};
 
     template<class T>
-    struct timer_clock_divider<T, false, 256> : tcd_cas<T, 0x4> {};
+    struct timer_clock_divider<T, false, 256> : clock_select_cas<T, 0x4> {};
 
     template<class T>
-    struct timer_clock_divider<T, false, 1024> : tcd_cas<T, 0x5> {};
+    struct timer_clock_divider<T, false, 1024> : clock_select_cas<T, 0x5> {};
 
     template<class T>
-    struct timer_clock_divider<T, true, 0> : tcd_cas<T, 0x0> {};
+    struct timer_clock_divider<T, true, 0> : clock_select_cas<T, 0x0> {};
 
     template<class T>
-    struct timer_clock_divider<T, true, 1> : tcd_cas<T, 0x1> {};
+    struct timer_clock_divider<T, true, 1> : clock_select_cas<T, 0x1> {};
 
     template<class T>
-    struct timer_clock_divider<T, true, 8> : tcd_cas<T, 0x2> {};
+    struct timer_clock_divider<T, true, 8> : clock_select_cas<T, 0x2> {};
 
     template<class T>
-    struct timer_clock_divider<T, true, 32> : tcd_cas<T, 0x3> {};
+    struct timer_clock_divider<T, true, 32> : clock_select_cas<T, 0x3> {};
 
     template<class T>
-    struct timer_clock_divider<T, true, 64> : tcd_cas<T, 0x4> {};
+    struct timer_clock_divider<T, true, 64> : clock_select_cas<T, 0x4> {};
 
     template<class T>
-    struct timer_clock_divider<T, true, 128> : tcd_cas<T, 0x5> {};
+    struct timer_clock_divider<T, true, 128> : clock_select_cas<T, 0x5> {};
 
     template<class T>
-    struct timer_clock_divider<T, true, 256> : tcd_cas<T, 0x6> {};
+    struct timer_clock_divider<T, true, 256> : clock_select_cas<T, 0x6> {};
 
     template<class T>
-    struct timer_clock_divider<T, true, 1024> : tcd_cas<T, 0x7> {};
+    struct timer_clock_divider<T, true, 1024> : clock_select_cas<T, 0x7> {};
 
     struct timer_clock_dividers : zoal::ct::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024> {};
 

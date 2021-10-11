@@ -26,19 +26,6 @@ namespace zoal { namespace ct {
         static constexpr auto value = sizeof(First);
     };
 
-    template<bool condition, class T, T A, T B>
-    struct conditional_value {};
-
-    template<class T, T A, T B>
-    struct conditional_value<true, T, A, B> {
-        static constexpr auto value = A;
-    };
-
-    template<class T, T A, T B>
-    struct conditional_value<false, T, A, B> {
-        static constexpr auto value = B;
-    };
-
     template<class T, class U>
     struct optional_type {
         using type = T;

@@ -30,25 +30,25 @@ namespace zoal { namespace metadata {
                                                                     typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
 
     template<class T, uintptr_t Set>
-    using tcd_cas = zoal::ct::type_list<typename T::TCCRxB::template cas<0x7, Set>>;
+    using clock_select_cas = zoal::ct::type_list<typename T::TCCRxB::template cas<0x7, Set>>;
 
     template<class T>
-    struct timer_clock_divider<T, false, 0> : tcd_cas<T, 0x0> {};
+    struct timer_clock_divider<T, false, 0> : clock_select_cas<T, 0x0> {};
 
     template<class T>
-    struct timer_clock_divider<T, false, 1> : tcd_cas<T, 0x1> {};
+    struct timer_clock_divider<T, false, 1> : clock_select_cas<T, 0x1> {};
 
     template<class T>
-    struct timer_clock_divider<T, false, 8> : tcd_cas<T, 0x2> {};
+    struct timer_clock_divider<T, false, 8> : clock_select_cas<T, 0x2> {};
 
     template<class T>
-    struct timer_clock_divider<T, false, 64> : tcd_cas<T, 0x3> {};
+    struct timer_clock_divider<T, false, 64> : clock_select_cas<T, 0x3> {};
 
     template<class T>
-    struct timer_clock_divider<T, false, 256> : tcd_cas<T, 0x4> {};
+    struct timer_clock_divider<T, false, 256> : clock_select_cas<T, 0x4> {};
 
     template<class T>
-    struct timer_clock_divider<T, false, 1024> : tcd_cas<T, 0x5> {};
+    struct timer_clock_divider<T, false, 1024> : clock_select_cas<T, 0x5> {};
 
     template<class A, uintptr_t ClockDivider>
     struct adc_clock_divider {};

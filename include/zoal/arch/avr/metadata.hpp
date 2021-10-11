@@ -39,7 +39,7 @@ namespace zoal { namespace metadata {
     template<class Sign, uintptr_t Address, uint32_t Port, uint8_t PinOffset>
     struct i2c_mapping : base_i2c_mapping<-1, -1> {};
 
-    template<class T, ::zoal::periph::timer_mode Mode>
+    template<class T, int Type, ::zoal::periph::timer_mode Mode>
     struct timer_mode {};
 
     template<class T, bool async, uintptr_t ClockDivider>
