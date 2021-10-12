@@ -17,13 +17,13 @@ volatile uint32_t milliseconds = 0;
 using pcb = zoal::board::arduino_mega;
 using mcu = pcb::mcu;
 using ms_timer = typename mcu::timer_00;
-using pwm_timer = typename mcu::timer_04;
+using pwm_timer = typename mcu::timer_03;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
 using delay = zoal::utils::delay<F_CPU, counter>;
 using usart = mcu::usart_00;
 using blink_pin = pcb::ard_d13;
-using pwm_ch = mcu::mux::pwm_channel<pwm_timer, mcu::ph_05>;
+using pwm_ch = mcu::mux::pwm_channel<pwm_timer, mcu::pe_05>;
 
 using usart_tx_type = zoal::utils::usart_transmitter<usart, 32, zoal::utils::interrupts_off>;
 using usart_tx_stream_type = zoal::io::output_stream<usart_tx_type>;
@@ -47,6 +47,8 @@ void initialize_hardware() {
 
         mcu::cfg::timer<ms_timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>::apply,
         mcu::irq::timer<ms_timer>::enable_overflow_interrupt,
+
+        mcu::cfg::timer<pwm_timer, zoal::periph::timer_mode::up, 1, 1, 0xFF>::apply,
 
         api::mode<zoal::gpio::pin_mode::output, blink_pin>
         //
@@ -110,10 +112,6 @@ int main() {
     terminal.greeting(terminal_greeting);
     terminal.clear();
     terminal.sync();
-
-    using cfg = mcu::cfg::timer<pwm_timer, zoal::periph::timer_mode::up, 64, 1, 0xFF>;
-    using list = zoal::gpio::api::optimize<cfg::apply, pwm_ch::connect>;
-    list();
 
     while (true) {
         uint8_t rx_byte = 0;

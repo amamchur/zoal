@@ -21,7 +21,7 @@ namespace zoal { namespace shield {
         using mcu = typename pcb::mcu;
         using delay = Delay;
         using potentiometer_pin = typename pcb::ard_a00;
-        using potentiometer_channel = zoal::periph::adc_channel<mcu, typename mcu::adc_00, typename pcb::ard_a00>;
+        using potentiometer_channel = typename mcu::mux::template adc_channel<typename mcu::adc_00, typename pcb::ard_a00>;
 
         using ssd1306_reset = typename pcb::ard_d07;
         using ssd1306_address_select = typename pcb::ard_d08;

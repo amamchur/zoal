@@ -4,6 +4,7 @@
 #include "../../../ct/check.hpp"
 #include "../../../gpio/api.hpp"
 #include "../../../gpio/pin.hpp"
+#include "../../../periph/adc.hpp"
 #include "../../../periph/pwm.hpp"
 #include "../../../utils/helpers.hpp"
 
@@ -34,14 +35,23 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     using zoal::metadata::spi_mapping;
     using zoal::metadata::usart_mapping;
 
+    template<class T, int Type>
+    class output_compare_registers {};
+
+    template<class T>
+    class output_compare_registers<T, 8> : public zoal::ct::type_list<typename T::OCRxA, typename T::OCRxB> {};
+
+    template<class T>
+    class output_compare_registers<T, 16> : public zoal::ct::type_list<typename T::OCRxA, typename T::OCRxB, typename T::OCRxC> {};
+
     template<class Sign, class T, class Pin>
     class pwm_channel_builder {
     public:
-        using pwm_mapping = pwm_channel_mapping<Sign, T, Pin>;
-        static constexpr auto channel = pwm_mapping::value;
-        static_assert(channel >= 0, "Unsupported PWM connection");
+        using mapping = pwm_channel_mapping<Sign, T, Pin>;
+        static constexpr auto channel = mapping::value;
+        static_assert(channel >= 0, "Specified pin could not be connected to Timer");
 
-        using oc_regs = zoal::ct::type_list<typename T::OCRxA, typename T::OCRxB, typename T::OCRxC>;
+        using oc_regs = output_compare_registers<T, sizeof(typename T::word) * 8>;
         using ocr = typename zoal::ct::type_at_index<channel, void, oc_regs>::result;
 
         using com_shift_list = zoal::ct::value_list<int, 6, 4, 2>;
@@ -55,10 +65,26 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             api::mode<pin_mode::output, Pin>>;
         using disconnect = typename api::optimize<
             //
-            zoal::mem::callable_cas_list_variadic<typename T::TCCRxA::template cas<TCCRxA_clear, 0>>,
-            api::mode<pin_mode::input, Pin>>;
+            zoal::mem::callable_cas_list_variadic<typename T::TCCRxA::template cas<TCCRxA_clear, 0>>>;
 
         using result = zoal::periph::pwm_channel<T, Pin, channel, ocr, connect, disconnect>;
+    };
+
+    template<class Sign, class A, class Pin>
+    class adc_channel_builder {
+    public:
+        using mapping = adc_mapping<Sign, A, Pin>;
+        static constexpr auto channel = mapping::value;
+        static_assert(channel >= 0, "Specified pin could not be connected to ADC");
+        static constexpr auto mux_set_mask = channel & 0x07;
+        static constexpr auto mux5 = channel > 7 ? (1 << 3) : 0;
+
+        using connect = zoal::mem::callable_cas_list_variadic<
+            //
+            typename A::ADMUXx::template cas<0x0F, mux_set_mask>,
+            typename A::ADCSRBx::template cas<(1 << 3), mux5>>;
+        using disconnect = zoal::mem::null_cas_list;
+        using result = zoal::periph::adc_channel<A, Pin, channel, connect, disconnect>;
     };
 
     template<class Microcontroller>
@@ -117,9 +143,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using disconnect = zoal::mem::callable_cas_list_variadic<typename T::TCCRxA::template cas<clear_mask, 0>>;
         };
 
-        template<class T, class Pin>
-        using pwm_channel = typename pwm_channel_builder<sign, T, Pin>::result;
-
         template<class S, class Mosi, class Miso, class Clock, class SlaveSelect>
         class spi {
         public:
@@ -160,6 +183,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
                 api::mode<pin_mode::input_floating, SerialDataLine, SerialClockLine>>;
         };
 
+        template<class T, class Pin>
+        using adc_channel = typename adc_channel_builder<sign, T, Pin>::result;
+
+        template<class T, class Pin>
+        using pwm_channel = typename pwm_channel_builder<sign, T, Pin>::result;
     private:
     };
 }}}}

@@ -51,25 +51,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Implemented timer abstraction for STM32F3">
-      <change afterPath="$PROJECT_DIR$/apps/atmega2560/command_machine.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/atmega2560/command_machine.rl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/ct/conditional_value.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/periph/pwm.hpp" afterDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added pwm_channel for ATmega arch">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560/atmega2560.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/Avr.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/Avr.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/cfg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/metadata.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega2560/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560/atmega2560.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/mux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/timer16.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/timer16.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/attiny/metadata.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/metadata.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/timer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/timer.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ct/helpers.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ct/helpers.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ct/value_list.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ct/value_list.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega2560.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega2560.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/adc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/adc.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/ic/ds3231.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/ds3231.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -593,14 +582,7 @@
       <workItem from="1633446383298" duration="53000" />
       <workItem from="1633612923126" duration="9000" />
       <workItem from="1633942892049" duration="2835000" />
-      <workItem from="1633946927941" duration="17373000" />
-    </task>
-    <task id="LOCAL-00002" summary="Add terminal input">
-      <created>1609174206795</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1609174206795</updated>
+      <workItem from="1633946927941" duration="27213000" />
     </task>
     <task id="LOCAL-00003" summary="Code cleanup">
       <created>1609188085991</created>
@@ -938,7 +920,14 @@
       <option name="project" value="LOCAL" />
       <updated>1633446410627</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="Added pwm_channel for ATmega arch">
+      <created>1633964910394</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1633964910394</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -972,7 +961,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Update multi functional shield" />
     <MESSAGE value="Fix ir_remote_receiver" />
     <MESSAGE value="Re-factor digital sampler" />
     <MESSAGE value="Re-factor date time output" />
@@ -997,7 +985,8 @@
     <MESSAGE value="Fixed STM32F3 USART config" />
     <MESSAGE value="Updated STM32F303VC example" />
     <MESSAGE value="Implemented timer abstraction for STM32F3" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented timer abstraction for STM32F3" />
+    <MESSAGE value="Added pwm_channel for ATmega arch" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added pwm_channel for ATmega arch" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

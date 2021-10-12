@@ -10,12 +10,18 @@ namespace zoal { namespace periph {
         static constexpr adc_ref reference = Ref;
     };
 
-    template<class M, class A, class Pin>
+    template<class A, class Pin, uint8_t Channel, class Connect, class Disconnect>
     class adc_channel {
     public:
+        using adc = A;
+        using pin = Pin;
+        static constexpr auto channel = Channel;
+        using connect = Connect;
+        using disconnect = Disconnect;
+
         static uint16_t read() {
-            typename M::mux::template adc<A, Pin>::connect();
-            return A::read();
+            connect();
+            return adc::read();
         }
     };
 }}
