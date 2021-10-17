@@ -1,6 +1,7 @@
 #ifndef ZOAL_ARCH_STM32X_I2C_HPP
 #define ZOAL_ARCH_STM32X_I2C_HPP
 
+#include "../../../mem/reg.hpp"
 #include "../../../periph/i2c_request.hpp"
 
 namespace zoal { namespace arch { namespace stm32x {

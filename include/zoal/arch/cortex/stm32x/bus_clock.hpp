@@ -23,6 +23,20 @@ namespace zoal { namespace arch { namespace stm32x {
     };
 
     template<class Ctrl, uint32_t Mask>
+    class bus_clock_modifiers<Ctrl, zoal::arch::bus::cortex_ahb1, Mask> {
+    public:
+        using clock_on_cas = type_list<typename Ctrl::RCCx_AHB1ENR::template cas<Mask, Mask>>;
+        using clock_off_cas = type_list<typename Ctrl::RCCx_AHB1ENR::template cas<Mask, 0>>;
+    };
+
+    template<class Ctrl, uint32_t Mask>
+    class bus_clock_modifiers<Ctrl, zoal::arch::bus::cortex_ahb2, Mask> {
+    public:
+        using clock_on_cas = type_list<typename Ctrl::RCCx_AHB2ENR::template cas<Mask, Mask>>;
+        using clock_off_cas = type_list<typename Ctrl::RCCx_AHB2ENR::template cas<Mask, 0>>;
+    };
+
+    template<class Ctrl, uint32_t Mask>
     class bus_clock_modifiers<Ctrl, zoal::arch::bus::cortex_apb1, Mask> {
     public:
         using clock_on_cas = type_list<typename Ctrl::RCCx_APB1ENR::template cas<Mask, Mask>>;

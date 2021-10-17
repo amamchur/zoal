@@ -10,10 +10,16 @@ program
     .version('0.0.0')
     .option('-f, --family [family]', 'MCU family', /^(atmega|attiny|stm32)$/)
     .option('-m, --metadata [metadata]', 'MCU metadata file')
+    .option('-s, --svd [svd file]', 'MCU svd file')
     .option('-o, --out [out]', 'Output file')
     .parse(process.argv);
 
 if (!program.family || !program.metadata || !program.out) {
+    console.log('Incorrect program arguments');
+    process.exit(-1);
+}
+
+if (program.family === 'stm32' && !program.svd) {
     console.log('Incorrect program arguments');
     process.exit(-1);
 }
@@ -30,7 +36,7 @@ if (program.family === 'attiny') {
 }
 
 if (program.family === 'stm32') {
-    generator = new STM32(program.metadata, obj.name);
+    generator = new STM32(program.metadata, obj.name, program.svd);
 }
 
 if (generator) {

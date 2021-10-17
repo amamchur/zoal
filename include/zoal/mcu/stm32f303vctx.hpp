@@ -4,7 +4,7 @@
 #ifndef ZOAL_MCU_STM32F303VCTX_HPP
 #define ZOAL_MCU_STM32F303VCTX_HPP
 
-#include <stdint.h>
+#include <cstdint>
 #include <zoal/arch/cortex/stm32f3/adc.hpp>
 #include <zoal/arch/cortex/stm32f3/adc_common_regs.hpp>
 #include <zoal/arch/cortex/stm32f3/general_purpose_timer.hpp>
@@ -62,14 +62,17 @@ namespace zoal { namespace mcu {
         using i2c_01 = ::zoal::arch::stm32x::i2c<0x40005400, clock_apb1<0x00200000>>;
         using i2c_02 = ::zoal::arch::stm32x::i2c<0x40005800, clock_apb1<0x00400000>>;
 
-        using timer_01 = zoal::arch::stm32x::timer<0x40012C00, clock_apb2<0x00000200>>;
-        using timer_15 = zoal::arch::stm32x::timer<0x40014000, clock_apb2<0x00004000>>;
+        using timer_01 = zoal::arch::stm32x::timer<0x40012C00, clock_apb2<0x00000800>>;
+        using timer_15 = zoal::arch::stm32x::timer<0x40014000, clock_apb2<0x00010000>>;
         using timer_16 = zoal::arch::stm32x::timer<0x40014400, clock_apb2<0x00020000>>;
         using timer_17 = zoal::arch::stm32x::timer<0x40014800, clock_apb2<0x00040000>>;
         using timer_02 = zoal::arch::stm32x::timer<0x40000000, clock_apb1<0x00000001>>;
         using timer_03 = zoal::arch::stm32x::timer<0x40000400, clock_apb1<0x00000002>>;
         using timer_04 = zoal::arch::stm32x::timer<0x40000800, clock_apb1<0x00000004>>;
-        using timer_08 = zoal::arch::stm32x::timer<0x40013400, clock_apb2<0x00000800>>;
+        using timer_08 = zoal::arch::stm32x::timer<0x40013400, clock_apb2<0x00002000>>;
+
+        using uart_04 = typename ::zoal::arch::stm32x::usart<0x40004C00, clock_apb1<0x00080000>>;
+        using uart_05 = typename ::zoal::arch::stm32x::usart<0x40005000, clock_apb1<0x00100000>>;
 
         using usart_01 = typename ::zoal::arch::stm32x::usart<0x40013800, clock_apb2<0x00004000>>;
         using usart_02 = typename ::zoal::arch::stm32x::usart<0x40004400, clock_apb1<0x00020000>>;
@@ -364,6 +367,14 @@ namespace zoal { namespace metadata {
     struct stm32_signal_map<stm32f303vctx_sign, 0x40004800, 0x48001400, 0x06, signal::de> : zoal::ct::integral_constant<int, 7> {};
     template<> // PF6 -> USART3_RTS
     struct stm32_signal_map<stm32f303vctx_sign, 0x40004800, 0x48001400, 0x06, signal::rts> : zoal::ct::integral_constant<int, 7> {};
+    template<> // PC10 -> UART4_TX
+    struct stm32_signal_map<stm32f303vctx_sign, 0x40004C00, 0x48000800, 0x0A, signal::tx> : zoal::ct::integral_constant<int, 5> {};
+    template<> // PC11 -> UART4_RX
+    struct stm32_signal_map<stm32f303vctx_sign, 0x40004C00, 0x48000800, 0x0B, signal::rx> : zoal::ct::integral_constant<int, 5> {};
+    template<> // PC12 -> UART5_TX
+    struct stm32_signal_map<stm32f303vctx_sign, 0x40005000, 0x48000800, 0x0C, signal::tx> : zoal::ct::integral_constant<int, 5> {};
+    template<> // PD2 -> UART5_RX
+    struct stm32_signal_map<stm32f303vctx_sign, 0x40005000, 0x48000C00, 0x02, signal::rx> : zoal::ct::integral_constant<int, 5> {};
     template<> // PA14 -> I2C1_SDA
     struct stm32_signal_map<stm32f303vctx_sign, 0x40005400, 0x48000000, 0x0E, signal::sda> : zoal::ct::integral_constant<int, 4> {};
     template<> // PA15 -> I2C1_SCL

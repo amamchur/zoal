@@ -1,31 +1,11 @@
 const fs = require('fs');
 const xml2js = require('xml2js');
 const BaseGenerator = require('./BaseGenerator');
-let exec = require('child_process').exec;
-let path = require('path');
+const exec = require('child_process').exec;
+const path = require('path');
 
-// #define PERIPH_BASE           ((uint32_t)0x40000000)
-// #define APB1PERIPH_BASE       ((uint32_t)0x40000000)
-// #define APB2PERIPH_BASE       (PERIPH_BASE + 0x10000)
-// #define AHBPERIPH_BASE        (PERIPH_BASE + 0x20000)
-
-function makePortAHB(index) {
-    return {
-        bus: 'ahb',
-        address: 0x48000000 + 0x0400 * index,
-        busClockMask: 1 << (17 + index)
-    }
-}
-
-function makePortAPB2(index) {
-    return {
-        bus: 'apb2',
-        address: 0x40010800 + 0x0400 * index,
-        busClockMask: 1 << (2 + index)
-    }
-}
-
-const familyMap = {
+let svdData = {};
+let familyMap = {
     'stm32f0': {
         ns: 'stm32x',
         includes: [
@@ -39,27 +19,16 @@ const familyMap = {
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
             '#include <zoal/gpio/api.hpp>',
-            '#include <zoal/gpio/pin.hpp>'
+            '#include <zoal/gpio/pin.hpp>',
+            '#include <zoal/arch/cortex/stm32x/timer.hpp>',
+            '#include <zoal/arch/cortex/stm32x/i2c.hpp>'
         ],
         classDeclaration: [
             ``,
             `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
             `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
             ``
-        ],
-        periphs: {
-            usart1: {bus: 'apb2', address: 0x40013800, busClockMask: 0x00004000},
-            usart2: {bus: 'apb1', address: 0x40004400, busClockMask: 0x00020000},
-            usart3: {bus: 'apb1', address: 0x40004800, busClockMask: 0x00040000}
-        },
-        ports: {
-            a: makePortAHB(0),
-            b: makePortAHB(1),
-            c: makePortAHB(2),
-            d: makePortAHB(3),
-            e: makePortAHB(4),
-            f: makePortAHB(5),
-        }
+        ]
     },
     'stm32f1': {
         ns: 'stm32f1',
@@ -86,41 +55,7 @@ const familyMap = {
             `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
             `using port = typename ::zoal::arch::stm32f1::port<Address, Clock, PinMask>;`,
             ``
-        ],
-        ports: {
-            a: makePortAPB2(0),
-            b: makePortAPB2(1),
-            c: makePortAPB2(2),
-            d: makePortAPB2(3),
-            e: makePortAPB2(4),
-            f: makePortAPB2(5),
-        },
-        periphs: {
-            usart1: {bus: 'apb2', address: 0x40013800, busClockMask: 0x00004000},
-            usart2: {bus: 'apb1', address: 0x40004400, busClockMask: 0x00020000},
-            usart3: {bus: 'apb1', address: 0x40004800, busClockMask: 0x00040000},
-
-            adc1: {bus: 'apb2', address: 0x40012400, busClockMask: 0x00001000},
-            adc2: {bus: 'apb2', address: 0x40012800, busClockMask: 0x00002000},
-
-            i2c1: {bus: 'apb1', address: 0x40005400, busClockMask: 0x00200000},
-            i2c2: {bus: 'apb1', address: 0x40005800, busClockMask: 0x00400000},
-
-            tim1: {bus: 'apb2', address: 0x40012C00, busClockMask: 0x00000800},
-            tim2: {bus: 'apb1', address: 0x40000000, busClockMask: 0x00000001},
-            tim3: {bus: 'apb1', address: 0x40000400, busClockMask: 0x00000002},
-            tim4: {bus: 'apb1', address: 0x40000800, busClockMask: 0x00000004},
-            tim5: {bus: 'apb1', address: 0x40000C00, busClockMask: 0x00000008},
-            tim6: {bus: 'apb1', address: 0x40001000, busClockMask: 0x00000010},
-            tim7: {bus: 'apb1', address: 0x40001400, busClockMask: 0x00000020},
-            tim8: {bus: 'apb2', address: 0x40013400, busClockMask: 0x00002000},
-            tim9: {bus: 'apb2', address: 0x40014C00, busClockMask: 0x00080000},
-            tim10: {bus: 'apb2', address: 0x40015000, busClockMask: 0x00100000},
-            tim11: {bus: 'apb2', address: 0x40015400, busClockMask: 0x00200000},
-            tim12: {bus: 'apb1', address: 0x40001800, busClockMask: 0x00000040},
-            tim13: {bus: 'apb1', address: 0x40001C00, busClockMask: 0x00000080},
-            tim14: {bus: 'apb1', address: 0x40002000, busClockMask: 0x00000100},
-        }
+        ]
     },
     'stm32f3': {
         ns: 'stm32x',
@@ -150,75 +85,48 @@ const familyMap = {
             `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
             `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
             ``
+        ]
+    },
+    'stm32f4': {
+        ns: 'stm32x',
+        includes: [
+            '#include <zoal/arch/cortex/stm32f3/adc.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/adc_common_regs.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/general_purpose_timer.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/spi.hpp>',
+            '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
+            '#include <zoal/arch/cortex/stm32x/cfg.hpp>',
+            '#include <zoal/arch/cortex/stm32x/mux.hpp>',
+            '#include <zoal/arch/cortex/stm32x/port.hpp>',
+            '#include <zoal/arch/cortex/stm32x/rcc.hpp>',
+            '#include <zoal/arch/cortex/stm32x/usart.hpp>',
+            '#include <zoal/arch/cortex/stm32x/i2c.hpp>',
+            '#include <zoal/arch/cortex/stm32x/timer.hpp>',
+            '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
+            '#include <zoal/arch/enable.hpp>',
+            '#include <zoal/arch/power.hpp>',
+            '#include <zoal/gpio/api.hpp>',
+            '#include <zoal/gpio/pin.hpp>'
         ],
-        ports: {
-            a: makePortAHB(0),
-            b: makePortAHB(1),
-            c: makePortAHB(2),
-            d: makePortAHB(3),
-            e: makePortAHB(4),
-            f: makePortAHB(5),
-        },
-        periphs: {
-            adc1: {bus: 'ahb', address: 0x50000000, busClockMask: 0x10000000},
-            adc2: {bus: 'ahb', address: 0x50000100, busClockMask: 0x10000000},
-            adc3: {bus: 'ahb', address: 0x50000400, busClockMask: 0x20000000},
-            adc4: {bus: 'ahb', address: 0x50000500, busClockMask: 0x20000000},
-            comp1: null,
-            comp2: null,
-            comp3: null,
-            comp4: null,
-            comp5: null,
-            comp6: null,
-            comp7: null,
-            dac1: null,
-            i2c1: {bus: 'apb1', address: 0x40005400, busClockMask: 0x00200000},
-            i2c2: {bus: 'apb1', address: 0x40005800, busClockMask: 0x00400000},
-            i2c3: {bus: 'apb1', address: 0x40007800, busClockMask: 0x40000000},
-            i2s2: null,
-            i2s3: null,
-            opamp1: null,
-            opamp2: null,
-            opamp3: null,
-            opamp4: null,
-            rcc_osc32: null,
-            spi1: null,
-            spi2: null,
-            spi3: null,
-            tim1: {bus: 'apb2', address: 0x40012C00, busClockMask: 0x00000200},
-            tim2: {bus: 'apb1', address: 0x40000000, busClockMask: 0x00000001},
-            tim3: {bus: 'apb1', address: 0x40000400, busClockMask: 0x00000002},
-            tim4: {bus: 'apb1', address: 0x40000800, busClockMask: 0x00000004},
-            tim5: {bus: 'apb2', address: 0x40000800, busClockMask: 0x00000000},
-            tim6: {bus: 'apb1', address: 0x40001000, busClockMask: 0x00000010},
-            tim7: {bus: 'apb1', address: 0x40001400, busClockMask: 0x00000020},
-            tim8: {bus: 'apb2', address: 0x40013400, busClockMask: 0x00000800},
-            tim15: {bus: 'apb2', address: 0x40014000, busClockMask: 0x00004000},
-            tim16: {bus: 'apb2', address: 0x40014400, busClockMask: 0x00020000},
-            tim17: {bus: 'apb2', address: 0x40014800, busClockMask: 0x00040000},
-            tim20: {bus: 'apb2', address: 0x40015000, busClockMask: 0x00100000},
-            tsc_g1: null,
-            tsc_g2: null,
-            tsc_g3: null,
-            tsc_g4: null,
-            tsc_g5: null,
-            tsc_g6: null,
-            uart4: null,
-            uart5: null,
-            usart1: {bus: 'apb2', address: 0x40013800, busClockMask: 0x00004000},
-            usart2: {bus: 'apb1', address: 0x40004400, busClockMask: 0x00020000},
-            usart3: {bus: 'apb1', address: 0x40004800, busClockMask: 0x00040000},
-        }
+        classDeclaration: [
+            `template<uintptr_t Address, class Clock>`,
+            `using adc = typename ::zoal::arch::stm32x::adc<Address, Clock>;`,
+            ``,
+            `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
+            `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
+            ``
+        ]
     }
 };
 
 class STM32 extends BaseGenerator {
-    constructor(file, className) {
+    constructor(file, className, svdFile) {
         super(file);
 
         let dir = path.dirname(file);
         this.configDir = path.join(dir);
         this.className = className;
+        this.svdFile = svdFile;
     }
 
     getConfigFile(metadata, name) {
@@ -312,6 +220,13 @@ class STM32 extends BaseGenerator {
                 result.push(`using ${name}_${n} = typename ::zoal::arch::${ns}::usart<${address}, clock_${data.bus}<${m}>>;`);
             },
 
+            uart: function (name, no, data) {
+                let address = STM32.toHex(data.address, 8);
+                let n = ("00" + no.toString(10)).substr(-2);
+                let m = STM32.toHex(data.busClockMask, 8);
+                result.push(`using ${name}_${n} = typename ::zoal::arch::${ns}::usart<${address}, clock_${data.bus}<${m}>>;`);
+            },
+
             adc: function (name, no, data) {
                 let address = STM32.toHex(data.address, 8);
                 let n = ("00" + no.toString(10)).substr(-2);
@@ -384,14 +299,11 @@ class STM32 extends BaseGenerator {
     collectData(metadata) {
         this.metadata = metadata;
         this.mcu.family = metadata.Mcu.$.Family.toLowerCase();
+        Object.assign(familyMap[this.mcu.family], svdData);
         this.collectPins(metadata);
 
         let gpioCfg = this.getConfigFile(metadata, 'GPIO');
         this.gpioConfigFilePath = path.join(this.configDir, 'IP', 'GPIO-' + gpioCfg.$.Version + '_Modes.xml');
-        console.log(this.gpioConfigFilePath);
-
-        // GPIO-STM32F303E_gpio_v1_0_Modes.xml
-        // GPIO-STM32F303E_gpio_v1_0_Modes
     }
 
     buildPortList() {
@@ -443,26 +355,257 @@ class STM32 extends BaseGenerator {
         ];
     }
 
-    generate() {
-        return new Promise((resolve, reject) => {
-            fs.readFile(this.file, (err, data) => {
-                if (err) {
-                    reject(err);
+    normalizePeriph(periphs) {
+        for (let k in periphs) {
+            let periph = periphs[k];
+            if (periph.$ && periph.$.derivedFrom) {
+                let base = periphs[periph.$.derivedFrom];
+                periph[k] = Object.assign({}, base, periph);
+            }
+        }
+    }
+
+    collectResetAndClockControl(rcc, array) {
+        function findRegister(name) {
+            let registers = rcc.registers[0].register;
+            for (let i = 0; i < registers.length; i++) {
+                let r = registers[i];
+                let n = r.name[0];
+                if (n === name) {
+                    return r;
+                }
+            }
+
+            return null;
+        }
+
+        let ahb_enr = findRegister('AHBENR');
+        let ahb1_enr = findRegister('AHB1ENR');
+        let ahb2_enr = findRegister('AHB2ENR');
+        let apb1_enr = findRegister('APB1ENR');
+        let apb2_enr = findRegister('APB2ENR');
+
+        function findField(reg, name) {
+            let fields = reg.fields[0].field;
+            for (let i = 0; i < fields.length; i++) {
+                let f = fields[i];
+                let n = f.name[0];
+                if (n === name) {
+                    return f;
+                }
+            }
+
+            return null;
+        }
+
+        function findFieldByDescription(reg, regexp) {
+            let fields = reg.fields[0].field;
+            for (let i = 0; i < fields.length; i++) {
+                let f = fields[i];
+                let d = f.description[0];
+                if (d.match(regexp)) {
+                    return f;
+                }
+            }
+
+            return null;
+        }
+
+        function findBusByFieldName(registers, name) {
+            for (let i = 0; i < registers.length; i++) {
+                let r = registers[i];
+                let f = findField(r, name);
+                if (f != null) {
+                    return {
+                        register: r,
+                        field: f
+                    };
+                }
+            }
+            return null;
+        }
+
+        function findBusByFieldDescription(registers, regexp) {
+            for (let i = 0; i < registers.length; i++) {
+                let r = registers[i];
+                let f = findFieldByDescription(r, regexp);
+                if (f != null) {
+                    return {
+                        register: r,
+                        field: f
+                    };
+                }
+            }
+            return null;
+        }
+
+        let rccRegisters = [ahb_enr, ahb1_enr, ahb2_enr, apb1_enr, apb2_enr].filter((i) => {
+            return !!i
+        });
+        for (let i = 0; i < array.length; i++) {
+            let periphs = array[i];
+            for (let k in periphs) {
+                let periph = periphs[k];
+                let periphName = periph.name[0];
+                let fieldName = periphName + 'EN';
+
+                let fieldObj = findBusByFieldName(rccRegisters, fieldName);
+                let cfg = {bus: '???', address: parseInt(periph.baseAddress[0], 16), busClockMask: 0};
+                periph.periphConfig = cfg;
+
+                if (fieldObj == null) {
+                    fieldObj = findBusByFieldDescription(rccRegisters, new RegExp(`.*${periphName}.*clock enable.*`));
+                }
+                if (fieldObj == null) {
+                    fieldObj = findBusByFieldDescription(rccRegisters, new RegExp(`.*${periphName}.*clock enable.*`));
                 }
 
-                const parser = new xml2js.Parser();
-                parser.parseString(data, (err, result) => {
-                    try {
-                        this.collectData(result);
-                        this.buildClass();
+                if (fieldObj == null) {
+                    fieldName = fieldName.replace(/^GPIO/, 'IOP');
+                    fieldObj = findBusByFieldName(rccRegisters, fieldName);
+                }
 
-                        resolve();
-                    } catch (e) {
-                        reject(e);
+                if (fieldObj == null) {
+                    continue;
+                }
+
+                let reg = fieldObj.register;
+                let field = fieldObj.field;
+                cfg.busClockMask = 1 << (field.bitOffset - 0);
+                switch (reg.name[0]) {
+                    case 'AHBENR':
+                        cfg.bus = 'ahb';
+                        break;
+                    case 'AHB1ENR':
+                        cfg.bus = 'ahb1';
+                        break;
+                    case 'AHB2ENR':
+                        cfg.bus = 'ahb2';
+                        break;
+                    case 'APB1ENR':
+                        cfg.bus = 'apb1';
+                        break;
+                    case 'APB2ENR':
+                        cfg.bus = 'apb2';
+                        break;
+                }
+            }
+        }
+    }
+
+    collectPeriphData(obj) {
+        let peripherals = obj.device.peripherals[0].peripheral;
+        let ports = {};
+        let adcs = {};
+        let timers = {};
+        let i2cs = {};
+        let usarts = {};
+        let uarts = {};
+        let rcc = null;
+        let portRegexp = /GPIO([A-Z])/;
+        let adcRegexp = /ADC([\d+])/;
+        let timerRegexp = /TIM([\d+])/;
+        let i2cRegexp = /I2C([\d+])/;
+        let usartsRegexp = /USART([\d+])/;
+        let uartsRegexp = /UART([\d+])/;
+
+        for (let i = 0; i < peripherals.length; i++) {
+            let p = peripherals[i];
+            let name = p.name[0];
+            if (name.match(portRegexp)) {
+                ports[name] = p;
+            } else if (name.match(adcRegexp)) {
+                adcs[name] = p;
+            } else if (name.match(timerRegexp)) {
+                timers[name] = p;
+            } else if (name.match(i2cRegexp)) {
+                i2cs[name] = p;
+            } else if (name.match(usartsRegexp)) {
+                usarts[name] = p;
+            } else if (name.match(uartsRegexp)) {
+                uarts[name] = p;
+            } else if (name === 'RCC') {
+                rcc = p;
+            }
+        }
+
+        this.normalizePeriph(adcs);
+        this.normalizePeriph(ports);
+        this.normalizePeriph(timers);
+        this.normalizePeriph(i2cs);
+        this.normalizePeriph(usarts);
+        this.normalizePeriph(uarts);
+        this.collectResetAndClockControl(rcc, [adcs, ports, timers, i2cs, usarts, uarts]);
+
+        let array = [adcs, timers, i2cs, usarts, uarts]
+        let mcuData = {periphs: {}, ports: {}};
+        for (let i = 0; i < array.length; i++) {
+            let periphs = array[i];
+            for (let k in periphs) {
+                let periph = periphs[k];
+                let periphName = periph.name[0].toLowerCase();
+                mcuData.periphs[periphName] = Object.assign({svdData: periph}, periph.periphConfig);
+            }
+        }
+
+        for (let k in ports) {
+            let port = ports[k];
+            let name = port.name[0];
+            let portRegexp = /GPIO([A-Z])/;
+            let m = name.match(portRegexp)
+            let s = m[1].toLowerCase();
+            mcuData.ports[s] = Object.assign({svdData: port}, port.periphConfig);
+        }
+
+        svdData = mcuData;
+    }
+
+    generate() {
+        let promise = new Promise((resolve, reject) => {
+            fs.readFile(this.svdFile, (err, data) => {
+                    if (err) {
+                        reject();
+                        return;
                     }
+
+                    const parser = new xml2js.Parser();
+                    parser.parseString(data, (err, result) => {
+                        if (err) {
+                            reject();
+                            return;
+                        }
+                        try {
+                            this.collectPeriphData(result);
+                            resolve();
+                        } catch (e) {
+                            reject(e);
+                        }
+                    });
+                }
+            );
+        });
+
+        return promise.then(() => {
+            return new Promise((resolve, reject) => {
+                fs.readFile(this.file, (err, data) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    const parser = new xml2js.Parser();
+                    parser.parseString(data, (err, result) => {
+                        try {
+                            this.collectData(result);
+                            this.buildClass();
+
+                            resolve();
+                        } catch (e) {
+                            reject(e);
+                        }
+                    });
                 });
-            });
-        })
+            })
+        });
     }
 
     buildPinRemapMetadataFromMcuXml(sign_name) {
@@ -566,6 +709,10 @@ class STM32 extends BaseGenerator {
             let pin = pins[i];
             let pinName = pin.$.Name;
             let pm = pinName.toLowerCase().match(/p(\w)(\d+)/);
+            if (!pm) {
+                continue;
+            }
+
             let portName = pm[1];
             let offset = pm[2] - 0;
             let port = data.ports[portName];
@@ -647,6 +794,12 @@ class STM32 extends BaseGenerator {
             `using clock_ahb = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_ahb, Mask>;`,
             ``,
             `template<uint32_t Mask>`,
+            `using clock_ahb1 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_ahb1, Mask>;`,
+            ``,
+            `template<uint32_t Mask>`,
+            `using clock_ahb2 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_ahb2, Mask>;`,
+            ``,
+            `template<uint32_t Mask>`,
             `using clock_apb1 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_apb1, Mask>;`,
             ``,
             `template<uint32_t Mask>`,
@@ -674,7 +827,7 @@ class STM32 extends BaseGenerator {
             `#ifndef ZOAL_MCU_${nameUpper}_HPP`,
             `#define ZOAL_MCU_${nameUpper}_HPP`,
             ``,
-            `#include <stdint.h>`,
+            `#include <cstdint>`,
             data.includes.join('\n'),
             `#include <zoal/ct/signature.hpp>`,
             ``,
@@ -730,4 +883,5 @@ class STM32 extends BaseGenerator {
     }
 }
 
-module.exports = STM32;
+module
+    .exports = STM32;

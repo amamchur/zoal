@@ -4,7 +4,7 @@
 #ifndef ZOAL_MCU_STM32F103C8TX_HPP
 #define ZOAL_MCU_STM32F103C8TX_HPP
 
-#include <stdint.h>
+#include <cstdint>
 #include <zoal/arch/cortex/stm32f1/adc.hpp>
 #include <zoal/arch/cortex/stm32f1/afio.hpp>
 #include <zoal/arch/cortex/stm32f1/cfg.hpp>
@@ -49,8 +49,8 @@ namespace zoal { namespace mcu {
         using port_c = port<0x40011000, clock_apb2<0x00000010>, 0xE000>;
         using port_d = port<0x40011400, clock_apb2<0x00000020>, 0x0003>;
 
-        using adc_01 = ::zoal::arch::stm32f1::adc<0x40012400, clock_apb2<0x00001000>>;
-        using adc_02 = ::zoal::arch::stm32f1::adc<0x40012800, clock_apb2<0x00002000>>;
+        using adc_01 = ::zoal::arch::stm32f1::adc<0x40012400, clock_apb2<0x00000200>>;
+        using adc_02 = ::zoal::arch::stm32f1::adc<0x40012800, clock_apb2<0x00000400>>;
 
         using i2c_01 = ::zoal::arch::stm32f1::i2c<0x40005400, clock_apb1<0x00200000>>;
         using i2c_02 = ::zoal::arch::stm32f1::i2c<0x40005800, clock_apb1<0x00400000>>;

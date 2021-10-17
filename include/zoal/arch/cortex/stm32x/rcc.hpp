@@ -26,6 +26,9 @@ namespace zoal { namespace arch { namespace stm32x {
         using RCCx_CSR = zoal::mem::reg<Address + 0x024, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using RCCx_AHBRSTR = zoal::mem::reg<Address + 0x028, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using RCCx_CFGR2 = zoal::mem::reg<Address + 0x02C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+
+        using RCCx_AHB1ENR = zoal::mem::reg<Address + 0x030, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
+        using RCCx_AHB2ENR = zoal::mem::reg<Address + 0x034, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
     };
 }}}
 

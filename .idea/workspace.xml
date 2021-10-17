@@ -19,6 +19,7 @@
       <config projectName="zoal" targetName="ATmega328p-fuse" />
       <config projectName="zoal" targetName="ATmega32u4-eeprom" />
       <config projectName="zoal" targetName="host" />
+      <config projectName="zoal" targetName="stm32f401" />
       <config projectName="zoal" targetName="ATtiny13-upload" />
       <config projectName="zoal" targetName="ATtiny85-eeprom" />
       <config projectName="zoal" targetName="zoal_tests" />
@@ -52,13 +53,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added pwm_channel for ATmega arch">
+      <change afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega2560/atmega2560.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega2560/atmega2560.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/atmega/mux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/metadata.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/metadata.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/periph/adc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/adc.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/shield/uno_accessory.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/ic/ds3231.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ic/ds3231.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen-mcus.sh" beforeDir="false" afterPath="$PROJECT_DIR$/gen-mcus.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generator/STM32.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/STM32.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/bus.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/bus.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/bus_clock.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/bus_clock.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/i2c.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/i2c.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/rcc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/rcc.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/atmega32u4.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/atmega32u4.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f030f4px.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f030f4px.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +90,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release AVR" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug STM32" />
   <component name="Git.Merge.Settings">
     <option name="BRANCH" value="stm32f1_i2c" />
   </component>
@@ -123,16 +132,17 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/atmega2560" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../zoal-mcu-metadata" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path" value="$USER_HOME$/.nvm/versions/node/v12.20.1/bin/node" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="language.cpp.clangd" />
     <property name="settings.editor.splitter.proportion" value="0.18565089" />
   </component>
   <component name="RecentsManager">
@@ -156,12 +166,7 @@
       <command value="vTaskDelay(1);" />
     </option>
   </component>
-  <component name="RunManager" selected="CMake Application.ATmega2560">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f103_freertos">
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -293,11 +298,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -328,15 +328,25 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="stm32f401" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f401" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f401">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="stm32l432_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32l432_nucleo" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32l432_nucleo">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen atmega2560" type="NodeJSConfigurationType" application-parameters="-f atmega -m ../zoal-mcu-metadata/ATmega_DFP/1.2.209/atdf/ATmega2560.atdf -o include/zoal/mcu/atmega2560.hpp" path-to-node="$PROJECT_DIR$/../../../../Program Files/nodejs/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen atmega2560" type="NodeJSConfigurationType" application-parameters="-f atmega -m ../zoal-mcu-metadata/ATmega_DFP/1.2.209/atdf/ATmega2560.atdf -o include/zoal/mcu/atmega2560.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <configuration name="gen atmega328p" type="NodeJSConfigurationType" application-parameters="-f atmega -m ../zoal-mcu-metadata/ATmega_DFP/1.2.209/atdf/ATmega328P.atdf -o include/zoal/mcu/atmega328p.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
@@ -345,25 +355,28 @@
     <configuration name="gen atmega32u4" type="NodeJSConfigurationType" application-parameters="-f atmega -m ../zoal-mcu-metadata/ATmega_DFP/1.2.209/atdf/ATmega32U4.atdf -o include/zoal/mcu/atmega32u4.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen attiny13a" type="NodeJSConfigurationType" application-parameters="-f attiny -m ../zoal-mcu-metadata/ATtiny_DFP/1.3.172/atdf/ATtiny13A.atdf -o include/zoal/mcu/attiny13a.hpp" path-to-node="$PROJECT_DIR$/../../../../Program Files/nodejs/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen attiny13a" type="NodeJSConfigurationType" application-parameters="-f attiny -m ../zoal-mcu-metadata/ATtiny_DFP/1.3.172/atdf/ATtiny13A.atdf -o include/zoal/mcu/attiny13a.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen attiny2313a" type="NodeJSConfigurationType" application-parameters="-f attiny -m ../zoal-mcu-metadata/ATtiny_DFP/1.3.172/atdf/ATtiny2313A.atdf -o include/zoal/mcu/attiny2313a.hpp" path-to-node="$PROJECT_DIR$/../../../../Program Files/nodejs/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen attiny2313a" type="NodeJSConfigurationType" application-parameters="-f attiny -m ../zoal-mcu-metadata/ATtiny_DFP/1.3.172/atdf/ATtiny2313A.atdf -o include/zoal/mcu/attiny2313a.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen attiny85" type="NodeJSConfigurationType" application-parameters="-f attiny -m ../zoal-mcu-metadata/ATtiny_DFP/1.3.172/atdf/ATtiny85.atdf -o include/zoal/mcu/attiny85.hpp" path-to-node="$PROJECT_DIR$/../../../../Program Files/nodejs/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen attiny85" type="NodeJSConfigurationType" application-parameters="-f attiny -m ../zoal-mcu-metadata/ATtiny_DFP/1.3.172/atdf/ATtiny85.atdf -o include/zoal/mcu/attiny85.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen stm32f030f4px" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F030F4Px.xml&quot; -o ./include/zoal/mcu/stm32f030f4px.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen stm32f030f4px" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F030F4Px.xml&quot; -s &quot;$PROJECT_DIR$/../zoal-mcu-metadata/stm32/STM32F0x0.svd&quot; -o ./include/zoal/mcu/stm32f030f4px.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen stm32f103c8tx.hpp" type="NodeJSConfigurationType" temporary="true" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F103C(8-B)Tx.xml&quot; -o ./include/zoal/mcu/stm32f103c8tx.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen stm32f103c8tx.hpp" type="NodeJSConfigurationType" temporary="true" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F103C(8-B)Tx.xml&quot; -s &quot;$PROJECT_DIR$/../zoal-mcu-metadata/stm32//STM32F103.svd&quot; -o ./include/zoal/mcu/stm32f103c8tx.hpp" path-to-node="$USER_HOME$/.nvm/versions/node/v12.18.1/bin/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen stm32f303retx.hpp" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeMX\db\mcu\STM32F303R(D-E)Tx.xml&quot; -o ./include/zoal/mcu/stm32f303retx.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen stm32f303retx.hpp" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F303R(D-E)Tx.xml&quot; -s &quot;$PROJECT_DIR$/../zoal-mcu-metadata/stm32/STM32F303.svd&quot; -o ./include/zoal/mcu/stm32f303retx.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
-    <configuration name="gen stm32f303vctx" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeMX\db\mcu\STM32F303V(B-C)Tx.xml&quot; -o ./include/zoal/mcu/stm32f303vctx.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+    <configuration name="gen stm32f303vctx" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F303V(B-C)Tx.xml&quot; -s &quot;$PROJECT_DIR$/../zoal-mcu-metadata/stm32/STM32F303.svd&quot; -o ./include/zoal/mcu/stm32f303vctx.hpp" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <configuration name="gen stm32f401ccux.hpp" type="NodeJSConfigurationType" application-parameters="-f stm32 -m &quot;$USER_HOME$/STM32CubeMX/db/mcu/STM32F401C(B-C)Ux.xml&quot; -s &quot;$PROJECT_DIR$/../zoal-mcu-metadata/stm32/STM32F401.svd&quot; -o ./include/zoal/mcu/stm32f401ccux.hpp" path-to-node="$USER_HOME$/.nvm/versions/node/v12.18.1/bin/node" path-to-js-file="index.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <configuration name="stm32f030" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f030" CONFIG_NAME="Debug STM32" version="1" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f030">
@@ -392,6 +405,14 @@
     </configuration>
     <configuration name="stm32f303_discovery" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f303_discovery" CONFIG_NAME="Debug STM32" version="1" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f303_discovery">
       <openocd version="1" gdb-port="3333" telnet-port="4444" board-config="board/st_nucleo_f3.cfg" reset-type="HALT" download-type="UPDATED_ONLY">
+        <debugger kind="GDB" isBundled="true" />
+      </openocd>
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="stm32f401" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32f401" CONFIG_NAME="Debug STM32" version="1" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32f401">
+      <openocd version="1" gdb-port="3333" telnet-port="4444" board-config="board/st_nucleo_f4.cfg" reset-type="HALT" download-type="UPDATED_ONLY">
         <debugger kind="GDB" isBundled="true" />
       </openocd>
       <method v="2">
@@ -438,6 +459,7 @@
       <item itemvalue="CMake Application.stm32f103_freertos" />
       <item itemvalue="CMake Application.stm32f303_discovery" />
       <item itemvalue="CMake Application.stm32f303_nucleo" />
+      <item itemvalue="CMake Application.stm32f401" />
       <item itemvalue="CMake Application.stm32l432_nucleo" />
       <item itemvalue="Google Test.zoal_tests" />
       <item itemvalue="Node.js.cubemx-proj.js" />
@@ -450,13 +472,20 @@
       <item itemvalue="Node.js.gen stm32f030f4px" />
       <item itemvalue="Node.js.gen stm32f303retx.hpp" />
       <item itemvalue="Node.js.gen stm32f303vctx" />
+      <item itemvalue="Node.js.gen stm32f401ccux.hpp" />
       <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f030" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f103_blue_pill" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f103_freertos" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f303_discovery" />
+      <item itemvalue="OpenOCD Download &amp; Run.stm32f401" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32l432_nucleo" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -583,6 +612,7 @@
       <workItem from="1633612923126" duration="9000" />
       <workItem from="1633942892049" duration="2835000" />
       <workItem from="1633946927941" duration="27213000" />
+      <workItem from="1634479308432" duration="325000" />
     </task>
     <task id="LOCAL-00003" summary="Code cleanup">
       <created>1609188085991</created>
@@ -990,19 +1020,13 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/generator/STM32.js</url>
-          <line>357</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
             <option name="notifyOnTerminate" value="true" />
           </properties>
         </breakpoint>
+        <breakpoint enabled="true" type="javascript-exception" />
       </default-breakpoints>
     </breakpoint-manager>
     <watches-manager>

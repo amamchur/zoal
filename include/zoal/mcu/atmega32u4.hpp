@@ -125,10 +125,10 @@ namespace zoal { namespace metadata {
     struct pin_to_pwm_channel<atmega32u4_sign, 0x0080, 0x0023, 6> : integral_constant<int, 1> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega32u4_sign, 0x0090, 0x0023, 5> : integral_constant<int, 0> {};
+    struct pin_to_pwm_channel<atmega32u4_sign, 0x0080, 0x0023, 7> : integral_constant<int, 2> {};
 
     template<>
-    struct pin_to_pwm_channel<atmega32u4_sign, 0x0090, 0x0023, 6> : integral_constant<int, 1> {};
+    struct pin_to_pwm_channel<atmega32u4_sign, 0x0090, 0x0026, 6> : integral_constant<int, 0> {};
 
     template<>
     struct usart_mapping<atmega32u4_sign, 0x00C8, 0x0029, 3> : base_usart_mapping<-1, 0, -1> {};
