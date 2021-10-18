@@ -3,7 +3,7 @@
 
 #include "./dwt.hpp"
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace utils {
     template<int32_t Count>

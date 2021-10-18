@@ -7,7 +7,7 @@
 #include "../../../utils/helpers.hpp"
 #include "../stm32x/metadata.hpp"
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32f1 {
     using zoal::ct::type_list;

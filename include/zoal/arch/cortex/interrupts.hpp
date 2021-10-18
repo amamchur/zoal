@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_CORTEX_INTERRUPTS_HPP
 #define ZOAL_ARCH_CORTEX_INTERRUPTS_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace utils {
 	class interrupts {

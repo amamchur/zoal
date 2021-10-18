@@ -4,7 +4,7 @@
 #include "../../../arch/bus.hpp"
 #include "bus_clock.hpp"
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32x {
     template<uintptr_t Address = 0x40021000>

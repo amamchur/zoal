@@ -21,7 +21,8 @@ let familyMap = {
             '#include <zoal/gpio/api.hpp>',
             '#include <zoal/gpio/pin.hpp>',
             '#include <zoal/arch/cortex/stm32x/timer.hpp>',
-            '#include <zoal/arch/cortex/stm32x/i2c.hpp>'
+            '#include <zoal/arch/cortex/stm32x/i2c.hpp>',
+            '#include <zoal/arch/cortex/stm32x/spi.hpp>',
         ],
         classDeclaration: [
             ``,
@@ -46,6 +47,7 @@ let familyMap = {
             '#include <zoal/arch/cortex/stm32f1/port.hpp>',
             '#include <zoal/arch/cortex/stm32f1/usart.hpp>',
             '#include <zoal/arch/cortex/stm32f1/timer.hpp>',
+            '#include <zoal/arch/cortex/stm32x/spi.hpp>',
             '#include <zoal/arch/cortex/stm32f1/metadata.hpp>',
             '#include <zoal/arch/cortex/stm32f1/i2c.hpp>'
         ],
@@ -73,6 +75,7 @@ let familyMap = {
             '#include <zoal/arch/cortex/stm32x/i2c.hpp>',
             '#include <zoal/arch/cortex/stm32x/timer.hpp>',
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
+            '#include <zoal/arch/cortex/stm32x/spi.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
             '#include <zoal/gpio/api.hpp>',
@@ -103,6 +106,7 @@ let familyMap = {
             '#include <zoal/arch/cortex/stm32x/i2c.hpp>',
             '#include <zoal/arch/cortex/stm32x/timer.hpp>',
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
+            '#include <zoal/arch/cortex/stm32x/spi.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
             '#include <zoal/gpio/api.hpp>',
@@ -246,6 +250,13 @@ class STM32 extends BaseGenerator {
                 let n = ("00" + no.toString(10)).substr(-2);
                 let m = STM32.toHex(data.busClockMask, 8);
                 result.push(`using ${name}er_${n} = zoal::arch::${ns}::timer<${address}, clock_${data.bus}<${m}>>;`);
+            },
+
+            spi: function (name, no, data) {
+                let address = STM32.toHex(data.address, 8);
+                let n = ("00" + no.toString(10)).substr(-2);
+                let m = STM32.toHex(data.busClockMask, 8);
+                result.push(`using ${name}_${n} = ::zoal::arch::stm32x::spi<${address}, clock_${data.bus}<${m}>>;`);
             }
         };
 
@@ -501,6 +512,7 @@ class STM32 extends BaseGenerator {
         let i2cs = {};
         let usarts = {};
         let uarts = {};
+        let spis = {};
         let rcc = null;
         let portRegexp = /GPIO([A-Z])/;
         let adcRegexp = /ADC([\d+])/;
@@ -508,6 +520,7 @@ class STM32 extends BaseGenerator {
         let i2cRegexp = /I2C([\d+])/;
         let usartsRegexp = /USART([\d+])/;
         let uartsRegexp = /UART([\d+])/;
+        let spiRegexp = /SPI([\d+])/;
 
         for (let i = 0; i < peripherals.length; i++) {
             let p = peripherals[i];
@@ -524,6 +537,8 @@ class STM32 extends BaseGenerator {
                 usarts[name] = p;
             } else if (name.match(uartsRegexp)) {
                 uarts[name] = p;
+            } else if (name.match(spiRegexp)) {
+                spis[name] = p;
             } else if (name === 'RCC') {
                 rcc = p;
             }
@@ -535,9 +550,10 @@ class STM32 extends BaseGenerator {
         this.normalizePeriph(i2cs);
         this.normalizePeriph(usarts);
         this.normalizePeriph(uarts);
-        this.collectResetAndClockControl(rcc, [adcs, ports, timers, i2cs, usarts, uarts]);
+        this.normalizePeriph(spis);
+        this.collectResetAndClockControl(rcc, [adcs, ports, timers, i2cs, usarts, uarts, spis]);
 
-        let array = [adcs, timers, i2cs, usarts, uarts]
+        let array = [adcs, timers, i2cs, usarts, uarts, spis];
         let mcuData = {periphs: {}, ports: {}};
         for (let i = 0; i < array.length; i++) {
             let periphs = array[i];

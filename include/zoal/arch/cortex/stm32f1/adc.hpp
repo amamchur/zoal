@@ -3,7 +3,7 @@
 
 #include "../../../mem/reg.hpp"
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32f1 {
     template<uintptr_t Address, class... Mixin>

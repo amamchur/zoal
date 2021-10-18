@@ -93,6 +93,7 @@ void flash_write() {
 
         switch (msg.command) {
         case app_cmd::led:
+            tx_stream << mcu::timer_02::TIMERx_CNT::ref() << "\r\n";
             if (msg.int_value == 0) {
                 user_led::off();
             } else {

@@ -172,13 +172,12 @@ namespace zoal { namespace arch { namespace stm32x {
         using GPIOx_LCKR = zoal::mem::reg<Address + 0x1C, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
         using GPIOx_AFRL = zoal::mem::reg<Address + 0x20, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
         using GPIOx_AFRH = zoal::mem::reg<Address + 0x24, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
-        using GPIOx_BRR = zoal::mem::reg<Address + 0x28, zoal::mem::reg_io::write, register_type, pin_mask>;
 
         template<::zoal::gpio::pin_mode PinMode, register_type Mask>
         using mode_cas = typename pin_mode_to_cnf_mode<self_type, PinMode, Mask>::all;
 
         template<register_type Mask>
-        using low_cas = zoal::mem::callable_cas_list_variadic<typename GPIOx_BRR::template cas<0, Mask>>;
+        using low_cas = zoal::mem::callable_cas_list_variadic<typename GPIOx_BSRR::template cas<0, Mask << 16>>;
 
         template<register_type Mask>
         using high_cas = zoal::mem::callable_cas_list_variadic<typename GPIOx_BSRR::template cas<0, Mask>>;
@@ -191,8 +190,11 @@ namespace zoal { namespace arch { namespace stm32x {
         ZOAL_INLINE_IO static void toggle() {
             static_assert((Mask & pin_mask) == Mask && Mask != 0, "Incorrect pin mask");
             register_type data = GPIOx_ODR::ref();
-            GPIOx_BRR::ref() = data & Mask;
-            GPIOx_BSRR::ref() = ~data & Mask;
+            if ((data & Mask) == 0) {
+                GPIOx_BSRR::ref() = Mask;
+            } else {
+                GPIOx_BSRR::ref() = Mask << 16;
+            }
         }
     };
 }}}

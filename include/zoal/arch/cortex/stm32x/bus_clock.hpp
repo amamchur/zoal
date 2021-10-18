@@ -4,7 +4,7 @@
 #include "../../../arch/bus.hpp"
 #include "../../../gpio/api.hpp"
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32x {
     using zoal::ct::type_list;

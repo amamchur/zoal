@@ -4,7 +4,7 @@
 #include "../../../periph/timer_interrupt.hpp"
 #include "../../../periph/timer_mode.hpp"
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32f3 {
     template<uintptr_t Address, uint8_t N, class... Mixin>

@@ -5,7 +5,7 @@
 #include "../../../ct/helpers.hpp"
 #include "metadata.hpp"
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32x {
     using zoal::gpio::api;

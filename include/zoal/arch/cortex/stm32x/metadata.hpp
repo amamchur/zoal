@@ -6,7 +6,7 @@
 #include "../../../periph/usart.hpp"
 #include "../../bus.hpp"
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace metadata {
     enum class signal {
@@ -49,7 +49,15 @@ namespace zoal { namespace metadata {
         exti2,
         exti11,
         exti15,
-        smba
+        smba,
+        nss,
+        sck,
+        miso,
+        mosi,
+        mck,
+        sd,
+        ws,
+        ckin
     };
 
     enum class stm32_remap_mode { no_remap, partial, full };

@@ -1,7 +1,7 @@
 #ifndef ZOAL_GPIO_STM32F3_HARDWARE_SPI_HPP
 #define ZOAL_GPIO_STM32F3_HARDWARE_SPI_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32f3 {
     enum SPI_FLAGS : uint16_t {

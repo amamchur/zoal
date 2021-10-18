@@ -29,7 +29,7 @@ using i2c_01 = mcu::i2c_01;
 using task_type = zoal::freertos::task<zoal::freertos::freertos_allocation_type::static_mem>;
 __unused zoal::mem::reserve_mem<task_type, 512, StackType_t> input_task(zoal_input_processor, "input");
 __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> terminal_task(zoal_terminal_rx_task, "terminal");
-__unused zoal::mem::reserve_mem<task_type, 256, StackType_t> main_task(zoal_main_task, "main");
+__attribute__((unused)) __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> main_task(zoal_main_task, "main");
 __unused zoal::mem::reserve_mem<task_type, 256, StackType_t> command_task(zoal_cmd_processor, "command");
 //__unused zoal::mem::reserve_mem<task_type, 128, StackType_t> leds_task(zoal_leds, "leds");
 

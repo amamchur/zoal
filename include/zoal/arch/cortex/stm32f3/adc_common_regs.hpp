@@ -1,7 +1,7 @@
 #ifndef ZOAL_ARCH_STM32F3_A2DC_COMMON_REGS_HPP
 #define ZOAL_ARCH_STM32F3_A2DC_COMMON_REGS_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32f3 {
 

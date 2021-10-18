@@ -3,7 +3,7 @@
 
 #include "../../../mem/reg.hpp"
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace zoal { namespace arch {
     class dwt {

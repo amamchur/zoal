@@ -305,6 +305,7 @@ set(STM32F401_SRC
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c
+        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
@@ -320,6 +321,7 @@ set(STM32F401_SRC
         cubemx-proj/stm32f401/Core/Src/freertos.c
         cubemx-proj/stm32f401/Core/Src/gpio.c
         cubemx-proj/stm32f401/Core/Src/main.c
+        cubemx-proj/stm32f401/Core/Src/spi.c
         cubemx-proj/stm32f401/Core/Src/stm32f4xx_hal_msp.c
         cubemx-proj/stm32f401/Core/Src/stm32f4xx_hal_timebase_tim.c
         cubemx-proj/stm32f401/Core/Src/stm32f4xx_it.c

@@ -28,6 +28,55 @@ namespace zoal { namespace arch { namespace stm32f1 {
     using zoal::gpio::api;
     using zoal::mem::callable_cas_list_variadic;
 
+    template <zoal::periph::timer_mode M>
+    class cr1_timer_mode {};
+
+    template <>
+    class cr1_timer_mode<zoal::periph::timer_mode::up> {
+    public:
+        static constexpr uint32_t clear = 0x70;
+        static constexpr uint32_t set = 0;
+    };
+
+    template <>
+    class cr1_timer_mode<zoal::periph::timer_mode::down> {
+    public:
+        static constexpr uint32_t clear = 0x70;
+        static constexpr uint32_t set = 0x10;
+    };
+
+    template <>
+    class cr1_timer_mode<zoal::periph::timer_mode::up_down> {
+    public:
+        static constexpr uint32_t clear = 0x70;
+        static constexpr uint32_t set = 0x20;
+    };
+
+    template <uint32_t Prescaler>
+    class cr1_timer_clock_source {
+    };
+
+    template <>
+    class cr1_timer_clock_source<1> {
+    public:
+        static constexpr uint32_t clear = 0x0000;
+        static constexpr uint32_t set = 0x0300;
+    };
+
+    template <>
+    class cr1_timer_clock_source<2> {
+    public:
+        static constexpr uint32_t clear = 0x0100;
+        static constexpr uint32_t set = 0x0300;
+    };
+
+    template <>
+    class cr1_timer_clock_source<4> {
+    public:
+        static constexpr uint32_t clear = 0x0200;
+        static constexpr uint32_t set = 0x0300;
+    };
+
     template<class Microcontroller>
     class cfg {
     public:
@@ -102,13 +151,13 @@ namespace zoal { namespace arch { namespace stm32f1 {
         template<class T, class Cfg>
         class timer {
         public:
-            static constexpr uint32_t cr1_clear = T::TIMERx_CR1_DIR | T::TIMERx_CR1_CMS | T::TIMERx_CR1_OPM | T::TIMERx_CR1_CKD;
-            static constexpr uint32_t cr1_set = Cfg::mode == zoal::periph::timer_mode::down ? T::TIMERx_CR1_DIR : 0;
+            using cr1_mode = cr1_timer_mode<Cfg::mode>;
+            using cr1_cs = cr1_timer_clock_source<Cfg::clock_division>;
 
-            using TIMERx_CR1 = typename T::TIMERx_CR1::template cas<cr1_clear, cr1_set>;
+            using TIMERx_CR1 = typename T::TIMERx_CR1::template cas<cr1_mode::clear | cr1_cs::clear, cr1_mode::set | cr1_cs::set>;
             using TIMERx_ARR = typename T::TIMERx_ARR::template cas<T::TIMERx_ARR::mask, Cfg::period>;
             using TIMERx_PSC = typename T::TIMERx_PSC::template cas<T::TIMERx_PSC::mask, Cfg::prescaler>;
-            using TIMERx_EGR = typename T::TIMERx_EGR::template cas<0, T::TIMERx_EGR_UG>;
+            using TIMERx_EGR = typename T::TIMERx_EGR::template cas<0xFF, T::TIMERx_EGR_UG>;
             using apply = type_list<TIMERx_CR1, TIMERx_PSC, TIMERx_ARR, TIMERx_EGR>;
         };
     };
