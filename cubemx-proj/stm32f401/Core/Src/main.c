@@ -21,6 +21,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "spi.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/

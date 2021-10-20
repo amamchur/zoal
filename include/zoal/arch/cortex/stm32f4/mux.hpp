@@ -1,13 +1,15 @@
-#ifndef ZOAL_ARCH_STM32X_MUX_HPP
-#define ZOAL_ARCH_STM32X_MUX_HPP
+#ifndef ZOAL_ARCH_STM32F4_MUX_HPP
+#define ZOAL_ARCH_STM32F4_MUX_HPP
 
 #include "../../../ct/check.hpp"
 #include "../../../ct/helpers.hpp"
-#include "metadata.hpp"
+#include "../../../gpio/api.hpp"
+#include "../../../gpio/pin_mode.hpp"
+#include "../stm32x/metadata.hpp"
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32x {
+namespace zoal { namespace arch { namespace stm32f4 {
     using zoal::gpio::api;
     using zoal::gpio::pin_mode;
 

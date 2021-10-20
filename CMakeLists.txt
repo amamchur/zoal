@@ -81,7 +81,7 @@ target_compile_definitions(ATtiny2313 PRIVATE F_CPU=16000000UL)
 # Begin cubemx-proj variables
 
 # STM32CubeMX project variables for cubemx-proj/stm32f030
-set(STM32F030_SRC 
+set(STM32F030_SRC
         cube-repo/STM32Cube_FW_F0_V1.11.3/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.c
         cube-repo/STM32Cube_FW_F0_V1.11.3/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.c
         cube-repo/STM32Cube_FW_F0_V1.11.3/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_dma.c
@@ -104,7 +104,7 @@ set(STM32F030_SRC
         cubemx-proj/stm32f030/Src/stm32f0xx_it.c
         cubemx-proj/stm32f030/Src/system_stm32f0xx.c
         cubemx-proj/stm32f030/startup_stm32f030x6.s)
-set(STM32F030_INC 
+set(STM32F030_INC
         cube-repo/STM32Cube_FW_F0_V1.11.0/Drivers/CMSIS/Include
         cube-repo/STM32Cube_FW_F0_V1.11.3/Drivers/CMSIS/Device/ST/STM32F0xx/Include
         cube-repo/STM32Cube_FW_F0_V1.11.3/Drivers/CMSIS/Include
@@ -116,7 +116,7 @@ set(STM32F030_OPT_MCU -mcpu=cortex-m0 -mthumb)
 set(STM32F030_FLASH_LD cubemx-proj/stm32f030/STM32F030F4Px_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32f103_blue_pill
-set(STM32F103_BLUE_PILL_SRC 
+set(STM32F103_BLUE_PILL_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c
@@ -136,7 +136,7 @@ set(STM32F103_BLUE_PILL_SRC
         cubemx-proj/stm32f103_blue_pill/Src/stm32f1xx_it.c
         cubemx-proj/stm32f103_blue_pill/Src/system_stm32f1xx.c
         cubemx-proj/stm32f103_blue_pill/startup_stm32f103xb.s)
-set(STM32F103_BLUE_PILL_INC 
+set(STM32F103_BLUE_PILL_INC
         cube-repo/STM32Cube_FW_F1_V1.8.0/Drivers/CMSIS/Include
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/CMSIS/Device/ST/STM32F1xx/Include
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/CMSIS/Include
@@ -148,7 +148,7 @@ set(STM32F103_BLUE_PILL_OPT_MCU -mcpu=cortex-m3 -mthumb)
 set(STM32F103_BLUE_PILL_FLASH_LD cubemx-proj/stm32f103_blue_pill/STM32F103C8Tx_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32f103_freertos
-set(STM32F103_FREERTOS_SRC 
+set(STM32F103_FREERTOS_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c
@@ -184,7 +184,7 @@ set(STM32F103_FREERTOS_SRC
         cubemx-proj/stm32f103_freertos/Src/stm32f1xx_it.c
         cubemx-proj/stm32f103_freertos/Src/system_stm32f1xx.c
         cubemx-proj/stm32f103_freertos/startup_stm32f103xb.s)
-set(STM32F103_FREERTOS_INC 
+set(STM32F103_FREERTOS_INC
         cube-repo/STM32Cube_FW_F1_V1.8.3/Drivers/CMSIS/Include
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/CMSIS/Device/ST/STM32F1xx/Include
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/CMSIS/Include
@@ -199,7 +199,7 @@ set(STM32F103_FREERTOS_OPT_MCU -mcpu=cortex-m3 -mthumb)
 set(STM32F103_FREERTOS_FLASH_LD cubemx-proj/stm32f103_freertos/STM32F103C8Tx_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32f303_discovery
-set(STM32F303_DISCOVERY_SRC 
+set(STM32F303_DISCOVERY_SRC
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal.c
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_cortex.c
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_dma.c
@@ -244,7 +244,7 @@ set(STM32F303_DISCOVERY_SRC
         cubemx-proj/stm32f303_discovery/Src/usart.c
         cubemx-proj/stm32f303_discovery/Src/usb.c
         cubemx-proj/stm32f303_discovery/startup_stm32f303xc.s)
-set(STM32F303_DISCOVERY_INC 
+set(STM32F303_DISCOVERY_INC
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/CMSIS/Device/ST/STM32F3xx/Include
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/CMSIS/Include
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/STM32F3xx_HAL_Driver/Inc
@@ -258,7 +258,7 @@ set(STM32F303_DISCOVERY_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloa
 set(STM32F303_DISCOVERY_FLASH_LD cubemx-proj/stm32f303_discovery/STM32F303VCTx_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32f303_nucleo
-set(STM32F303_NUCLEO_SRC 
+set(STM32F303_NUCLEO_SRC
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal.c
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_cortex.c
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_dma.c
@@ -279,7 +279,7 @@ set(STM32F303_NUCLEO_SRC
         cubemx-proj/stm32f303_nucleo/Src/stm32f3xx_it.c
         cubemx-proj/stm32f303_nucleo/Src/system_stm32f3xx.c
         cubemx-proj/stm32f303_nucleo/startup_stm32f303xe.s)
-set(STM32F303_NUCLEO_INC 
+set(STM32F303_NUCLEO_INC
         cube-repo/STM32Cube_FW_F3_V1.11.0/Drivers/CMSIS/Include
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/CMSIS/Device/ST/STM32F3xx/Include
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/CMSIS/Include
@@ -291,7 +291,7 @@ set(STM32F303_NUCLEO_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-a
 set(STM32F303_NUCLEO_FLASH_LD cubemx-proj/stm32f303_nucleo/STM32F303RETx_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32f401
-set(STM32F401_SRC 
+set(STM32F401_SRC
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c
@@ -308,6 +308,7 @@ set(STM32F401_SRC
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
+        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
@@ -326,8 +327,9 @@ set(STM32F401_SRC
         cubemx-proj/stm32f401/Core/Src/stm32f4xx_hal_timebase_tim.c
         cubemx-proj/stm32f401/Core/Src/stm32f4xx_it.c
         cubemx-proj/stm32f401/Core/Src/system_stm32f4xx.c
+        cubemx-proj/stm32f401/Core/Src/usart.c
         cubemx-proj/stm32f401/startup_stm32f401xc.s)
-set(STM32F401_INC 
+set(STM32F401_INC
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/CMSIS/Device/ST/STM32F4xx/Include
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/CMSIS/Include
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Inc
@@ -341,7 +343,7 @@ set(STM32F401_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 set(STM32F401_FLASH_LD cubemx-proj/stm32f401/STM32F401CCUx_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32l432_nucleo
-set(STM32L432_NUCLEO_SRC 
+set(STM32L432_NUCLEO_SRC
         cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c
         cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c
         cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma.c
@@ -382,7 +384,7 @@ set(STM32L432_NUCLEO_SRC
         cubemx-proj/stm32l432_nucleo/Core/Src/system_stm32l4xx.c
         cubemx-proj/stm32l432_nucleo/Core/Src/usart.c
         cubemx-proj/stm32l432_nucleo/startup_stm32l432xx.s)
-set(STM32L432_NUCLEO_INC 
+set(STM32L432_NUCLEO_INC
         cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/CMSIS/Device/ST/STM32L4xx/Include
         cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/CMSIS/Include
         cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Inc
@@ -443,7 +445,19 @@ add_mcu_executable(stm32f103_freertos stm32
         ${STM32F103_FREERTOS_CMD_MACHINE_SRC}
         )
 
-add_mcu_executable(stm32f401 stm32 apps/stm32f401/main.cpp)
+ragel_generate_cpp(apps/stm32f401/command_machine.rl STM32F401_CMD_MACHINE_SRC "-T1")
+add_mcu_executable(stm32f401 stm32
+        apps/stm32f401/main.cpp
+        apps/stm32f401/terminal.cpp
+        apps/stm32f401/command_queue.cpp
+        apps/stm32f401/w25qxx.c
+        apps/stm32f401/constants.cpp
+        apps/stm32f401/hardware.cpp
+        apps/stm32f401/command_processor.cpp
+        misc/terminal_input.cpp
+        ${STM32F401_CMD_MACHINE_SRC}
+        ${TERMINAL_STATE_MACHINE_SRC}
+        )
 
 add_mcu_executable(stm32l432_nucleo stm32 apps/stm32l432.cpp)
 

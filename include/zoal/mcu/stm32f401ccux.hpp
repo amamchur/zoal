@@ -5,20 +5,17 @@
 #define ZOAL_MCU_STM32F401CCUX_HPP
 
 #include <cstdint>
-#include <zoal/arch/cortex/stm32f3/adc.hpp>
-#include <zoal/arch/cortex/stm32f3/adc_common_regs.hpp>
-#include <zoal/arch/cortex/stm32f3/general_purpose_timer.hpp>
-#include <zoal/arch/cortex/stm32f3/spi.hpp>
+#include <zoal/arch/cortex/stm32f4/adc.hpp>
+#include <zoal/arch/cortex/stm32f4/cfg.hpp>
+#include <zoal/arch/cortex/stm32f4/i2c.hpp>
+#include <zoal/arch/cortex/stm32f4/mux.hpp>
+#include <zoal/arch/cortex/stm32f4/spi.hpp>
+#include <zoal/arch/cortex/stm32f4/timer.hpp>
+#include <zoal/arch/cortex/stm32f4/usart.hpp>
 #include <zoal/arch/cortex/stm32x/bus_clock.hpp>
-#include <zoal/arch/cortex/stm32x/cfg.hpp>
-#include <zoal/arch/cortex/stm32x/i2c.hpp>
 #include <zoal/arch/cortex/stm32x/metadata.hpp>
-#include <zoal/arch/cortex/stm32x/mux.hpp>
 #include <zoal/arch/cortex/stm32x/port.hpp>
 #include <zoal/arch/cortex/stm32x/rcc.hpp>
-#include <zoal/arch/cortex/stm32x/spi.hpp>
-#include <zoal/arch/cortex/stm32x/timer.hpp>
-#include <zoal/arch/cortex/stm32x/usart.hpp>
 #include <zoal/arch/enable.hpp>
 #include <zoal/arch/power.hpp>
 #include <zoal/ct/signature.hpp>
@@ -49,7 +46,7 @@ namespace zoal { namespace mcu {
         using clock_apb2 = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_apb2, Mask>;
 
         template<uintptr_t Address, class Clock>
-        using adc = typename ::zoal::arch::stm32x::adc<Address, Clock>;
+        using adc = typename ::zoal::arch::stm32f4::adc<Address, Clock>;
 
         template<uintptr_t Address, class Clock, uint32_t PinMask>
         using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;
@@ -59,28 +56,28 @@ namespace zoal { namespace mcu {
         using port_c = port<0x40020800, clock_ahb1<0x00000004>, 0xE000>;
         using port_h = port<0x40021C00, clock_ahb1<0x00000080>, 0x0003>;
 
-        using adc_01 = ::zoal::arch::stm32x::adc<0x40012000, clock_apb2<0x00000100>>;
+        using adc_01 = ::zoal::arch::stm32f4::adc<0x40012000, clock_apb2<0x00000100>>;
 
-        using i2c_01 = ::zoal::arch::stm32x::i2c<0x40005400, clock_apb1<0x00200000>>;
-        using i2c_02 = ::zoal::arch::stm32x::i2c<0x40005800, clock_apb1<0x00400000>>;
-        using i2c_03 = ::zoal::arch::stm32x::i2c<0x40005C00, clock_apb1<0x00800000>>;
+        using i2c_01 = ::zoal::arch::stm32f4::i2c<0x40005400, clock_apb1<0x00200000>>;
+        using i2c_02 = ::zoal::arch::stm32f4::i2c<0x40005800, clock_apb1<0x00400000>>;
+        using i2c_03 = ::zoal::arch::stm32f4::i2c<0x40005C00, clock_apb1<0x00800000>>;
 
-        using spi_01 = ::zoal::arch::stm32x::spi<0x40013000, clock_apb2<0x00001000>>;
-        using spi_02 = ::zoal::arch::stm32x::spi<0x40003800, clock_apb1<0x00004000>>;
-        using spi_03 = ::zoal::arch::stm32x::spi<0x40003C00, clock_apb1<0x00008000>>;
+        using spi_01 = ::zoal::arch::stm32f4::spi<0x40013000, clock_apb2<0x00001000>>;
+        using spi_02 = ::zoal::arch::stm32f4::spi<0x40003800, clock_apb1<0x00004000>>;
+        using spi_03 = ::zoal::arch::stm32f4::spi<0x40003C00, clock_apb1<0x00008000>>;
 
-        using timer_01 = zoal::arch::stm32x::timer<0x40010000, clock_apb2<0x00000001>>;
-        using timer_10 = zoal::arch::stm32x::timer<0x40014400, clock_apb2<0x00020000>>;
-        using timer_11 = zoal::arch::stm32x::timer<0x40014800, clock_apb2<0x00040000>>;
-        using timer_02 = zoal::arch::stm32x::timer<0x40000000, clock_apb1<0x00000001>>;
-        using timer_03 = zoal::arch::stm32x::timer<0x40000400, clock_apb1<0x00000002>>;
-        using timer_04 = zoal::arch::stm32x::timer<0x40000800, clock_apb1<0x00000004>>;
-        using timer_05 = zoal::arch::stm32x::timer<0x40000C00, clock_apb1<0x00000008>>;
-        using timer_09 = zoal::arch::stm32x::timer<0x40014000, clock_apb2<0x00010000>>;
+        using timer_01 = zoal::arch::stm32f4::timer<0x40010000, clock_apb2<0x00000001>>;
+        using timer_10 = zoal::arch::stm32f4::timer<0x40014400, clock_apb2<0x00020000>>;
+        using timer_11 = zoal::arch::stm32f4::timer<0x40014800, clock_apb2<0x00040000>>;
+        using timer_02 = zoal::arch::stm32f4::timer<0x40000000, clock_apb1<0x00000001>>;
+        using timer_03 = zoal::arch::stm32f4::timer<0x40000400, clock_apb1<0x00000002>>;
+        using timer_04 = zoal::arch::stm32f4::timer<0x40000800, clock_apb1<0x00000004>>;
+        using timer_05 = zoal::arch::stm32f4::timer<0x40000C00, clock_apb1<0x00000008>>;
+        using timer_09 = zoal::arch::stm32f4::timer<0x40014000, clock_apb2<0x00010000>>;
 
-        using usart_01 = typename ::zoal::arch::stm32x::usart<0x40011000, clock_apb2<0x00000010>>;
-        using usart_02 = typename ::zoal::arch::stm32x::usart<0x40004400, clock_apb1<0x00020000>>;
-        using usart_06 = typename ::zoal::arch::stm32x::usart<0x40011400, clock_apb2<0x00000020>>;
+        using usart_01 = typename ::zoal::arch::stm32f4::usart<0x40011000, clock_apb2<0x00000010>>;
+        using usart_02 = typename ::zoal::arch::stm32f4::usart<0x40004400, clock_apb1<0x00020000>>;
+        using usart_06 = typename ::zoal::arch::stm32f4::usart<0x40011400, clock_apb2<0x00000020>>;
 
         template<class Port, uint8_t Offset>
         using pin = typename ::zoal::gpio::pin<Port, Offset>;
@@ -127,8 +124,8 @@ namespace zoal { namespace mcu {
 
         using ports = ::zoal::ct::type_list<port_a, port_b, port_c, port_h>;
         using api = ::zoal::gpio::api;
-        using mux = ::zoal::arch::stm32x::mux<self_type>;
-        using cfg = ::zoal::arch::stm32x::cfg<self_type>;
+        using mux = ::zoal::arch::stm32f4::mux<self_type>;
+        using cfg = ::zoal::arch::stm32f4::cfg<self_type>;
 
         template<class... Module>
         using power = ::zoal::arch::power<Module...>;

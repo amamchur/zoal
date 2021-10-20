@@ -91,22 +91,19 @@ let familyMap = {
         ]
     },
     'stm32f4': {
-        ns: 'stm32x',
+        ns: 'stm32f4',
         includes: [
-            '#include <zoal/arch/cortex/stm32f3/adc.hpp>',
-            '#include <zoal/arch/cortex/stm32f3/adc_common_regs.hpp>',
-            '#include <zoal/arch/cortex/stm32f3/general_purpose_timer.hpp>',
-            '#include <zoal/arch/cortex/stm32f3/spi.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/adc.hpp>',
             '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
-            '#include <zoal/arch/cortex/stm32x/cfg.hpp>',
-            '#include <zoal/arch/cortex/stm32x/mux.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/cfg.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/mux.hpp>',
             '#include <zoal/arch/cortex/stm32x/port.hpp>',
             '#include <zoal/arch/cortex/stm32x/rcc.hpp>',
-            '#include <zoal/arch/cortex/stm32x/usart.hpp>',
-            '#include <zoal/arch/cortex/stm32x/i2c.hpp>',
-            '#include <zoal/arch/cortex/stm32x/timer.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/usart.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/i2c.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/timer.hpp>',
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
-            '#include <zoal/arch/cortex/stm32x/spi.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/spi.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
             '#include <zoal/gpio/api.hpp>',
@@ -114,7 +111,7 @@ let familyMap = {
         ],
         classDeclaration: [
             `template<uintptr_t Address, class Clock>`,
-            `using adc = typename ::zoal::arch::stm32x::adc<Address, Clock>;`,
+            `using adc = typename ::zoal::arch::stm32f4::adc<Address, Clock>;`,
             ``,
             `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
             `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
@@ -256,7 +253,7 @@ class STM32 extends BaseGenerator {
                 let address = STM32.toHex(data.address, 8);
                 let n = ("00" + no.toString(10)).substr(-2);
                 let m = STM32.toHex(data.busClockMask, 8);
-                result.push(`using ${name}_${n} = ::zoal::arch::stm32x::spi<${address}, clock_${data.bus}<${m}>>;`);
+                result.push(`using ${name}_${n} = ::zoal::arch::${ns}::spi<${address}, clock_${data.bus}<${m}>>;`);
             }
         };
 

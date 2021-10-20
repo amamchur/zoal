@@ -7,12 +7,11 @@
 #include <stdint.h>
 
 namespace zoal { namespace utils { namespace cmsis_os2 {
-    template<class Microcontroller>
+    template<uint32_t SysFrequency>
     class delay {
     public:
-        using mcu = Microcontroller;
         using counter_value_type = uint32_t;
-        static constexpr uint32_t ps_per_clock  = (1000000000 / (mcu::frequency / 1000));
+        static constexpr uint32_t ps_per_clock  = (1000000000 / (SysFrequency / 1000));
 
         static inline void ms(counter_value_type milliseconds) {
             osDelay(milliseconds);
@@ -20,13 +19,13 @@ namespace zoal { namespace utils { namespace cmsis_os2 {
 
         template<uint64_t Milliseconds>
         static inline void ms() {
-            constexpr uint64_t clocks = (mcu::frequency / 1000) * Milliseconds;
+            constexpr uint64_t clocks = (SysFrequency / 1000) * Milliseconds;
             nop<clocks>::place();
         }
 
         template<uint64_t Microseconds>
         static inline void us() {
-            constexpr uint64_t clocks = (mcu::frequency / 1000000) * Microseconds;
+            constexpr uint64_t clocks = (SysFrequency / 1000000) * Microseconds;
             nop<clocks>::place();
         }
 
