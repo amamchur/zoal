@@ -52,49 +52,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added SPI abstraction">
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/command_machine.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/command_machine.rl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/command_processor.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/command_processor.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/command_queue.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/command_queue.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/constants.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/constants.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/terminal.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/terminal.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/types.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/w25qxx.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/w25qxx.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/w25qxx.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/w25qxxConf.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/adc.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/cfg.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/i2c.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/spi.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/timer.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/usart.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/stm32f4xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/stm32f4xx_hal_conf.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/gpio.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/gpio.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gen-mcus.bat" beforeDir="false" afterPath="$PROJECT_DIR$/gen-mcus.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/STM32.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/STM32.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/mux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f401ccux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f401ccux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/utils/cmsis_os2/delay.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/utils/cmsis_os2/delay.hpp" afterDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Updated stm32f401 example">
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/usart.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/usart.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -638,13 +598,7 @@
       <workItem from="1634546654776" duration="10269000" />
       <workItem from="1634627124810" duration="20363000" />
       <workItem from="1634725339003" duration="5000" />
-    </task>
-    <task id="LOCAL-00004" summary="Add Knuth-Morris-Pratt search algorithm">
-      <created>1609247477676</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1609247477676</updated>
+      <workItem from="1634741364959" duration="383000" />
     </task>
     <task id="LOCAL-00005" summary="Improved CAS applying strategies">
       <created>1610145785780</created>
@@ -982,7 +936,14 @@
       <option name="project" value="LOCAL" />
       <updated>1634569010923</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="Updated stm32f401 example">
+      <created>1634741416487</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1634741416487</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1016,7 +977,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Re-factor digital sampler" />
     <MESSAGE value="Re-factor date time output" />
     <MESSAGE value="Update i2c interface for STM32F1" />
     <MESSAGE value="Add i2c configuration for STM32F1" />
@@ -1041,7 +1001,8 @@
     <MESSAGE value="Implemented timer abstraction for STM32F3" />
     <MESSAGE value="Added pwm_channel for ATmega arch" />
     <MESSAGE value="Added SPI abstraction" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added SPI abstraction" />
+    <MESSAGE value="Updated stm32f401 example" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated stm32f401 example" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
