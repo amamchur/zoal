@@ -7,6 +7,8 @@ namespace zoal { namespace arch { namespace stm32f4 {
     template<uintptr_t Address, class... Mixin>
     class timer : public Mixin... {
     public:
+        static constexpr auto address = Address;
+
         using TIMERx_CR1 = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using TIMERx_CR2 = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using TIMERx_SMCR = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;

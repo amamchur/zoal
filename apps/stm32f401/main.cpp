@@ -6,6 +6,8 @@
 #include "terminal.hpp"
 #include "usart.h"
 #include "w25qxx.h"
+#include "tim.h"
+#include "adc.h"
 
 #include <cstring>
 #include <zoal/data/ring_buffer.hpp>
@@ -222,7 +224,7 @@ uint8_t test_buffer[16] = {0};
         tx_stream << zoal::io::hexadecimal(i) << " ";
     }
     tx_stream << "\r\n";
-    
+
     terminal.sync();
 
     for (;;) {
@@ -242,6 +244,10 @@ uint8_t test_buffer[16] = {0};
 
 extern "C" void SystemClock_Config(void);
 
+using timer = mcu::timer_02;
+using pin = mcu::pa_00;
+using ch = mcu::mux::pwm_channel<timer, pin>;
+
 int main() {
     HAL_Init();
     SystemClock_Config();
@@ -249,6 +255,11 @@ int main() {
     MX_GPIO_Init();
     MX_SPI1_Init();
     MX_USART1_UART_Init();
+    MX_TIM2_Init();
+    MX_ADC1_Init();
+//    HAL_ADC_GetValue(&myADC2Handle);
+
+    ch::connect();
 
     zoal_init_hardware();
 

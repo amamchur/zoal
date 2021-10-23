@@ -52,9 +52,41 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Updated stm32f401 example">
-      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/usart.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/usart.c" afterDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added rotary_2phase_machine_v2">
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_18_2021_10_16_PM_[Default_Changelist]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_18_2021_10_16_PM__Default_Changelist_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_20_2021_7_10_PM_[Default_Changelist]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_20_2021_7_10_PM__Default_Changelist_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_24_02_2021_0_24_[Default_Changelist]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_24_02_2021_0_24_[Default_Changelist]1/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_24_02_2021_0_24__Default_Changelist_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/usb_device.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/usbd_cdc_if.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/usbd_conf.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/usbd_desc.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/usb_device.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/usbd_cdc_if.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/usbd_conf.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/usbd_desc.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/tim.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/.mxproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/stm32f4xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/stm32f4xx_hal_conf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/adc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/adc.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/i2c.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/i2c.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/timer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/timer.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32x/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ct/type_list.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ct/type_list.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/pwm.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/pwm.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,6 +129,11 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/include/zoal/ic/ws2812.hpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedIndex" value="3" />
@@ -154,6 +191,11 @@
     </option>
   </component>
   <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f401">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -281,6 +323,11 @@
       </method>
     </configuration>
     <configuration name="All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug Host" EXPLICIT_BUILD_TARGET_NAME="all">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -599,6 +646,9 @@
       <workItem from="1634627124810" duration="20363000" />
       <workItem from="1634725339003" duration="5000" />
       <workItem from="1634741364959" duration="383000" />
+      <workItem from="1634831452921" duration="2069000" />
+      <workItem from="1634834114958" duration="3641000" />
+      <workItem from="1634931371724" duration="24114000" />
     </task>
     <task id="LOCAL-00005" summary="Improved CAS applying strategies">
       <created>1610145785780</created>
@@ -1006,19 +1056,35 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/generator/STM32.js</url>
+          <line>762</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/generator/STM32.js</url>
+          <line>668</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/generator/STM32.js</url>
+          <line>712</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
             <option name="notifyOnTerminate" value="true" />
           </properties>
         </breakpoint>
+        <breakpoint enabled="true" type="CidrExceptionBreakpoint" />
       </default-breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="NodeJSConfigurationType">
-        <watch expression="this" language="JavaScript" />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

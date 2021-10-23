@@ -44,6 +44,9 @@ namespace zoal { namespace arch { namespace stm32f4 {
         static constexpr uint32_t I2Cx_ISR_TXIS = 1 << 1; // Transmit interrupt status (transmitters)
         static constexpr uint32_t I2Cx_ISR_TXE = 1 << 0; // Transmit data register empty (transmitters)
 
+        using enable_cas = zoal::ct::type_list<typename I2Cx_CR1::template cas<0, I2Cx_CR1_PE>>;
+        using disable_cas = zoal::ct::type_list<typename I2Cx_CR1::template cas<I2Cx_CR1_PE, 0>>;
+
         static inline void enable() {
             I2Cx_CR1::ref() |= I2Cx_CR1_PE;
         }

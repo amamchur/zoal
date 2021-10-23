@@ -15,6 +15,10 @@ namespace zoal { namespace periph {
         inline static void set(typename ocr::type value) {
             ocr::ref() = value;
         }
+
+        inline static typename ocr::type& pulse_width() {
+            return ocr::ref();
+        }
     };
 }}
 
