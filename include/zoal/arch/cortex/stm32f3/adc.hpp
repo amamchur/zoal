@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32x {
+namespace zoal { namespace arch { namespace stm32f3 {
     template<uintptr_t Address, class... Mixin>
     class adc : public Mixin... {
     private:

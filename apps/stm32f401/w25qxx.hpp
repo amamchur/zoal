@@ -40,14 +40,12 @@ namespace zoal { namespace ic {
                               static_cast<uint8_t>(addr & 0xFF),
                               0,
                               0};
-            uint8_t rx[16];
+            typename ws25qxx_cs::_0();
             cmd[0] = 0x0B;
             cmd[1] = (addr >> 16) & 0xFF;
             cmd[2] = (addr >> 8) & 0xFF;
             cmd[3] = addr & 0xFF;
             cmd[4] = 0;
-            cmd[5] = 0;
-            typename ws25qxx_cs::_0();
             spi::transfer(cmd, cmd, sizeof(cmd));
             spi::transfer(buffer, buffer, size);
             typename ws25qxx_cs::_1();

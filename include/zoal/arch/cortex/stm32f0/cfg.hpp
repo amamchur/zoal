@@ -1,6 +1,7 @@
 #ifndef ZOAL_ARCH_STM32X_CFG_HPP
 #define ZOAL_ARCH_STM32X_CFG_HPP
 
+#include "../../../gpio/api.hpp"
 #include "../../../periph/usart.hpp"
 #include "../../../utils/helpers.hpp"
 #include "../../bus.hpp"
@@ -19,7 +20,8 @@ namespace zoal { namespace metadata {
     struct stm32_stop_bits_to_cr2;
 }}
 
-namespace zoal { namespace arch { namespace stm32x {
+namespace zoal { namespace arch { namespace stm32f0 {
+    using zoal::ct::type_list;
     using zoal::gpio::api;
 
     template<class Microcontroller>

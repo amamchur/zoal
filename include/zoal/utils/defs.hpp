@@ -1,6 +1,7 @@
 #ifndef ZOAL_INLINE_LEVEL
-#define ZOAL_INLINE_LEVEL 4
+#define ZOAL_INLINE_LEVEL 0
 #endif
+
 
 #ifdef ZOAL_COVERAGE
 

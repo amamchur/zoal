@@ -3,11 +3,11 @@
 
 #include "../../../ct/check.hpp"
 #include "../../../ct/helpers.hpp"
-#include "metadata.hpp"
+#include "../stm32x/metadata.hpp"
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32x {
+namespace zoal { namespace arch { namespace stm32f0 {
     using zoal::gpio::api;
     using zoal::gpio::pin_mode;
 
@@ -23,7 +23,7 @@ namespace zoal { namespace arch { namespace stm32x {
             template<class Port, uint8_t Pin, uint8_t af>
             class stm32_alternate_function_mux {
             public:
-                using af_reg = typename zoal::ct::conditional_type <(Pin < 8), typename Port::GPIOx_AFRL, typename Port::GPIOx_AFRH>::type;
+                using af_reg = typename zoal::ct::conditional_type<(Pin < 8), typename Port::GPIOx_AFRL, typename Port::GPIOx_AFRH>::type;
                 static constexpr uint32_t af_shift = (Pin & 0x7) << 2;
                 static constexpr uint32_t af_clear = 0xF << af_shift;
                 static constexpr uint32_t af_set = af << af_shift;

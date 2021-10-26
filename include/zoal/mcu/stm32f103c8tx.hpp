@@ -12,12 +12,12 @@
 #include <zoal/arch/cortex/stm32f1/metadata.hpp>
 #include <zoal/arch/cortex/stm32f1/mux.hpp>
 #include <zoal/arch/cortex/stm32f1/port.hpp>
+#include <zoal/arch/cortex/stm32f1/rcc.hpp>
+#include <zoal/arch/cortex/stm32f1/spi.hpp>
 #include <zoal/arch/cortex/stm32f1/timer.hpp>
 #include <zoal/arch/cortex/stm32f1/usart.hpp>
 #include <zoal/arch/cortex/stm32x/bus_clock.hpp>
 #include <zoal/arch/cortex/stm32x/metadata.hpp>
-#include <zoal/arch/cortex/stm32x/rcc.hpp>
-#include <zoal/arch/cortex/stm32x/spi.hpp>
 #include <zoal/arch/enable.hpp>
 #include <zoal/arch/power.hpp>
 #include <zoal/ct/signature.hpp>
@@ -29,7 +29,7 @@ namespace zoal { namespace mcu {
         using self_type = stm32f103c8tx;
         using signature = zoal::ct::signature<'s', 't', 'm', '3', '2', 'f', '1', '0', '3', 'c', '8', 't', 'x'>;
 
-        using rcc = ::zoal::arch::stm32x::rcc<>;
+        using rcc = ::zoal::arch::stm32f1::rcc<0x40021000>;
 
         template<uint32_t Mask>
         using clock_ahb = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_ahb, Mask>;
@@ -62,8 +62,8 @@ namespace zoal { namespace mcu {
         using i2c_01 = ::zoal::arch::stm32f1::i2c<0x40005400, clock_apb1<0x00200000>>;
         using i2c_02 = ::zoal::arch::stm32f1::i2c<0x40005800, clock_apb1<0x00400000>>;
 
-        using spi_01 = ::zoal::arch::stm32x::spi<0x40013000, clock_apb2<0x00001000>>;
-        using spi_02 = ::zoal::arch::stm32x::spi<0x40003800, clock_apb1<0x00004000>>;
+        using spi_01 = ::zoal::arch::stm32f1::spi<0x40013000, clock_apb2<0x00001000>>;
+        using spi_02 = ::zoal::arch::stm32f1::spi<0x40003800, clock_apb1<0x00004000>>;
 
         using timer_01 = zoal::arch::stm32f1::timer<0x40012C00, clock_apb2<0x00000800>>;
         using timer_02 = zoal::arch::stm32f1::timer<0x40000000, clock_apb1<0x00000001>>;

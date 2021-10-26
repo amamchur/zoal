@@ -1,9 +1,9 @@
-#ifndef ZOAL_ARCH_STM32X_TIMER_HPP
-#define ZOAL_ARCH_STM32X_TIMER_HPP
+#ifndef ZOAL_ARCH_STM32F3_TIMER_HPP
+#define ZOAL_ARCH_STM32F3_TIMER_HPP
 
 #include "../../../periph/timer.hpp"
 
-namespace zoal { namespace arch { namespace stm32x {
+namespace zoal { namespace arch { namespace stm32f3 {
     template<uintptr_t Address, class... Mixin>
     class timer : public Mixin... {
     public:

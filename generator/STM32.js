@@ -7,27 +7,27 @@ const path = require('path');
 let svdData = {};
 let familyMap = {
     'stm32f0': {
-        ns: 'stm32x',
+        ns: 'stm32f0',
         includes: [
             '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
-            '#include <zoal/arch/cortex/stm32x/cfg.hpp>',
-            '#include <zoal/arch/cortex/stm32x/mux.hpp>',
-            '#include <zoal/arch/cortex/stm32x/port.hpp>',
-            '#include <zoal/arch/cortex/stm32x/rcc.hpp>',
-            '#include <zoal/arch/cortex/stm32x/usart.hpp>',
+            '#include <zoal/arch/cortex/stm32f0/cfg.hpp>',
+            '#include <zoal/arch/cortex/stm32f0/mux.hpp>',
+            '#include <zoal/arch/cortex/stm32f0/port.hpp>',
+            '#include <zoal/arch/cortex/stm32f0/rcc.hpp>',
+            '#include <zoal/arch/cortex/stm32f0/usart.hpp>',
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
             '#include <zoal/gpio/api.hpp>',
             '#include <zoal/gpio/pin.hpp>',
-            '#include <zoal/arch/cortex/stm32x/timer.hpp>',
-            '#include <zoal/arch/cortex/stm32x/i2c.hpp>',
-            '#include <zoal/arch/cortex/stm32x/spi.hpp>',
+            '#include <zoal/arch/cortex/stm32f0/timer.hpp>',
+            '#include <zoal/arch/cortex/stm32f0/i2c.hpp>',
+            '#include <zoal/arch/cortex/stm32f0/spi.hpp>',
         ],
         classDeclaration: [
             ``,
             `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
-            `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
+            `using port = typename ::zoal::arch::stm32f0::port<Address, Clock, PinMask>;`,
             ``
         ]
     },
@@ -38,7 +38,7 @@ let familyMap = {
             '#include <zoal/arch/cortex/stm32f1/afio.hpp>',
             '#include <zoal/arch/cortex/stm32f1/cfg.hpp>',
             '#include <zoal/arch/cortex/stm32f1/mux.hpp>',
-            '#include <zoal/arch/cortex/stm32x/rcc.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/rcc.hpp>',
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
@@ -47,7 +47,7 @@ let familyMap = {
             '#include <zoal/arch/cortex/stm32f1/port.hpp>',
             '#include <zoal/arch/cortex/stm32f1/usart.hpp>',
             '#include <zoal/arch/cortex/stm32f1/timer.hpp>',
-            '#include <zoal/arch/cortex/stm32x/spi.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/spi.hpp>',
             '#include <zoal/arch/cortex/stm32f1/metadata.hpp>',
             '#include <zoal/arch/cortex/stm32f1/i2c.hpp>'
         ],
@@ -60,22 +60,20 @@ let familyMap = {
         ]
     },
     'stm32f3': {
-        ns: 'stm32x',
+        ns: 'stm32f3',
         includes: [
             '#include <zoal/arch/cortex/stm32f3/adc.hpp>',
-            '#include <zoal/arch/cortex/stm32f3/adc_common_regs.hpp>',
-            '#include <zoal/arch/cortex/stm32f3/general_purpose_timer.hpp>',
             '#include <zoal/arch/cortex/stm32f3/spi.hpp>',
             '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
-            '#include <zoal/arch/cortex/stm32x/cfg.hpp>',
-            '#include <zoal/arch/cortex/stm32x/mux.hpp>',
-            '#include <zoal/arch/cortex/stm32x/port.hpp>',
-            '#include <zoal/arch/cortex/stm32x/rcc.hpp>',
-            '#include <zoal/arch/cortex/stm32x/usart.hpp>',
-            '#include <zoal/arch/cortex/stm32x/i2c.hpp>',
-            '#include <zoal/arch/cortex/stm32x/timer.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/cfg.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/mux.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/port.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/rcc.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/usart.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/i2c.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/timer.hpp>',
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
-            '#include <zoal/arch/cortex/stm32x/spi.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/spi.hpp>',
             '#include <zoal/arch/enable.hpp>',
             '#include <zoal/arch/power.hpp>',
             '#include <zoal/gpio/api.hpp>',
@@ -83,7 +81,7 @@ let familyMap = {
         ],
         classDeclaration: [
             `template<uintptr_t Address, class Clock>`,
-            `using adc = typename ::zoal::arch::stm32x::adc<Address, Clock>;`,
+            `using adc = typename ::zoal::arch::stm32f3::adc<Address, Clock>;`,
             ``,
             `template<uintptr_t Address, class Clock, uint32_t PinMask>`,
             `using port = typename ::zoal::arch::stm32x::port<Address, Clock, PinMask>;`,
@@ -97,8 +95,8 @@ let familyMap = {
             '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
             '#include <zoal/arch/cortex/stm32f4/cfg.hpp>',
             '#include <zoal/arch/cortex/stm32f4/mux.hpp>',
-            '#include <zoal/arch/cortex/stm32x/port.hpp>',
-            '#include <zoal/arch/cortex/stm32x/rcc.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/port.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/rcc.hpp>',
             '#include <zoal/arch/cortex/stm32f4/usart.hpp>',
             '#include <zoal/arch/cortex/stm32f4/i2c.hpp>',
             '#include <zoal/arch/cortex/stm32f4/timer.hpp>',
@@ -541,6 +539,7 @@ class STM32 extends BaseGenerator {
             }
         }
 
+        this.rcc_reg = rcc;
         this.normalizePeriph(adcs);
         this.normalizePeriph(ports);
         this.normalizePeriph(timers);
@@ -800,8 +799,11 @@ class STM32 extends BaseGenerator {
     }
 
     buildClocks() {
+        let data = familyMap[this.mcu.family];
+        let ns = data.ns;
+        let rcc = this.rcc_reg;
         return [
-            `using rcc = ::zoal::arch::stm32x::rcc<>;`,
+            `using rcc = ::zoal::arch::${ns}::rcc<${rcc.baseAddress[0]}>;`,
             ``,
             `template<uint32_t Mask>`,
             `using clock_ahb = ::zoal::arch::stm32x::bus_clock<rcc, zoal::arch::bus::cortex_ahb, Mask>;`,

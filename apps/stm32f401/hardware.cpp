@@ -1,8 +1,7 @@
 #include "hardware.hpp"
 
 #include "stm32f4xx_hal.h"
-
-#include <zoal/periph/i2c.hpp>
+#include "zoal/periph/spi.hpp"
 
 zoal::mem::reserve_mem<stream_buffer_type, 32> rx_stream_buffer(1);
 zoal::mem::reserve_mem<stream_buffer_type, 32> tx_stream_buffer(1);
@@ -18,12 +17,34 @@ constexpr uint32_t apb2_periph_clock_freq = 84000000;
 
 void zoal_init_hardware() {
     using api = zoal::gpio::api;
-    using i2c_02_cfg = zoal::periph::i2c_fast_mode<apb1_periph_clock_freq>;
+    using tty_usart_params = zoal::periph::usart_115200<apb2_periph_clock_freq>;
+    using tty_usart_mux = mcu::mux::usart<tty_usart, mcu::pb_07, mcu::pb_06>;
+    using tty_usart_cfg = mcu::cfg::usart<tty_usart, tty_usart_params>;
 
-    using usart_01_cfg = zoal::periph::usart_115200<apb2_periph_clock_freq>;
-    using usart_mux = mcu::mux::usart<tty_usart, mcu::pb_07, mcu::pb_06>;
-    using usart_cfg = mcu::cfg::usart<tty_usart, usart_01_cfg>;
+    using spi_01_params = zoal::periph::spi_config<apb2_periph_clock_freq>;
+    using spi_mux = mcu::mux::spi<mcu::spi_01, mcu::pa_06, mcu::pa_07, mcu::pa_05>;
+    using spi_cfg = mcu::cfg::spi<mcu::spi_01, spi_01_params>;
 
+    api::optimize<
+        //
+        tty_usart_mux::periph_clock_on,
+        tty_usart_cfg::periph_clock_on
+        //
+        >();
+    api::optimize<api::disable<tty_usart>>();
+
+    api::optimize<
+        //
+        tty_usart_mux::connect,
+        tty_usart_cfg::apply
+        //
+//        spi_mux::connect,
+//        spi_cfg::apply
+        //
+        >();
+
+    // Enable peripherals after configuration
+    api::optimize<api::enable<tty_usart>>();
 
     HAL_NVIC_SetPriority(USART1_IRQn, 13, 0);
     HAL_NVIC_EnableIRQ(USART1_IRQn);
@@ -49,7 +70,10 @@ void usart_01_tx_transport::send_data(const void *data, size_t size) {
 }
 
 extern "C" void USART1_IRQHandler() {
-    tty_usart::tx_handler([](uint8_t &value) { return tx_stream_buffer.receive_isr(&value, 1) > 0; });
+    tty_usart::tx_handler([](uint8_t &value) {
+        //
+        return tx_stream_buffer.receive_isr(&value, 1) > 0;
+    });
     tty_usart::rx_handler([](uint8_t byte) {
         rx_stream_buffer.send_isr(byte);
         hardware_events.set_isr(usart_event);

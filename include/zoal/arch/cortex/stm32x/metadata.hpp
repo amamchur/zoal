@@ -83,6 +83,33 @@ namespace zoal { namespace metadata {
     template<uint8_t Bits>
     struct stm32_data_bits_to_cr1 {};
 
+    template<int Bits>
+    struct stm32_spi_clock_div_to_cr1_br : zoal::ct::integral_constant<int, -1>  {};
+
+    template<>
+    struct stm32_spi_clock_div_to_cr1_br<2> : zoal::ct::integral_constant<int, 0>  {};
+
+    template<>
+    struct stm32_spi_clock_div_to_cr1_br<4> : zoal::ct::integral_constant<int, 1>  {};
+
+    template<>
+    struct stm32_spi_clock_div_to_cr1_br<8> : zoal::ct::integral_constant<int, 2>  {};
+
+    template<>
+    struct stm32_spi_clock_div_to_cr1_br<16> : zoal::ct::integral_constant<int, 3>  {};
+
+    template<>
+    struct stm32_spi_clock_div_to_cr1_br<32> : zoal::ct::integral_constant<int, 4>  {};
+
+    template<>
+    struct stm32_spi_clock_div_to_cr1_br<64> : zoal::ct::integral_constant<int, 5>  {};
+
+    template<>
+    struct stm32_spi_clock_div_to_cr1_br<128> : zoal::ct::integral_constant<int, 6>  {};
+
+    template<>
+    struct stm32_spi_clock_div_to_cr1_br<256> : zoal::ct::integral_constant<int, 7>  {};
+
     template<>
     struct stm32_data_bits_to_cr1<7> {
         static const uint32_t set_mask = 0x10000000;

@@ -4,7 +4,7 @@
 #include "../../../mem/reg.hpp"
 #include "../../../utils/defs.hpp"
 
-namespace zoal { namespace arch { namespace stm32x {
+namespace zoal { namespace arch { namespace stm32f0 {
     template<uintptr_t Address, class Clock>
     class spi : public Clock {
     public:

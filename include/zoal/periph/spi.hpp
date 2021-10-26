@@ -14,9 +14,14 @@ namespace zoal { namespace periph {
         lsbf,
     };
 
-    template<uintptr_t ClockDivider = 2, bit_order Order = bit_order::msbf, spi_cpol_cpha PolPha = spi_cpol_cpha::mode_0, spi_mode Mode = spi_mode::master>
+    template<uint32_t SpiFreq,
+             uintptr_t ClockDivider = 2,
+             bit_order Order = bit_order::msbf,
+             spi_cpol_cpha PolPha = spi_cpol_cpha::mode_0,
+             spi_mode Mode = spi_mode::master>
     class spi_config {
     public:
+        static constexpr uint32_t clock_frequency = SpiFreq;
         static constexpr uintptr_t clock_divider = ClockDivider;
         static constexpr bit_order order = Order;
         static constexpr spi_cpol_cpha pol_pha = PolPha;

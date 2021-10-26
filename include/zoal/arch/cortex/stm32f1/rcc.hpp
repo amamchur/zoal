@@ -1,13 +1,13 @@
-#ifndef ZOAL_GPIO_STM32X_RCC_HPP
-#define ZOAL_GPIO_STM32X_RCC_HPP
+#ifndef ZOAL_GPIO_STM32F1_RCC_HPP
+#define ZOAL_GPIO_STM32F1_RCC_HPP
 
 #include "../../../arch/bus.hpp"
-#include "bus_clock.hpp"
+#include "../stm32x/bus_clock.hpp"
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32x {
-    template<uintptr_t Address = 0x40021000>
+namespace zoal { namespace arch { namespace stm32f1 {
+    template<uintptr_t Address>
     class rcc {
     public:
         using self_type = rcc<Address>;
