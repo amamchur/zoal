@@ -2,7 +2,7 @@
 #define ZOAL_STM32F401_FREERTOS_HARDWARE_HPP
 
 #include "stm32f4xx_hal.h"
-#include "w25qxx.hpp"
+#include "zoal/ic/w25qxx.hpp"
 
 #include <zoal/freertos/event_group.hpp>
 #include <zoal/freertos/mutex.hpp>

@@ -57,13 +57,6 @@ public:
     }
     tx_stream << "\r\n";
 
-    memset(test_buffer, 0, sizeof(test_buffer));
-    w25q32::read_data(0, test_buffer, sizeof(test_buffer));
-    for (unsigned char i : test_buffer) {
-        tx_stream << zoal::io::hexadecimal(i) << " ";
-    }
-    tx_stream << "\r\n";
-
     terminal.sync();
 
     for (;;) {

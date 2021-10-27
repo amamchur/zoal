@@ -38,9 +38,12 @@ namespace zoal { namespace arch { namespace stm32f4 {
         }
 
         static uint8_t transfer_byte(uint8_t data) {
+            enable();
             SPIx_DR::ref() = data;
             while (!(SPIx_SR::ref() & SPIx_SR_RXNE)) continue;
-            return SPIx_DR::ref();
+            uint8_t value = SPIx_DR::ref();
+            disable();
+            return value;
         }
 
         static uint8_t transfer(void *txb, void *rxb, size_t size) {
@@ -48,20 +51,22 @@ namespace zoal { namespace arch { namespace stm32f4 {
             auto rx = reinterpret_cast<uint8_t *>(rxb);
             auto txe = tx + size;
             auto rxe = rx + size;
-            bool tx_allowed = true;
 
             enable();
-            while (!(SPIx_SR::ref() & SPIx_SR_TXE));
             while (tx < txe && rx < rxe) {
-                if ((SPIx_SR::ref() & SPIx_SR_TXE) && (tx < txe) && tx_allowed) {
+                while (!(SPIx_SR::ref() & SPIx_SR_TXE));
+
+                if (tx < txe) {
                     SPIx_DR::ref() = *tx++;
-                    tx_allowed = false;
                 }
 
-                if ((SPIx_SR::ref() & SPIx_SR_RXNE) && (rx < rxe)) {
-                    auto d = SPIx_DR::ref();
-                    *rx++ = d;
-                    tx_allowed = true;
+                while (!(SPIx_SR::ref() & SPIx_SR_RXNE));
+                if (rx < rxe) {
+                    auto b = SPIx_DR::ref();
+                    if (rxb != nullptr) {
+                        *rx = b;
+                    }
+                    rx++;
                 }
             }
 

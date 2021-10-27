@@ -29,10 +29,17 @@
 
     cmd_help = 'help' %{ this->command_ = app_cmd::help; };
     cmd_ticks = 'ticks' %{ this->command_ = app_cmd::ticks; };
-
+    cmd_w25q_read = ('w25q_read' space+ unsigned_int) %{ this->command_ = app_cmd::w25q_read; };
+    cmd_w25q_write = ('w25q_write' space+ unsigned_int) %{ this->command_ = app_cmd::w25q_write; };
+    cmd_w25q_erase_sector = ('w25q_erase_sector' space+ unsigned_int)  %{ this->command_ = app_cmd::w25q_erase_sector; };
+    cmd_w25q_erase_chip = 'w25q_erase_chip' %{ this->command_ = app_cmd::w25q_erase_chip; };
     commands = (
         cmd_help |
-        cmd_ticks
+        cmd_ticks |
+        cmd_w25q_read |
+        cmd_w25q_write |
+        cmd_w25q_erase_chip |
+        cmd_w25q_erase_sector
     );
 
 	main := (space* commands space*) %finished;

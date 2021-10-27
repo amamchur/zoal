@@ -4,7 +4,11 @@
 enum class app_cmd {
     none,
     ticks,
-    help
+    help,
+    w25q_read,
+    w25q_write,
+    w25q_erase_chip,
+    w25q_erase_sector
 };
 
 #endif
