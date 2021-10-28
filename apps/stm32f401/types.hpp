@@ -3,8 +3,14 @@
 
 enum class app_cmd {
     none,
+    adc,
+    i2c,
+    timer,
     ticks,
     help,
+    pwm,
+    pwm_on,
+    pwm_off,
     w25q_read,
     w25q_write,
     w25q_erase_chip,

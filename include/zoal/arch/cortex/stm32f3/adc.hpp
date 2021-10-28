@@ -6,12 +6,14 @@
 #include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32f3 {
-    template<uintptr_t Address, class... Mixin>
+    template<uintptr_t Address, class ComRegs, class... Mixin>
     class adc : public Mixin... {
     private:
         enum A2DC_Flags : uint32_t { Enable = 0x00000001, StartRegularConversion = 0x00000004 };
 
     public:
+        using common_regs = ComRegs;
+
         using ADCx_ISR = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using ADCx_IER = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using ADCx_CR = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
@@ -90,8 +92,7 @@ namespace zoal { namespace arch { namespace stm32f3 {
             return value();
         }
 
-        static void setup() {
-        }
+        static void setup() {}
     };
 }}}
 

@@ -10,8 +10,10 @@ const char *zoal_ascii_logo = "  __________          _\r\n"
 
 const char *help_message = "ZOAL STM32F401 FreeRTOS Demo Application\r\n"
                            "Commands: \r\n"
-                           "\tticks\t\tdisplay current ticks\r\n"
-                           "\tw25q_read\tw25q_read\r\n"
-                           "\tw25q_write\tw25q_write\r\n"
-                           "\tw25q_erase\tw25q_erase\r\n"
-                           "\thelp\t\tdisplay help\r\n";
+                           "\tadc\t\t\t\tadc\r\n"
+                           "\tticks\t\t\t\tdisplay current ticks\r\n"
+                           "\tw25q_read [addr]\t\tw25q_read\r\n"
+                           "\tw25q_write [addr]\t\tw25q_write\r\n"
+                           "\tw25q_erase_chip [addr]\t\tw25q_erase_chip\r\n"
+                           "\tw25q_erase_sector [addr]\tw25q_erase_sector\r\n"
+                           "\thelp\t\t\t\tdisplay help\r\n";

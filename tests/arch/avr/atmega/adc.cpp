@@ -30,7 +30,7 @@ TEST(avr_atmega_adc, cfg) {
 
     using mcu = zoal::mcu::atmega328p;
     using adc = mcu::adc_00;
-    using gpio_cfg = api::optimize<mcu::cfg::adc<adc, adc_config<>>::apply>;
+    using gpio_cfg = api::optimize<mcu::cfg::adc<adc, adc_params<>>::apply>;
 
     cas_collector c;
     type_list_iterator<gpio_cfg>::for_each(c);

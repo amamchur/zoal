@@ -27,6 +27,12 @@
 	signed_int = ('-'? digit+) >arg_start %arg_finished;
 	unsigned_int = (digit+) >arg_start %arg_finished;
 
+    cmd_adc = 'adc' %{ this->command_ = app_cmd::adc; };
+    cmd_i2c = 'i2c' %{ this->command_ = app_cmd::i2c; };
+    cmd_pwm = ('pwm' space+ unsigned_int) %{ this->command_ = app_cmd::pwm; };
+    cmd_pwm_on = 'pwm_on' %{ this->command_ = app_cmd::pwm_on; };
+    cmd_pwm_off = 'pwm_off' %{ this->command_ = app_cmd::pwm_off; };
+    cmd_timer = 'timer' %{ this->command_ = app_cmd::timer; };
     cmd_help = 'help' %{ this->command_ = app_cmd::help; };
     cmd_ticks = 'ticks' %{ this->command_ = app_cmd::ticks; };
     cmd_w25q_read = ('w25q_read' space+ unsigned_int) %{ this->command_ = app_cmd::w25q_read; };
@@ -34,6 +40,12 @@
     cmd_w25q_erase_sector = ('w25q_erase_sector' space+ unsigned_int)  %{ this->command_ = app_cmd::w25q_erase_sector; };
     cmd_w25q_erase_chip = 'w25q_erase_chip' %{ this->command_ = app_cmd::w25q_erase_chip; };
     commands = (
+        cmd_adc |
+        cmd_i2c |
+        cmd_pwm |
+        cmd_pwm_on |
+        cmd_pwm_off |
+        cmd_timer |
         cmd_help |
         cmd_ticks |
         cmd_w25q_read |

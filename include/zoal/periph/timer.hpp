@@ -7,9 +7,9 @@
 
 namespace zoal { namespace periph {
     template<uint32_t TimerFreq, uint32_t Prescaler, uint32_t Period, timer_mode Mode>
-    class timer_config {
+    class timer_params {
     public:
-        static constexpr uint32_t clock_division = 1;
+        static constexpr uint32_t clock_divider = 1;
         static constexpr uint32_t prescaler = Prescaler;
         static constexpr uint32_t period = Period;
         static constexpr timer_mode mode = Mode;

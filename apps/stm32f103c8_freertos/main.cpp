@@ -40,7 +40,7 @@ public:
 void test_timer() {
     using zoal::gpio::api;
     using timer = mcu::timer_02;
-    using timer_cfg = zoal::periph::timer_config<72000000, 36000, 0xFFFF, zoal::periph::timer_mode::up>;
+    using timer_cfg = zoal::periph::timer_params<72000000, 36000, 0xFFFF, zoal::periph::timer_mode::up>;
     using timer_cfg_cas = mcu::cfg::timer<timer, timer_cfg>::apply;
 
     functor fn;

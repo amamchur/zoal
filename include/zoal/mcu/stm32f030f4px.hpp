@@ -5,6 +5,7 @@
 #define ZOAL_MCU_STM32F030F4PX_HPP
 
 #include <cstdint>
+#include <zoal/arch/cortex/stm32f0/adc_common.hpp>
 #include <zoal/arch/cortex/stm32f0/cfg.hpp>
 #include <zoal/arch/cortex/stm32f0/i2c.hpp>
 #include <zoal/arch/cortex/stm32f0/mux.hpp>
@@ -50,6 +51,8 @@ namespace zoal { namespace mcu {
         using port_a = port<0x48000000, clock_ahb<0x00020000>, 0x66FF>;
         using port_b = port<0x48000400, clock_ahb<0x00040000>, 0x0002>;
         using port_f = port<0x48001400, clock_ahb<0x00400000>, 0x0003>;
+
+        using adc_common = ::zoal::arch::stm32f0::adc_common<0x00000000>;
 
         using i2c_01 = ::zoal::arch::stm32f0::i2c<0x40005400, clock_apb1<0x00200000>>;
 

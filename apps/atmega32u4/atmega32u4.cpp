@@ -85,7 +85,7 @@ static void initialize_hardware() {
         mcu::cfg::i2c<i2c, i2c_cfg>::apply,
         //
         mcu::mux::adc<adc, pcb::ard_a00>::connect,
-        mcu::cfg::adc<adc, zoal::periph::adc_config<>>::apply,
+        mcu::cfg::adc<adc, zoal::periph::adc_params<>>::apply,
         //
         api::mode<zoal::gpio::pin_mode::output, blink_pin>,
         api::mode<zoal::gpio::pin_mode::input_pull_up, pcb::ard_a01, pcb::ard_a02, pcb::ard_a03, pcb::ard_a04, pcb::ard_a05>,

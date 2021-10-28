@@ -3,14 +3,14 @@
 
 namespace zoal { namespace periph {
 	template <uint32_t Freq, uint32_t I2CFreq = 400000>
-	class i2c_config {
+	class i2c_params {
 	public:
 		static constexpr uint32_t clock_frequency = Freq;
 		static constexpr uint32_t i2c_frequency = I2CFreq;
 	};
 
     template <uint32_t Freq>
-    using i2c_fast_mode = i2c_config<Freq, 400000>;
+    using i2c_fast_mode = i2c_params<Freq, 400000>;
 }}
 
 #endif

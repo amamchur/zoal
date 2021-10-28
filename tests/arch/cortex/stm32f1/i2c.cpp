@@ -57,7 +57,7 @@ TEST(stm32f1_i2c, i2c_fasm_mode_duty_0) {
 
     using mcu = zoal::mcu::stm32f103c8tx;
     using i2c = mcu::i2c_02;
-    using i2c_02_cfg = zoal::periph::i2c_config<36000000, 400000>;
+    using i2c_02_cfg = zoal::periph::i2c_params<36000000, 400000>;
     using i2c_cfg = mcu::cfg::i2c<i2c, i2c_02_cfg>;
 
     {
@@ -135,7 +135,7 @@ TEST(stm32f1_i2c, i2c_fasm_mode_duty_1) {
 
     using mcu = zoal::mcu::stm32f103c8tx;
     using i2c = mcu::i2c_02;
-    using i2c_02_cfg = zoal::periph::i2c_config<40000000, 400000>;
+    using i2c_02_cfg = zoal::periph::i2c_params<40000000, 400000>;
     using i2c_cfg = mcu::cfg::i2c<i2c, i2c_02_cfg>;
 
     {

@@ -9,6 +9,7 @@ let familyMap = {
     'stm32f0': {
         ns: 'stm32f0',
         includes: [
+            '#include <zoal/arch/cortex/stm32f0/adc_common.hpp>',
             '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
             '#include <zoal/arch/cortex/stm32f0/cfg.hpp>',
             '#include <zoal/arch/cortex/stm32f0/mux.hpp>',
@@ -35,6 +36,7 @@ let familyMap = {
         ns: 'stm32f1',
         includes: [
             '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/adc_common.hpp>',
             '#include <zoal/arch/cortex/stm32f1/afio.hpp>',
             '#include <zoal/arch/cortex/stm32f1/cfg.hpp>',
             '#include <zoal/arch/cortex/stm32f1/mux.hpp>',
@@ -63,6 +65,7 @@ let familyMap = {
         ns: 'stm32f3',
         includes: [
             '#include <zoal/arch/cortex/stm32f3/adc.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/adc_common.hpp>',
             '#include <zoal/arch/cortex/stm32f3/spi.hpp>',
             '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
             '#include <zoal/arch/cortex/stm32f3/cfg.hpp>',
@@ -92,6 +95,7 @@ let familyMap = {
         ns: 'stm32f4',
         includes: [
             '#include <zoal/arch/cortex/stm32f4/adc.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/adc_common.hpp>',
             '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
             '#include <zoal/arch/cortex/stm32f4/cfg.hpp>',
             '#include <zoal/arch/cortex/stm32f4/mux.hpp>',
@@ -206,6 +210,16 @@ class STM32 extends BaseGenerator {
         this.collectPorts(portMap);
     }
 
+    buildAdcCommon() {
+        let ac = this.adcCommon;
+        let address = ac ? ac.baseAddress[0] : '0x00000000';
+        let data = familyMap[this.mcu.family];
+        let ns = data.ns;
+        return [
+            `using adc_common = ::zoal::arch::${ns}::adc_common<${address}>;`
+        ];
+    }
+
     buildPeriphs() {
         let periphs = this.mcu.periphs;
         let result = [];
@@ -230,7 +244,7 @@ class STM32 extends BaseGenerator {
                 let address = STM32.toHex(data.address, 8);
                 let n = ("00" + no.toString(10)).substr(-2);
                 let m = STM32.toHex(data.busClockMask, 8);
-                result.push(`using ${name}_${n} = ::zoal::arch::${ns}::adc<${address}, clock_${data.bus}<${m}>>;`);
+                result.push(`using ${name}_${n} = ::zoal::arch::${ns}::adc<${address}, adc_common, clock_${data.bus}<${m}>>;`);
             },
 
             i2c: function (name, no, data) {
@@ -509,6 +523,7 @@ class STM32 extends BaseGenerator {
         let uarts = {};
         let spis = {};
         let rcc = null;
+        let adcCommon = null;
         let portRegexp = /GPIO([A-Z])/;
         let adcRegexp = /ADC([\d+])/;
         let timerRegexp = /TIM([\d+])/;
@@ -534,12 +549,15 @@ class STM32 extends BaseGenerator {
                 uarts[name] = p;
             } else if (name.match(spiRegexp)) {
                 spis[name] = p;
+            } else if (name === 'ADC_Common') {
+                adcCommon = p;
             } else if (name === 'RCC') {
                 rcc = p;
             }
         }
 
-        this.rcc_reg = rcc;
+        this.rccReg = rcc;
+        this.adcCommon = adcCommon;
         this.normalizePeriph(adcs);
         this.normalizePeriph(ports);
         this.normalizePeriph(timers);
@@ -801,7 +819,7 @@ class STM32 extends BaseGenerator {
     buildClocks() {
         let data = familyMap[this.mcu.family];
         let ns = data.ns;
-        let rcc = this.rcc_reg;
+        let rcc = this.rccReg;
         return [
             `using rcc = ::zoal::arch::${ns}::rcc<${rcc.baseAddress[0]}>;`,
             ``,
@@ -857,6 +875,8 @@ class STM32 extends BaseGenerator {
             this.buildFamilySpec().join('\n'),
             ``,
             this.buildPortList().join('\n'),
+            ``,
+            this.buildAdcCommon().join('\n'),
             ``,
             this.buildPeriphs().join('\n'),
             ``,

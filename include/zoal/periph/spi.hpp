@@ -19,7 +19,7 @@ namespace zoal { namespace periph {
              bit_order Order = bit_order::msbf,
              spi_cpol_cpha PolPha = spi_cpol_cpha::mode_0,
              spi_mode Mode = spi_mode::master>
-    class spi_config {
+    class spi_params {
     public:
         static constexpr uint32_t clock_frequency = SpiFreq;
         static constexpr uintptr_t clock_divider = ClockDivider;

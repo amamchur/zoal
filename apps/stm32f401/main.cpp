@@ -2,6 +2,7 @@
 #include "command_processor.hpp"
 #include "gpio.h"
 #include "hardware.hpp"
+#include "i2c.h"
 #include "spi.h"
 #include "stm32f4xx_hal.h"
 #include "terminal.hpp"
@@ -9,7 +10,6 @@
 #include "usart.h"
 #include "w25qxx.h"
 
-#include <cstring>
 #include <zoal/data/ring_buffer.hpp>
 #include <zoal/freertos/task.hpp>
 
@@ -46,21 +46,22 @@ public:
 [[noreturn]] void zoal_main_task(void *) {
     init_terminal();
 
-    W25qxx_Init();
-    memset(test_buffer, 0, sizeof(test_buffer));
-    W25qxx_ReadBytes(test_buffer, 0, sizeof(test_buffer));
-
-    tx_stream << "\r\n";
-
-    for (unsigned char i : test_buffer) {
-        tx_stream << zoal::io::hexadecimal(i) << " ";
-    }
-    tx_stream << "\r\n";
-
     terminal.sync();
+    tx_stream << "Connect: \r\n";
+
+    funct fn;
+    zoal::ct::type_chain_iterator<pwm_channel::connect>::for_each(fn);
+
+    tx_stream << "Disconnect: \r\n";
+    zoal::ct::type_chain_iterator<pwm_channel::disconnect>::for_each(fn);
 
     for (;;) {
         auto bits = hardware_events.wait(all_hardware_events);
+
+        if ((bits & i2c_event) == i2c_event) {
+            i2c_dispatcher.handle();
+        }
+
         if ((bits & usart_event) == usart_event) {
             uint8_t rx_buffer[8];
             size_t size;
@@ -76,18 +77,14 @@ public:
 
 extern "C" void SystemClock_Config(void);
 
-using timer = mcu::timer_02;
-using pin = mcu::pa_00;
-using ch = mcu::mux::pwm_channel<timer, pin>;
-
 int main() {
     HAL_Init();
+
     SystemClock_Config();
 
-    MX_GPIO_Init();
-    MX_USART1_UART_Init();
-
     MX_SPI1_Init();
+    MX_I2C1_Init();
+
     zoal_init_hardware();
 
     vTaskStartScheduler();

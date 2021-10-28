@@ -6,9 +6,11 @@
 #include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32f1 {
-    template<uintptr_t Address, class... Mixin>
+    template<uintptr_t Address, class ComRegs, class... Mixin>
     class adc : public Mixin... {
     public:
+        using common_regs = ComRegs;
+
         using self_type = adc<Address, Mixin...>;
         static constexpr uintptr_t address = Address;
 

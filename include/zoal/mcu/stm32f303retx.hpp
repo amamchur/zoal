@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <zoal/arch/cortex/stm32f3/adc.hpp>
+#include <zoal/arch/cortex/stm32f3/adc_common.hpp>
 #include <zoal/arch/cortex/stm32f3/cfg.hpp>
 #include <zoal/arch/cortex/stm32f3/i2c.hpp>
 #include <zoal/arch/cortex/stm32f3/mux.hpp>
@@ -57,10 +58,12 @@ namespace zoal { namespace mcu {
         using port_d = port<0x48000C00, clock_ahb<0x00100000>, 0x0004>;
         using port_f = port<0x48001400, clock_ahb<0x00400000>, 0x0003>;
 
-        using adc_01 = ::zoal::arch::stm32f3::adc<0x50000000, clock_ahb<0x10000000>>;
-        using adc_02 = ::zoal::arch::stm32f3::adc<0x50000100, clock_ahb<0x10000000>>;
-        using adc_03 = ::zoal::arch::stm32f3::adc<0x50000400, clock_ahb<0x20000000>>;
-        using adc_04 = ::zoal::arch::stm32f3::adc<0x50000500, clock_ahb<0x20000000>>;
+        using adc_common = ::zoal::arch::stm32f3::adc_common<0x00000000>;
+
+        using adc_01 = ::zoal::arch::stm32f3::adc<0x50000000, adc_common, clock_ahb<0x10000000>>;
+        using adc_02 = ::zoal::arch::stm32f3::adc<0x50000100, adc_common, clock_ahb<0x10000000>>;
+        using adc_03 = ::zoal::arch::stm32f3::adc<0x50000400, adc_common, clock_ahb<0x20000000>>;
+        using adc_04 = ::zoal::arch::stm32f3::adc<0x50000500, adc_common, clock_ahb<0x20000000>>;
 
         using i2c_01 = ::zoal::arch::stm32f3::i2c<0x40005400, clock_apb1<0x00200000>>;
         using i2c_02 = ::zoal::arch::stm32f3::i2c<0x40005800, clock_apb1<0x00400000>>;

@@ -48,6 +48,24 @@ namespace zoal { namespace ct {
     struct value_at_index {
         static constexpr T result = value_at_index_iter<Index, 0, T, Default, List>::result;
     };
+
+    template<int Index, class T, T Value, class List>
+    struct index_of_value_iter {
+        static constexpr auto index = Index;
+        static constexpr bool m = Value == List::value;
+        using next = index_of_value_iter<Index + 1, T, Value, typename List::next>;
+        static constexpr int result = m ? index : next::result;
+    };
+
+    template<int Index, class T, T Value>
+    struct index_of_value_iter<Index, T, Value, void> {
+        static constexpr int result = -1;
+    };
+
+    template<class T, T Value, class List>
+    struct index_of_value {
+        static constexpr int result = index_of_value_iter<0, T, Value, List>::result;
+    };
 }}
 
 #endif

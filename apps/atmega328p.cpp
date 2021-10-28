@@ -66,7 +66,7 @@ void initialize_hardware() {
     using namespace zoal::gpio;
     using usart_cfg = zoal::periph::usart_115200<F_CPU>;
     using i2c_cfg = zoal::periph::i2c_fast_mode<F_CPU>;
-    using adc_cfg = zoal::periph::adc_config<>;
+    using adc_cfg = zoal::periph::adc_params<>;
     using i2c_cfg = zoal::periph::i2c_fast_mode<F_CPU>;
 
     // Power on modules

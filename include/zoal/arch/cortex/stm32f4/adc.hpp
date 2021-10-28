@@ -6,12 +6,11 @@
 #include <cstdint>
 
 namespace zoal { namespace arch { namespace stm32f4 {
-    template<uintptr_t Address, class... Mixin>
+    template<uintptr_t Address, class ComRegs, class... Mixin>
     class adc : public Mixin... {
-    private:
-        enum A2DC_Flags : uint32_t { Enable = 0x00000001, StartRegularConversion = 0x00000004 };
-
     public:
+        using common_regs = ComRegs;
+
         using ADCx_SR = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using ADCx_CR1 = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using ADCx_CR2 = zoal::mem::reg<Address + 0x08, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
@@ -35,24 +34,27 @@ namespace zoal { namespace arch { namespace stm32f4 {
 
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t resolution = 12;
+        static constexpr uint32_t ADCx_CR2_ADON = 1 << 0;
+        static constexpr uint32_t ADCx_CR2_SWSTART = 1 << 30;
+        static constexpr uint32_t ADCx_SR_EOC = 1 << 1;
 
-//        using enable_cas = zoal::ct::type_list<typename ADCx_CR::template cas<0, Enable>>;
-//        using disable_cas = zoal::ct::type_list<typename ADCx_CR::template cas<Enable, 0>>;
+        using enable_cas = zoal::ct::type_list<typename ADCx_CR2::template cas<0, ADCx_CR2_ADON>>;
+        using disable_cas = zoal::ct::type_list<typename ADCx_CR2::template cas<ADCx_CR2_ADON, 0>>;
 
         static void enable() {
-//            ADCx_CR::ref() |= Enable;
+            ADCx_CR2::ref() |= ADCx_CR2_ADON;
         }
 
         static void disable() {
-//            ADCx_CR::ref() &= ~Enable;
+            ADCx_CR2::ref() &= ~ADCx_CR2_ADON;
         }
 
         static inline void start() {
-//            ADCx_CR::ref() |= Enable | StartRegularConversion;
+            ADCx_CR2::ref() |= ADCx_CR2_SWSTART;
         }
 
         static inline void wait() {
-//            while ((ADCx_ISR::ref() & (1 << 2)) == 0) continue;
+            while ((ADCx_SR::ref() & ADCx_SR_EOC) == 0) continue;
         }
 
         static uint16_t value() {
@@ -64,8 +66,6 @@ namespace zoal { namespace arch { namespace stm32f4 {
             wait();
             return value();
         }
-
-        static void setup() {}
     };
 }}}
 

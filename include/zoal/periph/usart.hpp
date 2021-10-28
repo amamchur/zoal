@@ -13,7 +13,7 @@ namespace zoal { namespace periph {
              uint8_t Bits = 8,
              zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
              zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1>
-    class usart_config {
+    class usart_params {
     public:
         static constexpr uint32_t clock_frequency = UsartFreq;
         static constexpr uint32_t baud_rate = BaudRate;
@@ -23,19 +23,19 @@ namespace zoal { namespace periph {
     };
 
     template<uint32_t UsartFreq>
-    using usart_115200 = usart_config<UsartFreq, 115200>;
+    using usart_115200 = usart_params<UsartFreq, 115200>;
 
     template<uint32_t UsartFreq>
-    using usart_57600 = usart_config<UsartFreq, 57600>;
+    using usart_57600 = usart_params<UsartFreq, 57600>;
 
     template<uint32_t UsartFreq>
-    using usart_38400 = usart_config<UsartFreq, 38400>;
+    using usart_38400 = usart_params<UsartFreq, 38400>;
 
     template<uint32_t UsartFreq>
-    using usart_19200 = usart_config<UsartFreq, 19200>;
+    using usart_19200 = usart_params<UsartFreq, 19200>;
 
     template<uint32_t UsartFreq>
-    using usart_9600 = usart_config<UsartFreq, 9600>;
+    using usart_9600 = usart_params<UsartFreq, 9600>;
 }}
 
 #endif

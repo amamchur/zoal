@@ -4,17 +4,49 @@
 namespace zoal { namespace ic {
     template<class Spi, class ChipSelectPin, class Delay>
     class w25qxx {
+    private:
+        static constexpr uint8_t sr1_busy = 1 << 0;
+        static constexpr uint8_t sr1_write_enabled = 1 << 1;
+        static constexpr uint8_t sr1_block_protect = 3 << 2;
+        static constexpr uint8_t sr1_top_bottom_protect = 1 << 5;
+        static constexpr uint8_t sr1_sector_protect = 1 << 6;
+        static constexpr uint8_t sr1_status_reg_protect = 1 << 7;
+
+        static void write_enable() {
+            typename ws25qxx_cs::_0();
+            spi::transfer_byte(0x06);
+            typename ws25qxx_cs::_1();
+        }
+
+        static void write_disable() {
+            typename ws25qxx_cs::_0();
+            spi::transfer_byte(0x04);
+            typename ws25qxx_cs::_1();
+            delay::ms(1);
+        }
+
+        static void wait_for_ready() {
+            typename ws25qxx_cs::_0();
+            spi::transfer_byte(0x05);
+            uint8_t sr = spi::transfer_byte(0x00);
+            while ((sr & sr1_busy) == sr1_busy) {
+                delay::ms(1);
+                sr = spi::transfer_byte(0x00);
+            }
+            typename ws25qxx_cs::_1();
+        }
+
     public:
         using ws25qxx_cs = ChipSelectPin;
         using spi = Spi;
         using delay = Delay;
 
-        static void sector_sector(uint32_t addr) {
+        static void sector_sector(uint32_t sector_addr) {
             uint8_t cmd[4] = {//
                               0x20,
-                              static_cast<uint8_t>((addr >> 16) & 0xFF),
-                              static_cast<uint8_t>((addr >> 8) & 0xFF),
-                              static_cast<uint8_t>(addr & 0xFF)};
+                              static_cast<uint8_t>((sector_addr >> 16) & 0xFF),
+                              static_cast<uint8_t>((sector_addr >> 8) & 0xFF),
+                              static_cast<uint8_t>(sector_addr & 0xFF)};
             wait_for_ready();
             write_enable();
             typename ws25qxx_cs::_0();
@@ -25,12 +57,12 @@ namespace zoal { namespace ic {
             wait_for_ready();
         }
 
-        static void block_erase(uint32_t addr, bool erase64 = false) {
+        static void block_erase(uint32_t block_addr, bool erase64 = false) {
             uint8_t cmd[4] = {//
                               static_cast<uint8_t>(erase64 ? 0xD8 : 0x20),
-                              static_cast<uint8_t>((addr >> 16) & 0xFF),
-                              static_cast<uint8_t>((addr >> 8) & 0xFF),
-                              static_cast<uint8_t>(addr & 0xFF)};
+                              static_cast<uint8_t>((block_addr >> 16) & 0xFF),
+                              static_cast<uint8_t>((block_addr >> 8) & 0xFF),
+                              static_cast<uint8_t>(block_addr & 0xFF)};
             wait_for_ready();
             write_enable();
             typename ws25qxx_cs::_0();
@@ -42,12 +74,11 @@ namespace zoal { namespace ic {
         }
 
         static void chip_erase() {
-            uint8_t cmd[1] = {0xC7};
             wait_for_ready();
             write_enable();
             wait_for_ready();
             typename ws25qxx_cs::_0();
-            spi::transfer(cmd, cmd, sizeof(cmd));
+            spi::transfer_byte(0xC7);
             typename ws25qxx_cs::_1();
             wait_for_ready();
             write_disable();
@@ -85,31 +116,12 @@ namespace zoal { namespace ic {
             typename ws25qxx_cs::_1();
         }
 
-    private:
-        static void write_enable() {
-            uint8_t cmd[] = {0x06};
-            typename ws25qxx_cs::_0();
-            spi::transfer(cmd, cmd, sizeof(cmd));
-            typename ws25qxx_cs::_1();
+        static inline uint32_t sector_address(uint32_t addr) {
+            return addr >> 12;
         }
 
-        static void write_disable() {
-            uint8_t cmd[] = {0x04};
-            typename ws25qxx_cs::_0();
-            spi::transfer(cmd, cmd, sizeof(cmd));
-            typename ws25qxx_cs::_1();
-            delay::ms(1);
-        }
-
-        static void wait_for_ready() {
-            uint8_t sr;
-            typename ws25qxx_cs::_0();
-            spi::transfer_byte(0x05);
-            do {
-                sr = spi::transfer_byte(0x00);
-                delay::ms(1);
-            } while ((sr & 0x01) == 0x01);
-            typename ws25qxx_cs::_1();
+        static inline uint32_t block_address(uint32_t addr) {
+            return addr >> 16;
         }
     };
 }}

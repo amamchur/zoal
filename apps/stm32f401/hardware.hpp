@@ -46,7 +46,25 @@ constexpr EventBits_t usart_event = 1 << 1;
 constexpr EventBits_t all_hardware_events = i2c_event | usart_event;
 extern zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> hardware_events;
 
+using sensor_adc = mcu::adc_01;
+using sensor_pin = mcu::pa_00;
+using sensor_channel = mcu::mux::adc_channel<sensor_adc, sensor_pin>;
+
+using timer = mcu::timer_02;
+using pin = mcu::pa_15;
+using pwm_channel = mcu::mux::pwm_channel<timer, pin>;
+
+using i2c_01 = mcu::i2c_01;
+using i2c_req_dispatcher_type = zoal::periph::i2c_request_dispatcher<i2c_01, sizeof(void *) * 8>;
+extern i2c_req_dispatcher_type i2c_dispatcher;
+extern zoal::periph::i2c_request &request;
+extern zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> io_events;
+
 using w25q32 = zoal::ic::w25qxx<mcu::spi_01, mcu::pa_04, delay>;
+
+auto constexpr buffer_mem_type = zoal::periph::device_buffer_type::shared_mem;
+extern zoal::ic::ds3231<buffer_mem_type> clock;
+extern zoal::ic::at24cxx<buffer_mem_type> eeprom;
 
 void zoal_init_hardware();
 
