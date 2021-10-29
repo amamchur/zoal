@@ -47,7 +47,7 @@ namespace zoal { namespace arch { namespace stm32f0 {
             using clock_rx_on = typename PinRX::port::clock_on_cas;
 
             // Final merge
-            using periph_clock_on = api::optimize<clock_tx_on, clock_rx_on>;
+            using clock_on = api::optimize<clock_tx_on, clock_rx_on>;
             using connect = api::optimize<
                 //
                 typename stm32_alternate_function_mux<typename PinRX::port, PinRX::offset, rx_af::value>::connect_cas,

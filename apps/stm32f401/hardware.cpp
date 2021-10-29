@@ -2,11 +2,8 @@
 
 #include "stm32f4xx_hal.h"
 
-#include <zoal/periph/adc.hpp>
 #include <zoal/periph/i2c.hpp>
-#include <zoal/periph/spi.hpp>
-
-zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> io_events;
+#include <zoal/utils/interrupts.hpp>
 
 zoal::mem::reserve_mem<stream_buffer_type, 32> rx_stream_buffer(1);
 zoal::mem::reserve_mem<stream_buffer_type, 32> tx_stream_buffer(1);
@@ -24,42 +21,39 @@ zoal::ic::at24cxx<buffer_mem_type> eeprom(i2c_shared_buffer);
 
 zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem> hardware_events;
 
-constexpr uint32_t apb1_periph_clock_freq = 42000000;
-constexpr uint32_t apb2_periph_clock_freq = 84000000;
-
 void zoal_init_hardware() {
     using api = zoal::gpio::api;
-    using tty_usart_params = zoal::periph::usart_115200<apb2_periph_clock_freq>;
-    using tty_usart_mux = mcu::mux::usart<tty_usart, mcu::pb_07, mcu::pb_06>;
+    using tty_usart_params = zoal::periph::usart_115200<apb2_clock_freq>;
+    using tty_usart_mux = mcu::mux::usart<tty_usart, tty_usart_rx, tty_usart_tx>;
     using tty_usart_cfg = mcu::cfg::usart<tty_usart, tty_usart_params>;
 
-    using spi_01_params = zoal::periph::spi_params<apb2_periph_clock_freq>;
-    using spi_mux = mcu::mux::spi<mcu::spi_01, mcu::pa_06, mcu::pa_07, mcu::pa_05>;
-    using spi_cfg = mcu::cfg::spi<mcu::spi_01, spi_01_params>;
+    using flash_params = zoal::periph::spi_params<apb2_clock_freq>;
+    using flash_spi_mux = mcu::mux::spi<flash_spi, flash_spi_mosi, flash_spi_miso, flash_spi_sck>;
+    using flash_spi_cfg = mcu::cfg::spi<flash_spi, flash_params>;
 
     using adc_params = zoal::periph::adc_params<>;
-    using adc_cfg = mcu::cfg::adc<mcu::adc_01, adc_params>;
+    using adc_cfg = mcu::cfg::adc<sensor_adc, adc_params>;
 
-    using timer_params = zoal::periph::timer_params<apb2_periph_clock_freq, 840, 1000, zoal::periph::timer_mode::up>;
+    using timer_params = zoal::periph::timer_params<apb2_clock_freq, 840, 1000, zoal::periph::timer_mode::up>;
     using timer_cfg = mcu::cfg::timer<mcu::timer_02, timer_params>;
 
-    using i2c_02_cfg = zoal::periph::i2c_fast_mode<apb1_periph_clock_freq>;
-    using i2c_mux = mcu::mux::i2c<mcu::i2c_01, mcu::pb_09, mcu::pb_08>;
-    using i2c_cfg = mcu::cfg::i2c<mcu::i2c_01, i2c_02_cfg>;
+    using i2c_params = zoal::periph::i2c_fast_mode<apb1_clock_freq>;
+    using i2c_mux = mcu::mux::i2c<main_i2c, main_i2c_sda, main_i2c_scl>;
+    using i2c_cfg = mcu::cfg::i2c<main_i2c, i2c_params>;
 
     api::optimize<
         //
-        tty_usart_mux::periph_clock_on,
-        tty_usart_cfg::periph_clock_on,
-        spi_mux::periph_clock_on,
-        spi_cfg::periph_clock_on,
-        i2c_mux::periph_clock_on,
-        i2c_cfg::periph_clock_on,
-        adc_cfg::periph_clock_on,
-        timer_cfg::periph_clock_on
+        tty_usart_mux::clock_on,
+        tty_usart_cfg::clock_on,
+        flash_spi_mux::clock_on,
+        flash_spi_cfg::clock_on,
+        i2c_mux::clock_on,
+        i2c_cfg::clock_on,
+        adc_cfg::clock_on,
+        timer_cfg::clock_on
         //
         >();
-    api::optimize<api::disable<tty_usart, mcu::spi_01, mcu::adc_01, mcu::timer_02>>();
+    api::optimize<api::disable<tty_usart, flash_spi, sensor_adc, pwm_timer, main_i2c>>();
 
     api::optimize<
         //
@@ -68,17 +62,20 @@ void zoal_init_hardware() {
         //
         adc_cfg::apply,
         //
-        spi_mux::connect,
-        spi_cfg::apply,
+        flash_spi_mux::connect,
+        flash_spi_cfg::apply,
+        //
+        i2c_mux::connect,
+        i2c_cfg::apply,
         //
         timer_cfg::apply
         //
         >();
 
     // Enable peripherals after configuration
-    api::optimize<api::enable<tty_usart, mcu::spi_01, mcu::adc_01, mcu::timer_02>>();
+    api::optimize<api::enable<tty_usart, flash_spi, sensor_adc, pwm_timer, main_i2c>>();
 
-    HAL_NVIC_SetPriority(USART1_IRQn, 13, 0);
+    HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(USART1_IRQn);
     HAL_NVIC_SetPriority(I2C1_EV_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
@@ -117,9 +114,15 @@ extern "C" void USART1_IRQHandler() {
 }
 
 extern "C" void I2C1_EV_IRQHandler() {
-    i2c_01::handle_request_irq(request, []() { io_events.set_isr(1); });
+    mcu::i2c_01::handle_request_irq(request, []() {
+        //
+        hardware_events.set_isr(i2c_event);
+    });
 }
 
 extern "C" void I2C1_ER_IRQHandler() {
-    i2c_01::handle_request_irq(request, []() { io_events.set_isr(1); });
+    mcu::i2c_01::handle_request_irq(request, []() {
+        //
+        hardware_events.set_isr(i2c_event);
+    });
 }

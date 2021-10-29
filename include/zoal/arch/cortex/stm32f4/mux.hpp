@@ -16,23 +16,26 @@ namespace zoal { namespace arch { namespace stm32f4 {
     using zoal::gpio::pin_mode;
     using zoal::metadata::signal;
 
-    template<class Port, uint8_t Pin, uint8_t af>
+    template<class Pin, uint8_t af, uint8_t ot>
     class stm32_alternate_function_mux {
     public:
-        using af_reg = typename zoal::ct::conditional_type<(Pin < 8), typename Port::GPIOx_AFRL, typename Port::GPIOx_AFRH>::type;
-        static constexpr uint32_t af_shift = (Pin & 0x7) << 2;
+        using port = typename Pin::port;
+        static constexpr auto pin_offset = Pin::offset;
+
+        using af_reg = typename zoal::ct::conditional_type<(pin_offset < 8), typename port::GPIOx_AFRL, typename port::GPIOx_AFRH>::type;
+        static constexpr uint32_t af_shift = (pin_offset & 0x7) << 2;
         static constexpr uint32_t af_clear = 0xF << af_shift;
         static constexpr uint32_t af_set = af << af_shift;
 
-        using list = zoal::mem::callable_cas_list_variadic<typename Port::GPIOx_MODER::template cas<0x3 << (Pin * 2), 0x2 << (Pin * 2)>,
-                                                           typename Port::GPIOx_OTYPER::template cas<0x1 << Pin, 0>,
-                                                           typename Port::GPIOx_OSPEEDR::template cas<0, 0x3 << (Pin * 2)>,
-                                                           typename Port::GPIOx_PUPDR::template cas<0x3 << (Pin * 2), 0>,
+        using list = zoal::mem::callable_cas_list_variadic<typename port::GPIOx_MODER::template cas<0x3 << (pin_offset * 2), 0x2 << (pin_offset * 2)>,
+                                                           typename port::GPIOx_OTYPER::template cas<0x1 << pin_offset, ot << pin_offset>,
+                                                           typename port::GPIOx_OSPEEDR::template cas<0, 0x3 << (pin_offset * 2)>,
+                                                           typename port::GPIOx_PUPDR::template cas<0x3 << (pin_offset * 2), 0>,
                                                            typename af_reg::template cas<af_clear, af_set>>;
         using connect_cas = api::optimize<list>;
     };
 
-    class map_valid {
+    class valid_signal {
     public:
         template<class T>
         class match {
@@ -81,7 +84,7 @@ namespace zoal { namespace arch { namespace stm32f4 {
             ch15_map,
             ch16_map>;
 
-        static constexpr int channel = zoal::ct::index_of_type<map_valid, ch_maps>::result;
+        static constexpr int channel = zoal::ct::index_of_type<valid_signal, ch_maps>::result;
         static_assert(channel >= 0, "Specified pin could not be connected to ADC");
 
         using smprs = zoal::ct::type_list<typename A::ADCx_SMPR2, typename A::ADCx_SMPR1>;
@@ -109,7 +112,7 @@ namespace zoal { namespace arch { namespace stm32f4 {
         using ch4_map = zoal::metadata::stm32_signal_map<Sign, T::address, Pin::port::address, Pin::offset, signal::ch4>;
         using ch_maps = zoal::ct::type_list<ch1_map, ch2_map, ch3_map, ch3_map>;
 
-        static constexpr int channel = zoal::ct::index_of_type<map_valid, ch_maps>::result;
+        static constexpr int channel = zoal::ct::index_of_type<valid_signal, ch_maps>::result;
         static_assert(channel >= 0, "Specified pin could not be connected to Timer");
 
         static constexpr int af = zoal::ct::type_at_index<channel, void, ch_maps>::result::value;
@@ -183,16 +186,14 @@ namespace zoal { namespace arch { namespace stm32f4 {
             static_assert(rx_af::value >= 0, "Unsupported RX pin mapping");
             static_assert(tx_af::value >= 0, "Unsupported TX pin mapping");
 
-            // Enable bus clock for specified ports
             using clock_tx_on = typename PinRX::port::clock_on_cas;
             using clock_rx_on = typename PinRX::port::clock_on_cas;
 
-            // Final merge
-            using periph_clock_on = api::optimize<clock_tx_on, clock_rx_on>;
+            using clock_on = api::optimize<clock_tx_on, clock_rx_on>;
             using connect = api::optimize<
                 //
-                typename stm32_alternate_function_mux<typename PinRX::port, PinRX::offset, rx_af::value>::connect_cas,
-                typename stm32_alternate_function_mux<typename PinTX::port, PinTX::offset, tx_af::value>::connect_cas>;
+                typename stm32_alternate_function_mux<PinRX, rx_af::value, 0>::connect_cas,
+                typename stm32_alternate_function_mux<PinTX, tx_af::value, 0>::connect_cas>;
             using disconnect = api::optimize<api::mode<pin_mode::input, PinTX, PinTX>>;
         };
 
@@ -213,29 +214,32 @@ namespace zoal { namespace arch { namespace stm32f4 {
 
             using connect = api::optimize<
                 //
-                typename stm32_alternate_function_mux<typename Miso::port, Miso::offset, miso_af::value>::connect_cas,
-                typename stm32_alternate_function_mux<typename Mosi::port, Mosi::offset, mosi_af::value>::connect_cas,
-                typename stm32_alternate_function_mux<typename Sclk::port, Sclk::offset, sclk_af::value>::connect_cas>;
+                typename stm32_alternate_function_mux<Miso, miso_af::value, 0>::connect_cas,
+                typename stm32_alternate_function_mux<Mosi, mosi_af::value, 0>::connect_cas,
+                typename stm32_alternate_function_mux<Sclk, sclk_af::value, 0>::connect_cas>;
 
-            // Final merge
-            using periph_clock_on = api::optimize<clock_miso_on, clock_mosi_on, clock_sclk_on>;
+            using clock_on = api::optimize<clock_miso_on, clock_mosi_on, clock_sclk_on>;
             using disconnect = api::optimize<api::mode<pin_mode::input, Miso, Mosi, Sclk>>;
         };
 
         template<class I, class SdaPin, class SclPin>
         class i2c {
         public:
-            using sda_rm = zoal::metadata::stm32_signal_map<sign, I::address, SdaPin::port::address, SdaPin::offset, signal::sda>;
-            using scl_rm = zoal::metadata::stm32_signal_map<sign, I::address, SclPin::port::address, SclPin::offset, signal::scl>;
+            using sda_af = zoal::metadata::stm32_signal_map<sign, I::address, SdaPin::port::address, SdaPin::offset, signal::sda>;
+            using scl_af = zoal::metadata::stm32_signal_map<sign, I::address, SclPin::port::address, SclPin::offset, signal::scl>;
 
-            static_assert(sda_rm::value >= 0, "Unsupported SDA pin mapping");
-            static_assert(scl_rm::value >= 0, "Unsupported SCL pin mapping");
+            static_assert(sda_af::value >= 0, "Unsupported SDA pin mapping");
+            static_assert(scl_af::value >= 0, "Unsupported SCL pin mapping");
 
-            using sda_on = typename SdaPin::port::clock_on_cas;
-            using scl_on = typename SclPin::port::clock_on_cas;
+            using clock_sda_on = typename SdaPin::port::clock_on_cas;
+            using clock_scl_on = typename SclPin::port::clock_on_cas;
 
-            using periph_clock_on = typename api::optimize<typename I::clock_on_cas, sda_on, scl_on>;
-            using connect = zoal::mem::null_cas_list;
+            using clock_on = zoal::gpio::api::optimize<clock_sda_on, clock_scl_on>;
+            using connect = api::optimize<
+                //
+                typename stm32_alternate_function_mux<SdaPin, sda_af::value, 1>::connect_cas,
+                typename stm32_alternate_function_mux<SclPin, scl_af::value, 1>::connect_cas>;
+            using disconnect = api::optimize<api::mode<pin_mode::input, SdaPin, SclPin>>;
         };
 
         template<class T, class Pin>

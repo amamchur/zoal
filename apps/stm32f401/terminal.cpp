@@ -1,9 +1,10 @@
 #include "./terminal.hpp"
 
 #include "./command_machine.hpp"
-#include "./command_queue.hpp"
 #include "./constants.hpp"
 #include "./hardware.hpp"
+
+#include <zoal/parse/type_parser.hpp>
 
 zoal::mem::reserve_mem<zoal::misc::terminal_input, input_string_length> terminal;
 static char command_history[input_string_length] = {0};
@@ -25,6 +26,9 @@ static void command_callback(zoal::misc::command_machine *, app_cmd cmd, int arg
     command_msg msg(cmd);
 
     switch (cmd) {
+    case app_cmd::time_set:
+        msg.date_time_value = zoal::parse::type_parser<zoal::data::date_time>::parse(argv->start);
+        break;
     default:
         for (int i = 0; i < argc; i++) {
             msg.int_values[i] = (int)argv[i];

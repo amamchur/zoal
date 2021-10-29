@@ -27,9 +27,9 @@ namespace zoal { namespace arch { namespace stm32f4 {
         static constexpr uint32_t I2Cx_CR1_START = 1 << 8;
         static constexpr uint32_t I2Cx_CR1_PE = 1 << 0;
 
-        static constexpr uint32_t I2Cx_CR2_ITBUFEN = 1 << 10; // Buffer interrupt enable
-        static constexpr uint32_t I2Cx_CR2_ITEVTEN = 1 << 9; // Event interrupt enable
-        static constexpr uint32_t I2Cx_CR2_ITERREN = 1 << 8; // Error interrupt enable
+        static constexpr uint32_t I2Cx_CR2_ITBUFEN = 1 << 10;
+        static constexpr uint32_t I2Cx_CR2_ITEVTEN = 1 << 9;
+        static constexpr uint32_t I2Cx_CR2_ITERREN = 1 << 8;
 
         static constexpr uint32_t I2Cx_SR1_AF = 1 << 10; // Acknowledge failures
         static constexpr uint32_t I2Cx_SR1_ARLO = 1 << 9; // Arbitration lost (master mode)

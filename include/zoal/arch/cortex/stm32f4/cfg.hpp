@@ -55,7 +55,7 @@ namespace zoal { namespace arch { namespace stm32f4 {
             using USARTx_CR3 = typename U::USARTx_CR3::template cas<0x300, 0>;
             using USARTx_BRR = typename U::USARTx_BRR::template cas<0, bbr>;
 
-            using periph_clock_on = typename api::optimize<typename U::clock_on_cas>;
+            using clock_on = typename api::optimize<typename U::clock_on_cas>;
             using apply = zoal::ct::type_list<USARTx_CR1, USARTx_CR2, USARTx_CR3, USARTx_BRR>;
         };
 
@@ -75,7 +75,7 @@ namespace zoal { namespace arch { namespace stm32f4 {
 
             using USARTx_CR1 = typename S::SPIx_CR1::template cas<0xFFFF, baud_rate | lsbf | master | ssm_ssi>;
 
-            using periph_clock_on = typename api::optimize<typename S::clock_on_cas>;
+            using clock_on = typename api::optimize<typename S::clock_on_cas>;
             using apply = zoal::ct::type_list<USARTx_CR1>;
         };
 
@@ -93,7 +93,7 @@ namespace zoal { namespace arch { namespace stm32f4 {
             using ADCx_SQR1 = typename A::ADCx_SQR1::template cas<0xFFFFFF, 0>;
             using ADC_COMx_CCR = typename common_regs::ADC_COMx_CCR::template cas<0xC30000, adc_pre << 16>;
 
-            using periph_clock_on = typename api::optimize<typename A::clock_on_cas>;
+            using clock_on = typename api::optimize<typename A::clock_on_cas>;
             using apply = zoal::ct::type_list<ADCx_CR1, ADCx_CR2, ADCx_SQR1, ADC_COMx_CCR>;
         };
 
@@ -110,15 +110,42 @@ namespace zoal { namespace arch { namespace stm32f4 {
             using TIMERx_ARR = typename T::TIMERx_ARR::template cas<T::TIMERx_ARR::mask, Params::period>;
             using TIMERx_PSC = typename T::TIMERx_PSC::template cas<T::TIMERx_PSC::mask, Params::prescaler>;
 
-            using periph_clock_on = typename api::optimize<typename T::clock_on_cas>;
+            using clock_on = typename api::optimize<typename T::clock_on_cas>;
             using apply = zoal::ct::type_list<TIMERx_CR1, TIMERx_CR2, TIMERx_SMCR, TIMERx_ARR, TIMERx_PSC>;
         };
 
         template<class I, class Params>
         class i2c {
         public:
-            using periph_clock_on = typename api::optimize<typename I::clock_on_cas>;
-            using apply = zoal::mem::null_cas_list;
+            static constexpr auto max_rise_time_standard_mode_ns = 1000;
+            static constexpr auto max_rise_time_fast_mode_ns = 300;
+
+            static constexpr auto peripheral_clock = Params::clock_frequency;
+            static constexpr auto peripheral_clock_mhz = peripheral_clock / 1000000;
+            static constexpr auto i2c_frequency = Params::i2c_frequency;
+            static constexpr bool i2c_standard_mode = i2c_frequency <= 100000;
+            static constexpr auto max_rise_time = i2c_standard_mode ? (peripheral_clock_mhz * max_rise_time_standard_mode_ns) / 1000 + 1
+                                                                    : (peripheral_clock_mhz * max_rise_time_fast_mode_ns) / 1000 + 1;
+            static constexpr auto standard_mode_ccr = (peripheral_clock / i2c_frequency) / (1 + 1); // 1:1
+            static constexpr auto fast_mode_duty_0_ccr = (peripheral_clock / i2c_frequency) / (2 + 1); // 2:1
+            static constexpr auto fast_mode_duty_1_ccr = (peripheral_clock / i2c_frequency) / (16 + 9); // 16:9
+            static constexpr auto duty_0_accuracy = peripheral_clock % (i2c_frequency * (1 + 2));
+            static constexpr auto duty_1_accuracy = peripheral_clock % (i2c_frequency * (9 + 16));
+            static constexpr auto duty = duty_0_accuracy < duty_1_accuracy ? 0 : 1;
+            static constexpr auto ccr = i2c_standard_mode ? standard_mode_ccr : (duty == 0 ? fast_mode_duty_0_ccr : fast_mode_duty_1_ccr);
+
+            using I2Cx_CR1 = typename I::I2Cx_CR1::template cas<0xC0, 0>; // clear NOSTRETCH & ENGC
+            using I2Cx_CR2 = typename I::I2Cx_CR2::template cas<0x3F, peripheral_clock_mhz>;
+            using I2Cx_OAR1 = typename I::I2Cx_OAR1::template cas<0xFFFFFFFF, 1 << 14>;
+            using I2Cx_OAR2 = typename I::I2Cx_OAR2::template cas<0xFFFFFFFF, 0>;
+            static constexpr auto I2Cx_CCR_FS = (i2c_standard_mode ? 0 : 1) << 15;
+            static constexpr auto I2Cx_CCR_DUTY = duty << 14;
+            static constexpr auto I2Cx_CCR_CCR = ccr;
+            using I2Cx_CCR = typename I::I2Cx_CCR::template cas<0xFFFFFFFF, I2Cx_CCR_FS | I2Cx_CCR_DUTY | I2Cx_CCR_CCR>;
+            using I2Cx_TRISE = typename I::I2Cx_TRISE::template cas<0x3F, max_rise_time>;
+
+            using clock_on = api::optimize<typename I::clock_on_cas>;
+            using apply = zoal::ct::type_list<I2Cx_CR1, I2Cx_CR2, I2Cx_OAR1, I2Cx_OAR2, I2Cx_CCR, I2Cx_TRISE>;
         };
     };
 }}}

@@ -1,7 +1,7 @@
 #ifndef ZOAL_COMMAND_MACHINE_HPP
 #define ZOAL_COMMAND_MACHINE_HPP
 
-#include "./types.hpp"
+#include "command_queue.hpp"
 
 #include <zoal/parse/ragel_parser.hpp>
 

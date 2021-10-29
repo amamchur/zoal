@@ -52,10 +52,25 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed stm32f4 spi">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added PWM support for stm32f4">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/command_machine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/command_machine.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/command_machine.rl" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/command_machine.rl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/command_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/command_processor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/command_queue.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/command_queue.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/constants.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/constants.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/terminal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/terminal.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/types.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/w25qxx.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/w25qxx.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/w25qxxConf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/cfg.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/i2c.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/i2c.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,8 +115,8 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/include/zoal/ic/ws2812.hpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/zoal/ic/ws2812.hpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
@@ -125,7 +140,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f0" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/stm32f401" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -140,11 +155,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\amam\CLionProjects\zoal\apps\stm32f401" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\arch\cortex\stm32f0" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\arch\cortex\stm32f1" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\arch\cortex\stm32f3" />
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\arch\cortex\stm32f4" />
-      <recent name="C:\Users\amam\CLionProjects\zoal\apps\stm32f401" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\amam\CLionProjects\zoal\include\zoal\ic" />
@@ -160,6 +175,11 @@
     </option>
   </component>
   <component name="RunManager" selected="CMake Application.All">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -334,11 +354,6 @@
     <configuration name="stm32l432_nucleo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="stm32l432_nucleo" CONFIG_NAME="Debug STM32" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="stm32l432_nucleo">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="cubemx-proj.js" type="NodeJSConfigurationType" nameIsGenerated="true" path-to-js-file="cubemx-proj.js" working-dir="$PROJECT_DIR$">
@@ -1027,23 +1042,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/cubemx-proj/stm32f303_discovery/Src/spi.c</url>
-          <line>53</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c</url>
-          <line>4255</line>
-          <option name="timeStamp" value="39" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/generator/STM32.js</url>
-          <line>552</line>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

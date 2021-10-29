@@ -33,8 +33,8 @@ extern "C" void zoal_init() {
 
     api::optimize<
         //
-        usart_mux::periph_clock_on,
-        usart_cfg::periph_clock_on>();
+        usart_mux::clock_on,
+        usart_cfg::clock_on>();
     api::optimize<api::disable<usart_01>>();
     api::optimize<
         //

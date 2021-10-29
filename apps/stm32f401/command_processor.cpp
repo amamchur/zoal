@@ -8,6 +8,8 @@
 #include "task.h"
 #include "terminal.hpp"
 
+#include <zoal/utils/i2c_scanner.hpp>
+
 uint8_t spi_buffer[512];
 
 zoal::utils::i2c_scanner scanner;
@@ -31,6 +33,35 @@ static void scan_i2c_devs() {
     });
 }
 
+static void read_rtc() {
+    clock.fetch(i2c_dispatcher)([](int) {
+        __attribute__((unused)) scoped_lock lock(tx_stream_mutex);
+        auto dt = clock.date_time();
+        tx_stream << "\033[2K\r" << dt << "\r\n";
+        tx_stream << clock.temperature() << "\r\n";
+        terminal.sync();
+    });
+}
+
+static uint8_t eeprom_mem[32];
+
+static void read_eeprom() {
+    eeprom.read(i2c_dispatcher, 0, eeprom_mem, 4)([](int code) {
+        if (code == 0) {
+            tx_stream << "\033[2K\r"
+                      << "EEPROM:\r\n";
+            for (int i = 0; i < 16; i++) {
+                tx_stream << zoal::io::hexadecimal(eeprom_mem[i]) << "\r\n";
+            }
+        } else {
+            tx_stream << "\033[2K\r"
+                      << "Error"
+                      << "\r\n";
+        }
+        terminal.sync();
+    });
+}
+
 [[noreturn]] void zoal_cmd_processor(void *) {
     while (true) {
         command_msg msg;
@@ -43,6 +74,16 @@ static void scan_i2c_devs() {
         tx_stream << "\033[2K\r";
 
         switch (msg.command) {
+        case app_cmd::read_eeprom:
+            read_eeprom();
+            break;
+        case app_cmd::time_print:
+            read_rtc();
+            break;
+        case app_cmd::time_set:
+            clock.date_time(msg.date_time_value);
+            clock.update(i2c_dispatcher)([](int) {});
+            break;
         case app_cmd::i2c:
             scan_i2c_devs();
             break;

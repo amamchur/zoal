@@ -54,7 +54,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
             using clock_rx_on = typename PinRX::port::clock_on_cas;
 
             // Final merge
-            using periph_clock_on = zoal::gpio::api::optimize<clock_tx_on, clock_rx_on>;
+            using clock_on = zoal::gpio::api::optimize<clock_tx_on, clock_rx_on>;
             using connect = zoal::gpio::api::optimize<afio_connect, rx_in_fl, tx_af_pp>;
             using disconnect = zoal::gpio::api::optimize<rx_in_fl, tx_in_fl, afio_disconnect>;
         };
@@ -88,7 +88,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
             using clock_sda_on = typename SdaPin::port::clock_on_cas;
             using clock_scl_on = typename SclPin::port::clock_on_cas;
 
-            using periph_clock_on = zoal::gpio::api::optimize<clock_sda_on, clock_scl_on>;
+            using clock_on = zoal::gpio::api::optimize<clock_sda_on, clock_scl_on>;
             using connect = api::optimize<sda_af_od, scl_af_od>;
             using disconnect = api::optimize<sda_in_fl, scl_in_fl>;
         };

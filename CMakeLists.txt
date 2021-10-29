@@ -464,7 +464,6 @@ add_mcu_executable(stm32f401 stm32
         apps/stm32f401/main.cpp
         apps/stm32f401/terminal.cpp
         apps/stm32f401/command_queue.cpp
-        apps/stm32f401/w25qxx.c
         apps/stm32f401/constants.cpp
         apps/stm32f401/hardware.cpp
         apps/stm32f401/command_processor.cpp

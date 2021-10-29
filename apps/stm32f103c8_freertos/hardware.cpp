@@ -37,11 +37,11 @@ void zoal_init_hardware() {
     // Enable bus clock for peripherals
     api::optimize<
         //
-        usart_mux::periph_clock_on,
-        usart_cfg::periph_clock_on,
+        usart_mux::clock_on,
+        usart_cfg::clock_on,
         //
-        i2c_mux::periph_clock_on,
-        i2c_cfg::periph_clock_on
+        i2c_mux::clock_on,
+        i2c_cfg::clock_on
         //
         >();
 

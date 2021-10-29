@@ -108,7 +108,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
             using USARTx_CR3 = typename U::USARTx_CR3::template cas<0x300, 0>;
             using USARTx_BRR = typename U::USARTx_BRR::template cas<0, bbr_set>;
 
-            using periph_clock_on = api::optimize<usart_clock_on>;
+            using clock_on = api::optimize<usart_clock_on>;
             using apply = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR3, USARTx_BRR>;
         };
 
@@ -144,7 +144,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
             using I2Cx_CCR = typename I::I2Cx_CCR::template cas<0xFFFFFFFF, I2Cx_CCR_FS | I2Cx_CCR_DUTY | I2Cx_CCR_CCR>;
             using I2Cx_TRISE = typename I::I2Cx_TRISE::template cas<0x3F, max_rise_time>;
 
-            using periph_clock_on = api::optimize<typename I::clock_on_cas>;
+            using clock_on = api::optimize<typename I::clock_on_cas>;
             using apply = type_list<I2Cx_CR1, I2Cx_CR2, I2Cx_OAR1, I2Cx_OAR2, I2Cx_CCR, I2Cx_TRISE>;
         };
 
