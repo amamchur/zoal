@@ -46,8 +46,8 @@ namespace zoal { namespace arch { namespace stm32f4 {
             return value;
         }
 
-        static uint8_t transfer(void *txb, void *rxb, size_t size) {
-            auto tx = reinterpret_cast<uint8_t *>(txb);
+        static uint8_t transfer(const void *txb, void *rxb, size_t size) {
+            auto tx = reinterpret_cast<const uint8_t *>(txb);
             auto rx = reinterpret_cast<uint8_t *>(rxb);
             auto txe = tx + size;
             auto rxe = rx + size;

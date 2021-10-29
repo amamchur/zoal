@@ -23,14 +23,14 @@ namespace zoal { namespace arch { namespace stm32f4 {
         static constexpr auto pin_offset = Pin::offset;
 
         using af_reg = typename zoal::ct::conditional_type<(pin_offset < 8), typename port::GPIOx_AFRL, typename port::GPIOx_AFRH>::type;
-        static constexpr uint32_t af_shift = (pin_offset & 0x7) << 2;
-        static constexpr uint32_t af_clear = 0xF << af_shift;
+        static constexpr uint32_t af_shift = (pin_offset & 0x7u) << 2;
+        static constexpr uint32_t af_clear = 0xFu << af_shift;
         static constexpr uint32_t af_set = af << af_shift;
 
-        using list = zoal::mem::callable_cas_list_variadic<typename port::GPIOx_MODER::template cas<0x3 << (pin_offset * 2), 0x2 << (pin_offset * 2)>,
-                                                           typename port::GPIOx_OTYPER::template cas<0x1 << pin_offset, ot << pin_offset>,
-                                                           typename port::GPIOx_OSPEEDR::template cas<0, 0x3 << (pin_offset * 2)>,
-                                                           typename port::GPIOx_PUPDR::template cas<0x3 << (pin_offset * 2), 0>,
+        using list = zoal::mem::callable_cas_list_variadic<typename port::GPIOx_MODER::template cas<0x3u << (pin_offset * 2), 0x2u << (pin_offset * 2)>,
+                                                           typename port::GPIOx_OTYPER::template cas<0x1u << pin_offset, ot << pin_offset>,
+                                                           typename port::GPIOx_OSPEEDR::template cas<0u, 0x3u << (pin_offset * 2)>,
+                                                           typename port::GPIOx_PUPDR::template cas<0x3u << (pin_offset * 2), 0>,
                                                            typename af_reg::template cas<af_clear, af_set>>;
         using connect_cas = api::optimize<list>;
     };

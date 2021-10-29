@@ -467,6 +467,8 @@ add_mcu_executable(stm32f401 stm32
         apps/stm32f401/constants.cpp
         apps/stm32f401/hardware.cpp
         apps/stm32f401/command_processor.cpp
+        apps/stm32f401/w25qxx.c
+        apps/data/roboto_regular_16.cpp
         misc/terminal_input.cpp
         ${STM32F401_CMD_MACHINE_SRC}
         ${TERMINAL_STATE_MACHINE_SRC}

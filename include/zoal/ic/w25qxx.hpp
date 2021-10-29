@@ -85,7 +85,7 @@ namespace zoal { namespace ic {
             wait_for_ready();
         }
 
-        static void page_program(uint32_t addr, void *buffer, size_t size) {
+        static void page_program(uint32_t addr, const void *buffer, size_t size) {
             uint8_t cmd[4] = {//
                               0x02,
                               static_cast<uint8_t>((addr >> 16) & 0xFF),
@@ -96,11 +96,26 @@ namespace zoal { namespace ic {
 
             typename ws25qxx_cs::_0();
             spi::transfer(cmd, cmd, sizeof(cmd));
-            spi::transfer(buffer, buffer, size);
+            spi::transfer(buffer, nullptr, size);
             typename ws25qxx_cs::_1();
 
             write_disable();
             wait_for_ready();
+        }
+
+        static void write(uint32_t addr, const void *buffer, size_t size) {
+            auto ptr = reinterpret_cast<const uint8_t *>(buffer);
+            while (size > 0) {
+                auto length = 0x100 - (0xFF & addr);
+                if (length > size) {
+                    length = size;
+                }
+
+                page_program(addr, ptr, length);
+                size -= length;
+                addr += length;
+                ptr += length;
+            }
         }
 
         static void fast_read(uint32_t addr, void *buffer, size_t size) {
@@ -114,6 +129,21 @@ namespace zoal { namespace ic {
             spi::transfer(cmd, cmd, sizeof(cmd));
             spi::transfer(buffer, buffer, size);
             typename ws25qxx_cs::_1();
+        }
+
+        static void read(uint32_t addr, void *buffer, size_t size) {
+            auto ptr = reinterpret_cast<uint8_t *>(buffer);
+            while (size > 0) {
+                auto length = 0x100 - (0xFF & addr);
+                if (length > size) {
+                    length = size;
+                }
+
+                fast_read(addr, ptr, length);
+                size -= length;
+                addr += length;
+                ptr += length;
+            }
         }
 
         static inline uint32_t sector_address(uint32_t addr) {

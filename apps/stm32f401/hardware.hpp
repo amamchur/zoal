@@ -37,6 +37,14 @@ using pwm_timer = mcu::timer_02;
 using pwm_pin = mcu::pa_15;
 using pwm_channel = mcu::mux::pwm_channel<pwm_timer, pwm_pin>;
 
+using oled_spi = mcu::spi_02;
+using oled_mosi = mcu::pb_14;
+using oled_miso = mcu::pb_15;
+using oled_sck = mcu::pb_13;
+using oled_cs = mcu::pa_10;
+using oled_ds = mcu::pa_09;
+using oled_res = mcu::pa_08;
+
 using flash_spi = mcu::spi_01;
 using flash_spi_mosi = mcu::pa_06;
 using flash_spi_miso = mcu::pa_07;

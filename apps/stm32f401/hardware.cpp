@@ -31,6 +31,10 @@ void zoal_init_hardware() {
     using flash_spi_mux = mcu::mux::spi<flash_spi, flash_spi_mosi, flash_spi_miso, flash_spi_sck>;
     using flash_spi_cfg = mcu::cfg::spi<flash_spi, flash_params>;
 
+    using oled_params = zoal::periph::spi_params<apb2_clock_freq>;
+    using oled_spi_mux = mcu::mux::spi<oled_spi, oled_mosi, oled_miso, oled_sck>;
+    using oled_spi_cfg = mcu::cfg::spi<oled_spi, oled_params>;
+
     using adc_params = zoal::periph::adc_params<>;
     using adc_cfg = mcu::cfg::adc<sensor_adc, adc_params>;
 
@@ -47,13 +51,15 @@ void zoal_init_hardware() {
         tty_usart_cfg::clock_on,
         flash_spi_mux::clock_on,
         flash_spi_cfg::clock_on,
+        oled_spi_mux::clock_on,
+        oled_spi_cfg::clock_on,
         i2c_mux::clock_on,
         i2c_cfg::clock_on,
         adc_cfg::clock_on,
         timer_cfg::clock_on
         //
         >();
-    api::optimize<api::disable<tty_usart, flash_spi, sensor_adc, pwm_timer, main_i2c>>();
+    api::optimize<api::disable<tty_usart, flash_spi, sensor_adc, pwm_timer, main_i2c, oled_spi>>();
 
     api::optimize<
         //
@@ -62,18 +68,24 @@ void zoal_init_hardware() {
         //
         adc_cfg::apply,
         //
-        flash_spi_mux::connect,
-        flash_spi_cfg::apply,
+//        flash_spi_mux::connect,
+//        flash_spi_cfg::apply,
+        //
+//        oled_spi_mux::connect,
+//        oled_spi_cfg::apply,
         //
         i2c_mux::connect,
         i2c_cfg::apply,
         //
         timer_cfg::apply
         //
+//        api::mode<zoal::gpio::pin_mode::output, flash_spi_cs, oled_cs, oled_ds, oled_res>,
+//        api::high<flash_spi_cs, oled_cs>
+        //
         >();
 
     // Enable peripherals after configuration
-    api::optimize<api::enable<tty_usart, flash_spi, sensor_adc, pwm_timer, main_i2c>>();
+    api::optimize<api::enable<tty_usart, flash_spi, sensor_adc, pwm_timer, main_i2c, oled_spi>>();
 
     HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(USART1_IRQn);

@@ -52,25 +52,30 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added PWM support for stm32f4">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Implemented I2C for stm32f4">
+      <change afterPath="$PROJECT_DIR$/apps/stm32f401/w25qxx.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/stm32f401/w25qxx.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/stm32f401/w25qxxConf.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/command_machine.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/command_machine.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/command_machine.rl" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/command_machine.rl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/command_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/command_processor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/command_queue.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/command_queue.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/constants.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/constants.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/data/roboto_regular_16.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/data/roboto_regular_16.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/data/roboto_regular_16.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/data/roboto_regular_16.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f401/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/terminal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/terminal.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/types.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/w25qxx.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/w25qxx.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/w25qxxConf.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/cfg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/i2c.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/i2c.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/.mxproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/main.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/spi.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/spi.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/stm32_assert.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/spi.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/spi.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/sh1106.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/sh1106.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/w25qxx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/w25qxx.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,7 +179,7 @@
       <command value="vTaskDelay(1);" />
     </option>
   </component>
-  <component name="RunManager" selected="CMake Application.All">
+  <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f401">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
@@ -636,13 +641,6 @@
       <workItem from="1635259264459" duration="284000" />
       <workItem from="1635405967953" duration="23401000" />
     </task>
-    <task id="LOCAL-00006" summary="Added FreeRTOS support">
-      <created>1610333207976</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1610333207976</updated>
-    </task>
     <task id="LOCAL-00007" summary="Update matrix keypad">
       <created>1610394484034</created>
       <option name="number" value="00007" />
@@ -979,7 +977,14 @@
       <option name="project" value="LOCAL" />
       <updated>1635347236049</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="Implemented I2C for stm32f4">
+      <created>1635503024415</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1635503024415</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1013,7 +1018,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Update i2c interface for STM32F1" />
     <MESSAGE value="Add i2c configuration for STM32F1" />
     <MESSAGE value="Remove outdated files" />
     <MESSAGE value="Fix STM32F303VC MCU generator" />
@@ -1038,7 +1042,8 @@
     <MESSAGE value="Added SPI abstraction" />
     <MESSAGE value="Updated stm32f401 example" />
     <MESSAGE value="Fixed stm32f4 spi" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed stm32f4 spi" />
+    <MESSAGE value="Implemented I2C for stm32f4" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented I2C for stm32f4" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

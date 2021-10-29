@@ -175,8 +175,7 @@ const char zoal_ascii_logo[] PROGMEM = "  __________          _\r\n"
 
 #include <zoal/ic/sh1106.hpp>
 
-using sh1106_interface = zoal::ic::sh1106_interface_i2c<0x3C>;
-using display_type = zoal::ic::sh1106<128, 64, sh1106_interface>;
+using display_type = zoal::ic::sh1106_i2c<128, 64, 0x3C>;
 display_type display;
 
 int main() {
