@@ -152,7 +152,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
         class timer {
         public:
             using cr1_mode = cr1_timer_mode<Cfg::mode>;
-            using cr1_cs = cr1_timer_clock_source<Cfg::clock_division>;
+            using cr1_cs = cr1_timer_clock_source<Cfg::clock_divider>;
 
             using TIMERx_CR1 = typename T::TIMERx_CR1::template cas<cr1_mode::clear | cr1_cs::clear, cr1_mode::set | cr1_cs::set>;
             using TIMERx_ARR = typename T::TIMERx_ARR::template cas<T::TIMERx_ARR::mask, Cfg::period>;
