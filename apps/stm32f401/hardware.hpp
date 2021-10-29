@@ -49,7 +49,7 @@ using flash_spi = mcu::spi_01;
 using flash_spi_mosi = mcu::pa_06;
 using flash_spi_miso = mcu::pa_07;
 using flash_spi_sck = mcu::pa_05;
-using flash_spi_cs = mcu::pa_05;
+using flash_spi_cs = mcu::pa_04;
 using w25q32 = zoal::ic::w25qxx<flash_spi, flash_spi_cs, delay>;
 
 using main_i2c = mcu::i2c_01;

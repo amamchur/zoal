@@ -67,20 +67,20 @@ void zoal_init_hardware() {
         tty_usart_cfg::apply,
         //
         adc_cfg::apply,
+
+        flash_spi_mux::connect,
+        flash_spi_cfg::apply,
         //
-//        flash_spi_mux::connect,
-//        flash_spi_cfg::apply,
-        //
-//        oled_spi_mux::connect,
-//        oled_spi_cfg::apply,
-        //
+        oled_spi_mux::connect,
+        oled_spi_cfg::apply,
+
         i2c_mux::connect,
         i2c_cfg::apply,
         //
-        timer_cfg::apply
+        timer_cfg::apply,
         //
-//        api::mode<zoal::gpio::pin_mode::output, flash_spi_cs, oled_cs, oled_ds, oled_res>,
-//        api::high<flash_spi_cs, oled_cs>
+        api::mode<zoal::gpio::pin_mode::output, flash_spi_cs, oled_cs, oled_ds, oled_res>,
+        api::high<flash_spi_cs, oled_cs>
         //
         >();
 

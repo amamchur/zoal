@@ -53,29 +53,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Implemented I2C for stm32f4">
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/w25qxx.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/w25qxx.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/apps/stm32f401/w25qxxConf.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/atmega328p.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/atmega328p.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/data/roboto_regular_16.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/data/roboto_regular_16.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/data/roboto_regular_16.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/data/roboto_regular_16.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f401/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/main.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/spi.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/spi.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/stm32_assert.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/gpio.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/gpio.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/spi.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/spi.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/sh1106.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/sh1106.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/w25qxx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/w25qxx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc/terminal_input.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/misc/terminal_input.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1056,6 +1041,11 @@
         <breakpoint enabled="true" type="CidrExceptionBreakpoint" />
       </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="com.jetbrains.cidr.embedded.openocd.conf.type">
+        <watch expression="e[-1]" language="ObjectiveC" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -179,7 +179,7 @@ namespace zoal { namespace misc {
         auto e = str;
         do {
         } while (*e++);
-        vt100_callback_(this, str, e);
+        vt100_callback_(this, str, e - 1);
     }
 
     char *terminal_input::normalize_cursor(char *c) const {
