@@ -131,11 +131,21 @@ public:
 void test_ssh1106() {
     screen.init();
 
-    auto g = graphics::from_memory(screen.buffer.canvas);
-    zoal::gfx::glyph_renderer<graphics, mem_reader> gl(g, &roboto_regular_16);
+//    auto g = graphics::from_memory(screen.buffer.canvas);
+//    zoal::gfx::glyph_renderer<graphics, mem_reader> gl(g, &roboto_regular_16);
+//    zoal::io::output_stream<zoal::gfx::glyph_renderer<graphics, mem_reader>> text_stream(gl);
+//    gl.color(1);
+//
+//    tx_stream << uwTick << "\r\n";
+//    for (int i = 0; i < 10000; i++) {
+//        g->clear(0);
+//        gl.position(10, roboto_regular_16.y_advance);
+//        text_stream << i;
+//        screen.display();
+//    }
+//    tx_stream << uwTick << "\r\n";
 
-    w25q32::read(0, &screen.buffer.canvas, sizeof(screen.buffer.canvas));
-
+    w25q32::fast_read(0, &screen.buffer.canvas, sizeof(screen.buffer.canvas));
     screen.display();
 }
 

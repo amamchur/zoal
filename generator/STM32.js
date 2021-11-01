@@ -13,6 +13,7 @@ let familyMap = {
             '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
             '#include <zoal/arch/cortex/stm32f0/cfg.hpp>',
             '#include <zoal/arch/cortex/stm32f0/mux.hpp>',
+            '#include <zoal/arch/cortex/stm32f0/dma.hpp>',
             '#include <zoal/arch/cortex/stm32f0/port.hpp>',
             '#include <zoal/arch/cortex/stm32f0/rcc.hpp>',
             '#include <zoal/arch/cortex/stm32f0/usart.hpp>',
@@ -40,6 +41,7 @@ let familyMap = {
             '#include <zoal/arch/cortex/stm32f1/afio.hpp>',
             '#include <zoal/arch/cortex/stm32f1/cfg.hpp>',
             '#include <zoal/arch/cortex/stm32f1/mux.hpp>',
+            '#include <zoal/arch/cortex/stm32f1/dma.hpp>',
             '#include <zoal/arch/cortex/stm32f1/rcc.hpp>',
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
             '#include <zoal/arch/enable.hpp>',
@@ -70,6 +72,7 @@ let familyMap = {
             '#include <zoal/arch/cortex/stm32x/bus_clock.hpp>',
             '#include <zoal/arch/cortex/stm32f3/cfg.hpp>',
             '#include <zoal/arch/cortex/stm32f3/mux.hpp>',
+            '#include <zoal/arch/cortex/stm32f3/dma.hpp>',
             '#include <zoal/arch/cortex/stm32f3/port.hpp>',
             '#include <zoal/arch/cortex/stm32f3/rcc.hpp>',
             '#include <zoal/arch/cortex/stm32f3/usart.hpp>',
@@ -104,6 +107,7 @@ let familyMap = {
             '#include <zoal/arch/cortex/stm32f4/usart.hpp>',
             '#include <zoal/arch/cortex/stm32f4/i2c.hpp>',
             '#include <zoal/arch/cortex/stm32f4/timer.hpp>',
+            '#include <zoal/arch/cortex/stm32f4/dma.hpp>',
             '#include <zoal/arch/cortex/stm32x/metadata.hpp>',
             '#include <zoal/arch/cortex/stm32f4/spi.hpp>',
             '#include <zoal/arch/enable.hpp>',
@@ -149,7 +153,7 @@ class STM32 extends BaseGenerator {
         let pinMap = {};
         let pins = [];
         let portMap = {};
-        let periphs = {};
+        let periphs = familyMap[this.mcu.family].periphs;
 
         for (let i = 0; i < array.length; i++) {
             let pin = array[i];
@@ -169,7 +173,6 @@ class STM32 extends BaseGenerator {
             pinMap[name] = obj;
             pins.push(obj);
 
-            let signals = [];
             for (let j = 0; j < pin.Signal.length; j++) {
                 let signal = pin.Signal[j];
                 let sm = signal.$.Name.match(/(\w+)_(\w+)/);
@@ -177,14 +180,15 @@ class STM32 extends BaseGenerator {
                     continue;
                 }
 
-                let periph = sm[1];
-                let connection = sm[2];
+                let periph = sm[1].toLowerCase();
+                // let connection = sm[2];
                 let periphNo = periph.match(/(\d+)$/);
                 if (!periphNo) {
                     continue;
                 }
 
-                let p = periphs[periph] || {signals: []};
+                let p = periphs[periph] || {};
+                p.signals = p.signals || [];
                 p.signals.push({
                     pin: pin,
                     pinData: obj,
@@ -266,6 +270,12 @@ class STM32 extends BaseGenerator {
                 let n = ("00" + no.toString(10)).substr(-2);
                 let m = STM32.toHex(data.busClockMask, 8);
                 result.push(`using ${name}_${n} = ::zoal::arch::${ns}::spi<${address}, clock_${data.bus}<${m}>>;`);
+            },
+            dma: function (name, no, data) {
+                let address = STM32.toHex(data.address, 8);
+                let n = ("00" + no.toString(10)).substr(-2);
+                let m = STM32.toHex(data.busClockMask, 8);
+                result.push(`using ${name}_${n} = ::zoal::arch::${ns}::dma<${address}, clock_${data.bus}<${m}>>;`);
             }
         };
 
@@ -282,7 +292,7 @@ class STM32 extends BaseGenerator {
             }
 
             let pd = data.periphs[name];
-            if (!pd) {
+            if (!pd || !pd.address || !pd.bus) {
                 continue;
             }
 
@@ -470,7 +480,7 @@ class STM32 extends BaseGenerator {
                 let fieldName = periphName + 'EN';
 
                 let fieldObj = findBusByFieldName(rccRegisters, fieldName);
-                let cfg = {bus: '???', address: parseInt(periph.baseAddress[0], 16), busClockMask: 0};
+                let cfg = {bus: null, address: parseInt(periph.baseAddress[0], 16), busClockMask: 0};
                 periph.periphConfig = cfg;
 
                 if (fieldObj == null) {
@@ -522,6 +532,7 @@ class STM32 extends BaseGenerator {
         let usarts = {};
         let uarts = {};
         let spis = {};
+        let dmas = {};
         let rcc = null;
         let adcCommon = null;
         let portRegexp = /GPIO([A-Z])/;
@@ -531,6 +542,7 @@ class STM32 extends BaseGenerator {
         let usartsRegexp = /USART([\d+])/;
         let uartsRegexp = /UART([\d+])/;
         let spiRegexp = /SPI([\d+])/;
+        let dmaRegexp = /DMA([\d+])/;
 
         for (let i = 0; i < peripherals.length; i++) {
             let p = peripherals[i];
@@ -549,6 +561,8 @@ class STM32 extends BaseGenerator {
                 uarts[name] = p;
             } else if (name.match(spiRegexp)) {
                 spis[name] = p;
+            } else if (name.match(dmaRegexp)) {
+                dmas[name] = p;
             } else if (name === 'ADC_Common') {
                 adcCommon = p;
             } else if (name === 'RCC') {
@@ -565,9 +579,10 @@ class STM32 extends BaseGenerator {
         this.normalizePeriph(usarts);
         this.normalizePeriph(uarts);
         this.normalizePeriph(spis);
-        this.collectResetAndClockControl(rcc, [adcs, ports, timers, i2cs, usarts, uarts, spis]);
+        this.normalizePeriph(dmas);
+        this.collectResetAndClockControl(rcc, [adcs, ports, timers, i2cs, usarts, uarts, spis, dmas]);
 
-        let array = [adcs, timers, i2cs, usarts, uarts, spis];
+        let array = [adcs, timers, i2cs, usarts, uarts, spis, dmas];
         let mcuData = {periphs: {}, ports: {}};
         for (let i = 0; i < array.length; i++) {
             let periphs = array[i];
@@ -666,6 +681,10 @@ class STM32 extends BaseGenerator {
                 let periphName = vm[1];
                 let periph = data.periphs[periphName];
                 if (!periph) {
+                    continue;
+                }
+
+                if (!periph.address || !periph.bus) {
                     continue;
                 }
 
@@ -770,6 +789,10 @@ class STM32 extends BaseGenerator {
                 let sm = signalName.toLowerCase().match(/^(\w+)_(\w+)$/);
                 if (!periph || !port || !sm) {
                     continue;
+                }
+
+                if (!periph.address || !periph.bus) {
+                    continue
                 }
 
                 let portHex = STM32.toHex(port.address, 8);

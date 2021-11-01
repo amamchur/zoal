@@ -55,9 +55,13 @@ namespace zoal { namespace arch { namespace stm32f4 {
             enable();
             while (tx < txe && rx < rxe) {
                 while (!(SPIx_SR::ref() & SPIx_SR_TXE));
-
                 if (tx < txe) {
-                    SPIx_DR::ref() = *tx++;
+                    uint8_t b = 0;
+                    if (txb != nullptr) {
+                        b = *tx;;
+                    }
+                    SPIx_DR::ref() = b;
+                    tx++;
                 }
 
                 while (!(SPIx_SR::ref() & SPIx_SR_RXNE));

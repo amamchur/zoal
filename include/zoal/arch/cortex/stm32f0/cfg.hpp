@@ -1,5 +1,5 @@
-#ifndef ZOAL_ARCH_STM32X_CFG_HPP
-#define ZOAL_ARCH_STM32X_CFG_HPP
+#ifndef ZOAL_ARCH_STM32F0_CFG_HPP
+#define ZOAL_ARCH_STM32F0_CFG_HPP
 
 #include "../../../gpio/api.hpp"
 #include "../../../periph/usart.hpp"
