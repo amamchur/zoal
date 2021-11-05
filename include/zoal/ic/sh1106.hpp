@@ -85,6 +85,7 @@ namespace zoal { namespace ic {
         using res = Reset;
         using ds = DataSelect;
         using cs = ChipSelect;
+        using delay = Delay;
 
         static_assert(Width > 0, "Width must be greater than 0");
         static_assert(Width <= 128, "Width must be less or equal to 128");

@@ -52,26 +52,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed hardware configuration">
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f0/dma.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/dma.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f3/dma.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/dma.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/zoal/periph/dma.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_26_2021_10_04_AM_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_24_02_2021_0_24_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_24_02_2021_0_24_[Default_Changelist]1/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_24_02_2021_0_24__Default_Changelist_.xml" beforeDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added DMA abstraction">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f401/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/STM32.js" beforeDir="false" afterPath="$PROJECT_DIR$/generator/STM32.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f0/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f0/cfg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/spi.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/spi.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f030f4px.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f030f4px.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f103c8tx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303retx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f303vctx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f401ccux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f401ccux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/ic/sh1106.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/sh1106.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -632,14 +616,9 @@
       <workItem from="1635259264459" duration="284000" />
       <workItem from="1635405967953" duration="23401000" />
       <workItem from="1635769842737" duration="1420000" />
-      <workItem from="1635774355789" duration="4502000" />
-    </task>
-    <task id="LOCAL-00008" summary="Improve terminal interface">
-      <created>1610404636320</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1610404636320</updated>
+      <workItem from="1635774355789" duration="4527000" />
+      <workItem from="1636121864063" duration="219000" />
+      <workItem from="1636125948351" duration="798000" />
     </task>
     <task id="LOCAL-00009" summary="Add missed project">
       <created>1610405258627</created>
@@ -977,7 +956,14 @@
       <option name="project" value="LOCAL" />
       <updated>1635520222302</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="Added DMA abstraction">
+      <created>1635780154005</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1635780154005</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1011,7 +997,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Remove outdated files" />
     <MESSAGE value="Fix STM32F303VC MCU generator" />
     <MESSAGE value="Add I2C interface for STN32F3" />
     <MESSAGE value="Fix build issue" />
@@ -1036,7 +1021,8 @@
     <MESSAGE value="Fixed stm32f4 spi" />
     <MESSAGE value="Implemented I2C for stm32f4" />
     <MESSAGE value="Fixed hardware configuration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed hardware configuration" />
+    <MESSAGE value="Added DMA abstraction" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added DMA abstraction" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
