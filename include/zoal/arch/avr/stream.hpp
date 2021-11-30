@@ -49,14 +49,15 @@ namespace zoal { namespace io {
             return progmem_str_iter(ptr_ + d);
         }
 
-        intptr_t operator-(progmem_str_iter iter) const {
+        ptrdiff_t operator-(progmem_str_iter iter) const {
             return ptr_ - iter.ptr_;
         }
 
         const char *ptr_;
     };
 
-    bool cmp_progmem_str_token(zoal::io::progmem_str_iter s1, const char *ss, const char *se) {
+    template <class T>
+    bool cmp_progmem_str_token(T s1, const char *ss, const char *se) {
         while (*s1 && ss < se) {
             if (*s1 != *ss) {
                 return false;

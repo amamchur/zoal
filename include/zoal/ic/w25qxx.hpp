@@ -41,7 +41,15 @@ namespace zoal { namespace ic {
         using spi = Spi;
         using delay = Delay;
 
-        static void sector_sector(uint32_t sector_addr) {
+        inline static uint32_t address_to_sector(uint32_t addr) {
+            return addr >> 12;
+        }
+
+        inline static uint32_t address_to_block(uint32_t addr) {
+            return addr >> 16;
+        }
+
+        static void sector_erase(uint32_t sector_addr) {
             uint8_t cmd[4] = {//
                               0x20,
                               static_cast<uint8_t>((sector_addr >> 16) & 0xFF),
