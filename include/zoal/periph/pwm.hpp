@@ -20,6 +20,16 @@ namespace zoal { namespace periph {
             return ocr::ref();
         }
     };
+
+    class null_pwm_channel {
+    public:
+        inline static void set(size_t value) {
+        }
+
+        inline static size_t pulse_width() {
+            return 0;
+        }
+    };
 }}
 
 #endif

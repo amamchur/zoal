@@ -89,13 +89,14 @@ namespace zoal { namespace arch { namespace stm32f4 {
 
         using smprs = zoal::ct::type_list<typename A::ADCx_SMPR2, typename A::ADCx_SMPR1>;
         using smpr = typename zoal::ct::type_at_index<channel / 10, void, smprs>::result;
+        using sqr3_cas = typename A::ADCx_SQR3::template cas<0xF, channel>;
 
         using port = typename Pin::port;
         using moder_cas = typename port::GPIOx_MODER::template cas<(0x3 << (Pin::offset * 2)), 0x3 << (Pin::offset * 2)>;
 
         using connect = typename api::optimize<
             //
-            zoal::mem::callable_cas_list_variadic<moder_cas>>;
+            zoal::mem::callable_cas_list_variadic<moder_cas, sqr3_cas>>;
         using disconnect = typename api::optimize<
             //
             api::mode<pin_mode::input_floating, Pin>>;

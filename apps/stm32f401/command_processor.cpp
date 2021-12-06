@@ -135,7 +135,7 @@ static void read_eeprom() {
             w25q32::chip_erase();
             break;
         case app_cmd::w25q_erase_sector:
-            w25q32::sector_sector(msg.int_values[0]);
+            w25q32::sector_erase(msg.int_values[0]);
             break;
         case app_cmd::help:
             tx_stream << help_message;

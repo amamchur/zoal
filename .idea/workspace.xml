@@ -52,13 +52,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed sh1106_spi declaration">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed stm32f1 timer">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/avr/stream.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/avr/stream.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/w25qxx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/w25qxx.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/command_processor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/command_processor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/pwm.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/pwm.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,9 +101,12 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/zoal/ic/ws2812.hpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedIndex" value="3" />
@@ -294,11 +295,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="host" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="host" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="host">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -463,8 +459,8 @@
       <item itemvalue="Node.js.gen atmega328p" />
       <item itemvalue="Node.js.gen atmega32u4" />
       <item itemvalue="Node.js.gen attiny13a" />
-      <item itemvalue="Node.js.gen attiny85" />
       <item itemvalue="Node.js.gen attiny2313a" />
+      <item itemvalue="Node.js.gen attiny85" />
       <item itemvalue="Node.js.gen stm32f030f4px" />
       <item itemvalue="Node.js.gen stm32f303retx.hpp" />
       <item itemvalue="Node.js.gen stm32f303vctx" />
@@ -477,11 +473,6 @@
       <item itemvalue="OpenOCD Download &amp; Run.stm32f401" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32l432_nucleo" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -627,6 +618,10 @@
       <workItem from="1636974508810" duration="8000" />
       <workItem from="1638266594650" duration="1862000" />
       <workItem from="1638268515593" duration="13575000" />
+      <workItem from="1638799911196" duration="129000" />
+      <workItem from="1638800058707" duration="21000" />
+      <workItem from="1638802961077" duration="1297000" />
+      <workItem from="1638817680906" duration="1151000" />
     </task>
     <task id="LOCAL-00010" summary="Simplify USART interface">
       <created>1610481432018</created>
@@ -1002,7 +997,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add I2C interface for STN32F3" />
@@ -1055,7 +1049,7 @@
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="../../../Documents/src/zoal/cmake-build-debughost" NAME="All in zoal_tests_atmega328 Coverage Results" MODIFIED="1609138231972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="../../../Documents/src/zoal/cmake-build-debug-host" NAME="zoal_tests Coverage Results" MODIFIED="1611414941049" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="../../../Documents/src/zoal/cmake-build-debughost" NAME="All in zoal_tests_atmega328 Coverage Results" MODIFIED="1609138231972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
