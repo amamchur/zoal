@@ -34,12 +34,21 @@ namespace zoal { namespace arch { namespace stm32f4 {
 
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t resolution = 12;
+        static constexpr uint32_t ADCx_CR1_EOCIE = 1 << 5;
         static constexpr uint32_t ADCx_CR2_ADON = 1 << 0;
         static constexpr uint32_t ADCx_CR2_SWSTART = 1 << 30;
         static constexpr uint32_t ADCx_SR_EOC = 1 << 1;
 
         using enable_cas = zoal::ct::type_list<typename ADCx_CR2::template cas<0, ADCx_CR2_ADON>>;
         using disable_cas = zoal::ct::type_list<typename ADCx_CR2::template cas<ADCx_CR2_ADON, 0>>;
+
+        static void enable_interrupt() {
+            ADCx_CR1::ref() |= ADCx_CR1_EOCIE;
+        }
+
+        static void disable_interrupt() {
+            ADCx_CR1::ref() &= ADCx_CR1_EOCIE;
+        }
 
         static void enable() {
             ADCx_CR2::ref() |= ADCx_CR2_ADON;
