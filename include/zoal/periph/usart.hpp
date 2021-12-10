@@ -23,6 +23,9 @@ namespace zoal { namespace periph {
     };
 
     template<uint32_t UsartFreq>
+    using usart_230400 = usart_params<UsartFreq, 230400>;
+
+    template<uint32_t UsartFreq>
     using usart_115200 = usart_params<UsartFreq, 115200>;
 
     template<uint32_t UsartFreq>

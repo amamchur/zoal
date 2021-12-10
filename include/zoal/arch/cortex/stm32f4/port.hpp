@@ -105,26 +105,26 @@ namespace zoal { namespace arch { namespace stm32x {
         template<uint32_t V, uint8_t Shift = 0>
         using tp_cas = typename P::GPIOx_OTYPER::template cas<
             //
-            static_cast<uint32_t>((V != 0 ? 0x03 : 0) << Shift),
+            static_cast<uint32_t>((V != 0 ? 0x01 : 0) << Shift),
             static_cast<uint32_t>((V != 0 ? rm::GPIOx_OTYPER_mask : 0) << Shift)>;
         using GPIOx_OTYPER = type_list<
             //
-            tp_cas<(Mask & 1 << 0x0), 0>,
-            tp_cas<(Mask & 1 << 0x1), 2>,
-            tp_cas<(Mask & 1 << 0x2), 4>,
-            tp_cas<(Mask & 1 << 0x3), 6>,
-            tp_cas<(Mask & 1 << 0x4), 8>,
-            tp_cas<(Mask & 1 << 0x5), 10>,
-            tp_cas<(Mask & 1 << 0x6), 12>,
-            tp_cas<(Mask & 1 << 0x7), 14>,
-            tp_cas<(Mask & 1 << 0x8), 16>,
-            tp_cas<(Mask & 1 << 0x9), 18>,
-            tp_cas<(Mask & 1 << 0xA), 20>,
-            tp_cas<(Mask & 1 << 0xB), 22>,
-            tp_cas<(Mask & 1 << 0xC), 24>,
-            tp_cas<(Mask & 1 << 0xD), 26>,
-            tp_cas<(Mask & 1 << 0xE), 28>,
-            tp_cas<(Mask & 1 << 0xF), 30>>;
+            tp_cas<(Mask & 1 << 0x0), 0x0>,
+            tp_cas<(Mask & 1 << 0x1), 0x1>,
+            tp_cas<(Mask & 1 << 0x2), 0x2>,
+            tp_cas<(Mask & 1 << 0x3), 0x3>,
+            tp_cas<(Mask & 1 << 0x4), 0x4>,
+            tp_cas<(Mask & 1 << 0x5), 0x5>,
+            tp_cas<(Mask & 1 << 0x6), 0x6>,
+            tp_cas<(Mask & 1 << 0x7), 0x7>,
+            tp_cas<(Mask & 1 << 0x8), 0x8>,
+            tp_cas<(Mask & 1 << 0x9), 0x9>,
+            tp_cas<(Mask & 1 << 0xA), 0xA>,
+            tp_cas<(Mask & 1 << 0xB), 0xB>,
+            tp_cas<(Mask & 1 << 0xC), 0xC>,
+            tp_cas<(Mask & 1 << 0xD), 0xD>,
+            tp_cas<(Mask & 1 << 0xE), 0xE>,
+            tp_cas<(Mask & 1 << 0xF), 0xF>>;
 
         template<uint32_t V, uint8_t Shift = 0>
         using pud_cas = typename P::GPIOx_PUPDR::template cas<
@@ -150,7 +150,7 @@ namespace zoal { namespace arch { namespace stm32x {
             pud_cas<(Mask & 1 << 0xE), 28>,
             pud_cas<(Mask & 1 << 0xF), 30>>;
 
-        using all = typename zoal::gpio::api::optimize<GPIOx_OSPEEDR, GPIOx_MODER, GPIOx_OTYPER, GPIOx_PUPDR>;
+        using all = typename zoal::gpio::api::optimize<GPIOx_MODER, GPIOx_OTYPER, GPIOx_OSPEEDR, GPIOx_PUPDR>;
     };
 
     template<uintptr_t Address, class Clock, uint32_t PinMask = 0xFFFF>
