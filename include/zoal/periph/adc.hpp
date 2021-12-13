@@ -1,6 +1,8 @@
 #ifndef ZOAL_PERIPH_ADC_CONFIG_HPP
 #define ZOAL_PERIPH_ADC_CONFIG_HPP
 
+#include "./adc_request_dispatcher.hpp"
+
 namespace zoal { namespace periph {
     enum class adc_ref { vcc, internal_1v1, internal_2v56, external };
 
@@ -23,6 +25,11 @@ namespace zoal { namespace periph {
         static uint16_t read() {
             connect();
             return adc::read();
+        }
+
+        template<class Callback>
+        static inline bool fetch(Callback callback) {
+            return zoal::periph::adc_dispatcher<adc>::api.template fetch<adc_channel>(callback);
         }
     };
 }}

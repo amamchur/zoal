@@ -52,10 +52,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed OTYPER configuration for STM32F4">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed CAS list filtration">
+      <change afterPath="$PROJECT_DIR$/include/zoal/periph/adc_request_dispatcher.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/periph/adc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/adc.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +144,7 @@
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="language.cpp.clangd" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
     <property name="settings.editor.splitter.proportion" value="0.18565089" />
   </component>
   <component name="RecentsManager">
@@ -627,14 +629,7 @@
       <workItem from="1638817680906" duration="1151000" />
       <workItem from="1638864467228" duration="2349000" />
       <workItem from="1639138061421" duration="12487000" />
-      <workItem from="1639388454973" duration="2817000" />
-    </task>
-    <task id="LOCAL-00011" summary="Improve button/keypad UX">
-      <created>1610842646018</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1610842646018</updated>
+      <workItem from="1639388454973" duration="19765000" />
     </task>
     <task id="LOCAL-00012" summary="Add STM32F1xx timer">
       <created>1610895718031</created>
@@ -972,7 +967,14 @@
       <option name="project" value="LOCAL" />
       <updated>1639150327406</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="Fixed CAS list filtration">
+      <created>1639391443700</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1639391443700</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1005,7 +1007,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix build issue" />
     <MESSAGE value="Updated glyph renderer" />
     <MESSAGE value="Added p9813 to accessory shield" />
     <MESSAGE value="Added SH1106" />
@@ -1030,7 +1031,8 @@
     <MESSAGE value="Added DMA abstraction" />
     <MESSAGE value="Fixed sh1106_spi declaration" />
     <MESSAGE value="Fixed OTYPER configuration for STM32F4" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed OTYPER configuration for STM32F4" />
+    <MESSAGE value="Fixed CAS list filtration" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed CAS list filtration" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

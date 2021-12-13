@@ -9,6 +9,8 @@
 #include <zoal/ct/type_list.hpp>
 #include <zoal/mcu/stm32f401ccux.hpp>
 #include <zoal/periph/i2c.hpp>
+#include <memory>
+#include <utility>
 
 using mcu = zoal::mcu::stm32f401ccux;
 constexpr uint32_t apb1_clock_freq = 42000000;
@@ -41,15 +43,65 @@ public:
     }
 };
 
-int main() {
-    funct f;
+std::string buffer = "qwerty";
+std::string qqq = "Hello ";
 
-    std::cout << std::endl;
-    zoal::ct::type_chain_iterator<case0>::for_each(f);
-    std::cout << std::endl;
-    zoal::ct::type_chain_iterator<case1>::for_each(f);
-    std::cout << std::endl;
-    zoal::ct::type_chain_iterator<case2>::for_each(f);
+const std::string &get_cr() {
+    return buffer;
+}
+
+std::string get_rv() {
+    return buffer;
+}
+
+void test1(const std::string &str) {
+    std::cout << "Copying content" << std::endl;
+    qqq = str;
+}
+
+void test1(std::string &&str) {
+    std::cout << "Moving content" << std::endl;
+    qqq = std::move(str);
+}
+
+class TestClass {
+public:
+    explicit TestClass(std::string n) noexcept : name(std::move(n)) {
+        std::cout << "TestClass created: " << name << std::endl;
+    }
+
+    ~TestClass() noexcept {
+        std::cout << "TestClass destroyed: " << name << std::endl;
+    }
+
+    std::string name;
+    std::weak_ptr<TestClass> next;
+};
+
+std::shared_ptr<TestClass> my_func() {
+    auto a = std::make_shared<TestClass>("Object A");
+    auto b = std::make_shared<TestClass>("Object B");
+    auto c = std::make_shared<TestClass>("Object C");
+    a->next = b;
+    b->next = c;
+    c->next = a;
+
+    std::cout << "Step 1" << std::endl;
+    return a;
+}
+
+int main() {
+    try  {
+        auto a = my_func();
+        if (a->next.expired()) {
+            std::cout << "expired!!!" << std::endl;
+        }
+        std::cout << "Step 2" << std::endl;
+
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
+    std::cout << "Step 3" << std::endl;
 
     return 0;
 }

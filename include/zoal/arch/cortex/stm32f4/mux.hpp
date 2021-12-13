@@ -44,7 +44,7 @@ namespace zoal { namespace arch { namespace stm32f4 {
         };
     };
 
-    template<class Sign, class A, class Pin>
+    template<class Sign, class A, class Pin, uint16_t SampleCycles>
     class adc_channel_builder {
     public:
         using ch0_map = zoal::metadata::stm32_signal_map<Sign, A::address, Pin::port::address, Pin::offset, signal::in0>;
@@ -87,8 +87,12 @@ namespace zoal { namespace arch { namespace stm32f4 {
         static constexpr int channel = zoal::ct::index_of_type<valid_signal, ch_maps>::result;
         static_assert(channel >= 0, "Specified pin could not be connected to ADC");
 
+        using samples_list = ::zoal::ct::value_list<uint16_t, 3, 15, 28, 56, 84, 112, 144, 480>;
+        static constexpr auto samples = ::zoal::ct::index_of_value<uint16_t, SampleCycles, samples_list>::result;
+
         using smprs = zoal::ct::type_list<typename A::ADCx_SMPR2, typename A::ADCx_SMPR1>;
         using smpr = typename zoal::ct::type_at_index<channel / 10, void, smprs>::result;
+        using smpr_cas = typename smpr::template cas<0x7 << ((channel % 10) * 3), samples << ((channel % 10) * 3)>;
         using sqr3_cas = typename A::ADCx_SQR3::template cas<0xF, channel>;
 
         using port = typename Pin::port;
@@ -96,7 +100,7 @@ namespace zoal { namespace arch { namespace stm32f4 {
 
         using connect = typename api::optimize<
             //
-            zoal::mem::callable_cas_list_variadic<moder_cas, sqr3_cas>>;
+            zoal::mem::callable_cas_list_variadic<moder_cas, smpr_cas, sqr3_cas>>;
         using disconnect = typename api::optimize<
             //
             api::mode<pin_mode::input_floating, Pin>>;
@@ -243,8 +247,8 @@ namespace zoal { namespace arch { namespace stm32f4 {
             using disconnect = api::optimize<api::mode<pin_mode::input, SdaPin, SclPin>>;
         };
 
-        template<class T, class Pin>
-        using adc_channel = typename adc_channel_builder<sign, T, Pin>::result;
+        template<class T, class Pin, uint16_t SampleCycles = 15>
+        using adc_channel = typename adc_channel_builder<sign, T, Pin, SampleCycles>::result;
 
         template<class T, class Pin>
         using pwm_channel = typename pwm_channel_builder<sign, T, Pin>::result;
