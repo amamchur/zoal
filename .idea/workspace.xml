@@ -52,13 +52,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed compile errors">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed OTYPER configuration for STM32F4">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/port.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/port.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/ic/w25qxx.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/ic/w25qxx.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mcu/stm32f401ccux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mcu/stm32f401ccux.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/periph/usart.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/periph/usart.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/host.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/host.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +78,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug STM32" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug Host" />
   <component name="Git.Merge.Settings">
     <option name="BRANCH" value="stm32f1_i2c" />
   </component>
@@ -169,7 +166,7 @@
       <command value="vTaskDelay(1);" />
     </option>
   </component>
-  <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f401">
+  <component name="RunManager" selected="CMake Application.host">
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -629,14 +626,8 @@
       <workItem from="1638802961077" duration="1297000" />
       <workItem from="1638817680906" duration="1151000" />
       <workItem from="1638864467228" duration="2349000" />
-      <workItem from="1639138061421" duration="9306000" />
-    </task>
-    <task id="LOCAL-00010" summary="Simplify USART interface">
-      <created>1610481432018</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1610481432018</updated>
+      <workItem from="1639138061421" duration="12487000" />
+      <workItem from="1639388454973" duration="2817000" />
     </task>
     <task id="LOCAL-00011" summary="Improve button/keypad UX">
       <created>1610842646018</created>
@@ -974,7 +965,14 @@
       <option name="project" value="LOCAL" />
       <updated>1636126871038</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="Fixed OTYPER configuration for STM32F4">
+      <created>1639150327405</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1639150327406</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1007,7 +1005,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add I2C interface for STN32F3" />
     <MESSAGE value="Fix build issue" />
     <MESSAGE value="Updated glyph renderer" />
     <MESSAGE value="Added p9813 to accessory shield" />
@@ -1032,7 +1029,8 @@
     <MESSAGE value="Fixed hardware configuration" />
     <MESSAGE value="Added DMA abstraction" />
     <MESSAGE value="Fixed sh1106_spi declaration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed sh1106_spi declaration" />
+    <MESSAGE value="Fixed OTYPER configuration for STM32F4" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed OTYPER configuration for STM32F4" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

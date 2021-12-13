@@ -68,6 +68,9 @@ namespace zoal { namespace mem {
         ZOAL_INLINE_IO static void apply(volatile R &ref, T, T) {}
     };
 
+    using null_cas = cas<0, reg_io::read_write, uint8_t, 0xFF, 0, 0>;
+    using null_cas_list = zoal::ct::type_list<null_cas>;
+
     template<>
     struct cas_strategy_implementation<cas_strategy_type::main> {
         template<class R, class T>
@@ -135,49 +138,43 @@ namespace zoal { namespace mem {
     };
 
     template<class C, class List>
-    struct contains_ca {
+    struct contains_cas {
         using current = typename List::type;
-        static constexpr auto result = C::address == current::address || contains_ca<C, typename List::next>::result;
+        static constexpr auto result = C::address == current::address || contains_cas<C, typename List::next>::result;
     };
 
     template<class C>
-    struct contains_ca<C, void> {
+    struct contains_cas<C, void> {
         static constexpr auto result = false;
     };
 
     template<class List>
-    struct contains_ca<void, List> {
+    struct contains_cas<void, List> {
         static constexpr auto result = false;
     };
 
-    template<class List>
-    struct filter_cas_address {
+    template<class List, class Filtered>
+    struct filter_cas_list {
         using current_cas = typename List::type;
-        static constexpr bool noop = current_cas::address != 0 && current_cas::clear == 0 && current_cas::set == 0;
-        static constexpr bool skip = contains_ca<current_cas, typename List::next>::result;
+        static constexpr bool skip = zoal::mem::contains_cas<current_cas, Filtered>::result;
+        using filtered = typename zoal::ct::conditional_type<
+            //
+            skip,
+            Filtered,
+            zoal::ct::type_list_item<current_cas, Filtered, Filtered::count + 1>>::type;
 
-        using next = typename filter_cas_address<typename List::next>::result;
-        using current = typename make_cas_list<current_cas, next>::item;
+        using next = typename filter_cas_list<typename List::next, filtered>::result;
+        using current = typename zoal::mem::make_cas_list<current_cas, next>::item;
         using result = typename zoal::ct::conditional_type<skip, next, current>::type;
     };
 
-    template<>
-    struct filter_cas_address<void> {
+    template<class Filtered>
+    struct filter_cas_list<void, Filtered> {
         using result = void;
     };
 
     template<class List>
-    struct filter_cas_zeros {
-        using current_cas = typename List::type;
-        static constexpr bool skip = current_cas::address != 0 && current_cas::clear == 0 && current_cas::set == 0;
-
-        using next = typename filter_cas_zeros<typename List::next>::result;
-        using current = typename make_cas_list<current_cas, next>::item;
-        using result = typename zoal::ct::conditional_type<skip, next, current>::type;
-    };
-
-    template<>
-    struct filter_cas_zeros<void> {
+    struct filter_cas_list<List, void> {
         using result = void;
     };
 
@@ -200,9 +197,8 @@ namespace zoal { namespace mem {
 
     template<class List>
     struct merge_cas_in_list {
-        using address_list = typename zoal::mem::filter_cas_address<List>::result;
-        using agg_list = typename perform_cas_aggregation<address_list, List>::result;
-        using result = typename zoal::mem::filter_cas_zeros<agg_list>::result;
+        using filtered = typename zoal::mem::filter_cas_list<List, zoal::mem::null_cas_list>::result;
+        using result = typename perform_cas_aggregation<filtered, List>::result;
     };
 
     template<class TypeList>
@@ -233,9 +229,6 @@ namespace zoal { namespace mem {
 
     template<class... Rest>
     using callable_cas_list_variadic = callable_cas_list<zoal::ct::type_list<Rest...>>;
-
-    using null_cas = cas<0, reg_io::read_write, uint8_t, 0xFF, 0, 0>;
-    using null_cas_list = zoal::ct::type_list<null_cas>;
 }}
 
 #endif
