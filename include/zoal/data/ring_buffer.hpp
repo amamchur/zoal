@@ -24,7 +24,12 @@ namespace zoal { namespace data {
             return head_ == tail_;
         }
 
-        bool push_back(T value) {
+        inline void clear() {
+            head_ = 0;
+            tail_ = 0;
+        }
+
+        bool push_back(const T &value) {
             auto next = head_ + 1;
             if (next >= size_) {
                 next -= size_;
@@ -38,6 +43,21 @@ namespace zoal { namespace data {
             head_ = next;
 
             return true;
+        }
+
+        bool front(T **value) {
+            if (empty()) {
+                return false;
+            }
+
+            *value = &buffer_[tail_];
+            return true;
+        }
+
+        void pop_front() {
+            if (++tail_ >= size_) {
+                tail_ -= size_;
+            }
         }
 
         bool pop_front(T &value) {
