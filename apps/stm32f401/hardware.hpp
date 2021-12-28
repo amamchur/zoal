@@ -25,9 +25,17 @@ constexpr uint32_t apb2_clock_freq = 84000000;
 using mcu = zoal::mcu::stm32f401ccux;
 using delay = zoal::utils::cmsis_os2::delay<system_clock_freq>;
 
+//#define TTY_USART1
+
+#ifdef TTY_USART1
 using tty_usart = mcu::usart_01;
 using tty_usart_rx = mcu::pb_07;
 using tty_usart_tx = mcu::pb_06;
+#else
+using tty_usart = mcu::usart_02;
+using tty_usart_rx = mcu::pa_03;
+using tty_usart_tx = mcu::pa_02;
+#endif
 
 using sensor_adc = mcu::adc_01;
 using sensor_pin = mcu::pa_00;

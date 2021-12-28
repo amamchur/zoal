@@ -23,9 +23,15 @@ zoal::freertos::event_group<zoal::freertos::freertos_allocation_type::static_mem
 
 void zoal_init_hardware() {
     using api = zoal::gpio::api;
+#ifdef TTY_USART1
     using tty_usart_params = zoal::periph::usart_115200<apb2_clock_freq>;
     using tty_usart_mux = mcu::mux::usart<tty_usart, tty_usart_rx, tty_usart_tx>;
     using tty_usart_cfg = mcu::cfg::usart<tty_usart, tty_usart_params>;
+#else
+    using tty_usart_params = zoal::periph::usart_115200<apb1_clock_freq>;
+    using tty_usart_mux = mcu::mux::usart<tty_usart, tty_usart_rx, tty_usart_tx>;
+    using tty_usart_cfg = mcu::cfg::usart<tty_usart, tty_usart_params>;
+#endif
 
     using flash_params = zoal::periph::spi_params<apb2_clock_freq>;
     using flash_spi_mux = mcu::mux::spi<flash_spi, flash_spi_mosi, flash_spi_miso, flash_spi_sck>;
@@ -87,8 +93,14 @@ void zoal_init_hardware() {
     // Enable peripherals after configuration
     api::optimize<api::enable<tty_usart, flash_spi, sensor_adc, pwm_timer, main_i2c, oled_spi>>();
 
+#ifdef TTY_USART1
     HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(USART1_IRQn);
+#else
+    HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(USART2_IRQn);
+#endif
+
     HAL_NVIC_SetPriority(I2C1_EV_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
     HAL_NVIC_SetPriority(I2C1_ER_IRQn, 5, 0);
@@ -114,6 +126,7 @@ void usart_01_tx_transport::send_data(const void *data, size_t size) {
     }
 }
 
+#ifdef TTY_USART1
 extern "C" void USART1_IRQHandler() {
     tty_usart::tx_handler([](uint8_t &value) {
         //
@@ -124,6 +137,19 @@ extern "C" void USART1_IRQHandler() {
         hardware_events.set_isr(usart_event);
     });
 }
+
+#else
+extern "C" void USART2_IRQHandler() {
+    tty_usart::tx_handler([](uint8_t &value) {
+        //
+        return tx_stream_buffer.receive_isr(&value, 1) > 0;
+    });
+    tty_usart::rx_handler([](uint8_t byte) {
+        rx_stream_buffer.send_isr(byte);
+        hardware_events.set_isr(usart_event);
+    });
+}
+#endif
 
 extern "C" void I2C1_EV_IRQHandler() {
     mcu::i2c_01::handle_request_irq(request, []() {

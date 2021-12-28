@@ -52,8 +52,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added ADC interrupt control API for STM32F4">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Extended ring buffer API">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/data/ring_buffer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/data/ring_buffer.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -165,7 +167,7 @@
       <command value="vTaskDelay(1);" />
     </option>
   </component>
-  <component name="RunManager" selected="CMake Application.host">
+  <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f401">
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -629,14 +631,9 @@
       <workItem from="1639388454973" duration="19765000" />
       <workItem from="1640291572913" duration="2546000" />
       <workItem from="1640339324153" duration="18000" />
-      <workItem from="1640343664429" duration="1000" />
-    </task>
-    <task id="LOCAL-00012" summary="Add STM32F1xx timer">
-      <created>1610895718031</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1610895718031</updated>
+      <workItem from="1640343664429" duration="555000" />
+      <workItem from="1640535950772" duration="642000" />
+      <workItem from="1640672618868" duration="1660000" />
     </task>
     <task id="LOCAL-00013" summary="Remove unused classes, update common interface.">
       <created>1611104222246</created>
@@ -974,7 +971,14 @@
       <option name="project" value="LOCAL" />
       <updated>1639391443700</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="Extended ring buffer API">
+      <created>1640343690636</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1640343690637</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1007,7 +1011,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated glyph renderer" />
     <MESSAGE value="Added p9813 to accessory shield" />
     <MESSAGE value="Added SH1106" />
     <MESSAGE value="Update STM32 projects to latest firmware" />
@@ -1032,7 +1035,8 @@
     <MESSAGE value="Fixed sh1106_spi declaration" />
     <MESSAGE value="Fixed OTYPER configuration for STM32F4" />
     <MESSAGE value="Fixed CAS list filtration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed CAS list filtration" />
+    <MESSAGE value="Extended ring buffer API" />
+    <option name="LAST_COMMIT_MESSAGE" value="Extended ring buffer API" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

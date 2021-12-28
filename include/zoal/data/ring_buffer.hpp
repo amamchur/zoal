@@ -54,10 +54,15 @@ namespace zoal { namespace data {
             return true;
         }
 
-        void pop_front() {
+        bool pop_front() {
+            if (empty()) {
+                return false;
+            }
+
             if (++tail_ >= size_) {
                 tail_ -= size_;
             }
+            return true;
         }
 
         bool pop_front(T &value) {
