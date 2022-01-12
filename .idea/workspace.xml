@@ -52,11 +52,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Extended ring buffer API">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/data/ring_buffer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/data/ring_buffer.hpp" afterDir="false" />
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed ring buffer pop_font method">
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +76,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug STM32" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug Host" />
   <component name="Git.Merge.Settings">
     <option name="BRANCH" value="stm32f1_i2c" />
   </component>
@@ -424,6 +421,7 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Google Test.zoal_tests" />
       <item itemvalue="CMake Application.ATmega2560-eeprom" />
       <item itemvalue="CMake Application.ATmega2560-fuse" />
       <item itemvalue="CMake Application.ATmega2560-upload" />
@@ -457,7 +455,6 @@
       <item itemvalue="CMake Application.stm32f303_nucleo" />
       <item itemvalue="CMake Application.stm32f401" />
       <item itemvalue="CMake Application.stm32l432_nucleo" />
-      <item itemvalue="Google Test.zoal_tests" />
       <item itemvalue="Node.js.cubemx-proj.js" />
       <item itemvalue="Node.js.gen atmega2560" />
       <item itemvalue="Node.js.gen atmega328p" />
@@ -466,10 +463,10 @@
       <item itemvalue="Node.js.gen attiny2313a" />
       <item itemvalue="Node.js.gen attiny85" />
       <item itemvalue="Node.js.gen stm32f030f4px" />
+      <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
       <item itemvalue="Node.js.gen stm32f303retx.hpp" />
       <item itemvalue="Node.js.gen stm32f303vctx" />
       <item itemvalue="Node.js.gen stm32f401ccux.hpp" />
-      <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f030" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f103_blue_pill" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f103_freertos" />

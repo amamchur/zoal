@@ -115,7 +115,7 @@ namespace zoal { namespace arch { namespace stm32f4 {
         using ch2_map = zoal::metadata::stm32_signal_map<Sign, T::address, Pin::port::address, Pin::offset, signal::ch2>;
         using ch3_map = zoal::metadata::stm32_signal_map<Sign, T::address, Pin::port::address, Pin::offset, signal::ch3>;
         using ch4_map = zoal::metadata::stm32_signal_map<Sign, T::address, Pin::port::address, Pin::offset, signal::ch4>;
-        using ch_maps = zoal::ct::type_list<ch1_map, ch2_map, ch3_map, ch3_map>;
+        using ch_maps = zoal::ct::type_list<ch1_map, ch2_map, ch3_map, ch4_map>;
 
         static constexpr int channel = zoal::ct::index_of_type<valid_signal, ch_maps>::result;
         static_assert(channel >= 0, "Specified pin could not be connected to Timer");
