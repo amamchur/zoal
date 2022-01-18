@@ -38,55 +38,85 @@ public:
     }
 };
 
-void print_i2c(I2C_TypeDef *i2c) {
-    tx_stream << "CR1\t" << (void *)&i2c->CR1 << "\t" << zoal::io::hexadecimal(i2c->CR1) << "\r\n";
-    tx_stream << "CR2\t" << (void *)&i2c->CR2 << "\t" << zoal::io::hexadecimal(i2c->CR2) << "\r\n";
-    tx_stream << "OAR1\t" << (void *)&i2c->OAR1 << "\t" << zoal::io::hexadecimal(i2c->OAR1) << "\r\n";
-    tx_stream << "OAR2\t" << (void *)&i2c->OAR2 << "\t" << zoal::io::hexadecimal(i2c->OAR2) << "\r\n";
-    tx_stream << "CCR\t" << (void *)&i2c->CCR << "\t" << zoal::io::hexadecimal(i2c->CCR) << "\r\n";
-    tx_stream << "TRISE\t" << (void *)&i2c->TRISE << "\t" << zoal::io::hexadecimal(i2c->TRISE) << "\r\n";
+template<class T>
+void print_struct(const T &t) {
+    auto ptr = reinterpret_cast<const uint32_t *>(&t);
+    constexpr size_t count = sizeof(T) / sizeof(uint32_t);
+    for (int i = 0; i < count; i++) {
+        tx_stream << "Offset: " << zoal::io::hexadecimal(i * sizeof(uint32_t)) << " " << (void *)ptr << " " << zoal::io::hexadecimal(*ptr) << "\r\n";
+        ptr++;
+    }
 }
 
-uint8_t test_buffer[16];
+template<class T>
+void print_struct_diff(const T &t1, const T &t2) {
+    auto ptr1 = reinterpret_cast<const uint32_t *>(&t1);
+    auto ptr2 = reinterpret_cast<const uint32_t *>(&t2);
+    constexpr size_t count = sizeof(T) / sizeof(uint32_t);
+    for (int i = 0; i < count; i++) {
+        if (*ptr1 == *ptr2) {
+            ptr1++;
+            ptr2++;
+            continue;
+        }
+        tx_stream << "Offset: " << zoal::io::hexadecimal(i * sizeof(uint32_t)) << " " << zoal::io::hexadecimal(*ptr1) << " " << zoal::io::hexadecimal(*ptr2)
+                  << "\r\n";
+        ptr1++;
+        ptr2++;
+    }
+}
+
+TIM_TypeDef tcfg0;
+TIM_TypeDef tcfg1;
+TIM_TypeDef tcfg2;
 
 [[noreturn]] void zoal_main_task(void *) {
     init_terminal();
 
     terminal.sync();
 
-#if 0
-    using i2c_01_params = zoal::periph::i2c_fast_mode<42000000>;
-    using i2c_mux = mcu::mux::i2c<mcu::i2c_01, mcu::pb_09, mcu::pb_08>;
-    using i2c_cfg = mcu::cfg::i2c<mcu::i2c_01, i2c_01_params>;
-
-    tx_stream << "\r\nConfig: \r\n";
-
+#if 1
+    tx_stream << "\r\n";
     funct fn;
-    zoal::ct::type_chain_iterator<i2c_cfg::apply>::for_each(fn);
+    zoal::ct::type_chain_iterator<pump_pwm_channel::connect>::for_each(fn);
 
-    //    I2C_TypeDef *i2c = I2C1;
-    tx_stream << "\r\nPrev I2C1: \r\n";
-    print_i2c(&prev_i2c);
-    tx_stream << "\r\nCurrent I2C1: \r\n";
-    print_i2c(I2C1);
+    tx_stream << "Channel: " << pump_pwm_channel::channel << "\r\n";
+    tcfg0 = *TIM3;
 
-    tx_stream << "Mux: \r\n";
-    zoal::ct::type_chain_iterator<i2c_mux::connect>::for_each(fn);
+    mcu::api::optimize<pump_pwm_timer_cfg::apply>();
+    pump_pwm_channel::connect();
+    pump_pwm_channel::set(500);
+    pump_pwm_timer::enable();
+    tcfg1 = *TIM3;
+
+    *TIM3 = tcfg0;
+    MX_TIM3_Init();
+    HAL_TIM_PWM_Start(&htim3, 3);
+    tcfg2 = *TIM3;
+
+    print_struct_diff(tcfg1, tcfg2);
+
+
+//    using i2c_01_params = zoal::periph::i2c_fast_mode<42000000>;
+//    using i2c_mux = mcu::mux::i2c<mcu::i2c_01, mcu::pb_09, mcu::pb_08>;
+//    using i2c_cfg = mcu::cfg::i2c<mcu::i2c_01, i2c_01_params>;
+//
+//    tx_stream << "\r\nConfig: \r\n";
+//
+//    funct fn;
+//    zoal::ct::type_chain_iterator<i2c_cfg::apply>::for_each(fn);
+//
+//    //    I2C_TypeDef *i2c = I2C1;
+//    tx_stream << "\r\nPrev I2C1: \r\n";
+//    print_i2c(&prev_i2c);
+//    tx_stream << "\r\nCurrent I2C1: \r\n";
+//    print_i2c(I2C1);
+//
+//    tx_stream << "Mux: \r\n";
+//    zoal::ct::type_chain_iterator<i2c_mux::connect>::for_each(fn);
 #endif
 
-    //    W25qxx_Init();
-    //    memset(test_buffer, 0, sizeof(test_buffer));
-    //    W25qxx_ReadBytes(test_buffer, 0, sizeof(test_buffer));
-    //
-    //    tx_stream << "!!! w25qxx: " << (int)w25qxx.ID << "\r\n";
-    //    tx_stream << "\r\n";
-
-    for (unsigned char i : test_buffer) {
-        tx_stream << zoal::io::hexadecimal(i) << " ";
-    }
-
     test_ssh1106();
-    //    write_flash();
 
     for (;;) {
         auto bits = hardware_events.wait(all_hardware_events);
@@ -131,21 +161,15 @@ public:
 void test_ssh1106() {
     screen.init();
 
-//    auto g = graphics::from_memory(screen.buffer.canvas);
-//    zoal::gfx::glyph_renderer<graphics, mem_reader> gl(g, &roboto_regular_16);
-//    zoal::io::output_stream<zoal::gfx::glyph_renderer<graphics, mem_reader>> text_stream(gl);
-//    gl.color(1);
-//
-//    tx_stream << uwTick << "\r\n";
-//    for (int i = 0; i < 10000; i++) {
-//        g->clear(0);
-//        gl.position(10, roboto_regular_16.y_advance);
-//        text_stream << i;
-//        screen.display();
-//    }
-//    tx_stream << uwTick << "\r\n";
+    auto g = graphics::from_memory(screen.buffer.canvas);
+    zoal::gfx::glyph_renderer<graphics, mem_reader> gl(g, &roboto_regular_16);
+    zoal::io::output_stream<zoal::gfx::glyph_renderer<graphics, mem_reader>> text_stream(gl);
+    gl.color(1);
+    g->clear(0);
+    gl.position(10, roboto_regular_16.y_advance);
+    text_stream << "Hello";
 
-    w25q32::fast_read(0, &screen.buffer.canvas, sizeof(screen.buffer.canvas));
+    //    w25q32::fast_read(0, &screen.buffer.canvas, sizeof(screen.buffer.canvas));
     screen.display();
 }
 

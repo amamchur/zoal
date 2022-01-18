@@ -62,7 +62,8 @@ void zoal_init_hardware() {
         i2c_mux::clock_on,
         i2c_cfg::clock_on,
         adc_cfg::clock_on,
-        timer_cfg::clock_on
+        timer_cfg::clock_on,
+        pump_pwm_timer_cfg::clock_on
         //
         >();
     api::optimize<api::disable<tty_usart, flash_spi, sensor_adc, pwm_timer, main_i2c, oled_spi>>();

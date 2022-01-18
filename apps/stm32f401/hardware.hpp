@@ -25,7 +25,7 @@ constexpr uint32_t apb2_clock_freq = 84000000;
 using mcu = zoal::mcu::stm32f401ccux;
 using delay = zoal::utils::cmsis_os2::delay<system_clock_freq>;
 
-//#define TTY_USART1
+#define TTY_USART1
 
 #ifdef TTY_USART1
 using tty_usart = mcu::usart_01;
@@ -63,6 +63,17 @@ using w25q32 = zoal::ic::w25qxx<flash_spi, flash_spi_cs, delay>;
 using main_i2c = mcu::i2c_01;
 using main_i2c_sda = mcu::pb_09;
 using main_i2c_scl = mcu::pb_08;
+
+using pump_pwm_timer = mcu::timer_03;
+using sensor_adc = mcu::adc_01;
+
+using pump_signal = mcu::pb_00;
+using valve_signal = mcu::pb_05;
+
+using pump_pwm_channel = mcu::mux::pwm_channel<pump_pwm_timer, pump_signal>;
+
+using pump_pwm_timer_params = zoal::periph::timer_params<apb2_clock_freq, 840, 1000, zoal::periph::timer_mode::up>;
+using pump_pwm_timer_cfg = mcu::cfg::timer<pump_pwm_timer, pump_pwm_timer_params>;
 
 using stream_buffer_type = zoal::freertos::stream_buffer<zoal::freertos::freertos_allocation_type::static_mem>;
 extern zoal::mem::reserve_mem<stream_buffer_type, 32> rx_stream_buffer;

@@ -52,7 +52,26 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed ring buffer pop_font method">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Implemented ADC dispatcher">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f401/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/adc.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/adc.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/gpio.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/gpio.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/i2c.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/i2c.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/spi.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/spi.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/tim.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/tim.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/usart.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/usart.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/adc.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/adc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/gpio.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/gpio.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/i2c.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/i2c.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/usart.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/usart.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,7 +95,7 @@
       </list>
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug Host" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug STM32" />
   <component name="Git.Merge.Settings">
     <option name="BRANCH" value="stm32f1_i2c" />
   </component>
@@ -98,13 +117,13 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/apps/stm32f401/hardware.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/include/zoal/ic/ws2812.hpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/apps/stm32f401/w25qxx.c" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/apps/stm32f401/w25qxx.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/zoal/ic/w25qxx.hpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/zoal/ic/ws2812.hpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/apps/stm32f401/w25qxx.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/apps/stm32f401/hardware.cpp" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -165,6 +184,11 @@
     </option>
   </component>
   <component name="RunManager" selected="OpenOCD Download &amp; Run.stm32f401">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="zoal_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="zoal" TARGET_NAME="zoal_tests" CONFIG_NAME="Debug Host" RUN_TARGET_PROJECT_NAME="zoal" RUN_TARGET_NAME="zoal_tests" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -421,7 +445,6 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Google Test.zoal_tests" />
       <item itemvalue="CMake Application.ATmega2560-eeprom" />
       <item itemvalue="CMake Application.ATmega2560-fuse" />
       <item itemvalue="CMake Application.ATmega2560-upload" />
@@ -455,6 +478,7 @@
       <item itemvalue="CMake Application.stm32f303_nucleo" />
       <item itemvalue="CMake Application.stm32f401" />
       <item itemvalue="CMake Application.stm32l432_nucleo" />
+      <item itemvalue="Google Test.zoal_tests" />
       <item itemvalue="Node.js.cubemx-proj.js" />
       <item itemvalue="Node.js.gen atmega2560" />
       <item itemvalue="Node.js.gen atmega328p" />
@@ -463,10 +487,10 @@
       <item itemvalue="Node.js.gen attiny2313a" />
       <item itemvalue="Node.js.gen attiny85" />
       <item itemvalue="Node.js.gen stm32f030f4px" />
-      <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
       <item itemvalue="Node.js.gen stm32f303retx.hpp" />
       <item itemvalue="Node.js.gen stm32f303vctx" />
       <item itemvalue="Node.js.gen stm32f401ccux.hpp" />
+      <item itemvalue="Node.js.gen stm32f103c8tx.hpp" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f030" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f103_blue_pill" />
       <item itemvalue="OpenOCD Download &amp; Run.stm32f103_freertos" />
@@ -1037,6 +1061,18 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c</url>
+          <line>127</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c</url>
+          <line>4264</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -1058,7 +1094,7 @@
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="../../../Documents/src/zoal/cmake-build-debug-host" NAME="zoal_tests Coverage Results" MODIFIED="1611414941049" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="../../../Documents/src/zoal/cmake-build-debughost" NAME="All in zoal_tests_atmega328 Coverage Results" MODIFIED="1609138231972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="../../../Documents/src/zoal/cmake-build-debug-host" NAME="zoal_tests Coverage Results" MODIFIED="1611414941049" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="gcov/llvm" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

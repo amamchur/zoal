@@ -145,7 +145,7 @@ namespace zoal { namespace arch { namespace stm32f4 {
         using ccmrs = zoal::ct::type_list<typename T::TIMERx_CCMR1, typename T::TIMERx_CCMR2>;
         using ccmr = typename zoal::ct::type_at_index<channel_ccmr_group, void, ccmrs>::result;
 
-        static constexpr uint32_t ccmr_shift = channel_ccmr_group == 0 ? 0 : 8;
+        static constexpr uint32_t ccmr_shift = (channel & 1) == 0 ? 0 : 8;
         static constexpr uint32_t ccmr_ocx_ce = 0x0 << 7;
         static constexpr uint32_t ccmr_ocx_ocm_set = 0x6 << 4; // PWM Mode 1
         static constexpr uint32_t ccmr_ocx_pe = 0x1 << 3;
@@ -154,7 +154,7 @@ namespace zoal { namespace arch { namespace stm32f4 {
         static constexpr uint32_t ccmr_connect_clear = 0xFF;
         static constexpr uint32_t ccmr_connect_set = ccmr_ocx_ce | ccmr_ocx_pe | ccmr_ocx_ocm_set | ccmr_ocx_fe | ccmr_ocx_ccs_set;
 
-        static constexpr uint32_t ccer_shift = channel;
+        static constexpr uint32_t ccer_shift = channel * 4;
         static constexpr uint32_t ccer_clear = 0x0F;
         static constexpr uint32_t ccer_set = 0x01;
 

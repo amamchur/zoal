@@ -314,12 +314,6 @@ set(STM32F401_SRC
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_dma.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_exti.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_gpio.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_rcc.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_spi.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_utils.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
         cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
@@ -352,7 +346,7 @@ set(STM32F401_INC
         cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/include
         cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
         cubemx-proj/stm32f401/Core/Inc)
-set(STM32F401_DEFS -DUSE_HAL_DRIVER -DSTM32F401xC -DUSE_FULL_LL_DRIVER)
+set(STM32F401_DEFS -DUSE_HAL_DRIVER -DSTM32F401xC)
 set(STM32F401_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard)
 set(STM32F401_FLASH_LD cubemx-proj/stm32f401/STM32F401CCUx_FLASH.ld)
 
