@@ -162,10 +162,6 @@ set(STM32F103_FREERTOS_SRC
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_exti.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_gpio.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_rcc.c
-        cube-repo/STM32Cube_FW_F1_V1.8.4/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_utils.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
         cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
@@ -194,7 +190,7 @@ set(STM32F103_FREERTOS_INC
         cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/include
         cube-repo/STM32Cube_FW_F1_V1.8.4/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3
         cubemx-proj/stm32f103_freertos/Inc)
-set(STM32F103_FREERTOS_DEFS -DUSE_HAL_DRIVER -DSTM32F103xB -DUSE_FULL_LL_DRIVER)
+set(STM32F103_FREERTOS_DEFS -DUSE_HAL_DRIVER -DSTM32F103xB)
 set(STM32F103_FREERTOS_OPT_MCU -mcpu=cortex-m3 -mthumb)
 set(STM32F103_FREERTOS_FLASH_LD cubemx-proj/stm32f103_freertos/STM32F103C8Tx_FLASH.ld)
 

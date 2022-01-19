@@ -227,6 +227,11 @@ namespace zoal { namespace mem {
         }
     };
 
+    template<>
+    struct callable_cas_list<void> {
+        ZOAL_INLINE_IO callable_cas_list() = default;
+    };
+
     template<class... Rest>
     using callable_cas_list_variadic = callable_cas_list<zoal::ct::type_list<Rest...>>;
 }}

@@ -52,27 +52,22 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Implemented ADC dispatcher">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed PWM channel configuration">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f401/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/adc.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/adc.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/gpio.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/gpio.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/i2c.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/i2c.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/spi.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/spi.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/tim.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/tim.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/usart.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Inc/usart.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/adc.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/adc.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/gpio.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/gpio.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/i2c.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/i2c.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/spi.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/usart.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/usart.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f401/stm32f401.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f4/mux.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/gpio.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/gpio.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/main.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32_assert.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_hal_conf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/gpio.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/gpio.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -656,13 +651,6 @@
       <workItem from="1640535950772" duration="642000" />
       <workItem from="1640672618868" duration="1660000" />
     </task>
-    <task id="LOCAL-00013" summary="Remove unused classes, update common interface.">
-      <created>1611104222246</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1611104222246</updated>
-    </task>
     <task id="LOCAL-00014" summary="Fix HD44780 &amp; analog keypad">
       <created>1611224333656</created>
       <option name="number" value="00014" />
@@ -999,7 +987,14 @@
       <option name="project" value="LOCAL" />
       <updated>1640343690637</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="Fixed PWM channel configuration">
+      <created>1642523725392</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1642523725393</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1032,7 +1027,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added p9813 to accessory shield" />
     <MESSAGE value="Added SH1106" />
     <MESSAGE value="Update STM32 projects to latest firmware" />
     <MESSAGE value="Update examples" />
@@ -1057,7 +1051,8 @@
     <MESSAGE value="Fixed OTYPER configuration for STM32F4" />
     <MESSAGE value="Fixed CAS list filtration" />
     <MESSAGE value="Extended ring buffer API" />
-    <option name="LAST_COMMIT_MESSAGE" value="Extended ring buffer API" />
+    <MESSAGE value="Fixed PWM channel configuration" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed PWM channel configuration" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1066,11 +1061,6 @@
           <url>file://$PROJECT_DIR$/cubemx-proj/stm32f401/Core/Src/tim.c</url>
           <line>127</line>
           <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c</url>
-          <line>4264</line>
-          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -1083,11 +1073,6 @@
         <breakpoint enabled="true" type="javascript-exception" />
       </default-breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="com.jetbrains.cidr.embedded.openocd.conf.type">
-        <watch expression="e[-1]" language="ObjectiveC" />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

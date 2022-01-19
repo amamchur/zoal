@@ -66,9 +66,9 @@ void print_struct_diff(const T &t1, const T &t2) {
     }
 }
 
-TIM_TypeDef tcfg0;
-TIM_TypeDef tcfg1;
-TIM_TypeDef tcfg2;
+TIM_TypeDef init_cfg;
+TIM_TypeDef zoal_cfg;
+TIM_TypeDef hal_cfg;
 
 [[noreturn]] void zoal_main_task(void *) {
     init_terminal();
@@ -76,25 +76,31 @@ TIM_TypeDef tcfg2;
     terminal.sync();
 
 #if 1
+    init_cfg = *TIM3;
+
     tx_stream << "\r\n";
     funct fn;
+    zoal::ct::type_chain_iterator<pump_pwm_timer_cfg::apply>::for_each(fn);
     zoal::ct::type_chain_iterator<pump_pwm_channel::connect>::for_each(fn);
 
     tx_stream << "Channel: " << pump_pwm_channel::channel << "\r\n";
-    tcfg0 = *TIM3;
 
     mcu::api::optimize<pump_pwm_timer_cfg::apply>();
     pump_pwm_channel::connect();
     pump_pwm_channel::set(500);
     pump_pwm_timer::enable();
-    tcfg1 = *TIM3;
-
-    *TIM3 = tcfg0;
-    MX_TIM3_Init();
-    HAL_TIM_PWM_Start(&htim3, 3);
-    tcfg2 = *TIM3;
-
-    print_struct_diff(tcfg1, tcfg2);
+//    zoal_cfg = *TIM3;
+//    zoal_cfg.CNT = 0;
+//    zoal_cfg.SR = 0;
+//
+//    *TIM3 = init_cfg;
+//    MX_TIM3_Init();
+//    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+//    hal_cfg = *TIM3;
+//    hal_cfg.CNT = 0;
+//    hal_cfg.SR = 0;
+//
+//    print_struct_diff(zoal_cfg, hal_cfg);
 
 
 //    using i2c_01_params = zoal::periph::i2c_fast_mode<42000000>;

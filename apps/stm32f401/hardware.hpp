@@ -72,7 +72,7 @@ using valve_signal = mcu::pb_05;
 
 using pump_pwm_channel = mcu::mux::pwm_channel<pump_pwm_timer, pump_signal>;
 
-using pump_pwm_timer_params = zoal::periph::timer_params<apb2_clock_freq, 840, 1000, zoal::periph::timer_mode::up>;
+using pump_pwm_timer_params = zoal::periph::timer_params<apb2_clock_freq, 83, 999, zoal::periph::timer_mode::up>;
 using pump_pwm_timer_cfg = mcu::cfg::timer<pump_pwm_timer, pump_pwm_timer_params>;
 
 using stream_buffer_type = zoal::freertos::stream_buffer<zoal::freertos::freertos_allocation_type::static_mem>;
