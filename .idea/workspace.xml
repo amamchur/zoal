@@ -52,22 +52,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Fixed PWM channel configuration">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added specialized template callable_cas_list">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f103c8_freertos/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/hardware.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/stm32f401/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/gpio.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/gpio.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/main.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32_assert.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Inc/stm32f1xx_hal_conf.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/gpio.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/gpio.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/cubemx-proj/stm32f103_freertos/stm32f103_freertos.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/mem/cas.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/func/function.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/func/function.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/zoal/func/invocation.hpp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

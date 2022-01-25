@@ -157,7 +157,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
             using TIMERx_CR1 = typename T::TIMERx_CR1::template cas<cr1_mode::clear | cr1_cs::clear, cr1_mode::set | cr1_cs::set>;
             using TIMERx_ARR = typename T::TIMERx_ARR::template cas<T::TIMERx_ARR::mask, Cfg::period>;
             using TIMERx_PSC = typename T::TIMERx_PSC::template cas<T::TIMERx_PSC::mask, Cfg::prescaler>;
-            using TIMERx_EGR = typename T::TIMERx_EGR::template cas<0xFF, T::TIMERx_EGR_UG>;
+            using TIMERx_EGR = typename T::TIMERx_EGR::template cas<0, T::TIMERx_EGR_UG>;
             using apply = type_list<TIMERx_CR1, TIMERx_PSC, TIMERx_ARR, TIMERx_EGR>;
         };
     };
