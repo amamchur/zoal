@@ -52,12 +52,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Added specialized template callable_cas_list">
+    <list default="true" id="0721e1cc-7991-486f-aa47-cf747bd0219e" name="Default Changelist" comment="Re-factored function class (removed virtual calls)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/stm32f401/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/apps/stm32f401/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/arch/cortex/stm32f1/cfg.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/zoal/func/function.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/zoal/func/function.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/zoal/func/invocation.hpp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -640,13 +637,8 @@
       <workItem from="1640343664429" duration="555000" />
       <workItem from="1640535950772" duration="642000" />
       <workItem from="1640672618868" duration="1660000" />
-    </task>
-    <task id="LOCAL-00014" summary="Fix HD44780 &amp; analog keypad">
-      <created>1611224333656</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1611224333656</updated>
+      <workItem from="1643282868436" duration="1256000" />
+      <workItem from="1643298147060" duration="8000" />
     </task>
     <task id="LOCAL-00015" summary="Add MCU signature concept">
       <created>1611242174534</created>
@@ -984,7 +976,14 @@
       <option name="project" value="LOCAL" />
       <updated>1642523725393</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="Re-factored function class (removed virtual calls)">
+      <created>1643126439920</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1643126439920</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1017,7 +1016,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added SH1106" />
     <MESSAGE value="Update STM32 projects to latest firmware" />
     <MESSAGE value="Update examples" />
     <MESSAGE value="Add lambda_scheduler" />
@@ -1042,7 +1040,8 @@
     <MESSAGE value="Fixed CAS list filtration" />
     <MESSAGE value="Extended ring buffer API" />
     <MESSAGE value="Fixed PWM channel configuration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed PWM channel configuration" />
+    <MESSAGE value="Re-factored function class (removed virtual calls)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Re-factored function class (removed virtual calls)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

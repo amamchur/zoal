@@ -43,9 +43,8 @@ namespace zoal { namespace func {
             static constexpr bool has_space = sizeof(inv) < ClosureBankSize;
             static_assert(has_space, "Handler size is too big. Please increase closure bank size.");
 
-            auto li = new (mem_bank) inv(l);
+            new (mem_bank) inv(l);
             fn = inv::call_lambda;
-            instance = li;
         }
 
         void reset() {
@@ -57,7 +56,6 @@ namespace zoal { namespace func {
         }
 
     protected:
-        void *instance{nullptr};
         Ret (*fn)(void *, Args...){nullptr};
         uint8_t mem_bank[ClosureBankSize]{0};
     };
@@ -83,7 +81,6 @@ namespace zoal { namespace func {
 
             memcpy(this->mem_bank, fn.mem_bank, ClosureBankSize);
             this->fn = fn.fn;
-            this->instance = this->mem_bank + (reinterpret_cast<uint8_t *>(fn.instance) - fn.mem_bank);
             return *this;
         }
 
@@ -94,7 +91,7 @@ namespace zoal { namespace func {
         }
 
         Ret operator()(Args... args) {
-            return this->fn(this->instance, args...);
+            return this->fn(this->mem_bank, args...);
         }
     };
 
@@ -119,7 +116,6 @@ namespace zoal { namespace func {
 
             memcpy(this->mem_bank, fn.mem_bank, ClosureBankSize);
             this->fn = fn.fn;
-            this->instance = this->mem_bank + (reinterpret_cast<uint8_t *>(fn.instance) - fn.mem_bank);
             return *this;
         }
 
@@ -130,7 +126,7 @@ namespace zoal { namespace func {
         }
 
         void operator()(Args... args) {
-            this->fn(this->instance, args...);
+            this->fn(this->mem_bank, args...);
         }
     };
 }}
