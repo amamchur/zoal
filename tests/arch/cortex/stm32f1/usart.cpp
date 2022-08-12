@@ -26,7 +26,7 @@ TEST(stm32f1_usart, speed_115200) {
     }
     {
         cas_collector c;
-        type_list_iterator<usart_config::periph_clock_on>::for_each(c);
+        type_list_iterator<usart_config::clock_on>::for_each(c);
         ASSERT_EQ(c.values.size(), 1);
         EXPECT_EQ(c.values[0], cas_value(0x40021018, 0x00004000, 0x00004000, sizeof(uint32_t)));
     }
@@ -43,20 +43,26 @@ TEST(stm32f1_usart, mux) {
     {
         cas_collector c;
         type_list_iterator<usart_mux::connect>::for_each(c);
-        ASSERT_EQ(c.values.size(), 2);
+        ASSERT_EQ(c.values.size(), 5);
         EXPECT_EQ(c.values[0], cas_value(0x40010004, 0x00000004, 0x00000004, sizeof(uint32_t)));
-        EXPECT_EQ(c.values[1], cas_value(0x40010c00, 0xff000000, 0x4b000000, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[1], cas_value(0x4001001c, 0x00000000, 0x00000000, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[2], cas_value(0x40010c00, 0xff000000, 0x4b000000, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[3], cas_value(0x40010c04, 0x00000000, 0x00000000, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[4], cas_value(0x40010c10, 0x00000000, 0x00000000, sizeof(uint32_t)));
     }
     {
         cas_collector c;
         type_list_iterator<usart_mux::disconnect>::for_each(c);
-        ASSERT_EQ(c.values.size(), 2);
+        ASSERT_EQ(c.values.size(), 5);
         EXPECT_EQ(c.values[0], cas_value(0x40010c00, 0xff000000, 0x44000000, sizeof(uint32_t)));
-        EXPECT_EQ(c.values[1], cas_value(0x40010004, 0x00000004, 0x00000000, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[1], cas_value(0x40010c04, 0x00000000, 0x00000000, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[2], cas_value(0x40010c10, 0x00000000, 0x00000000, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[3], cas_value(0x40010004, 0x00000004, 0x00000000, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[4], cas_value(0x4001001c, 0x00000000, 0x00000000, sizeof(uint32_t)));
     }
     {
         cas_collector c;
-        type_list_iterator<usart_mux::periph_clock_on>::for_each(c);
+        type_list_iterator<usart_mux::clock_on>::for_each(c);
         ASSERT_EQ(c.values.size(), 1);
         EXPECT_EQ(c.values[0], cas_value(0x40021018, 0x00000008, 0x00000008, sizeof(uint32_t)));
     }

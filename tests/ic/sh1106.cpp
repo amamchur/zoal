@@ -10,8 +10,7 @@
 #include <zoal/periph/i2c_request_dispatcher.hpp>
 
 TEST(sh1106, display) {
-    using sh1106_interface = zoal::ic::sh1106_interface_i2c<0x3C>;
-    using sh1106_type = zoal::ic::sh1106<128, 64, sh1106_interface>;
+    using sh1106_type = zoal::ic::sh1106_i2c<128, 64, 0x3C>;
     using dispatcher_type = zoal::periph::i2c_request_dispatcher<zoal::tests::i2c_mock<typeof(this)>, sizeof(void *) * 8>;
     dispatcher_type dispatcher;
     zoal::periph::i2c_request &request = dispatcher.request;

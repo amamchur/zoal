@@ -20,14 +20,15 @@ namespace zoal { namespace ic {
 
         using gpio_cfg = api::optimize<
             //
-            api::clock_on<
+//            api::clock_on<
                 //
-                typename RegisterSelect::port,
-                typename Enable::port,
-                typename DataBus4::port,
-                typename DataBus5::port,
-                typename DataBus6::port,
-                typename DataBus7::port>,
+//                typename RegisterSelect::port,
+//                typename Enable::port,
+//                typename DataBus4::port,
+//                typename DataBus5::port,
+//                typename DataBus6::port,
+//                typename DataBus7::port
+//                >,
             api::mode<pin_mode::output_push_pull, RegisterSelect, Enable, DataBus4, DataBus5, DataBus6, DataBus7>,
             api::low<RegisterSelect, Enable, DataBus6, DataBus7>,
             api::high<DataBus4, DataBus4>>;

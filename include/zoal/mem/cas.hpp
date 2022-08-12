@@ -198,7 +198,9 @@ namespace zoal { namespace mem {
     template<class List>
     struct merge_cas_in_list {
         using filtered = typename zoal::mem::filter_cas_list<List, zoal::mem::null_cas_list>::result;
-        using result = typename perform_cas_aggregation<filtered, List>::result;
+        using list = typename perform_cas_aggregation<filtered, List>::result;
+        using is_void = zoal::ct::is_same<void, list>;
+        using result = typename zoal::ct::conditional_type<is_void::value, null_cas_list, list>::type;
     };
 
     template<class TypeList>

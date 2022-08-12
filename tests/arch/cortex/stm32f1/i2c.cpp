@@ -122,7 +122,7 @@ TEST(stm32f1_i2c, i2c_fasm_mode_duty_0) {
     }
     {
         cas_collector c;
-        type_list_iterator<i2c_cfg::periph_clock_on>::for_each(c);
+        type_list_iterator<i2c_cfg::clock_on>::for_each(c);
         ASSERT_EQ(c.values.size(), 1);
         EXPECT_EQ(c.values[0], cas_value(0x4002101c, 0x00400000, 0x00400000, sizeof(uint32_t)));
     }
@@ -200,7 +200,7 @@ TEST(stm32f1_i2c, i2c_fasm_mode_duty_1) {
     }
     {
         cas_collector c;
-        type_list_iterator<i2c_cfg::periph_clock_on>::for_each(c);
+        type_list_iterator<i2c_cfg::clock_on>::for_each(c);
         ASSERT_EQ(c.values.size(), 1);
         EXPECT_EQ(c.values[0], cas_value(0x4002101c, 0x00400000, 0x00400000, sizeof(uint32_t)));
     }
@@ -218,18 +218,21 @@ TEST(stm32f1_i2c, mux) {
     {
         cas_collector c;
         type_list_iterator<i2c_mux::connect>::for_each(c);
-        ASSERT_EQ(c.values.size(), 1);
-        EXPECT_EQ(c.values[0], cas_value(0x40010c04, 0x0000ff00, 0x0000ff00, sizeof(uint32_t)));
+        ASSERT_EQ(c.values.size(), 2);
+        EXPECT_EQ(c.values[0], cas_value(0x40010c00, 0x00000000, 0x00000000, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[1], cas_value(0x40010c04, 0x0000ff00, 0x0000ff00, sizeof(uint32_t)));
     }
     {
         cas_collector c;
         type_list_iterator<i2c_mux::disconnect>::for_each(c);
-        ASSERT_EQ(c.values.size(), 1);
-        EXPECT_EQ(c.values[0], cas_value(0x40010c04, 0x0000ff00, 0x00004400, sizeof(uint32_t)));
+        ASSERT_EQ(c.values.size(), 3);
+        EXPECT_EQ(c.values[0], cas_value(0x40010c00, 0x00000000, 0x00000000, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[1], cas_value(0x40010c04, 0x0000ff00, 0x00004400, sizeof(uint32_t)));
+        EXPECT_EQ(c.values[2], cas_value(0x40010c10, 0x00000000, 0x00000000, sizeof(uint32_t)));
     }
     {
         cas_collector c;
-        type_list_iterator<i2c_mux::periph_clock_on>::for_each(c);
+        type_list_iterator<i2c_mux::clock_on>::for_each(c);
         ASSERT_EQ(c.values.size(), 1);
         EXPECT_EQ(c.values[0], cas_value(0x40021018, 0x00000008, 0x00000008, sizeof(uint32_t)));
     }

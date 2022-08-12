@@ -108,7 +108,15 @@ namespace zoal { namespace gpio {
         };
 
         template<class L, class... Rest>
-        using optimize = zoal::mem::callable_cas_list<typename perform_cas_optimization<L, Rest...>::result>;
+        struct perform_optimization {
+            using optimized = typename perform_cas_optimization<L, Rest...>::result;
+            using is_void = zoal::ct::is_same<void, optimized>;
+            using list = typename zoal::ct::conditional_type<is_void::value, mem::null_cas_list, optimized>::type;
+            using result = zoal::mem::callable_cas_list<list>;
+        };
+
+        template<class L, class... Rest>
+        using optimize = typename perform_optimization<L, Rest...>::result;
     };
 }}
 
