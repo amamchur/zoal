@@ -236,9 +236,9 @@ set(STM32F303_DISCOVERY_SRC
         cubemx-proj/stm32f303_discovery/Src/stm32f3xx_hal_msp.c
         cubemx-proj/stm32f303_discovery/Src/stm32f3xx_hal_timebase_tim.c
         cubemx-proj/stm32f303_discovery/Src/stm32f3xx_it.c
-        cubemx-proj/stm32f303_discovery/Src/system_stm32f3xx.c
         cubemx-proj/stm32f303_discovery/Src/usart.c
         cubemx-proj/stm32f303_discovery/Src/usb.c
+        cubemx-proj/stm32f303_discovery/Src/system_stm32f3xx.c
         cubemx-proj/stm32f303_discovery/startup_stm32f303xc.s)
 set(STM32F303_DISCOVERY_INC 
         cube-repo/STM32Cube_FW_F3_V1.11.3/Drivers/CMSIS/Device/ST/STM32F3xx/Include
@@ -288,38 +288,38 @@ set(STM32F303_NUCLEO_FLASH_LD cubemx-proj/stm32f303_nucleo/STM32F303RETx_FLASH.l
 
 # STM32CubeMX project variables for cubemx-proj/stm32f401
 set(STM32F401_SRC 
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/list.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/queue.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/timers.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/list.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/queue.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/timers.c
         cubemx-proj/stm32f401/Core/Src/adc.c
         cubemx-proj/stm32f401/Core/Src/freertos.c
         cubemx-proj/stm32f401/Core/Src/gpio.c
@@ -329,18 +329,18 @@ set(STM32F401_SRC
         cubemx-proj/stm32f401/Core/Src/stm32f4xx_hal_msp.c
         cubemx-proj/stm32f401/Core/Src/stm32f4xx_hal_timebase_tim.c
         cubemx-proj/stm32f401/Core/Src/stm32f4xx_it.c
-        cubemx-proj/stm32f401/Core/Src/system_stm32f4xx.c
         cubemx-proj/stm32f401/Core/Src/tim.c
         cubemx-proj/stm32f401/Core/Src/usart.c
+        cubemx-proj/stm32f401/Core/Src/system_stm32f4xx.c
         cubemx-proj/stm32f401/startup_stm32f401xc.s)
 set(STM32F401_INC 
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/CMSIS/Device/ST/STM32F4xx/Include
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/CMSIS/Include
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Inc
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/include
-        cube-repo/STM32Cube_FW_F4_V1.26.2/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/CMSIS/Include
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Inc
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/include
+        cube-repo/STM32Cube_FW_F4_V1.27.1/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
         cubemx-proj/stm32f401/Core/Inc)
 set(STM32F401_DEFS -DUSE_HAL_DRIVER -DSTM32F401xC)
 set(STM32F401_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard)
@@ -348,54 +348,54 @@ set(STM32F401_FLASH_LD cubemx-proj/stm32f401/STM32F401CCUx_FLASH.ld)
 
 # STM32CubeMX project variables for cubemx-proj/stm32l432_nucleo
 set(STM32L432_NUCLEO_SRC 
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma_ex.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_exti.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ex.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ramfunc.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart_ex.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_exti.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_gpio.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_utils.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/list.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/queue.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/timers.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_exti.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ramfunc.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart_ex.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_exti.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_gpio.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_utils.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/croutine.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/list.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/queue.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/timers.c
         cubemx-proj/stm32l432_nucleo/Core/Src/freertos.c
         cubemx-proj/stm32l432_nucleo/Core/Src/gpio.c
         cubemx-proj/stm32l432_nucleo/Core/Src/main.c
         cubemx-proj/stm32l432_nucleo/Core/Src/stm32l4xx_hal_msp.c
         cubemx-proj/stm32l432_nucleo/Core/Src/stm32l4xx_it.c
-        cubemx-proj/stm32l432_nucleo/Core/Src/system_stm32l4xx.c
         cubemx-proj/stm32l432_nucleo/Core/Src/usart.c
+        cubemx-proj/stm32l432_nucleo/Core/Src/system_stm32l4xx.c
         cubemx-proj/stm32l432_nucleo/startup_stm32l432xx.s)
 set(STM32L432_NUCLEO_INC 
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/CMSIS/Device/ST/STM32L4xx/Include
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/CMSIS/Include
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Inc
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Drivers/STM32L4xx_HAL_Driver/Inc/Legacy
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/include
-        cube-repo/STM32Cube_FW_L4_V1.17.0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/CMSIS/Include
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Inc
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Drivers/STM32L4xx_HAL_Driver/Inc/Legacy
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/include
+        cube-repo/STM32Cube_FW_L4_V1.17.2/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
         cubemx-proj/stm32l432_nucleo/Core/Inc)
 set(STM32L432_NUCLEO_DEFS -DUSE_FULL_LL_DRIVER -DUSE_HAL_DRIVER -DSTM32L432xx)
 set(STM32L432_NUCLEO_OPT_MCU -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard)
