@@ -158,53 +158,92 @@ namespace zoal { namespace io {
 
     class rotary_4phase_machine {
     public:
-        static uint8_t handle_direction_1(uint8_t from, uint8_t to) {
-            uint8_t state = from & state_current_mask;
-            if (state == rotary_state_1 && to == rotary_state_3) {
-                return to | state_direction_1;
-            }
-            if (state == rotary_state_3 && to == rotary_state_0) {
-                return to | state_direction_1_event;
-            }
-            return to == rotary_state_0 ? to : from;
-        }
-
-        static uint8_t handle_direction_2(uint8_t from, uint8_t to) {
-            uint8_t state = from & state_current_mask;
-            if (state == rotary_state_2 && to == rotary_state_3) {
-                return to | state_direction_2;
-            }
-            if (state == rotary_state_3 && to == rotary_state_0) {
-                return to | state_direction_2_event;
-            }
-            return to == rotary_state_0 ? to : from;
-        }
-
         static uint8_t handle(uint8_t from, uint8_t to) {
-            uint8_t result = to;
-            uint8_t direction = from & state_directions_mask;
-            switch (direction) {
-            case state_direction_1:
-                return handle_direction_1(from, to);
-            case state_direction_2:
-                return handle_direction_2(from, to);
-            default:
-                if (to == rotary_state_1) {
-                    result |= state_direction_1;
+            switch (from) {
+            case b11:
+                switch (to) {
+                case b01: // cw
+                    return b01a;
+                case b10:
+                    return b10b;
                 }
-                if (to == rotary_state_2) {
-                    result |= state_direction_2;
+                break;
+            case b01a:
+                switch (to) {
+                case b01:
+                    return b01a;
+                case b00: // cw
+                    return b00a;
+                }
+                break;
+            case b00a:
+                switch (to) {
+                case b00:
+                case b01:
+                    return b00a;
+                case b10: // cw
+                    return b10a;
+                }
+                break;
+            case b10a:
+                switch (to) {
+                case b00:
+                case b10:
+                    return b10a;
+                case b11: // cw
+                    return (b11 | zoal::io::rotary_state::state_direction_1_event);
+                }
+                break;
+            case b10b:
+                switch (to) {
+                case b10:
+                    return b10b;
+                case b00: // ccw
+                    return b00b;
+                }
+                break;
+            case b00b:
+                switch (to) {
+                case b00:
+                case b10:
+                    return b00b;
+                case b01: // cw
+                    return b01b;
+                }
+                break;
+            case b01b:
+                switch (to) {
+                case b00:
+                case b01:
+                    return b01b;
+                case b11: // cw
+                    return (b11 | zoal::io::rotary_state::state_direction_2_event);;
                 }
                 break;
             }
-
-            return result;
+            return to;
         }
+    private:
+        static constexpr uint8_t dir_a = 0b0100;
+        static constexpr uint8_t dir_b = 0b1000;
+        static constexpr uint8_t b00 = 0b00;
+        static constexpr uint8_t b00a = b00 | dir_a;
+        static constexpr uint8_t b00b = b00 | dir_b;
+        static constexpr uint8_t b01 = 0b01;
+        static constexpr uint8_t b01a = b01 | dir_a;
+        static constexpr uint8_t b01b = b01 | dir_b;
+        static constexpr uint8_t b10 = 0b10;
+        static constexpr uint8_t b10a = b10 | dir_a;
+        static constexpr uint8_t b10b = b10 | dir_b;
+        static constexpr uint8_t b11 = 0b11;
     };
 
     template<class A, class B, class StateMachine = rotary_4phase_machine, bool ActiveLow = false>
     class rotary_encoder {
     public:
+        using pin_a = A;
+        using pin_b = B;
+
         template<class Callback>
         void handle(Callback callback) {
             using namespace zoal::gpio;

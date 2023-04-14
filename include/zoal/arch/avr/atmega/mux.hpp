@@ -159,7 +159,9 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using connect = typename api::optimize<
                 //
                 api::mode<pin_mode::output, Mosi, Clock, SlaveSelect>,
-                api::mode<pin_mode::input, Miso>>;
+                api::mode<pin_mode::input, Miso>,
+                api::high<SlaveSelect>
+                >;
             using disconnect = typename api::optimize<
                 //
                 api::mode<pin_mode::input, Mosi, Miso, Clock, SlaveSelect>>;

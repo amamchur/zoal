@@ -68,6 +68,18 @@ add_mcu_executable(ATmega2560 atmega2560
         ${ATMEGA2560_STATE_MACHINE_SRC})
 target_compile_definitions(ATmega2560 PRIVATE F_CPU=16000000UL)
 
+ragel_generate_cpp(apps/mks_gen_l_v2_1/command_machine.rl MKS_GEN_STATE_MACHINE_SRC "-G0")
+add_mcu_executable(mks_gen_l_v2_1 atmega2560
+        apps/mks_gen_l_v2_1/main.cpp
+        apps/mks_gen_l_v2_1/ms_timer.cpp
+        apps/mks_gen_l_v2_1/serial.cpp
+        apps/mks_gen_l_v2_1/sdcard.c
+        apps/mks_gen_l_v2_1/spi.c
+        misc/terminal_input.cpp
+        ${TERMINAL_STATE_MACHINE_SRC}
+        ${MKS_GEN_STATE_MACHINE_SRC})
+target_compile_definitions(mks_gen_l_v2_1 PRIVATE F_CPU=16000000UL)
+
 add_mcu_executable(ATtiny13 attiny13 apps/attiny13.cpp)
 target_compile_definitions(ATtiny13 PRIVATE F_CPU=9600000UL)
 

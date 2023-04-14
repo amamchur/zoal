@@ -159,11 +159,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         template<class S, class Cfg>
         class spi {
         public:
-            using clock_divider = spi_clock_divider_cfg<S, Cfg::clock_division>;
+            using clock_divider = spi_clock_divider_cfg<S, Cfg::clock_divider>;
             using order = spi_bit_order_cfg<S, Cfg::order>;
             using cpol_cpha = spi_cpol_cpha_cfg<S, Cfg::pol_pha>;
             using mode = spi_mode_cfg<S, Cfg::mode>;
-            using apply = typename zoal::gpio::api::optimize<clock_divider, order, cpol_cpha, mode>::result;
+            using apply = typename zoal::gpio::api::optimize<clock_divider, order, cpol_cpha, mode>;
         };
 
         template<class I, class Cfg>

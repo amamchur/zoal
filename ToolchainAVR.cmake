@@ -42,6 +42,7 @@ function(add_avr_executable NAME MCU)
             -Wno-unknown-pragmas
             -fno-exceptions
             -ffunction-sections
+            --param=min-pagesize=0
     )
 
     add_custom_command(

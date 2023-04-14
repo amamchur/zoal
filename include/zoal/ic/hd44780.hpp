@@ -31,7 +31,7 @@ namespace zoal { namespace ic {
 //                >,
             api::mode<pin_mode::output_push_pull, RegisterSelect, Enable, DataBus4, DataBus5, DataBus6, DataBus7>,
             api::low<RegisterSelect, Enable, DataBus6, DataBus7>,
-            api::high<DataBus4, DataBus4>>;
+            api::high<DataBus4, DataBus5>>;
 
         static void init() {
             using namespace zoal::gpio;
@@ -284,6 +284,13 @@ namespace zoal { namespace ic {
         void write(const char *str) {
             while (*str) {
                 iface::send(*str++, 1);
+                delay::template us<37>();
+            }
+        }
+
+        void write(const char *s, const char *e) {
+            while (s < e) {
+                iface::send(*s++, 1);
                 delay::template us<37>();
             }
         }
