@@ -3,7 +3,7 @@
 #ifndef ZOAL_UTILS_METHOD_INVOKER_HPP
 #define ZOAL_UTILS_METHOD_INVOKER_HPP
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
 	template <class T, typename... Args>
 	class method_invoker {
 	public:
@@ -17,6 +17,6 @@ namespace zoal { namespace utils {
 		T *instance;
 		void (T::*method)(Args...);
 	};
-}}
+}
 
 #endif

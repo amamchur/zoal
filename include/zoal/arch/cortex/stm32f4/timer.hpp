@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F4_TIMER_HPP
 #define ZOAL_ARCH_STM32F4_TIMER_HPP
 
 #include "../../../periph/timer.hpp"
 
-namespace zoal { namespace arch { namespace stm32f4 {
+namespace zoal::arch::stm32f4 {
     template<uintptr_t Address, class... Mixin>
     class timer : public Mixin... {
     public:
@@ -58,6 +60,6 @@ namespace zoal { namespace arch { namespace stm32f4 {
             TIMERx_CR1::ref() &= ~TIMERx_CR1_CEN;
         }
     };
-}}}
+}
 
 #endif

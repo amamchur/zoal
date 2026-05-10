@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_CT_CHECK_HPP
 #define ZOAL_CT_CHECK_HPP
 
-#include "constant.hpp"
+#include "./constant.hpp"
 
-namespace zoal { namespace ct {
+namespace zoal::ct {
     template<class T, class U>
     struct is_same : false_type {};
 
@@ -21,6 +23,6 @@ namespace zoal { namespace ct {
 
     template<typename T, typename U, typename... O>
     struct has_same<T, U, O...> : integral_constant<bool, is_same<T, U>::value || has_same<T, O...>::value || has_same<U, O...>::value> {};
-}}
+}
 
 #endif

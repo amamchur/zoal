@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F1_METADATA_HPP
 #define ZOAL_ARCH_STM32F1_METADATA_HPP
 
 #include "../stm32x/metadata.hpp"
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     template<>
     struct stm32_afio_mapr<0x40013800, stm32_remap_mode::no_remap> {
         static constexpr uint32_t clear = 1 << 2;
@@ -21,6 +23,6 @@ namespace zoal { namespace metadata {
         static constexpr uint32_t clear = 0;
         static constexpr uint32_t set = 0;
     };
-}}
+}
 
 #endif

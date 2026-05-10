@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_CORTEX_BUS_HPP
 #define ZOAL_CORTEX_BUS_HPP
 
-namespace zoal { namespace arch {
+namespace zoal::arch {
     enum class bus {
         common,
         cortex_ahb,
@@ -10,6 +12,6 @@ namespace zoal { namespace arch {
         cortex_apb1,
         cortex_apb2
     };
-}}
+}
 
 #endif

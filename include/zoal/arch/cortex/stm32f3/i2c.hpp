@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F3_I2C_HPP
 #define ZOAL_ARCH_STM32F3_I2C_HPP
 
 #include "../../../mem/reg.hpp"
 #include "../../../periph/i2c_request.hpp"
 
-namespace zoal { namespace arch { namespace stm32f3 {
+namespace zoal::arch::stm32f3 {
     template<uintptr_t Address, class... Mixin>
     class i2c : public Mixin... {
     public:
@@ -155,6 +157,6 @@ namespace zoal { namespace arch { namespace stm32f3 {
             I2Cx_CR2::ref() = cr2;
         }
     };
-}}}
+}
 
 #endif

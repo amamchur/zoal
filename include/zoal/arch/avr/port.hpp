@@ -9,7 +9,7 @@
 
 #include <stdint.h> /* NOLINT */
 
-namespace zoal { namespace arch { namespace avr {
+namespace zoal::arch::avr {
     using zoal::mem::callable_cas_list_variadic;
 
     template<class Port, ::zoal::gpio::pin_mode PinMode, uint8_t Mask>
@@ -33,7 +33,7 @@ namespace zoal { namespace arch { namespace avr {
         using self_type = port<Address, PinMask>;
         using register_type = uint8_t;
 
-        static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
+        static constexpr auto bus = zoal::arch::bus::common;
         static constexpr auto address = Address;
         static constexpr uint8_t pin_mask = PinMask;
         static constexpr zoal::gpio::features feature = zoal::gpio::features::none;
@@ -64,6 +64,6 @@ namespace zoal { namespace arch { namespace avr {
             PORTx::ref() ^= Mask;
         }
     };
-}}}
+}
 
 #endif

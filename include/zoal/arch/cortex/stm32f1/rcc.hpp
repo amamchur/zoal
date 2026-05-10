@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_GPIO_STM32F1_RCC_HPP
 #define ZOAL_GPIO_STM32F1_RCC_HPP
 
@@ -6,7 +8,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32f1 {
+namespace zoal::arch::stm32f1 {
     template<uintptr_t Address>
     class rcc {
     public:
@@ -30,6 +32,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
         using RCCx_AHB1ENR = zoal::mem::reg<Address + 0x030, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using RCCx_AHB2ENR = zoal::mem::reg<Address + 0x034, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
     };
-}}}
+}
 
 #endif

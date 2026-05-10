@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IC_SH1106_HPP
 #define ZOAL_IC_SH1106_HPP
 
@@ -8,9 +10,8 @@
 #include "./ssd1306.hpp"
 
 #include <stdint.h>
-#include <string.h>
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
 
     template<int Width, int Height, bool Safe = true>
     using sh1106_adapter_0 = ssd1306_adapter_0<Width, Height, Safe>;
@@ -305,6 +306,6 @@ namespace zoal { namespace ic {
             req->extra_end = ee;
         }
     };
-}}
+}
 
 #endif

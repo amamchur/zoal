@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_VT100_HPP
 #define ZOAL_UTILS_VT100_HPP
 
@@ -5,7 +7,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace utils { namespace vt100 {
+namespace zoal::utils::vt100 {
     const auto none = -1;
     const auto black = 0;
     const auto red = 1;
@@ -151,6 +153,6 @@ namespace zoal { namespace utils { namespace vt100 {
     using clear_entire_line = el2;
     using clear_entire_screen = ed2;
     using cursor_position = cup;
-}}}
+}
 
 #endif

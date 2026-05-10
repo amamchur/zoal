@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_CT_CONDITIONAL_TYPE_HPP
 #define ZOAL_CT_CONDITIONAL_TYPE_HPP
 
-namespace zoal { namespace ct {
+namespace zoal::ct {
     template<bool Condition, class T, class U>
     struct conditional_type {};
 
@@ -14,6 +16,6 @@ namespace zoal { namespace ct {
     struct conditional_type<false, T, U> {
         using type = U;
     };
-}}
+}
 
 #endif

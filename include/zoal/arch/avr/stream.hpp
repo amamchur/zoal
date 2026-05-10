@@ -5,8 +5,8 @@
 
 #include <avr/pgmspace.h>
 
-namespace zoal { namespace io {
-    struct progmem_str : public zoal::io::output_stream_functor<progmem_str> {
+namespace zoal::io {
+    struct progmem_str : output_stream_functor<progmem_str> {
         explicit progmem_str(const char *str)
             : buffer(str) {}
 
@@ -67,6 +67,6 @@ namespace zoal { namespace io {
         }
         return !*s1 && ss == se;
     }
-}}
+}
 
 #endif

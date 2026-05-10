@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_PARSE_TYPE_PARSER_HPP
 #define ZOAL_PARSE_TYPE_PARSER_HPP
 
 #include "../data/date_time.hpp"
 
-namespace zoal { namespace parse {
+namespace zoal::parse {
     template<class T>
     static T parse_dec_uint(const char *s, const char *e) {
         T result = 0;
@@ -49,6 +51,6 @@ namespace zoal { namespace parse {
             return dt;
         }
     };
-}}
+}
 
 #endif

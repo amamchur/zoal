@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_CORTEX_NOOP_CYCLES_HPP
 #define ZOAL_ARCH_CORTEX_NOOP_CYCLES_HPP
 
@@ -5,7 +7,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<int32_t Count>
     struct nop;
 
@@ -242,6 +244,6 @@ namespace zoal { namespace utils {
                          "nop \n");
         }
     };
-}}
+}
 
 #endif

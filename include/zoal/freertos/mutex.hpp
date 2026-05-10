@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_FREERTOS_MUTEX_HPP
 #define ZOAL_FREERTOS_MUTEX_HPP
 
 #include "./types.hpp"
 #include "semphr.h"
 
-namespace zoal { namespace freertos {
+namespace zoal::freertos {
     template<class Dummy = void>
     class freertos_mutex {
     public:
@@ -36,6 +38,6 @@ namespace zoal { namespace freertos {
 
         StaticSemaphore_t semaphore_buffer{nullptr};
     };
-}}
+}
 
 #endif

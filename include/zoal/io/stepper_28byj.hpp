@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_IO_STEPPER_28BYJ_HPP
 #define ZOAL_IO_STEPPER_28BYJ_HPP
 
 #include "../gpio/api.hpp"
 
-namespace zoal { namespace io {
+namespace zoal::io {
     template<int steps, class pin_a, class pin_b, class pin_c, class pin_d>
     class stepper_28byj_mode {};
 
@@ -193,6 +195,6 @@ namespace zoal { namespace io {
         uint8_t current_step{0};
         volatile bool perform_step{false};
     };
-}}
+}
 
 #endif

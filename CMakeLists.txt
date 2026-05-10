@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.6)
 project(zoal CXX C ASM)
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_CXX_STANDARD 23)
 set(STM32_FM_REPO cube-repo)
 
 if (NOT CMAKE_BUILD_TYPE)
@@ -11,6 +11,10 @@ endif ()
 
 if (CMAKE_BUILD_TYPE MATCHES Release)
     add_compile_options("-Os")
+endif ()
+
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+    add_compile_options("-Og")
 endif ()
 
 function(RAGEL_GENERATE_CPP RGL_SRC CPP_SRC MT)

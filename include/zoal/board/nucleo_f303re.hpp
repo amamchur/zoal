@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_BOARD_NUCLEOF303RE_HPP
 #define ZOAL_BOARD_NUCLEOF303RE_HPP
 
 #include "../mcu/stm32f303retx.hpp"
 
-namespace zoal { namespace board {
+namespace zoal::board {
     class nucleo_f303re {
     public:
         using mcu = zoal::mcu::stm32f303retx;
@@ -33,6 +35,6 @@ namespace zoal { namespace board {
         using build_in_led = typename mcu::pa_05;
         using build_in_button = typename mcu::pc_13;
     };
-}}
+}
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef ZOAL_ALGORITHM_KMP_HPP
 #define ZOAL_ALGORITHM_KMP_HPP
 
-namespace zoal { namespace algorithm {
+namespace zoal::algorithm {
     class kmp;
 
     template<class T, class B>
@@ -78,6 +78,6 @@ namespace zoal { namespace algorithm {
     private:
         uintptr_t pattern_index_{0};
     };
-}}
+}
 
 #endif

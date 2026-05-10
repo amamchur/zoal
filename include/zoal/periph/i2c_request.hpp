@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_PERIPH_I2C_STREAM_HPP
 #define ZOAL_PERIPH_I2C_STREAM_HPP
 
 #include <stddef.h>
 #include <stdint.h>
 
-namespace zoal { namespace periph {
+namespace zoal::periph {
     enum class i2c_request_status { idle, pending, finished, finished_eos, failed };
 
     class i2c_request {
@@ -70,11 +72,11 @@ namespace zoal { namespace periph {
             status = r;
         }
 
-        inline volatile bool processing() const {
-            return status != zoal::periph::i2c_request_status::idle;
+        bool processing() const {
+            return status != i2c_request_status::idle;
         }
 
-        inline volatile bool finished() const {
+        bool finished() const {
             switch (status) {
             case i2c_request_status::idle:
             case i2c_request_status::pending:
@@ -100,6 +102,6 @@ namespace zoal { namespace periph {
         uint8_t address_rw_{0};
         volatile zoal::periph::i2c_request_status status{zoal::periph::i2c_request_status::idle};
     };
-}}
+}
 
 #endif

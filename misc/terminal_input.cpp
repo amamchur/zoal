@@ -1,7 +1,7 @@
 
 #include "terminal_input.hpp"
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
 
     void terminal_input::empty_callback(const self_type *, const char *, const char *) {}
 
@@ -218,4 +218,4 @@ namespace zoal { namespace misc {
     char *terminal_input::cursor() const {
         return cursor_;
     }
-}}
+}

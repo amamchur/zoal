@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_PERIPH_ADC_CONFIG_HPP
 #define ZOAL_PERIPH_ADC_CONFIG_HPP
 
 #include "./adc_request_dispatcher.hpp"
 
-namespace zoal { namespace periph {
+namespace zoal::periph {
     enum class adc_ref { vcc, internal_1v1, internal_2v56, external };
 
     template<uintptr_t ClockDivider = 4, adc_ref Ref = adc_ref::vcc>
@@ -32,6 +34,6 @@ namespace zoal { namespace periph {
             return zoal::periph::adc_dispatcher<adc>::api.template fetch<adc_channel>(callback);
         }
     };
-}}
+}
 
 #endif

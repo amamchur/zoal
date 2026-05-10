@@ -5,12 +5,10 @@
 #include "../../../mem/cas.hpp"
 #include "../../../mem/reg.hpp"
 #include "../../../periph/i2c_request.hpp"
-#include "../../../utils/interrupts.hpp"
-#include "../../../utils/nop.hpp"
 
 #include <stdint.h> /* NOLINT */
 
-namespace zoal { namespace arch { namespace avr { namespace atmega {
+namespace zoal::arch::avr::atmega {
     enum : uint8_t {
         I2C_START = 0x08,
         I2C_REP_START = 0x10,
@@ -153,6 +151,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             }
         }
     };
-}}}}
+}
 
 #endif

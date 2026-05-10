@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_TERMINAL_MACHINE_HPP
 #define ZOAL_TERMINAL_MACHINE_HPP
 
 #include <zoal/parse/ragel_parser.hpp>
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
     enum class terminal_machine_event {
 //        ctrl_up_key,
 //        ctrl_down_key,
@@ -31,5 +33,6 @@ namespace zoal { namespace misc {
     };
 
     class terminal_parser : public zoal::parse::ragel_parser<terminal_machine> {};
-}}
+}
+
 #endif

@@ -5,9 +5,9 @@
 
 #include "arduino_atmegaxx8.hpp"
 
-namespace zoal { namespace board {
+namespace zoal::board {
     template<uint32_t Frequency>
     using arduino_nano = board::arduino_atmegaxx8<Frequency>;
-}}
+}
 
 #endif

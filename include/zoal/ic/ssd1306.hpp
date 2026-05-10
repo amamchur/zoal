@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IC_SSD1306_HPP
 #define ZOAL_IC_SSD1306_HPP
 
@@ -10,7 +12,7 @@
 #include <stdint.h>
 #include <string.h>
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     /**
      * Adapter for SSD1306 Graphic Display Data RAM
      * @tparam Width screen width
@@ -216,6 +218,6 @@ namespace zoal { namespace ic {
 
         iface iface_;
     };
-}}
+}
 
 #endif

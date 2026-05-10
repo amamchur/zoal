@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_PERIPH_SPI_HPP
 #define ZOAL_PERIPH_SPI_HPP
 
-namespace zoal { namespace periph {
+namespace zoal::periph {
     enum class spi_mode {
         master,
         slave,
@@ -27,6 +29,6 @@ namespace zoal { namespace periph {
         static constexpr spi_cpol_cpha pol_pha = PolPha;
         static constexpr spi_mode mode = Mode;
     };
-}}
+}
 
 #endif

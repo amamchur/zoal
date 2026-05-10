@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_SHIELD_UNO_ACCESSORY_HPP
 #define ZOAL_SHIELD_UNO_ACCESSORY_HPP
 
@@ -8,7 +10,7 @@
 #include <zoal/ic/ssd1306.hpp>
 #include <zoal/periph/adc.hpp>
 
-namespace zoal { namespace shield {
+namespace zoal::shield {
     /**
      *
      * @tparam Delay - delay class
@@ -122,6 +124,6 @@ namespace zoal { namespace shield {
             typename rbg_power::_0();
         }
     };
-}}
+}
 
 #endif

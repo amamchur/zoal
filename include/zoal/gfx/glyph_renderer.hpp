@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_GLYPH_RENDERER_HPP
 #define ZOAL_GLYPH_RENDERER_HPP
 
 #include "../text/types.hpp"
 #include "bitmap_renderer.hpp"
 
-namespace zoal { namespace gfx {
+namespace zoal::gfx {
     template<class Graphics, class MemReader>
     class glyph_renderer {
     public:
@@ -153,6 +155,6 @@ namespace zoal { namespace gfx {
         uint16_t prev_char_code_{0};
         pixel_type color_;
     };
-}}
+}
 
 #endif

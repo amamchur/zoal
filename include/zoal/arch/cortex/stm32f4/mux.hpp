@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F4_MUX_HPP
 #define ZOAL_ARCH_STM32F4_MUX_HPP
 
@@ -11,7 +13,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32f4 {
+namespace zoal::arch::stm32f4 {
     using zoal::gpio::api;
     using zoal::gpio::pin_mode;
     using zoal::metadata::signal;
@@ -253,6 +255,6 @@ namespace zoal { namespace arch { namespace stm32f4 {
         template<class T, class Pin>
         using pwm_channel = typename pwm_channel_builder<sign, T, Pin>::result;
     };
-}}}
+}
 
 #endif

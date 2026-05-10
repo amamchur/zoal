@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IC_MAX7221_HPP
 #define ZOAL_IC_MAX7221_HPP
 
@@ -9,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     template<size_t Devices>
     class max72xx_data {
     public:
@@ -402,6 +404,6 @@ namespace zoal { namespace ic {
             transaction() << repeat(times, cmd);
         }
     };
-}}
+}
 
 #endif

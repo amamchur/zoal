@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_CORTEX_INTERRUPTS_HPP
 #define ZOAL_ARCH_CORTEX_INTERRUPTS_HPP
 
 #include <cstdint>
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
 	class interrupts {
 	public:
 		inline explicit interrupts(bool enable) {
@@ -39,6 +41,6 @@ namespace zoal { namespace utils {
 
 		volatile uint32_t primask;
 	};
-}}
+}
 
 #endif

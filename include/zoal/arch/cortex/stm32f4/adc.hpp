@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F1_A2D_Converter_HPP
 #define ZOAL_ARCH_STM32F1_A2D_Converter_HPP
 
@@ -5,7 +7,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32f4 {
+namespace zoal::arch::stm32f4 {
     template<uintptr_t Address, class ComRegs, class... Mixin>
     class adc : public Mixin... {
     public:
@@ -76,6 +78,6 @@ namespace zoal { namespace arch { namespace stm32f4 {
             return value();
         }
     };
-}}}
+}
 
 #endif

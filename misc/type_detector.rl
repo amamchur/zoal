@@ -42,7 +42,7 @@ namespace {
 %% write data;
 }
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
     void type_detector_machine::init_machine() {
         %% write init;
     }
@@ -55,4 +55,4 @@ namespace zoal { namespace misc {
     int type_detector_machine::start_state() const {
         return fsm_name_start;
     }
-}}
+}

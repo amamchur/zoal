@@ -4,7 +4,7 @@
 #include "../../../ct/type_list.hpp"
 #include "../metadata.hpp"
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     using zoal::ct::type_list;
 
     enum : uint8_t {
@@ -73,6 +73,6 @@ namespace zoal { namespace metadata {
 
     template<class A>
     struct adc_clock_divider<A, 128> : type_list<typename A::ADCSRAx::template cas<0x07, 0x04>> {};
-}}
+}
 
 #endif

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_NEW_HPP
 #define ZOAL_UTILS_NEW_HPP
 

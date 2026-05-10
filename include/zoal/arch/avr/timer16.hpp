@@ -5,7 +5,7 @@
 
 #include <stdint.h> /* NOLINT */
 
-namespace zoal { namespace arch { namespace avr {
+namespace zoal::arch::avr {
     template<uintptr_t Address, uint8_t N, class... Mixin>
     class timer16 : public timer<Address, N, Mixin...> {
     public:
@@ -34,6 +34,6 @@ namespace zoal { namespace arch { namespace avr {
             }
         }
     };
-}}}
+}
 
 #endif

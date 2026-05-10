@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_STREAM_FUNCTOR_HPP
 #define ZOAL_STREAM_FUNCTOR_HPP
 
-namespace zoal { namespace io {
+namespace zoal::io {
     template<class T>
     struct output_stream_functor {};
 
@@ -33,6 +35,6 @@ namespace zoal { namespace io {
     hexadecimal_functor<T> hexadecimal(T v) {
         return hexadecimal_functor<T>(v);
     }
-}}
+}
 
 #endif

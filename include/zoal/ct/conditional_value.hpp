@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_CT_CONDITIONAL_VALUE_HPP
 #define ZOAL_CT_CONDITIONAL_VALUE_HPP
 
-namespace zoal { namespace ct {
+namespace zoal::ct {
     template<bool condition, class T, T A, T B>
     struct conditional_value {};
 
@@ -14,6 +16,6 @@ namespace zoal { namespace ct {
     struct conditional_value<false, T, A, B> {
         static constexpr auto value = B;
     };
-}}
+}
 
 #endif

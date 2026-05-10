@@ -7,45 +7,44 @@
 #include "../../../periph/spi.hpp"
 #include "../../../periph/timer_mode.hpp"
 #include "../../../periph/usart.hpp"
-#include "../../../utils/helpers.hpp"
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     template<uint8_t Bits>
     struct usart_data_bits_flags;
 
-    template<::zoal::periph::usart_parity Parity>
+    template<periph::usart_parity Parity>
     struct usart_parity_flags;
 
-    template<::zoal::periph::usart_stop_bits StopBits>
+    template<periph::usart_stop_bits StopBits>
     struct usart_stop_bit_flags;
 
-    template<class T, int Type, ::zoal::periph::timer_mode Mode, uint16_t Period>
+    template<class T, int Type, periph::timer_mode Mode, uint16_t Period>
     struct timer_waveform_generation;
 
     template<class T, bool async, uintptr_t ClockDivider>
     struct timer_clock_divider;
 
-    template<class A, zoal::periph::adc_ref Ref>
+    template<class A, periph::adc_ref Ref>
     struct adc_ref;
 
     template<class A, uintptr_t ClockDivider>
     struct adc_clock_divider;
-}}
+}
 
-namespace zoal { namespace arch { namespace avr { namespace atmega {
-    using zoal::ct::type_list;
-    using zoal::metadata::adc_clock_divider;
-    using zoal::metadata::adc_ref;
-    using zoal::metadata::timer_clock_divider;
-    using zoal::metadata::timer_waveform_generation;
-    using zoal::metadata::usart_data_bits_flags;
-    using zoal::metadata::usart_parity_flags;
-    using zoal::metadata::usart_stop_bit_flags;
-    using zoal::periph::bit_order;
-    using zoal::periph::spi_cpol_cpha;
-    using zoal::periph::spi_mode;
-    using zoal::periph::usart_parity;
-    using zoal::periph::usart_stop_bits;
+namespace zoal::arch::avr::atmega {
+    using ct::type_list;
+    using metadata::adc_clock_divider;
+    using metadata::adc_ref;
+    using metadata::timer_clock_divider;
+    using metadata::timer_waveform_generation;
+    using metadata::usart_data_bits_flags;
+    using metadata::usart_parity_flags;
+    using metadata::usart_stop_bit_flags;
+    using periph::bit_order;
+    using periph::spi_cpol_cpha;
+    using periph::spi_mode;
+    using periph::usart_parity;
+    using periph::usart_stop_bits;
 
     template<uint8_t Bits, usart_parity Parity, usart_stop_bits StopBits>
     struct usart_mode_cfg {
@@ -116,7 +115,7 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     class cfg {
     public:
         using mcu = Microcontroller;
-        using sign = typename mcu::signature;
+        using sign = mcu::signature;
 
         template<class U, class Cfg>
         class usart {
@@ -129,14 +128,14 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static constexpr uint8_t UBRRxL_value = static_cast<uint8_t>(value & 0xFFu);
             static constexpr uint8_t UBRRxH_value = static_cast<uint8_t>(value >> 0x8u);
 
-            using apply = typename zoal::gpio::api::optimize<
+            using apply = zoal::gpio::api::optimize<
                 type_list<typename U::UBRRxL::template cas<0xFF, UBRRxL_value>,
                           typename U::UBRRxH::template cas<0xFF, UBRRxH_value>,
                           typename U::UCSRxA::template cas<0xFF, UCSRxA_value>,
                           typename U::UCSRxC::template cas<0xFF, usart_mode_cfg<Cfg::word_length_bits, Cfg::parity, Cfg::stop_bits>::UCSRxC_value>>>;
         };
 
-        template<class T, zoal::periph::timer_mode Mode, uintptr_t ClockDivider, uintptr_t Prescale, uintptr_t Period>
+        template<class T, periph::timer_mode Mode, uintptr_t ClockDivider, uintptr_t Prescale, uintptr_t Period>
         class timer {
         public:
             static_assert(Prescale == 1, "Unsupported prescale");
@@ -144,13 +143,13 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             static constexpr auto async = T::async;
             using wg_mode_cfg = timer_waveform_generation<T, sizeof(typename T::word) * 8, Mode, Period>;
             using clock_divider_cfg = timer_clock_divider<T, async, ClockDivider>;
-            using apply = typename zoal::gpio::api::optimize<wg_mode_cfg, clock_divider_cfg>;
+            using apply = typename gpio::api::optimize<wg_mode_cfg, clock_divider_cfg>;
         };
 
         template<class A, class Cfg>
         class adc {
         public:
-            using apply = typename zoal::gpio::api::optimize<
+            using apply = typename gpio::api::optimize<
                 //
                 adc_clock_divider<A, 128>,
                 adc_ref<A, Cfg::reference>>;
@@ -163,17 +162,16 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             using order = spi_bit_order_cfg<S, Cfg::order>;
             using cpol_cpha = spi_cpol_cpha_cfg<S, Cfg::pol_pha>;
             using mode = spi_mode_cfg<S, Cfg::mode>;
-            using apply = typename zoal::gpio::api::optimize<clock_divider, order, cpol_cpha, mode>;
+            using apply = gpio::api::optimize<clock_divider, order, cpol_cpha, mode>;
         };
 
         template<class I, class Cfg>
         class i2c {
         public:
             static constexpr uint8_t TWBRx_value = static_cast<uint8_t>((((double)Cfg::clock_frequency / (double)Cfg::i2c_frequency) - 16.0) / 2.0);
-            using apply = typename zoal::gpio::api::optimize<
-                type_list<typename I::TWSRx::template cas<0xFF, 0>, typename I::TWBRx::template cas<0xFF, TWBRx_value>>>;
+            using apply = gpio::api::optimize<type_list<typename I::TWSRx::template cas<0xFF, 0>, typename I::TWBRx::template cas<0xFF, TWBRx_value>>>;
         };
     };
-}}}}
+}
 
 #endif

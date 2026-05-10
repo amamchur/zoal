@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_POWER_HPP
 #define ZOAL_ARCH_POWER_HPP
 
-namespace zoal { namespace arch {
+namespace zoal::arch {
     template<class Module, class... Modules>
     class power {
     private:
@@ -30,6 +32,6 @@ namespace zoal { namespace arch {
             Module::power_off();
         }
     };
-}}
+}
 
 #endif

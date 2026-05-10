@@ -4,17 +4,17 @@
 #include <stdint.h>
 #include "../timer8.hpp"
 
-namespace zoal { namespace arch { namespace avr { namespace atmega {
+namespace zoal::arch::avr::atmega {
     template<uint32_t Address>
     class timer8_model {
     public:
         using word = uint8_t;
 
-        using TCCRxA = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using TCCRxB = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using TCNTx = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using OCRxA = zoal::mem::reg<Address + 0x03, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using OCRxB = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using TCCRxA = mem::reg<Address + 0x00, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using TCCRxB = mem::reg<Address + 0x01, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using TCNTx = mem::reg<Address + 0x02, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using OCRxA = mem::reg<Address + 0x03, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using OCRxB = mem::reg<Address + 0x04, mem::reg_io::read_write, uint8_t, 0xFF>;
 
         static constexpr uint8_t TCCRxA_COMxA = 0xC0;
         static constexpr uint8_t TCCRxA_COMxB = 0x30;
@@ -26,8 +26,8 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
     };
 
     template<uintptr_t Address, uint8_t N, bool Async = false>
-    using timer8 = ::zoal::arch::avr::timer8<Address, N, Async, timer8_model<Address>>;
+    using timer8 = timer8<Address, N, Async, timer8_model<Address>>;
 
-}}}}
+}
 
 #endif

@@ -6,7 +6,7 @@
 #include "../arch/avr/atmega/spi.hpp"
 #include "../mcu/atmega2560.hpp"
 
-namespace zoal { namespace board {
+namespace zoal::board {
     class arduino_mega {
     public:
         using mcu = zoal::mcu::atmega2560;
@@ -85,6 +85,6 @@ namespace zoal { namespace board {
         using ard_a14 = typename mcu::pk_06;
         using ard_a15 = typename mcu::pk_07;
     };
-}}
+}
 
 #endif

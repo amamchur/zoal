@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_COMMAND_MACHINE_HPP
 #define ZOAL_TEST_MACHINE_HPP
 
 #include <zoal/parse/ragel_parser.hpp>
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
     class test_argument {
     public:
         const char *start;
@@ -26,6 +28,6 @@ namespace zoal { namespace misc {
         test_parser(void *buffer, size_t buffer_size) noexcept
             : ragel_parser(buffer, buffer_size) {}
     };
-}}
+}
 
 #endif

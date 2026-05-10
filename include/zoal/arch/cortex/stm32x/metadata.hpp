@@ -1,3 +1,4 @@
+#pragma once
 
 #ifndef ZOAL_METADATA_HPP
 #define ZOAL_METADATA_HPP
@@ -8,7 +9,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     enum class signal {
         //
         bkin,
@@ -163,6 +164,6 @@ namespace zoal { namespace metadata {
         static const uint32_t set_mask = 0x2000;
         static const uint32_t clear_mask = 0x3000;
     };
-}}
+}
 
 #endif

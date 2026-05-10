@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_BITMAP_RENDERER_HPP
 #define ZOAL_BITMAP_RENDERER_HPP
 
-namespace zoal { namespace gfx {
+namespace zoal::gfx {
     template<class Graphics, class MemReader>
     class bitmap_renderer {
     public:
@@ -23,6 +25,6 @@ namespace zoal { namespace gfx {
             }
         }
     };
-}}
+}
 
 #endif

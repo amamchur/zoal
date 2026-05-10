@@ -6,7 +6,7 @@
 // Based on AVR delay Loop Calculator approach
 // See http://www.bretmulvey.com/avrdelay.html
 //
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<uint64_t Count, uint64_t Depth>
     struct nop_depth {
         static_assert(true, "nop_depth should not be used directly");
@@ -251,6 +251,6 @@ namespace zoal { namespace utils {
             nop_depth_type::place();
         }
     };
-}}
+}
 
 #endif

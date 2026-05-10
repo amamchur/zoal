@@ -6,7 +6,7 @@
 #include "mcu_type.hpp"
 #include "../../periph/timer_mode.hpp"
 
-namespace zoal { namespace arch { namespace avr {
+namespace zoal::arch::avr {
     template<mcu_type Type>
     class timer8_mem_model {
     };
@@ -51,6 +51,6 @@ namespace zoal { namespace arch { namespace avr {
         static constexpr intptr_t TCCRxB = 10;
         static constexpr intptr_t TCCRxA = 11;
     };
-}}}
+}
 
 #endif

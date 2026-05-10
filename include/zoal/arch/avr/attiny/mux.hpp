@@ -6,7 +6,7 @@
 #include "../../../mem/cas.hpp"
 #include "../../../utils/helpers.hpp"
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     template<class Sign, uintptr_t UsartAddress, uint32_t PortAddress, uint8_t PinOffset>
     struct usart_mapping;
 
@@ -15,9 +15,9 @@ namespace zoal { namespace metadata {
 
     template<class Sign, class Timer, class Pin>
     struct pwm_channel_mapping;
-}}
+}
 
-namespace zoal { namespace arch { namespace avr { namespace attiny {
+namespace zoal::arch::avr::attiny {
     using zoal::metadata::adc_mapping;
     using zoal::metadata::pwm_channel_mapping;
     using zoal::metadata::usart_mapping;
@@ -66,6 +66,6 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             using disconnect = zoal::mem::callable_cas_list_variadic<TCCRxA_cfg_off>;
         };
     };
-}}}}
+}
 
 #endif

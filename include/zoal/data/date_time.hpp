@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_DATA_DATE_TIME_HPP
 #define ZOAL_DATA_DATE_TIME_HPP
 
@@ -6,7 +8,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace data {
+namespace zoal::data {
     // According to international standard ISO 8601, Monday is the first day of the week
     enum day_of_week { monday = 1, tuesday, wednesday, thursday, friday, saturday, sunday };
 
@@ -20,7 +22,7 @@ namespace zoal { namespace data {
         uint8_t month{1};
         uint16_t year{1970};
     };
-}}
+}
 
 template<class T>
 zoal::io::output_stream<T> &operator<<(zoal::io::output_stream<T> &os, const zoal::data::date_time &dt) {

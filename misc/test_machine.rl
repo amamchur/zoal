@@ -43,7 +43,7 @@
 
 #include "test_machine.hpp"
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
     %% write data noerror nofinal noentry;
 
     void test_machine::init_machine() {

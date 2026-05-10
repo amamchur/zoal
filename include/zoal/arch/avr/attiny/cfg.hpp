@@ -7,7 +7,7 @@
 #include "../../../periph/usart.hpp"
 #include "../../../utils/helpers.hpp"
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     template<uint8_t Bits>
     struct usart_data_bits_flags;
 
@@ -28,9 +28,9 @@ namespace zoal { namespace metadata {
 
     template<class A, uintptr_t ClockDivider>
     struct adc_clock_divider;
-}}
+}
 
-namespace zoal { namespace arch { namespace avr { namespace attiny {
+namespace zoal::arch::avr::attiny {
     using zoal::metadata::adc_clock_divider;
     using zoal::metadata::adc_ref;
     using zoal::metadata::timer_clock_divider;
@@ -73,6 +73,6 @@ namespace zoal { namespace arch { namespace avr { namespace attiny {
             }
         };
     };
-}}}}
+}
 
 #endif

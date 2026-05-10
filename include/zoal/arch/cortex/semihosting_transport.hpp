@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_CORTEX_SEMIHOSTING_TRANSPORT_HPP
 #define ZOAL_ARCH_CORTEX_SEMIHOSTING_TRANSPORT_HPP
 
 #include <stdint.h> /* NOLINT */
 #include <stddef.h>
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<size_t BufferSize = 0x100>
     class semihosting_transport {
     public:
@@ -54,6 +56,6 @@ namespace zoal { namespace utils {
     template<size_t BufferSize>
     size_t semihosting_transport<BufferSize>::index = 0;
 
-}}
+}
 
 #endif

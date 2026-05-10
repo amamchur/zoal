@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_TOOLS_HPP
 #define ZOAL_UTILS_TOOLS_HPP
 
@@ -9,7 +11,7 @@
 #include "delay.hpp"
 #include "ms_counter.hpp"
 
-namespace zoal { namespace utils { namespace cmsis_os2 {
+namespace zoal::utils::cmsis_os2 {
     template<class Microcontroller, class Logger, class... Mixin>
     class tool_set : public Mixin... {
     public:
@@ -38,6 +40,6 @@ namespace zoal { namespace utils { namespace cmsis_os2 {
         zoal::utils::interrupts ni(false);
         dest = value;
     }
-}}}
+}
 
 #endif

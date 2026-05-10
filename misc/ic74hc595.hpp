@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_IC_IC74HC595_HPP
 #define ZOAL_IC_IC74HC595_HPP
 
 #include <zoal/gpio/api.hpp>
 #include <zoal/gpio/shift_out.hpp>
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     template<class Tools, class SerialDataInput, class ShiftRegisterClock, class StorageRegisterClock>
     class ic74hc595 {
     public:
@@ -40,6 +42,6 @@ namespace zoal { namespace ic {
             }
         };
     };
-}}
+}
 
 #endif

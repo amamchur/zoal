@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace io {
+namespace zoal::io {
     enum class button_event : uint8_t { down, press, up };
 
     class button_state_machine {
@@ -87,6 +87,6 @@ namespace zoal { namespace io {
     protected:
         state_type state_{0};
     };
-}}
+}
 
 #endif

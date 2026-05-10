@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_FREERTOS_EVENT_GROUP_HPP
 #define ZOAL_FREERTOS_EVENT_GROUP_HPP
 
@@ -7,7 +9,7 @@
 #include <event_groups.h>
 #include <stdint.h>
 
-namespace zoal { namespace freertos {
+namespace zoal::freertos {
     template<class Dummy = void>
     class freertos_event_group {
     public:
@@ -51,6 +53,6 @@ namespace zoal { namespace freertos {
     protected:
         StaticEventGroup_t event_group_buffer{};
     };
-}}
+}
 
 #endif

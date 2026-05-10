@@ -19,8 +19,7 @@ TEST(avr_atmega328p_usart, mux) {
     cas_collector c;
     type_list_iterator<gpio_cfg>::for_each(c);
 
-    EXPECT_EQ(c.values.size(), 1);
-    EXPECT_EQ(c.values[0], cas_value(0x00, 0x00, 0x00, sizeof(uint8_t))); // No changes, just compile time checking
+    EXPECT_EQ(c.values.size(), 0);
 }
 
 TEST(avr_atmega328p_usart, cfg_115200_at_16MHz) {
@@ -86,8 +85,7 @@ TEST(avr_atmega32u4_usart, mux) {
     cas_collector c;
     type_list_iterator<gpio_cfg>::for_each(c);
 
-    EXPECT_EQ(c.values.size(), 1);
-    EXPECT_EQ(c.values[0], cas_value(0x00, 0x00, 0x00, sizeof(uint8_t))); // No changes, just compile time checking
+    EXPECT_EQ(c.values.size(), 0);
 }
 
 TEST(avr_atmega32u4_usart, cfg_115200_at_16MHz) {
@@ -102,7 +100,7 @@ TEST(avr_atmega32u4_usart, cfg_115200_at_16MHz) {
     cas_collector c;
     type_list_iterator<gpio_cfg>::for_each(c);
 
-    EXPECT_EQ(c.values.size(), 4);
+    ASSERT_EQ(c.values.size(), 4);
     EXPECT_EQ(c.values[0], cas_value(0xCC, 0xFF, 0x10, sizeof(uint8_t))); // UBRR1L
     EXPECT_EQ(c.values[1], cas_value(0xCD, 0xFF, 0x00, sizeof(uint8_t))); // UBRR1H
     EXPECT_EQ(c.values[2], cas_value(0xC8, 0xFF, 0x02, sizeof(uint8_t))); // UCSR1A
@@ -121,8 +119,7 @@ TEST(avr_atmega2560_usart, mux) {
         cas_collector c;
         type_list_iterator<gpio_cfg>::for_each(c);
 
-        EXPECT_EQ(c.values.size(), 1);
-        EXPECT_EQ(c.values[0], cas_value(0x00, 0x00, 0x00, sizeof(uint8_t))); // No changes, just compile time checking
+        EXPECT_EQ(c.values.size(), 0);
     }
 
     {
@@ -131,8 +128,7 @@ TEST(avr_atmega2560_usart, mux) {
         cas_collector c;
         type_list_iterator<gpio_cfg>::for_each(c);
 
-        EXPECT_EQ(c.values.size(), 1);
-        EXPECT_EQ(c.values[0], cas_value(0x00, 0x00, 0x00, sizeof(uint8_t))); // No changes, just compile time checking
+        ASSERT_EQ(c.values.size(), 0);
     }
     {
         using gpio_cfg = api::optimize<mcu::mux::usart<mcu::usart_02, mcu::ph_00, mcu::ph_01>::connect>;
@@ -140,8 +136,7 @@ TEST(avr_atmega2560_usart, mux) {
         cas_collector c;
         type_list_iterator<gpio_cfg>::for_each(c);
 
-        EXPECT_EQ(c.values.size(), 1);
-        EXPECT_EQ(c.values[0], cas_value(0x00, 0x00, 0x00, sizeof(uint8_t))); // No changes, just compile time checking
+        ASSERT_EQ(c.values.size(), 0);
     }
     {
         using gpio_cfg = api::optimize<mcu::mux::usart<mcu::usart_03, mcu::pj_00, mcu::pj_01>::connect>;
@@ -149,7 +144,6 @@ TEST(avr_atmega2560_usart, mux) {
         cas_collector c;
         type_list_iterator<gpio_cfg>::for_each(c);
 
-        EXPECT_EQ(c.values.size(), 1);
-        EXPECT_EQ(c.values[0], cas_value(0x00, 0x00, 0x00, sizeof(uint8_t))); // No changes, just compile time checking
+        ASSERT_EQ(c.values.size(), 0);
     }
 }

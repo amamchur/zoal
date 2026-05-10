@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma once
+
 #ifndef ZOAL_GPIO_PIN_HPP
 #define ZOAL_GPIO_PIN_HPP
 
@@ -12,7 +14,7 @@
 
 #include <stdint.h> /* NOLINT */
 
-namespace zoal { namespace gpio {
+namespace zoal::gpio {
     using zoal::gpio::api;
     using zoal::gpio::features;
     using zoal::gpio::has_features;
@@ -117,6 +119,6 @@ namespace zoal { namespace gpio {
             typename pin::template mode<pin_mode::output>,
             off>;
     };
-}}
+}
 
 #endif

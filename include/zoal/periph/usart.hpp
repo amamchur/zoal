@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_PERIPH_USART_CONFIG_HPP
 #define ZOAL_PERIPH_USART_CONFIG_HPP
 
-#include <stdint.h>
+#include <stddef.h>
 
-namespace zoal { namespace periph {
+namespace zoal::periph {
     enum class usart_parity { none, even, odd };
 
     enum class usart_stop_bits { stop_bits_1, stop_bits_2 };
@@ -11,15 +13,15 @@ namespace zoal { namespace periph {
     template<uint32_t UsartFreq,
              uint32_t BaudRate,
              uint8_t Bits = 8,
-             zoal::periph::usart_parity Parity = zoal::periph::usart_parity::none,
-             zoal::periph::usart_stop_bits StopBits = zoal::periph::usart_stop_bits::stop_bits_1>
+             usart_parity Parity = usart_parity::none,
+             usart_stop_bits StopBits = usart_stop_bits::stop_bits_1>
     class usart_params {
     public:
         static constexpr uint32_t clock_frequency = UsartFreq;
         static constexpr uint32_t baud_rate = BaudRate;
         static constexpr uint32_t word_length_bits = Bits;
-        static constexpr zoal::periph::usart_parity parity = Parity;
-        static constexpr zoal::periph::usart_stop_bits stop_bits = StopBits;
+        static constexpr usart_parity parity = Parity;
+        static constexpr usart_stop_bits stop_bits = StopBits;
     };
 
     template<uint32_t UsartFreq>
@@ -39,6 +41,6 @@ namespace zoal { namespace periph {
 
     template<uint32_t UsartFreq>
     using usart_9600 = usart_params<UsartFreq, 9600>;
-}}
+}
 
 #endif

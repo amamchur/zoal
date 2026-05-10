@@ -1,19 +1,18 @@
 #ifndef ZOAL_GPIO_ATMEL_AVR_TIMER_HPP
 #define ZOAL_GPIO_ATMEL_AVR_TIMER_HPP
 
-#include "../../periph/timer_mode.hpp"
 #include "../bus.hpp"
 
 #include <stdint.h>
 
-namespace zoal { namespace arch { namespace avr {
+namespace zoal::arch::avr {
     template<uintptr_t Address, uint8_t N, class... Mixin>
     class timer : public Mixin... {
     public:
         using self_type = timer<Address, N, Mixin...>;
         using word = typename self_type::word;
 
-        static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
+        static constexpr auto bus = zoal::arch::bus::common;
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
         static constexpr uint8_t channels_count = 2;
@@ -84,6 +83,6 @@ namespace zoal { namespace arch { namespace avr {
             }
         }
     };
-}}}
+}
 
 #endif

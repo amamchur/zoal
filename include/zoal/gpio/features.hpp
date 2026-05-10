@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_GPIO_FEATURE_HPP
 #define ZOAL_GPIO_FEATURE_HPP
 
 #include <stdint.h>
 
-namespace zoal { namespace gpio {
+namespace zoal::gpio {
     enum features {
         none = 0,
         output_speed = 1 << 0,
@@ -14,6 +16,6 @@ namespace zoal { namespace gpio {
     struct has_features {
         static constexpr bool value = (Port::feature & F) == F;
     };
-}}
+}
 
 #endif

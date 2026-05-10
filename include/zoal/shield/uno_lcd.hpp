@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace shield {
+namespace zoal::shield {
     template<class PinA = void, class PinB = void>
     class uno_lcd_shield_config {
     public:
@@ -127,6 +127,6 @@ namespace zoal { namespace shield {
             keypad::handle(handler, channelValue);
         }
     };
-}}
+}
 
 #endif

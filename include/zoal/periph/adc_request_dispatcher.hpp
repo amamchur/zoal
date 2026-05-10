@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ADC_REQUEST_DISPATCHER_HPP
 #define ZOAL_ADC_REQUEST_DISPATCHER_HPP
 
@@ -5,7 +7,7 @@
 #include <zoal/func/function.hpp>
 #include <zoal/utils/interrupts.hpp>
 
-namespace zoal { namespace periph {
+namespace zoal::periph {
     enum class adc_request_status { idle, pending, finished };
 
     template<class Adc>
@@ -20,8 +22,8 @@ namespace zoal { namespace periph {
 
         template<class Channel, class Callback>
         bool fetch(Callback callback) {
-            zoal::utils::interrupts_off off;
-            if (status != zoal::periph::adc_request_status::idle) {
+            utils::interrupts_off off;
+            if (status != adc_request_status::idle) {
                 return false;
             }
 
@@ -32,12 +34,12 @@ namespace zoal { namespace periph {
             return true;
         }
 
-        inline void complete(uint32_t v) {
+        void complete(uint32_t v) {
             value = v;
             status = adc_request_status::finished;
         }
 
-        inline volatile bool finished() const {
+        [[nodiscard]] bool finished() const {
             switch (status) {
             case adc_request_status::idle:
             case adc_request_status::pending:
@@ -47,8 +49,8 @@ namespace zoal { namespace periph {
             }
         }
 
-        inline bool processing() const {
-            return status != zoal::periph::adc_request_status::idle;
+        [[nodiscard]] bool processing() const {
+            return status != adc_request_status::idle;
         }
 
         void handle() {
@@ -59,7 +61,7 @@ namespace zoal { namespace periph {
             if (client_callback) {
                 typeof(client_callback) cb(client_callback);
                 client_callback.reset();
-                status = zoal::periph::adc_request_status::idle;
+                status = adc_request_status::idle;
                 cb(value);
             }
         }
@@ -72,8 +74,8 @@ namespace zoal { namespace periph {
 
     private:
         client_callback_type client_callback;
-        value_type value;
-        volatile zoal::periph::adc_request_status status{zoal::periph::adc_request_status::idle};
+        value_type value{};
+        volatile adc_request_status status{adc_request_status::idle};
     };
 
     template<class Adc, size_t ClosureBankSize>
@@ -84,6 +86,6 @@ namespace zoal { namespace periph {
 
     template<class Adc, size_t ClosureBankSize>
     adc_api_dispatcher<Adc, ClosureBankSize> adc_dispatcher_base<Adc, ClosureBankSize>::api;
-}}
+}
 
 #endif

@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_MEMORY_TARGET_HPP
 #define ZOAL_MEMORY_TARGET_HPP
 
 #include <stdint.h>
 #include <stdlib.h>
 
-namespace zoal { namespace io {
+namespace zoal::io {
     class memory_target {
     public:
         memory_target(void *buffer, size_t capacity)
@@ -32,6 +34,6 @@ namespace zoal { namespace io {
         size_t size_{0};
         size_t capacity_{0};
     };
-}}
+}
 
 #endif

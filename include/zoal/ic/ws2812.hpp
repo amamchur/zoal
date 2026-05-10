@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IC_WS2812B_HPP
 #define ZOAL_IC_WS2812B_HPP
 
@@ -6,7 +8,7 @@
 #include "../utils/nop.hpp"
 #include "../utils/interrupts.hpp"
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     class timing_ws2812 {
     public:
         static constexpr uint32_t th_0_ns = 350;
@@ -122,6 +124,6 @@ namespace zoal { namespace ic {
             delay::template us<timing::reset_us>();
         }
     };
-}}
+}
 
 #endif

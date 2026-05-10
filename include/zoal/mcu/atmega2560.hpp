@@ -23,7 +23,7 @@
 #include <zoal/gpio/api.hpp>
 #include <zoal/gpio/pin.hpp>
 
-namespace zoal { namespace mcu {
+namespace zoal::mcu {
     class atmega2560 {
     public:
         using self_type = atmega2560;
@@ -194,9 +194,9 @@ namespace zoal { namespace mcu {
         template<class... Module>
         using enable = ::zoal::arch::enable<Module...>;
     };
-}}
+}
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     using zoal::ct::integral_constant;
     using atmega2560_sign = zoal::ct::signature<'A', 'T', 'm', 'e', 'g', 'a', '2', '5', '6', '0'>;
 
@@ -349,6 +349,6 @@ namespace zoal { namespace metadata {
 
     template<>
     struct pin_to_adc_channel<atmega2560_sign, 0x0078, 0x0106, 7> : integral_constant<int, 15> {};
-}}
+}
 
 #endif

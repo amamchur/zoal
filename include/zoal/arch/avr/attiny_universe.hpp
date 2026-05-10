@@ -8,7 +8,7 @@
 #include "timer16.hpp"
 #include "timer_model.hpp"
 
-namespace zoal { namespace arch {
+namespace zoal::arch {
     class attiny_universe {
     public:
         template<uintptr_t Address>
@@ -18,6 +18,6 @@ namespace zoal { namespace arch {
         using port_b = port<0x36>;
         using port_d = port<0x32>;
     };
-}}
+}
 
 #endif

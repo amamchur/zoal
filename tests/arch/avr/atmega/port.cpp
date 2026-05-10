@@ -32,7 +32,7 @@ TEST(avr_atmega_port, output_mode) {
         using gpio_cfg_1 = api::optimize<api::mode<pin_mode::output, mcu::pb_00, mcu::pb_01>>;
         cas_collector c;
         type_list_iterator<gpio_cfg_1>::for_each(c);
-        EXPECT_EQ(c.values.size(), 1);
+        ASSERT_EQ(c.values.size(), 1);
         EXPECT_EQ(c.values[0], cas_value(0x24, 0x00, 0x03, sizeof(uint8_t)));
     }
     {

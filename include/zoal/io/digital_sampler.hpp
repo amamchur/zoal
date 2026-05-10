@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_IO_DIGITAL_SAMPLER_HPP
 #define ZOAL_IO_DIGITAL_SAMPLER_HPP
 
 #include <stdint.h>
 
-namespace zoal { namespace io {
+namespace zoal::io {
     enum class signal_transition {
         none,
         falling_edge,
@@ -180,6 +182,6 @@ namespace zoal { namespace io {
         uint8_t value;
         duration_type time;
     };
-}}
+}
 
 #endif

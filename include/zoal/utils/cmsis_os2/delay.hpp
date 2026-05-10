@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_DELAY_CMSIS_OS2_HPP
 #define ZOAL_UTILS_DELAY_CMSIS_OS2_HPP
 
@@ -6,7 +8,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace utils { namespace cmsis_os2 {
+namespace zoal::utils::cmsis_os2 {
     template<uint32_t SysFrequency>
     class delay {
     public:
@@ -35,6 +37,6 @@ namespace zoal { namespace utils { namespace cmsis_os2 {
             nop<clocks>::place();
         }
     };
-}}}
+}
 
 #endif

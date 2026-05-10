@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32X_CLOCK_CONTROL_HPP
 #define ZOAL_ARCH_STM32X_CLOCK_CONTROL_HPP
 
@@ -6,7 +8,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32x {
+namespace zoal::arch::stm32x {
     using zoal::ct::type_list;
     using zoal::gpio::api;
 
@@ -68,6 +70,6 @@ namespace zoal { namespace arch { namespace stm32x {
             zoal::mem::apply_cas_list<typename power_cas::clock_off_cas>::apply();
         }
     };
-}}}
+}
 
 #endif

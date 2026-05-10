@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_LOGGER_HPP
 #define ZOAL_UTILS_LOGGER_HPP
 
 #include "../io/output_stream.hpp"
 #include "defs.hpp"
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     enum class log_level { trace, debug, info, warn, error, highest };
 
     template<class Pattern>
@@ -170,6 +172,6 @@ namespace zoal { namespace utils {
             Logger::info() << "CAS: *" << (void *)A::address << " & ~" << (void *)A::clear << " | " << (void *)A::set;
         }
     };
-}}
+}
 
 #endif

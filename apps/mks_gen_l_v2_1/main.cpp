@@ -12,8 +12,8 @@
 
 FUSES = {.low = 0xFF, .high = 0xD7, .extended = 0xFC};
 
-using ms_timer = typename mcu::timer_00;
-using pwm_timer = typename mcu::timer_03;
+using ms_timer = mcu::timer_00;
+using pwm_timer = mcu::timer_03;
 
 lcd_type lcd;
 encoder_type encoder;
@@ -41,14 +41,11 @@ void initialize_hardware() {
 
         mcu::cfg::timer<pwm_timer, zoal::periph::timer_mode::up, 1, 1, 0xFF>::apply,
 
-        api::mode<zoal::gpio::pin_mode::input_pull_up, pcb::ard_d31, pcb::ard_d33, pcb::ard_d35>,
-        api::mode<zoal::gpio::pin_mode::output, pcb::ard_d37>,
-
-        api::mode<zoal::gpio::pin_mode::input_pull_up, sd_detection>,
+        api::mode<pin_mode::input_pull_up, pcb::ard_d31, pcb::ard_d33, pcb::ard_d35>,
+        api::mode<pin_mode::output, pcb::ard_d37>,
+        api::mode<pin_mode::input_pull_up, sd_detection>,
 
         beep::gpio_cfg,
-
-        //        encoder_type::
         lcd_type::gpio_cfg
         //
         >();
@@ -103,16 +100,13 @@ static void input_callback(const zoal::misc::terminal_input *, const char *s, co
     terminal.sync();
 }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
-
 volatile uint8_t update_enc = 0;
 int enc_counter = 0;
 uint32_t last_enc_event = 0;
 
 void encoder_callback(zoal::io::rotary_event d) {
     int m = 1;
-    int dt = (int)(milliseconds - last_enc_event);
+    int dt = static_cast<int>(milliseconds - last_enc_event);
 
     if (dt < 10) {
         m = 10;
@@ -193,8 +187,6 @@ public:
 zoal::fs::volume<SD_SPI_API> sd_volume;
 
 void card_test() {
-    uint8_t res[5], buf[512], token;
-    uint32_t addr = 0x00000000;
     test_started = 0;
 
     SPI_init(SPI_MASTER | SPI_2X_FOSC_2 | SPI_MODE_0);
@@ -319,8 +311,6 @@ void print_boot_sector(uint8_t *buf) {
     stream << "blocks_per_fat: " << blocks_per_fat << "\r\n";
     stream << "fat_start_block: " << fat_start_block << "\r\n";
     stream << "root_dir_start_block: " << root_dir_start_block << "\r\n";
-
-    root_dir_block = root_dir_start_block;
 }
 
 void print_mbr(uint8_t *buf) {
@@ -358,7 +348,7 @@ void card_check() {
     }
 }
 
-int main() {
+[[noreturn]] int main() {
     using zoal::gpio::pin_mode;
 
     initialize_hardware();
@@ -397,7 +387,4 @@ int main() {
 
         card_check();
     }
-    return 0;
 }
-
-#pragma clang diagnostic pop

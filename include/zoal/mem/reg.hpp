@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_MEM__REG_HPP
 #define ZOAL_MEM__REG_HPP
 
@@ -5,7 +7,7 @@
 
 #include <stdint.h> /* NOLINT */
 
-namespace zoal { namespace mem {
+namespace zoal::mem {
     template<uintptr_t Address, reg_io RegIO, class Type, Type Mask>
     class reg final {
     public:
@@ -28,6 +30,6 @@ namespace zoal { namespace mem {
 
         reg() = delete;
     };
-}}
+}
 
 #endif

@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_MCU_MODEL_HPP
 #define ZOAL_MCU_MODEL_HPP
 
-namespace zoal { namespace arch { namespace stm32x {
+namespace zoal::arch::stm32x {
     enum class stm32_type {
         //
         mainstream = 'F',
@@ -41,6 +43,6 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr stm32_core core = Core;
         static constexpr stm32_no_of_pins pins = Pins;
     };
-}}}
+}
 
 #endif

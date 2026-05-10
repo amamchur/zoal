@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F1_CFG_HPP
 #define ZOAL_ARCH_STM32F1_CFG_HPP
 
@@ -9,7 +11,7 @@
 
 #include <zoal/periph/timer_mode.hpp>
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     template<zoal::arch::bus Bus>
     struct stm32_bus_prescaler;
 
@@ -21,9 +23,9 @@ namespace zoal { namespace metadata {
 
     template<zoal::periph::usart_stop_bits StopBit>
     struct stm32_stop_bits_to_cr2;
-}}
+}
 
-namespace zoal { namespace arch { namespace stm32f1 {
+namespace zoal::arch::stm32f1 {
     using zoal::ct::type_list;
     using zoal::gpio::api;
     using zoal::mem::callable_cas_list_variadic;
@@ -161,6 +163,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
             using apply = type_list<TIMERx_CR1, TIMERx_PSC, TIMERx_ARR, TIMERx_EGR>;
         };
     };
-}}}
+}
 
 #endif

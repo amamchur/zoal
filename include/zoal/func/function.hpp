@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_FUNC_FUNCTION_HPP
 #define ZOAL_FUNC_FUNCTION_HPP
 
@@ -5,7 +7,7 @@
 
 #include <string.h>
 
-namespace zoal { namespace func {
+namespace zoal::func {
     template<class L, class Ret, class... Args>
     class lambda_container {
     public:
@@ -27,7 +29,7 @@ namespace zoal { namespace func {
             : lambda(l) {}
 
         static void call_lambda(void *obj, Args... args) {
-            reinterpret_cast<lambda_container *>(obj)->lambda(args...);
+            static_cast<lambda_container *>(obj)->lambda(args...);
         }
 
     private:
@@ -129,6 +131,6 @@ namespace zoal { namespace func {
             this->fn(this->mem_bank, args...);
         }
     };
-}}
+}
 
 #endif

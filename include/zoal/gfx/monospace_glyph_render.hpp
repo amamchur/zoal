@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_GFX_GLYPH_RENDER_HPP
 #define ZOAL_GFX_GLYPH_RENDER_HPP
 
-namespace zoal { namespace gfx {
+namespace zoal::gfx {
     template<class Graphics, class Font, int CharSpacing = 1>
     class monospace_glyph_render {
     public:
@@ -50,6 +52,6 @@ namespace zoal { namespace gfx {
         int x_{0};
         int y_{0};
     };
-}}
+}
 
 #endif

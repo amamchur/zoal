@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_DELAY_HPP
 #define ZOAL_UTILS_DELAY_HPP
 
 #include <stdint.h>
 #include "nop.hpp"
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<uint32_t SysFrequency, class Counter>
     class delay {
     public:
@@ -35,6 +37,6 @@ namespace zoal { namespace utils {
             nop<clocks>::place();
         }
     };
-}}
+}
 
 #endif

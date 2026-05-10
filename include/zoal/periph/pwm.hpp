@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_PWM_HPP
 #define ZOAL_PWM_HPP
 
-namespace zoal { namespace periph {
+namespace zoal::periph {
     template<class Timer, class Pin, uint8_t Channel, class OCReg, class Connect, class Disconnect>
     class pwm_channel {
     public:
@@ -30,6 +32,6 @@ namespace zoal { namespace periph {
             return 0;
         }
     };
-}}
+}
 
 #endif

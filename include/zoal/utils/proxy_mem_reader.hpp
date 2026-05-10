@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_PROXY_MEM_READER_HPP
 #define ZOAL_PROXY_MEM_READER_HPP
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     class proxy_mem_reader {
     public:
         template<class T>
@@ -9,6 +11,6 @@ namespace zoal { namespace utils {
             return *reinterpret_cast<const T*>(ptr);
         }
     };
-}}
+}
 
 #endif

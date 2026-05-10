@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_GPIO_STM32F4_RCC_HPP
 #define ZOAL_GPIO_STM32F4_RCC_HPP
 
@@ -6,7 +8,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32f4 {
+namespace zoal::arch::stm32f4 {
     template<uintptr_t Address>
     class rcc {
     public:
@@ -39,6 +41,6 @@ namespace zoal { namespace arch { namespace stm32f4 {
         using RCCx_PLLI2SCFGR = zoal::mem::reg<Address + 0x84, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
         using RCCx_DCKCFGR = zoal::mem::reg<Address + 0x8C, zoal::mem::reg_io::read_write, uint32_t, 0xFFFFFFFF>;
     };
-}}}
+}
 
 #endif

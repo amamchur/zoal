@@ -25,7 +25,7 @@
 #include <zoal/arch/cortex/stm32f1/i2c.hpp>
 #include <zoal/ct/signature.hpp>
 
-namespace zoal { namespace mcu {
+namespace zoal::mcu {
     class stm32f103c8tx {
     public:
         using self_type = stm32f103c8tx;
@@ -161,9 +161,9 @@ port_d
     template<class ... Module>
     using enable = ::zoal::arch::enable<Module...>;
     };
-}}
+}
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     using zoal::ct::integral_constant;
     using stm32f103c8tx_sign = zoal::ct::signature<'s','t','m','3','2','f','1','0','3','c','8','t','x'>;
 
@@ -427,6 +427,6 @@ template<> // PB6 -> USART1_TX
 struct stm32_signal_map<stm32f103c8tx_sign, 0x40013800, 0x40010C00, 0x06, signal::tx> : zoal::ct::integral_constant<int, 1> {};
 template<> // PB7 -> USART1_RX
 struct stm32_signal_map<stm32f103c8tx_sign, 0x40013800, 0x40010C00, 0x07, signal::rx> : zoal::ct::integral_constant<int, 1> {};
-}}
+}
 
 #endif

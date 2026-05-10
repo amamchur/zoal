@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IO_BUTTON_HPP
 #define ZOAL_IO_BUTTON_HPP
 
@@ -5,7 +7,7 @@
 #include "../utils/method_invoker.hpp"
 #include "button_state_machine.hpp"
 
-namespace zoal { namespace io {
+namespace zoal::io {
 
     template<bool ActiveLow,
              uint8_t DebounceDelay = 5,
@@ -119,6 +121,6 @@ namespace zoal { namespace io {
     protected:
         uint16_t repeat_interval{Config::press_delay};
     };
-}}
+}
 
 #endif

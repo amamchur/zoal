@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_FREERTOS_STREAM_BUFFER_HPP
 #define ZOAL_FREERTOS_STREAM_BUFFER_HPP
 
@@ -7,7 +9,7 @@
 #include <stdint.h>
 #include <stream_buffer.h>
 
-namespace zoal { namespace freertos {
+namespace zoal::freertos {
     template<class Dummy = void>
     class freertos_stream_buffer {
     public:
@@ -85,6 +87,6 @@ namespace zoal { namespace freertos {
 
         StaticStreamBuffer_t xStreamBufferStruct{};
     };
-}}
+}
 
 #endif

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IC_AT24CXX_HPP
 #define ZOAL_IC_AT24CXX_HPP
 
@@ -7,7 +9,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     class at24cxx_api : public zoal::periph::i2c_device {
     public:
         using buffer_type = zoal::periph::i2c_device_buffer<2, 1>;
@@ -60,6 +62,6 @@ namespace zoal { namespace ic {
     using at24cxx = typename zoal::ct::conditional_type<BufferType == zoal::periph::device_buffer_type::static_mem,
                                                         zoal::periph::i2c_buffer_owner<at24cxx_api>,
                                                         zoal::periph::i2c_buffer_guardian<at24cxx_api>>::type;
-}}
+}
 
 #endif

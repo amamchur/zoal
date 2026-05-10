@@ -2,6 +2,7 @@
 #define ZOAL_CAS_COLLECTOR_HPP
 
 #include "gtest/gtest.h"
+#include <iomanip>
 
 namespace zoal { namespace tests {
     class cas_value {

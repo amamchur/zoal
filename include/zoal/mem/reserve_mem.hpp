@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_MEM_STATIC_BUFFER_HPP
 #define ZOAL_MEM_STATIC_BUFFER_HPP
 
 #include <stdint.h>
 
-namespace zoal { namespace mem {
+namespace zoal::mem {
     template<size_t Size = 1>
     class reserve_buffer {
     protected:
@@ -22,6 +24,6 @@ namespace zoal { namespace mem {
         explicit reserve_mem(Args... args)
             : Base(this->buffer_ext_, sizeof(this->buffer_ext_), args...) {}
     };
-}}
+}
 
 #endif

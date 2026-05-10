@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F4_SPI_SPI_HPP
 #define ZOAL_ARCH_STM32F4_SPI_SPI_HPP
 
 #include "../../../mem/reg.hpp"
 #include "../../../utils/defs.hpp"
 
-namespace zoal { namespace arch { namespace stm32f4 {
+namespace zoal::arch::stm32f4 {
     template<uintptr_t Address, class Clock>
     class spi : public Clock {
     public:
@@ -47,8 +49,8 @@ namespace zoal { namespace arch { namespace stm32f4 {
         }
 
         static uint8_t transfer(const void *txb, void *rxb, size_t size) {
-            auto tx = reinterpret_cast<const uint8_t *>(txb);
-            auto rx = reinterpret_cast<uint8_t *>(rxb);
+            auto tx = static_cast<const uint8_t *>(txb);
+            auto rx = static_cast<uint8_t *>(rxb);
             auto txe = tx + size;
             auto rxe = rx + size;
 
@@ -80,6 +82,6 @@ namespace zoal { namespace arch { namespace stm32f4 {
             return 0;
         }
     };
-}}}
+}
 
 #endif

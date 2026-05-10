@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F4_CFG_HPP
 #define ZOAL_ARCH_STM32F4_CFG_HPP
 
@@ -10,7 +12,7 @@
 #include "../../../utils/helpers.hpp"
 #include "../../bus.hpp"
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     template<uint8_t Bits>
     struct stm32_data_bits_to_cr1;
 
@@ -22,9 +24,9 @@ namespace zoal { namespace metadata {
 
     template<int Bits>
     struct stm32_spi_clock_div_to_cr1_br;
-}}
+}
 
-namespace zoal { namespace arch { namespace stm32f4 {
+namespace zoal::arch::stm32f4 {
     using zoal::gpio::api;
 
     template<class Microcontroller>
@@ -148,6 +150,6 @@ namespace zoal { namespace arch { namespace stm32f4 {
             using apply = zoal::ct::type_list<I2Cx_CR1, I2Cx_CR2, I2Cx_OAR1, I2Cx_OAR2, I2Cx_CCR, I2Cx_TRISE>;
         };
     };
-}}}
+}
 
 #endif

@@ -1,6 +1,6 @@
 #include "cmd_argument.hpp"
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
     cmd_argument *cmd_argument::from_buffer(void *buffer) noexcept {
         auto v = reinterpret_cast<cmd_argument *>(buffer);
         v->length = 0;
@@ -51,4 +51,4 @@ namespace zoal { namespace misc {
         auto v = reinterpret_cast<cmd_argument *>(ptr);
         return v->length == 0 ? nullptr : v;
     }
-}}
+}

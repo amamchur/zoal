@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F0_CFG_HPP
 #define ZOAL_ARCH_STM32F0_CFG_HPP
 
@@ -6,7 +8,7 @@
 #include "../../../utils/helpers.hpp"
 #include "../../bus.hpp"
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     template<zoal::arch::bus Bus>
     struct stm32_bus_prescaler;
 
@@ -18,9 +20,9 @@ namespace zoal { namespace metadata {
 
     template<zoal::periph::usart_stop_bits StopBit>
     struct stm32_stop_bits_to_cr2;
-}}
+}
 
-namespace zoal { namespace arch { namespace stm32f0 {
+namespace zoal::arch::stm32f0 {
     using zoal::ct::type_list;
     using zoal::gpio::api;
 
@@ -56,6 +58,6 @@ namespace zoal { namespace arch { namespace stm32f0 {
             using apply = type_list<USARTx_CR1, USARTx_CR2, USARTx_CR3, USARTx_BRR>;
         };
     };
-}}}
+}
 
 #endif

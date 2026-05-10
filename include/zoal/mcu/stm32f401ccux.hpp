@@ -24,7 +24,7 @@
 #include <zoal/gpio/api.hpp>
 #include <zoal/gpio/pin.hpp>
 
-namespace zoal { namespace mcu {
+namespace zoal::mcu {
     class stm32f401ccux {
     public:
         using self_type = stm32f401ccux;
@@ -140,9 +140,9 @@ namespace zoal { namespace mcu {
         template<class... Module>
         using enable = ::zoal::arch::enable<Module...>;
     };
-}}
+}
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     using zoal::ct::integral_constant;
     using stm32f401ccux_sign = zoal::ct::signature<'s', 't', 'm', '3', '2', 'f', '4', '0', '1', 'c', 'c', 'u', 'x'>;
 
@@ -470,6 +470,6 @@ namespace zoal { namespace metadata {
     struct stm32_signal_map<stm32f401ccux_sign, 0x40014400, 0x40020400, 0x08, signal::ch1> : zoal::ct::integral_constant<int, 3> {};
     template<> // PB9 -> TIM11_CH1
     struct stm32_signal_map<stm32f401ccux_sign, 0x40014800, 0x40020400, 0x09, signal::ch1> : zoal::ct::integral_constant<int, 3> {};
-}}
+}
 
 #endif

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_INTERRUPTS_HPP
 #define ZOAL_UTILS_INTERRUPTS_HPP
 
@@ -9,7 +11,7 @@
     #include "../arch/simulator/interrupts.hpp"
 #endif
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     class interrupts_off : public interrupts {
     public:
         interrupts_off() : interrupts(false) {
@@ -21,6 +23,6 @@ namespace zoal { namespace utils {
         interrupts_on() : interrupts(true) {
         }
     };
-}}
+}
 
 #endif

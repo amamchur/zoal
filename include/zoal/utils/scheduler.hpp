@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_SCHEDULER_HPP
 #define ZOAL_UTILS_SCHEDULER_HPP
 
@@ -6,7 +8,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<class TicksType, class Handler, class Token, class Id>
     class function_schedule_item {
     public:
@@ -137,7 +139,7 @@ namespace zoal { namespace utils {
             if (item != nullptr) {
                 item->id = id;
                 item->time = dt;
-                item->handler.template assign(h);
+                item->handler.assign(h);
             }
             return item != nullptr;
         }
@@ -196,6 +198,6 @@ namespace zoal { namespace utils {
         ticks_type prev_time{0};
         item_type items[Capacity];
     };
-}}
+}
 
 #endif

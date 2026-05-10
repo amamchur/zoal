@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_DATA_VECTOR_HPP
 #define ZOAL_DATA_VECTOR_HPP
 
 #include <math.h>
 
-namespace zoal { namespace data {
+namespace zoal::data {
     template<class T>
     class vector {
     public:
@@ -36,7 +38,7 @@ namespace zoal { namespace data {
             return vector<U>(static_cast<T>(x), static_cast<T>(y), static_cast<T>(z));
         }
 
-        double length() const {
+        [[nodiscard]] double length() const {
             return sqrt((double)x * x + (double)y * y + (double)z * z);
         }
 
@@ -96,14 +98,14 @@ namespace zoal { namespace data {
             return *this;
         }
 
-        inline T operator[](int i) const {
+        T operator[](int i) const {
             return *(&x + i);
         }
 
-        inline T &operator[](int i) {
+        T &operator[](int i) {
             return *(&x + i);
         }
     };
-}}
+}
 
 #endif

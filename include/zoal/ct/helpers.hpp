@@ -1,9 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_CT_HELPERS_HPP
 #define ZOAL_CT_HELPERS_HPP
 
-#include "type_list.hpp"
-
-namespace zoal { namespace ct {
+namespace zoal::ct {
     template<class First, class... Rest>
     struct max_type_size {
         using other = max_type_size<Rest...>;
@@ -46,6 +46,6 @@ namespace zoal { namespace ct {
     struct pin_count<First> {
         static constexpr auto value = First::not_pin ? 0 : 1;
     };
-}}
+}
 
 #endif

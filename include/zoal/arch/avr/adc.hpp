@@ -8,13 +8,13 @@
 
 #include <stdint.h> /* NOLINT */
 
-namespace zoal { namespace arch { namespace avr {
+namespace zoal::arch::avr {
     template<uintptr_t Address, uint8_t N, class... Mixin>
     class adc : public Mixin... {
     public:
         using self_type = adc<Address, N, Mixin...>;
 
-        static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
+        static constexpr auto bus = zoal::arch::bus::common;
         static constexpr uintptr_t address = Address;
         static constexpr uint8_t no = N;
         static constexpr uint8_t resolution = 10;
@@ -62,6 +62,6 @@ namespace zoal { namespace arch { namespace avr {
             return value();
         }
     };
-}}}
+}
 
 #endif

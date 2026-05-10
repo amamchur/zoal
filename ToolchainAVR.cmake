@@ -42,6 +42,7 @@ function(add_avr_executable NAME MCU)
             -Wno-unknown-pragmas
             -fno-exceptions
             -ffunction-sections
+            -fdump-tree-gimple
             --param=min-pagesize=0
     )
 

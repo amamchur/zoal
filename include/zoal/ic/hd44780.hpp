@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IC_HD44780_HPP
 #define ZOAL_IC_HD44780_HPP
 
@@ -7,7 +9,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     using zoal::gpio::api;
     using zoal::gpio::pin_mode;
 
@@ -318,6 +320,6 @@ namespace zoal { namespace ic {
             delay::template us<37>();
         }
     };
-}}
+}
 
 #endif

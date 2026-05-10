@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_FREERTOS_TASK_HPP
 #define ZOAL_FREERTOS_TASK_HPP
 
@@ -7,7 +9,7 @@
 #include <stddef.h>
 #include <task.h>
 
-namespace zoal { namespace freertos {
+namespace zoal::freertos {
     template<class Dummy = void>
     class freertos_task {
     public:
@@ -82,6 +84,6 @@ namespace zoal { namespace freertos {
     private:
         StaticTask_t task_buffer{};
     };
-}}
+}
 
 #endif

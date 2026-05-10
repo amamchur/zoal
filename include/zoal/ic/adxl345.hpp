@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IC_ADXL345_HPP
 #define ZOAL_IC_ADXL345_HPP
 
@@ -6,7 +8,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     class adxl345 : public zoal::periph::i2c_device {
     public:
         adxl345() = default;
@@ -106,6 +108,6 @@ namespace zoal { namespace ic {
         uint8_t address_{0x53};
         uint8_t buffer_[8]{0};
     };
-}}
+}
 
 #endif

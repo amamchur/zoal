@@ -3,9 +3,9 @@
 #ifndef ZOAL_FS_FAT32_HPP
 #define ZOAL_FS_FAT32_HPP
 
-#include "mbr.hpp"
+#include "./mbr.hpp"
 
-namespace zoal { namespace fs {
+namespace zoal::fs {
     struct __attribute__((__packed__)) bios_param_block {
         uint16_t bytes_per_sector;
         uint8_t sectors_per_cluster;
@@ -113,7 +113,7 @@ namespace zoal { namespace fs {
         void extract_long_name(char *str) const {
             int offset = ((order & 0x0F) - 1) * 13;
             char *dst = str + offset;
-            const char *src = reinterpret_cast<const char *>(name);
+            auto src = reinterpret_cast<const char *>(name);
             dst[0] = src[0];
             dst[1] = src[2];
             dst[2] = src[4];
@@ -262,7 +262,7 @@ namespace zoal { namespace fs {
                 *dst++ = case_fn((char)e->name[i]);
             }
 
-            *dst++ = 0;
+            *dst = 0;
         }
 
         uint32_t first_partition_sector;
@@ -277,6 +277,6 @@ namespace zoal { namespace fs {
 
         zoal::fs::entry current_dir;
     };
-}}
+}
 
 #endif

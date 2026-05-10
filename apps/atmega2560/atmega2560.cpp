@@ -1,5 +1,5 @@
 #include "../../misc/terminal_input.hpp"
-#include "command_machine.hpp"
+#include "./command_machine.hpp"
 
 #include <avr/eeprom.h>
 #include <zoal/arch/avr/utils/usart_transmitter.hpp>
@@ -16,8 +16,8 @@ volatile uint32_t milliseconds = 0;
 
 using pcb = zoal::board::arduino_mega;
 using mcu = pcb::mcu;
-using ms_timer = typename mcu::timer_00;
-using pwm_timer = typename mcu::timer_03;
+using ms_timer = mcu::timer_00;
+using pwm_timer = mcu::timer_03;
 using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using overflow_to_tick = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
 using delay = zoal::utils::delay<F_CPU, counter>;
@@ -50,7 +50,7 @@ void initialize_hardware() {
 
         mcu::cfg::timer<pwm_timer, zoal::periph::timer_mode::up, 1, 1, 0xFF>::apply,
 
-        api::mode<zoal::gpio::pin_mode::output, blink_pin>
+        api::mode<pin_mode::output, blink_pin>
         //
         >();
 
@@ -77,7 +77,7 @@ static void vt100_callback(const zoal::misc::terminal_input *, const char *s, co
 static void command_callback(zoal::misc::command_machine *, zoal::misc::command cmd, int argc, zoal::misc::cmd_arg *argv) {
     switch (cmd) {
     case zoal::misc::command::pwm:
-        pwm_ch::set((int)*argv);
+        pwm_ch::set(static_cast<int>(*argv));
         break;
     case zoal::misc::command::pwm_connect:
         pwm_ch::connect();
@@ -99,10 +99,7 @@ static void input_callback(const zoal::misc::terminal_input *, const char *s, co
     terminal.sync();
 }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
-
-int main() {
+[[noreturn]] int main() {
     using zoal::gpio::pin_mode;
 
     initialize_hardware();
@@ -125,18 +122,16 @@ int main() {
             terminal.push_and_scan(&rx_byte, 1);
         }
     }
-    return 0;
 }
-#pragma clang diagnostic pop
 
 ISR(TIMER0_OVF_vect) {
     milliseconds += overflow_to_tick::step();
 }
 
 ISR(USART0_RX_vect) {
-    usart::rx_handler<>([](uint8_t value) { rx_buffer.push_back(value); });
+    usart::rx_handler<>([](auto value) { rx_buffer.push_back(value); });
 }
 
 ISR(USART0_UDRE_vect) {
-    usart::tx_handler([](uint8_t &value) { return usart_tx_type::tx_buffer.pop_front(value); });
+    usart::tx_handler([](auto &value) { return usart_tx_type::tx_buffer.pop_front(value); });
 }

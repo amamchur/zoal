@@ -5,7 +5,6 @@
 #include <avr/pgmspace.h>
 #include <zoal/mcu/attiny13a.hpp>
 #include <zoal/periph/software_spi.hpp>
-#include <zoal/utils/ms_counter.hpp>
 
 constexpr uint8_t update_adc = 0x01u;
 constexpr uint8_t update_ms = 0x02u;
@@ -21,10 +20,8 @@ volatile uint8_t update_flags = update_adc | update_display;
 volatile uint8_t milliseconds = 0;
 
 using mcu = zoal::mcu::attiny13a;
-using counter = zoal::utils::ms_counter<decltype(milliseconds), &milliseconds>;
 using timer = mcu::timer_00;
 using adc = mcu::adc_00;
-using ms_handler = zoal::utils::timer_overflow_to_tick<F_CPU, 64, 256>;
 using sspi = zoal::periph::tx_software_spi<mcu::pb_03, mcu::pb_02>;
 using max7219 = zoal::ic::max72xx<sspi, mcu::pb_01>;
 
@@ -40,14 +37,14 @@ const uint64_t messages[][4] PROGMEM = {
 constexpr auto message_count = sizeof(messages) / sizeof(messages[0]);
 
 void fill_matrix(const void *ptr) {
-    auto src = reinterpret_cast<const uint8_t *>(ptr);
+    auto src = static_cast<const uint8_t *>(ptr);
     uint8_t *dest = &matrix.data[0][0];
     for (uint8_t i = 0; i < sizeof(matrix.data); i++) {
         *dest++ = pgm_read_byte(src + i);
     }
 }
 
-int main() {
+[[noreturn]] int main() {
     using namespace zoal::gpio;
 
     mcu::power<timer, adc>::on();
@@ -67,10 +64,8 @@ int main() {
     max7219::init(matrix_type::devices);
 
     mcu::pb_00::mode<pin_mode::input>();
-    message = eeprom_read_byte((uint8_t *)1);
+    message = eeprom_read_byte(reinterpret_cast<uint8_t *>(1));
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
     while (true) {
         auto value = mcu::pb_00::read();
         if (value == 1 && prev_button_value != value) {
@@ -80,13 +75,13 @@ int main() {
             }
 
             update_flags |= update_display;
-            eeprom_write_byte((uint8_t *)1, message);
+            eeprom_write_byte(reinterpret_cast<uint8_t *>(1), message);
         }
 
         prev_button_value = value;
 
         if (update_flags & update_ms) {
-            milliseconds++;
+            milliseconds += 1;
             update_flags &= ~update_ms;
         }
 
@@ -106,9 +101,6 @@ int main() {
             adc::start();
         }
     }
-#pragma clang diagnostic pop
-
-    return 0;
 }
 
 ISR(ADC_vect) {

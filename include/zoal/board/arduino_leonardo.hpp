@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_BOARD_HPP
 #define ZOAL_BOARD_HPP
 
 #include "../mcu/atmega32u4.hpp"
 
-namespace zoal { namespace board {
+namespace zoal::board {
     class arduino_leonardo {
     public:
         using mcu = mcu::atmega32u4;
@@ -30,6 +32,6 @@ namespace zoal { namespace board {
         using ard_a04 = typename mcu::pf_01;
         using ard_a05 = typename mcu::pf_00;
     };
-}}
+}
 
 #endif

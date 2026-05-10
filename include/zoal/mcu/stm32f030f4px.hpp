@@ -23,7 +23,7 @@
 #include <zoal/arch/cortex/stm32f0/spi.hpp>
 #include <zoal/ct/signature.hpp>
 
-namespace zoal { namespace mcu {
+namespace zoal::mcu {
     class stm32f030f4px {
     public:
         using self_type = stm32f030f4px;
@@ -119,9 +119,9 @@ port_f
     template<class ... Module>
     using enable = ::zoal::arch::enable<Module...>;
     };
-}}
+}
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     using zoal::ct::integral_constant;
     using stm32f030f4px_sign = zoal::ct::signature<'s','t','m','3','2','f','0','3','0','f','4','p','x'>;
 
@@ -315,6 +315,6 @@ template<> // PB7 -> TIM17_CH1N
 struct stm32_signal_map<stm32f030f4px_sign, 0x40014800, 0x48000400, 0x07, signal::ch1n> : zoal::ct::integral_constant<int, 2> {};
 template<> // PB9 -> TIM17_CH1
 struct stm32_signal_map<stm32f030f4px_sign, 0x40014800, 0x48000400, 0x09, signal::ch1> : zoal::ct::integral_constant<int, 2> {};
-}}
+}
 
 #endif

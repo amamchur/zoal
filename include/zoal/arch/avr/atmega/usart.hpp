@@ -1,13 +1,10 @@
 #ifndef ZOAL_ARCH_AVR_ATMEGA_USART_HPP
 #define ZOAL_ARCH_AVR_ATMEGA_USART_HPP
 
-#include "../../../data/ring_buffer.hpp"
-#include "../../../io/stream_functor.hpp"
 #include "../../../periph/usart.hpp"
-#include "../../../utils/interrupts.hpp"
 #include "../../bus.hpp"
 
-namespace zoal { namespace arch { namespace avr { namespace atmega {
+namespace zoal::arch::avr::atmega {
     template<uintptr_t Address>
     class usart {
     private:
@@ -16,23 +13,23 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         enum UCSRxB_Flags : uint8_t { RXCIEx = 7, TXCIEx = 6, UDRIEx = 5, RXENx = 4, TXENx = 3, UCSZx2 = 2, RXB8x = 1, TXB8x = 0 };
 
     public:
-        using self_type = usart<Address>;
+        using self_type = usart;
 
-        static constexpr zoal::arch::bus bus = zoal::arch::bus::common;
+        static constexpr auto bus = zoal::arch::bus::common;
         static constexpr auto address = Address;
 
-        using UCSRxA = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using UCSRxB = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using UCSRxC = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using UCSRxD = zoal::mem::reg<Address + 0x03, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using UBRRxL = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using UBRRxH = zoal::mem::reg<Address + 0x05, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using UDRx = zoal::mem::reg<Address + 0x06, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UCSRxA = mem::reg<Address + 0x00, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UCSRxB = mem::reg<Address + 0x01, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UCSRxC = mem::reg<Address + 0x02, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UCSRxD = mem::reg<Address + 0x03, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UBRRxL = mem::reg<Address + 0x04, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UBRRxH = mem::reg<Address + 0x05, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using UDRx = mem::reg<Address + 0x06, mem::reg_io::read_write, uint8_t, 0xFF>;
 
-        using enable_cas =  zoal::ct::type_list<typename self_type::UCSRxB::template cas<0, 1u << TXENx | 1u << RXENx | 1u << RXCIEx>>;
-        using disable_cas =  zoal::ct::type_list<typename self_type::UCSRxB::template cas<1u << TXENx | 1u << RXENx | 1u << RXCIEx, 0>>;
-        using clock_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-        using clock_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using enable_cas =  type_list<typename UCSRxB::template cas<0, 1u << TXENx | 1u << RXENx | 1u << RXCIEx>>;
+        using disable_cas =  type_list<typename UCSRxB::template cas<1u << TXENx | 1u << RXENx | 1u << RXCIEx, 0>>;
+        using clock_on_cas = mem::null_cas_list;
+        using clock_off_cas = mem::null_cas_list;
 
         static void power_on() {}
 
@@ -46,11 +43,11 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             UCSRxB::ref() &= ~static_cast<uint8_t>(1u << TXENx | 1u << RXENx | 1u << RXCIEx);
         }
 
-        static inline void enable_tx() {
+        static void enable_tx() {
             UCSRxB::ref() |= 1 << UDRIEx;
         }
 
-        static inline void disable_tx() {
+        static void disable_tx() {
             UCSRxB::ref() &= ~(1 << UDRIEx);
         }
 
@@ -74,6 +71,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             }
         }
     };
-}}}}
+}
 
 #endif

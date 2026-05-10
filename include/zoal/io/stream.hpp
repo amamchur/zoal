@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IO_STREAM_HPP
 #define ZOAL_IO_STREAM_HPP
 
@@ -7,7 +9,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace zoal { namespace io {
+namespace zoal::io {
     template<uint8_t Value>
     struct stream_value {
         static constexpr uint8_t value = Value;
@@ -65,6 +67,6 @@ namespace zoal { namespace io {
     const radix_value<10> dec;
     const radix_value<8> oct;
     const precision_value<0> fixed;
-}}
+}
 
 #endif

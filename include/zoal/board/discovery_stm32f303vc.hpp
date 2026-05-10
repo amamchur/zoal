@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_DISCOVERY_STM32F303VC_HPP
 #define ZOAL_DISCOVERY_STM32F303VC_HPP
 
@@ -5,7 +7,7 @@
 #include "../io/button.hpp"
 #include "../mcu/stm32f303vctx.hpp"
 
-namespace zoal { namespace board {
+namespace zoal::board {
     class discovery_stm32f303vc {
     public:
         using mcu = zoal::mcu::stm32f303vctx;
@@ -32,6 +34,6 @@ namespace zoal { namespace board {
         template<class TimeType>
         using user_button_type = zoal::io::button<TimeType, mcu::pa_00, zoal::io::active_high_button>;
     };
-}}
+}
 
 #endif

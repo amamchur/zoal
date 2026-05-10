@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_DMA_HPP
 #define ZOAL_DMA_HPP
 
 #include "../../../mem/reg.hpp"
 #include "../../../utils/defs.hpp"
 
-namespace zoal { namespace arch { namespace stm32f4 {
+namespace zoal::arch::stm32f4 {
     template<uintptr_t Address, class Clock>
     class dma {
     public:
@@ -41,6 +43,6 @@ namespace zoal { namespace arch { namespace stm32f4 {
         using stream_7 = stream<7>;
     };
 
-}}}
+}
 
 #endif

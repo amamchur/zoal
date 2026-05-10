@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32X_CLOCK_CONFIG_HPP
 #define ZOAL_ARCH_STM32X_CLOCK_CONFIG_HPP
 
 #include <stdint.h>
 
-namespace zoal { namespace arch { namespace stm32x {
+namespace zoal::arch::stm32x {
     enum class pll_clock_source { hsi, hse };
 
     enum class system_clock_source { hsi, hse, pll };
@@ -76,6 +78,6 @@ namespace zoal { namespace arch { namespace stm32x {
         static constexpr uint32_t pll_clock_freq = pll_clock_freq<self_type, pll_clock_src>::value;
         static constexpr uint32_t sys_clock_frequency = sys_clock_clock_freq<self_type, sys_clock_src>::value;
     };
-}}}
+}
 
 #endif

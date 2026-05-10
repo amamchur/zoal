@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_GPIO_PIN_MODE_HPP
 #define ZOAL_GPIO_PIN_MODE_HPP
 
-namespace zoal { namespace gpio {
+namespace zoal::gpio {
     enum class pin_mode {
         input_floating,
         input_pull_up,
@@ -12,6 +14,6 @@ namespace zoal { namespace gpio {
         input = input_floating,
         output = output_push_pull
     };
-}}
+}
 
 #endif

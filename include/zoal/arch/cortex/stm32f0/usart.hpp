@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32X_USART_HPP
 #define ZOAL_ARCH_STM32X_USART_HPP
 
@@ -5,7 +7,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32f0 {
+namespace zoal::arch::stm32f0 {
     template<uintptr_t Address, class... Mixin>
     class usart : public Mixin... {
     public:
@@ -95,6 +97,6 @@ namespace zoal { namespace arch { namespace stm32f0 {
             return true;
         }
     };
-}}}
+}
 
 #endif

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_TOOLS_HPP
 #define ZOAL_UTILS_TOOLS_HPP
 
@@ -8,7 +10,7 @@
 #include "nop.hpp"
 #include "scheduler.hpp"
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<class Microcontroller, uint32_t Frequency, class Counter, class Logger, class... Mixin>
     class tool_set : public Mixin... {
     public:
@@ -18,6 +20,6 @@ namespace zoal { namespace utils {
         using counter_value_type = typename Counter::value_type;
         using delay = utils::delay<Frequency, counter>;
     };
-}}
+}
 
 #endif

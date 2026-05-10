@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_GPIO_NULL_PORT_HPP
 #define ZOAL_GPIO_NULL_PORT_HPP
 
@@ -7,7 +9,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace gpio {
+namespace zoal::gpio {
     using zoal::mem::callable_cas_list_variadic;
     using zoal::mem::null_cas_list;
 
@@ -47,6 +49,6 @@ namespace zoal { namespace gpio {
         using clock_on = null_cas_list;
         using clock_off = null_cas_list;
     };
-}}
+}
 
 #endif

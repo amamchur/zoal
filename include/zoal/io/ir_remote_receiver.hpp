@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IO_IR_REMOTE_RECEIVER_HPP
 #define ZOAL_IO_IR_REMOTE_RECEIVER_HPP
 
@@ -6,7 +8,7 @@
 #include "../gpio/pin_mode.hpp"
 #include "digital_sampler.hpp"
 
-namespace zoal { namespace io {
+namespace zoal::io {
     template<class Pin, uint32_t PeriodMicroseconds, class ResultType = uint32_t, zoal::gpio::bit_order Order = zoal::gpio::bit_order::msbf>
     class ir_remote_receiver {
     public:
@@ -80,6 +82,6 @@ namespace zoal { namespace io {
         ResultType data{0};
         digital_sampler_type sampler;
     };
-}}
+}
 
 #endif

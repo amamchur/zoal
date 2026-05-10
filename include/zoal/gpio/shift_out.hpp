@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_GPIO_SHIFT_OUT_HPP
 #define ZOAL_GPIO_SHIFT_OUT_HPP
 
 #include <stdint.h>
 #include "../utils/nop.hpp"
 
-namespace zoal { namespace gpio {
+namespace zoal::gpio {
     template<uint64_t DataRiseDelay = 1, uint64_t ClockRiseDelay = 1>
     class shift_out_config {
     public:
@@ -45,6 +47,6 @@ namespace zoal { namespace gpio {
             value <<= 1;
         }
     }
-}}
+}
 
 #endif

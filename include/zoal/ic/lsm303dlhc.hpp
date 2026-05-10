@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IC_LSM303DLHC_HPP
 #define ZOAL_IC_LSM303DLHC_HPP
 
@@ -5,7 +7,7 @@
 #include "../periph/i2c_device.hpp"
 #include "../periph/i2c_request.hpp"
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     class lsm303dlhc_api : public zoal::periph::i2c_device {
     public:
         enum registers : uint8_t {
@@ -129,6 +131,6 @@ namespace zoal { namespace ic {
     using lsm303dlhc = typename zoal::ct::conditional_type<BufferType == zoal::periph::device_buffer_type::static_mem,
                                                            zoal::periph::i2c_buffer_owner<lsm303dlhc_api>,
                                                            zoal::periph::i2c_buffer_guardian<lsm303dlhc_api>>::type;
-}}
+}
 
 #endif

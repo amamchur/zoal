@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_SIMULATOR_INTERRUPTS_HPP
 #define ZOAL_ARCH_SIMULATOR_INTERRUPTS_HPP
 
 #include <stdint.h>
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     class interrupts {
     public:
         inline interrupts(bool) {
@@ -18,6 +20,6 @@ namespace zoal { namespace utils {
         static inline void on() {
         }
     };
-}}
+}
 
 #endif

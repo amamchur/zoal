@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IO_ANALOG_KEYPAD_HPP
 #define ZOAL_IO_ANALOG_KEYPAD_HPP
 
@@ -5,7 +7,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace io {
+namespace zoal::io {
     template<class TimeType, uint8_t Count, int Threshold = 50>
     class analog_keypad {
     public:
@@ -39,6 +41,6 @@ namespace zoal { namespace io {
         counter_value_type prev_time[Count]{0};
         zoal::io::button_state_machine machines[Count];
     };
-}}
+}
 
 #endif

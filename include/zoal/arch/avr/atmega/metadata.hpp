@@ -7,9 +7,10 @@
 #include "../../../periph/usart.hpp"
 #include "../../../utils/helpers.hpp"
 #include "../metadata.hpp"
+#include "zoal/ct/value_list.hpp"
 
-namespace zoal { namespace metadata {
-    using zoal::ct::type_list;
+namespace zoal::metadata {
+    using ct::type_list;
 
     template<uint8_t Bits>
     struct usart_data_bits_flags {};
@@ -34,22 +35,22 @@ namespace zoal { namespace metadata {
         static constexpr uint8_t flags = 3 << 1;
     };
 
-    template<::zoal::periph::usart_parity Parity>
+    template<periph::usart_parity Parity>
     struct usart_parity_flags {
         static constexpr uint8_t flags = 0;
     };
 
     template<>
-    struct usart_parity_flags<::zoal::periph::usart_parity::even> {
+    struct usart_parity_flags<periph::usart_parity::even> {
         static constexpr uint8_t flags = 2 << 4;
     };
 
     template<>
-    struct usart_parity_flags<::zoal::periph::usart_parity::odd> {
+    struct usart_parity_flags<periph::usart_parity::odd> {
         static constexpr uint8_t flags = 3 << 4;
     };
 
-    template<::zoal::periph::usart_stop_bits StopBits>
+    template<periph::usart_stop_bits StopBits>
     struct usart_stop_bit_flags {
         static constexpr uint8_t flags = 0;
     };
@@ -69,50 +70,46 @@ namespace zoal { namespace metadata {
         mode_clear_TCCRxB = 1u << WGMx2 | 1u << WGMx3
     };
 
-    template<class T, int Type, ::zoal::periph::timer_mode Mode, uint16_t Period>
+    template<class T, int Type, periph::timer_mode Mode, uint16_t Period>
     struct timer_waveform_generation {
         static_assert(Type == -1, "Unsupported timer configuration");
     };
 
     template<class T>
-    struct timer_waveform_generation<T, 8, ::zoal::periph::timer_mode::up, 0xFF>
-        : type_list<
-              //
-              typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>,
-              typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
+    struct timer_waveform_generation<T, 8, periph::timer_mode::up, 0xFF> : type_list<
+                                                                               //
+                                                                               typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>,
+                                                                               typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
 
     template<class T>
-    struct timer_waveform_generation<T, 8, ::zoal::periph::timer_mode::up_down, 0xFF> : type_list<
-                                                                                            //
-                                                                                            typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
-                                                                                            typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
+    struct timer_waveform_generation<T, 8, periph::timer_mode::up_down, 0xFF> : type_list<
+                                                                                    //
+                                                                                    typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
+                                                                                    typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
 
     template<class T>
-    struct timer_waveform_generation<T, 16, ::zoal::periph::timer_mode::up, 0xFF>
-        : type_list<
-              //
-              typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
-              typename T::TCCRxB::template cas<mode_clear_TCCRxB, 1u << WGMx2>> {};
+    struct timer_waveform_generation<T, 16, periph::timer_mode::up, 0xFF> : type_list<
+                                                                                //
+                                                                                typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
+                                                                                typename T::TCCRxB::template cas<mode_clear_TCCRxB, 1u << WGMx2>> {};
 
     template<class T>
-    struct timer_waveform_generation<T, 16, ::zoal::periph::timer_mode::up, 0x1FF>
-        : type_list<
-              //
-              typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx1>,
-              typename T::TCCRxB::template cas<mode_clear_TCCRxB, 1u << WGMx2>> {};
+    struct timer_waveform_generation<T, 16, periph::timer_mode::up, 0x1FF> : type_list<
+                                                                                 //
+                                                                                 typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx1>,
+                                                                                 typename T::TCCRxB::template cas<mode_clear_TCCRxB, 1u << WGMx2>> {};
 
     template<class T>
-    struct timer_waveform_generation<T, 16, ::zoal::periph::timer_mode::up, 0x3FF>
-        : type_list<
-              //
-              typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>,
-              typename T::TCCRxB::template cas<mode_clear_TCCRxB, 1u << WGMx2>> {};
+    struct timer_waveform_generation<T, 16, periph::timer_mode::up, 0x3FF> : type_list<
+                                                                                 //
+                                                                                 typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0 | 1u << WGMx1>,
+                                                                                 typename T::TCCRxB::template cas<mode_clear_TCCRxB, 1u << WGMx2>> {};
 
     template<class T>
-    struct timer_waveform_generation<T, 16, ::zoal::periph::timer_mode::up_down, 0xFF> : type_list<
-                                                                                             //
-                                                                                             typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
-                                                                                             typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
+    struct timer_waveform_generation<T, 16, periph::timer_mode::up_down, 0xFF> : type_list<
+                                                                                     //
+                                                                                     typename T::TCCRxA::template cas<mode_clear_TCCRxA, 1u << WGMx0>,
+                                                                                     typename T::TCCRxB::template cas<mode_clear_TCCRxB, 0x0>> {};
 
     template<class T, uintptr_t Set>
     using clock_select_cas = type_list<typename T::TCCRxB::template cas<0x7, Set>>;
@@ -159,13 +156,13 @@ namespace zoal { namespace metadata {
     template<class T>
     struct timer_clock_divider<T, true, 1024> : clock_select_cas<T, 0x7> {};
 
-    struct timer_clock_dividers : zoal::ct::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024> {};
+    struct timer_clock_dividers : ct::value_list<uintptr_t, 0, 1, 8, 32, 64, 128, 256, 1024> {};
 
     template<class A>
-    struct adc_ref<A, zoal::periph::adc_ref::internal_1v1> : type_list<typename A::ADMUXx::template cas<0xC0, 0xC0>> {};
+    struct adc_ref<A, periph::adc_ref::internal_1v1> : type_list<typename A::ADMUXx::template cas<0xC0, 0xC0>> {};
 
     template<class A>
-    struct adc_ref<A, zoal::periph::adc_ref::vcc> : type_list<typename A::ADMUXx::template cas<0xC0, 0x40>> {};
+    struct adc_ref<A, periph::adc_ref::vcc> : type_list<typename A::ADMUXx::template cas<0xC0, 0x40>> {};
 
     template<class A, uintptr_t ClockDivider>
     struct adc_clock_divider : type_list<typename A::ADCSRAx::template cas<0x00, 0x00>> {};
@@ -190,6 +187,6 @@ namespace zoal { namespace metadata {
 
     template<class A>
     struct adc_clock_divider<A, 128> : type_list<typename A::ADCSRAx::template cas<0x07, 0x07>> {};
-}}
+}
 
 #endif

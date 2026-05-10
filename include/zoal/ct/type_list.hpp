@@ -1,12 +1,13 @@
+#pragma once
+
 #ifndef ZOAL_CT_TYPE_LIST_HPP
 #define ZOAL_CT_TYPE_LIST_HPP
 
-#include "../utils/defs.hpp"
-#include "conditional_type.hpp"
+#include "./conditional_type.hpp"
 
 #include <stddef.h>
 
-namespace zoal { namespace ct {
+namespace zoal::ct {
     template<class T, class Next, size_t Count>
     struct type_list_item {
         static constexpr size_t count = Count;
@@ -23,7 +24,7 @@ namespace zoal { namespace ct {
     template<class Current, class Next, class Tail>
     struct perform_type_list_join {
         using next_helper = perform_type_list_join<Next, typename Next::next, Tail>;
-        using next_item = typename next_helper::result;
+        using next_item = next_helper::result;
         using result = type_list_item<typename Current::type, next_item, next_item::count + 1>;
     };
 
@@ -34,9 +35,9 @@ namespace zoal { namespace ct {
 
     template<class A, class... Rest>
     struct type_list_join {
-        using list_tail = typename type_list_join<Rest...>::result;
+        using list_tail = type_list_join<Rest...>::result;
         using helper = perform_type_list_join<A, typename A::next, list_tail>;
-        using result = typename helper::result;
+        using result = helper::result;
     };
 
     template<class A>
@@ -47,7 +48,7 @@ namespace zoal { namespace ct {
     template<class List>
     struct type_list_iterator {
         template<class F>
-        ZOAL_INLINE_MF static void for_each(F &fn) {
+        static void for_each(F &fn) {
             fn.template operator()<typename List::type>();
             type_list_iterator<typename List::next>::for_each(fn);
         }
@@ -56,13 +57,13 @@ namespace zoal { namespace ct {
     template<>
     struct type_list_iterator<void> {
         template<class F>
-        static void for_each(F fn) {}
+        static void for_each(F &) {}
     };
 
     template<class List, size_t Index = 0>
     struct type_list_index_iterator {
         template<class F>
-        static void for_each(const F &fn) {
+        static void for_each(F &fn) {
             fn.template operator()<typename List::type>(Index);
             type_list_index_iterator<typename List::next, Index + 1>::for_each(fn);
         }
@@ -71,7 +72,7 @@ namespace zoal { namespace ct {
     template<class List>
     struct type_chain_iterator {
         template<class F>
-        ZOAL_INLINE_MF static void for_each(F &fn) {
+        static void for_each(F &fn) {
             fn.template operator()<List>();
             type_chain_iterator<typename List::next>::for_each(fn);
         }
@@ -80,7 +81,7 @@ namespace zoal { namespace ct {
     template<>
     struct type_chain_iterator<void> {
         template<class F>
-        static void for_each(F fn) {}
+        static void for_each(F&) {}
     };
 
     template<class List, size_t Index = 0>
@@ -95,20 +96,20 @@ namespace zoal { namespace ct {
     template<size_t Index>
     struct type_chain_index_iterator<void, Index> {
         template<class F>
-        static void for_each(const F &fn) {}
+        static void for_each(F &) {}
     };
 
     template<size_t Index>
     struct type_list_index_iterator<void, Index> {
         template<class F>
-        static void for_each(F fn) {}
+        static void for_each(F) {}
     };
 
     template<int Index, int Pos, class Default, class List>
     struct type_at_index_iter {
-        using current = typename List::type;
+        using current = List::type;
         using next = type_at_index_iter<Index, Pos + 1, Default, typename List::next>;
-        using result = typename conditional_type<Index == Pos, current, typename next::result>::type;
+        using result = conditional_type<Index == Pos, current, typename next::result>::type;
     };
 
     template<int Index, int Pos, class Default>
@@ -118,7 +119,7 @@ namespace zoal { namespace ct {
 
     template<int Index, class Default, class List>
     struct type_at_index {
-        using result = typename type_at_index_iter<Index, 0, Default, List>::result;
+        using result = type_at_index_iter<Index, 0, Default, List>::result;
     };
 
     template<int Index, class M, class List>
@@ -138,6 +139,6 @@ namespace zoal { namespace ct {
     struct index_of_type {
         static constexpr int result = index_of_type_iter<0, M, List>::result;
     };
-}}
+}
 
 #endif

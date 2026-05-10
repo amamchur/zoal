@@ -47,7 +47,7 @@
     *|;
 }%%
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
     %% write data;
 
     void terminal_machine::init_machine() {
@@ -62,4 +62,4 @@ namespace zoal { namespace misc {
         %% write exec;
         return p;
     }
-}}
+}

@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef FONTTEST_TYPES_HPP
 #define FONTTEST_TYPES_HPP
 
 #include <stdint.h>
 
-namespace zoal { namespace text {
+namespace zoal::text {
     typedef struct {
         uint32_t bitmap_offset;
         uint8_t width;
@@ -35,6 +37,6 @@ namespace zoal { namespace text {
         const kerning_pair *kerning_pairs;
         uint16_t kerning_pairs_count;
     } font;
-}}
+}
 
 #endif

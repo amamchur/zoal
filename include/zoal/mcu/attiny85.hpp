@@ -20,7 +20,7 @@
 #include <zoal/gpio/api.hpp>
 #include <zoal/gpio/pin.hpp>
 
-namespace zoal { namespace mcu {
+namespace zoal::mcu {
     class attiny85 {
     public:
         using self_type = attiny85;
@@ -130,9 +130,9 @@ namespace zoal { namespace mcu {
         template<class... Module>
         using enable = ::zoal::arch::enable<Module...>;
     };
-}}
+}
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     using zoal::ct::integral_constant;
     using attiny85_sign = zoal::ct::signature<'A', 'T', 't', 'i', 'n', 'y', '8', '5'>;
 
@@ -156,6 +156,6 @@ namespace zoal { namespace metadata {
 
     template<>
     struct pin_to_adc_channel<attiny85_sign, 0x0023, 0x0036, 4> : integral_constant<int, 2> {};
-}}
+}
 
 #endif

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_M3_DWT_HPP
 #define ZOAL_ARCH_M3_DWT_HPP
 
@@ -5,7 +7,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace arch {
+namespace zoal::arch {
     class dwt {
     public:
         static constexpr uintptr_t address = 0xE0001000;
@@ -22,6 +24,6 @@ namespace zoal { namespace arch {
             DWTx_CTRL::ref() &= ~DWTx_CTRL_CYCCNTENA;
         }
     };
-}}
+}
 
 #endif

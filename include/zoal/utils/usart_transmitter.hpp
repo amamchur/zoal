@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_USART_TRANSMITTER_HPP
 #define ZOAL_UTILS_USART_TRANSMITTER_HPP
 
 #include "../data/ring_buffer.hpp"
 #include "./interrupts.hpp"
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<class U, class TxBuffer, class ScopeLock = zoal::utils::interrupts_off>
     class usart_transmitter {
     public:
@@ -41,6 +43,6 @@ namespace zoal { namespace utils {
 
         tx_buffer_type &tx_buffer;
     };
-}}
+}
 
 #endif

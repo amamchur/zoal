@@ -6,7 +6,7 @@
 #include "zoal/gpio/api.hpp"
 #include "zoal/gpio/pin.hpp"
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     template<class Tools, class CLK, class DIO>
     class tm1637 {
     public:
@@ -88,6 +88,6 @@ namespace zoal { namespace ic {
             //            api::template mode<pin_mode::output, DIO, CLK>::apply();
         }
     };
-}}
+}
 
 #endif

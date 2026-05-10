@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_GFX_RENDERER_HPP
 #define ZOAL_GFX_RENDERER_HPP
 
 #include <stdlib.h>
 
-namespace zoal { namespace gfx {
+namespace zoal::gfx {
     template<class Pixel, class Adapter>
     class renderer {
     public:
@@ -116,6 +118,6 @@ namespace zoal { namespace gfx {
     private:
         uint8_t buffer[0];
     };
-}}
+}
 
 #endif

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_CMD_ARGUMENT_HPP
 #define ZOAL_CMD_ARGUMENT_HPP
 
@@ -5,7 +7,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
     class cmd_argument {
     public:
         static cmd_argument *from_buffer(void *buffer) noexcept;
@@ -55,6 +57,6 @@ namespace zoal { namespace misc {
         size_t length{0};
         uint8_t buffer[0];
     };
-}}
+}
 
 #endif

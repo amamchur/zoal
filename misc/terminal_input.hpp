@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_TERMINAL_INPUT_HPP
 #define ZOAL_TERMINAL_INPUT_HPP
 
-#include "terminal_machine.hpp"
+#include "./terminal_machine.hpp"
 
-namespace zoal { namespace misc {
-    class terminal_input : public zoal::parse::ragel_parser<terminal_machine> {
+namespace zoal::misc {
+    class terminal_input : public parse::ragel_parser<terminal_machine> {
     public:
         using self_type = terminal_input;
 
@@ -14,37 +16,39 @@ namespace zoal { namespace misc {
         terminal_input(void *buffer, size_t size) noexcept;
         void init_buffer(char *buffer, size_t size);
 
-        const char *str_start() const;
-        const char *str_end() const;
+        [[nodiscard]] const char *str_start() const;
+        [[nodiscard]] const char *str_end() const;
         void clear();
         void sync() const;
         void value(const char *str);
 
-        inline void greeting(const char *g) {
+        void greeting(const char *g) {
             greeting_ = g;
         }
 
-        inline void vt100_feedback(callback_fn fn) {
+        void vt100_feedback(callback_fn fn) {
             vt100_callback_ = fn;
         }
 
-        inline void input_callback(callback_fn fn) {
+        void input_callback(callback_fn fn) {
             input_callback_ = fn;
         }
 
-        inline void handle_v100(handle_v100_fn fn) {
+        void handle_v100(handle_v100_fn fn) {
             handle_v100_fn_ = fn;
         }
 
-        inline void context(void *ctx) {
+        void context(void *ctx) {
             context_ = ctx;
-        };
-        inline void *context() const {
+        }
+
+        [[nodiscard]] void *context() const {
             return context_;
         }
 
         void cursor(char *c);
-        char *cursor() const;
+
+        [[nodiscard]] char *cursor() const;
 
     private:
         char scanner_buffer_[8]{0};
@@ -72,6 +76,6 @@ namespace zoal { namespace misc {
         char *normalize_cursor(char *c) const;
         void send_cstr(const char *str) const;
     };
-}}
+}
 
 #endif

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IO_ROTARY_ENCODER_HPP
 #define ZOAL_IO_ROTARY_ENCODER_HPP
 
@@ -6,7 +8,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace io {
+namespace zoal::io {
     enum class rotary_event : uint8_t { direction_1, direction_2 };
 
     enum rotary_state : uint8_t {
@@ -274,6 +276,6 @@ namespace zoal { namespace io {
 
         rotary_state state_{rotary_state::rotary_state_0};
     };
-}}
+}
 
 #endif

@@ -6,7 +6,7 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     class interrupts {
     public:
         explicit interrupts(bool enable) {
@@ -33,6 +33,6 @@ namespace zoal { namespace utils {
     private:
         volatile uint8_t sREG;
     };
-}}
+}
 
 #endif

@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-namespace zoal { namespace io {
+namespace zoal::io {
     template<class Target>
     class output_stream {
     public:
@@ -169,6 +169,6 @@ namespace zoal { namespace io {
         uint8_t precision{2};
         Target &target;
     };
-}}
+}
 
 #endif

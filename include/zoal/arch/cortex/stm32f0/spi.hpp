@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32X_PORT_SPI_HPP
 #define ZOAL_ARCH_STM32X_PORT_SPI_HPP
 
 #include "../../../mem/reg.hpp"
 #include "../../../utils/defs.hpp"
 
-namespace zoal { namespace arch { namespace stm32f0 {
+namespace zoal::arch::stm32f0 {
     template<uintptr_t Address, class Clock>
     class spi : public Clock {
     public:
@@ -23,6 +25,6 @@ namespace zoal { namespace arch { namespace stm32f0 {
         using SPIx_I2SCFGR = zoal::mem::reg<Address + 0x1C, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
         using SPIx_I2SPR = zoal::mem::reg<Address + 0x20, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
     };
-}}}
+}
 
 #endif

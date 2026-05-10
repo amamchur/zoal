@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_FREERTOS_SCOPED_LOCK_HPP
 #define ZOAL_FREERTOS_SCOPED_LOCK_HPP
 
-namespace zoal { namespace freertos {
+namespace zoal::freertos {
     template<class Mutex>
     class scoped_lock {
     public:
@@ -19,6 +21,6 @@ namespace zoal { namespace freertos {
     private:
         Mutex &mutex;
     };
-}}
+}
 
 #endif

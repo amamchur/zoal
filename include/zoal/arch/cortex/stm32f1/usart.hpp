@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F1_USART_HPP
 #define ZOAL_ARCH_STM32F1_USART_HPP
 
 #include "../../../gpio/pin_mode.hpp"
 #include "../../../periph/usart.hpp"
 
-namespace zoal { namespace arch { namespace stm32f1 {
+namespace zoal::arch::stm32f1 {
     template<uintptr_t Address, class... Mixin>
     class usart : public Mixin... {
     public:
@@ -91,6 +93,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
             return true;
         }
     };
-}}}
+}
 
 #endif

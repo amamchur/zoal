@@ -3,7 +3,7 @@
 
 #include <stdint.h> /* NOLINT */
 
-namespace zoal { namespace arch { namespace avr {
+namespace zoal::arch::avr {
     template<uintptr_t Address, uint8_t toieMask, uint8_t ocieaMask, uint8_t ociebMask>
     class timer_interrupt_mask_register {
     public:
@@ -50,6 +50,6 @@ namespace zoal { namespace arch { namespace avr {
             }
         }
     };
-}}}
+}
 
 #endif

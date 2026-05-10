@@ -1,17 +1,18 @@
+#pragma once
+
 #ifndef ZOAL_DATA_RING_BUFFER_EXT_HPP
 #define ZOAL_DATA_RING_BUFFER_EXT_HPP
 
 #include <stddef.h>
-#include <stdint.h>
 
-namespace zoal { namespace data {
+namespace zoal::data {
     template<class T>
     class base_ring_buffer {
     public:
         using value_type = T;
         using self_type = base_ring_buffer<T>;
 
-        bool full() const {
+        [[nodiscard]] bool full() const {
             auto next = head_ + 1;
             if (next >= size_) {
                 next -= size_;
@@ -20,11 +21,11 @@ namespace zoal { namespace data {
             return next == tail_;
         }
 
-        inline bool empty() const {
+        [[nodiscard]] bool empty() const {
             return head_ == tail_;
         }
 
-        inline void clear() {
+        void clear() {
             head_ = 0;
             tail_ = 0;
         }
@@ -98,9 +99,8 @@ namespace zoal { namespace data {
         ring_buffer()
             : base_type(Size + 1) {}
 
-    public:
-        volatile T extra_space_[Size];
+        T extra_space_[Size];
     };
-}}
+}
 
 #endif

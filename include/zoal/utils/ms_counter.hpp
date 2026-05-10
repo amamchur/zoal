@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_MS_COUNTER_HPP
 #define ZOAL_UTILS_MS_COUNTER_HPP
 
@@ -7,15 +9,15 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<typename T, volatile T *Pointer>
     class ms_counter {
     public:
         using value_type = T;
         static constexpr volatile T *value_ptr = Pointer;
 
-        static volatile T now() {
-            zoal::utils::interrupts_off off;
+        static T now() {
+            interrupts_off off;
             return *value_ptr;
         }
     };
@@ -50,6 +52,6 @@ namespace zoal { namespace utils {
 
     template<uint32_t Frequency, uint16_t Prescale, uint16_t Period, uint16_t MicroSecPerTick>
     uint16_t timer_overflow_to_tick<Frequency, Prescale, Period, MicroSecPerTick>::fraction_ = 0;
-}}
+}
 
 #endif

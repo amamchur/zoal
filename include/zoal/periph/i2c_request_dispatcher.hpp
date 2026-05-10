@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_PERIPH_I2C_REQUEST_DISPATCHER_HPP
 #define ZOAL_PERIPH_I2C_REQUEST_DISPATCHER_HPP
 
@@ -5,7 +7,7 @@
 #include "./i2c_device.hpp"
 #include "./i2c_request.hpp"
 
-namespace zoal { namespace periph {
+namespace zoal::periph {
     template<class Dispatcher>
     class i2c_request_finisher {
     public:
@@ -91,6 +93,6 @@ namespace zoal { namespace periph {
         driver_callback_type driver_periph_callback;
         client_callback_type client_callback;
     };
-}}
+}
 
 #endif

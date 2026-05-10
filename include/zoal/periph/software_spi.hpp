@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_GPIO_SOFTWARE_SPI_HPP
 #define ZOAL_GPIO_SOFTWARE_SPI_HPP
 
@@ -9,7 +11,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace periph {
+namespace zoal::periph {
     template<zoal::periph::spi_cpol_cpha V>
     struct tx_software_polarity : zoal::ct::integral_constant<int, 0> {};
 
@@ -67,6 +69,6 @@ namespace zoal { namespace periph {
             typename Clock::template set<polarity>
             >;
     };
-}}
+}
 
 #endif

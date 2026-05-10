@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <avr/pgmspace.h>
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
 	class program_mem_reader {
 	public:
 		template <class T>
@@ -16,6 +16,6 @@ namespace zoal { namespace utils {
 			}
 		}
 	};
-}}
+}
 
 #endif

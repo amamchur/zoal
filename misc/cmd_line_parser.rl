@@ -27,7 +27,7 @@ namespace {
 %% write data;
 }
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
     command_line_parser::command_line_parser(void *buffer, size_t buffer_size)
         : ragel_parser(buffer, buffer_size) {}
 
@@ -85,4 +85,4 @@ namespace zoal { namespace misc {
     int command_line_machine::start_state() const {
         return fsm_name_start;
     }
-}}
+}

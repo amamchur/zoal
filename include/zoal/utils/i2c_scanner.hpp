@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_I2C_SCANNER_HPP
 #define ZOAL_UTILS_I2C_SCANNER_HPP
 
@@ -5,7 +7,7 @@
 #include "../periph/i2c_device.hpp"
 #include "../periph/i2c_request.hpp"
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     class i2c_scanner : public zoal::periph::i2c_device {
     public:
         template<class Dispatcher>
@@ -39,6 +41,6 @@ namespace zoal { namespace utils {
 
         uint8_t address{0};
     };
-}}
+}
 
 #endif

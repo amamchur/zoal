@@ -8,7 +8,7 @@
 #include "../periph/i2c_device.hpp"
 #include "../periph/i2c_request.hpp"
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     class ds3231_api : public zoal::periph::i2c_device {
     public:
         static constexpr uint8_t century_flag = 1 << 7;
@@ -134,6 +134,6 @@ namespace zoal { namespace ic {
                                                        zoal::periph::i2c_buffer_owner<ds3231_api>,
                                                        zoal::periph::i2c_buffer_guardian<ds3231_api>>::type;
 
-}}
+}
 
 #endif

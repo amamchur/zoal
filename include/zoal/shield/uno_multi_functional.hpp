@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_SHIELD_UNO_MULTI_FUNCTIONAL_HPP
 #define ZOAL_SHIELD_UNO_MULTI_FUNCTIONAL_HPP
 
@@ -6,7 +8,7 @@
 #include "../gpio/shift_out.hpp"
 #include "../io/button.hpp"
 
-namespace zoal { namespace shield {
+namespace zoal::shield {
     template<class UnoCompatibleBoard, class TimeType>
     class uno_multi_functional {
     public:
@@ -82,6 +84,6 @@ namespace zoal { namespace shield {
         zoal::io::button<TimeType, button_1_pin> button_1;
         zoal::io::button<TimeType, button_2_pin> button_2;
     };
-}}
+}
 
 #endif

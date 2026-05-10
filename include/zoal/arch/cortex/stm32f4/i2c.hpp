@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F4_I2C_HPP
 #define ZOAL_ARCH_STM32F4_I2C_HPP
 
 #include "../../../mem/reg.hpp"
 #include "../../../periph/i2c_request.hpp"
 
-namespace zoal { namespace arch { namespace stm32f4 {
+namespace zoal::arch::stm32f4 {
     template<uintptr_t Address, class... Mixin>
     class i2c : public Mixin... {
     public:
@@ -159,6 +161,6 @@ namespace zoal { namespace arch { namespace stm32f4 {
             }
         }
     };
-}}}
+}
 
 #endif

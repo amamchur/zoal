@@ -2,13 +2,9 @@
 #define ZOAL_ARCH_AVR_METADATA_HPP
 
 #include "../../ct/constant.hpp"
-#include "../../ct/value_list.hpp"
 #include "../../periph/adc.hpp"
-#include "../../periph/timer_mode.hpp"
-#include "../../periph/usart.hpp"
-#include "../../utils/helpers.hpp"
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     template<int Rx, int Tx, int Ck>
     struct base_usart_mapping {
         static constexpr int rx = Rx;
@@ -60,6 +56,6 @@ namespace zoal { namespace metadata {
 
     template<class Sign, class Timer, class Pin>
     struct pwm_channel_mapping : pin_to_pwm_channel<Sign, Timer::address, Pin::port::address, Pin::offset> {};
-}}
+}
 
 #endif

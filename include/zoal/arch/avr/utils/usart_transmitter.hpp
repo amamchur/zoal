@@ -4,7 +4,7 @@
 #include "../../../data/ring_buffer.hpp"
 #include "../../../utils/interrupts.hpp"
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<class U, size_t Size, class ScopeLock = zoal::utils::interrupts_off>
     class usart_transmitter {
     public:
@@ -41,6 +41,6 @@ namespace zoal { namespace utils {
 
     template<class U, size_t Size, class ScopeLock>
     typename usart_transmitter<U, Size, ScopeLock>::tx_buffer_type usart_transmitter<U, Size, ScopeLock>::tx_buffer;
-}}
+}
 
 #endif

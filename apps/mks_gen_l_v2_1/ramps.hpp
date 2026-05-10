@@ -3,8 +3,8 @@
 #ifndef ZOAL_RAMPS_HPP
 #define ZOAL_RAMPS_HPP
 
-#include "pcb.hpp"
-#include "ms_timer.hpp"
+#include "./pcb.hpp"
+#include "./ms_timer.hpp"
 #include <zoal/ic/hd44780.hpp>
 #include <zoal/io/rotary_encoder.hpp>
 #include <zoal/io/button.hpp>
@@ -21,7 +21,7 @@ using lcd_address_selector = zoal::ic::hd44780_address_selector<20, 4>;
 using lcd_type = zoal::ic::hd44780<ramps_exp1_interface, lcd_address_selector>;
 using beep = zoal::gpio::active_high<pcb::ard_d37>;
 
-using encoder_type = zoal::io::rotary_encoder<pcb::ard_d31, pcb::ard_d33, zoal::io::rotary_4phase_machine>;
+using encoder_type = zoal::io::rotary_encoder<pcb::ard_d31, pcb::ard_d33>;
 using enc_btn_type = zoal::io::button<uint32_t, pcb::ard_d35>;
 
 using sd_miso = pcb::ard_d50;

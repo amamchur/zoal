@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace fs {
+namespace zoal::fs {
     struct __attribute__((packed)) partition_table {
         uint8_t boot;
         uint8_t begin_head;
@@ -26,6 +26,6 @@ namespace zoal { namespace fs {
         partition_table partitions[4];
         uint8_t boot_signature[2];
     };
-}}
+}
 
 #endif

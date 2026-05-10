@@ -1,3 +1,5 @@
+#pragma once
+
 #ifdef __AVR_ARCH__
 	#include "../arch/avr/utils/nop.hpp"
 #elif __ARM_ARCH == 7

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32F1_MUX_HPP
 #define ZOAL_ARCH_STM32F1_MUX_HPP
 
@@ -9,7 +11,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32f1 {
+namespace zoal::arch::stm32f1 {
     using zoal::ct::type_list;
     using zoal::metadata::signal;
     using zoal::metadata::stm32_af_to_remap_mode;
@@ -93,6 +95,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
             using disconnect = api::optimize<sda_in_fl, scl_in_fl>;
         };
     };
-}}}
+}
 
 #endif

@@ -87,8 +87,9 @@ void initialize_hardware() {
         mcu::mux::i2c<i2c, mcu::pc_04, mcu::pc_05>::connect,
         mcu::cfg::i2c<i2c, i2c_cfg>::apply,
         //
-        mcu::irq::timer<timer>::enable_overflow_interrupt
+        mcu::irq::timer<timer>::enable_overflow_interrupt,
         //
+        api::mode<pin_mode::output, blink_pin>
         >();
 
     // Enable system interrupts
@@ -115,10 +116,6 @@ void led_off(void *) {
     ::blink_pin::low();
     scheduler.schedule(led_off_id, 500, led_on);
 }
-
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
 
 void vt100_callback(const zoal::misc::terminal_input *, const char *s, const char *e) {
     usart_tx.send_data(s, e - s);
@@ -178,7 +175,7 @@ const char zoal_ascii_logo[] PROGMEM = "  __________          _\r\n"
 using display_type = zoal::ic::sh1106_i2c<128, 64, 0x3C>;
 display_type display;
 
-int main() {
+[[noreturn]] int main() {
     initialize_hardware();
 
     terminal.vt100_feedback(&vt100_callback);
@@ -205,6 +202,7 @@ int main() {
     g->draw_circle(16, 16, 10, 1);
     display.display(i2c_dispatcher)([](int) { terminal.sync(); });
 
+    led_on(nullptr);
     while (true) {
         uint8_t rx_byte = 0;
         bool result;
@@ -222,18 +220,16 @@ int main() {
     }
 }
 
-#pragma clang diagnostic pop
-
 ISR(TIMER0_OVF_vect) {
     milliseconds += overflow_to_tick::step();
 }
 
 ISR(USART_RX_vect) {
-    usart::rx_handler<>([](uint8_t value) { rx_buffer.push_back(value); });
+    usart::rx_handler<>([](auto value) { rx_buffer.push_back(value); });
 }
 
 ISR(USART_UDRE_vect) {
-    usart::tx_handler([](uint8_t &value) { return usart_tx_type::tx_buffer.pop_front(value); });
+    usart::tx_handler([](auto &value) { return usart_tx_type::tx_buffer.pop_front(value); });
 }
 
 ISR(TWI_vect) {

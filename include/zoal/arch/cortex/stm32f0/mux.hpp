@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32X_MUX_HPP
 #define ZOAL_ARCH_STM32X_MUX_HPP
 
@@ -7,7 +9,7 @@
 
 #include <cstdint>
 
-namespace zoal { namespace arch { namespace stm32f0 {
+namespace zoal::arch::stm32f0 {
     using zoal::gpio::api;
     using zoal::gpio::pin_mode;
 
@@ -55,6 +57,6 @@ namespace zoal { namespace arch { namespace stm32f0 {
             using disconnect = api::optimize<api::mode<pin_mode::input, PinTX, PinTX>>;
         };
     };
-}}}
+}
 
 #endif

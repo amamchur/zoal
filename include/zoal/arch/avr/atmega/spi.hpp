@@ -1,10 +1,9 @@
 #ifndef ZOAL_ARCH_ATMEL_AVR_ATMEGA_HARDWARE_SPI_HPP
 #define ZOAL_ARCH_ATMEL_AVR_ATMEGA_HARDWARE_SPI_HPP
 
-#include "../../../gpio/pin_mode.hpp"
 #include "../../../mem/reg.hpp"
 
-namespace zoal { namespace arch { namespace avr { namespace atmega {
+namespace zoal::arch::avr::atmega {
     template<uintptr_t Address, uint8_t N>
     class spi {
     public:
@@ -13,14 +12,14 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
         static constexpr auto address = Address;
         static constexpr uint8_t no = N;
 
-        using SPCRx = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using SPSRx = zoal::mem::reg<Address + 0x01, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
-        using SPDRx = zoal::mem::reg<Address + 0x02, zoal::mem::reg_io::read_write, uint8_t, 0xFF>;
+        using SPCRx = mem::reg<Address + 0x00, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using SPSRx = mem::reg<Address + 0x01, mem::reg_io::read_write, uint8_t, 0xFF>;
+        using SPDRx = mem::reg<Address + 0x02, mem::reg_io::read_write, uint8_t, 0xFF>;
 
-        using enable_cas = zoal::mem::callable_cas_list_variadic<typename self_type::SPCRx::template cas<0, 0x40>>;
-        using disable_cas = zoal::mem::callable_cas_list_variadic<typename self_type::SPCRx::template cas<0x40, 0>>;
-        using clock_on_cas = zoal::ct::type_list<zoal::mem::null_cas>;
-        using clock_off_cas = zoal::ct::type_list<zoal::mem::null_cas>;
+        using enable_cas = mem::callable_cas_list_variadic<typename SPCRx::template cas<0, 0x40>>;
+        using disable_cas = mem::callable_cas_list_variadic<typename SPCRx::template cas<0x40, 0>>;
+        using clock_on_cas = ct::type_list<mem::null_cas>;
+        using clock_off_cas = ct::type_list<mem::null_cas>;
 
         static void power_on() {}
 
@@ -40,6 +39,6 @@ namespace zoal { namespace arch { namespace avr { namespace atmega {
             return SPDRx::ref();
         }
     };
-}}}}
+}
 
 #endif

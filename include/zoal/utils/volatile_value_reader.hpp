@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_VOLATILE_VALUE_READER_HPP
 #define ZOAL_VOLATILE_VALUE_READER_HPP
 
 #include <stddef.h>
 #include "interrupts.hpp"
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<class T, const volatile T *Pointer, bool Blocking>
     class base_volatile_value_reader {
     };
@@ -44,6 +46,6 @@ namespace zoal { namespace utils {
             return *Pointer;
         }
     };
-}}
+}
 
 #endif

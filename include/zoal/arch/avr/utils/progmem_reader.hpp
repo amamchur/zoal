@@ -3,7 +3,7 @@
 
 #include <avr/pgmspace.h>
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     class progmem_reader {
     public:
         template<class T>
@@ -13,6 +13,6 @@ namespace zoal { namespace utils {
             return t;
         }
     };
-}}
+}
 
 #endif //ZOAL_PROGMEM_READER_HPP

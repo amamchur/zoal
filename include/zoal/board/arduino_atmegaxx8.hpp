@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_BOARD_ARDUINO_ATMAGEXX8_HPP
 #define ZOAL_BOARD_ARDUINO_ATMAGEXX8_HPP
 
 #include "../mcu/atmega328p.hpp"
 
-namespace zoal { namespace board {
+namespace zoal::board {
     class arduino_atmegaxx8 {
     public:
         using mcu = mcu::atmega328p;
@@ -30,6 +32,6 @@ namespace zoal { namespace board {
         using ard_a04 = typename mcu::pc_04;
         using ard_a05 = typename mcu::pc_05;
     };
-}}
+}
 
 #endif

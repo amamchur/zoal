@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_YIELD_HPP
 #define ZOAL_UTILS_YIELD_HPP
 
@@ -5,7 +7,7 @@
 #include "interrupts.hpp"
 #include "nop.hpp"
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
 	template<uint64_t NoOps = 1>
 	class cooperation {
 	public:
@@ -14,6 +16,6 @@ namespace zoal { namespace utils {
 			zoal::utils::nop<NoOps>::place();
 		}
 	};
-}}
+}
 
 #endif

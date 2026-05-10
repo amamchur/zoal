@@ -3,7 +3,7 @@
 
 #include <stdint.h>  /* NOLINT */
 
-namespace zoal { namespace arch { namespace avr {
+namespace zoal::arch::avr {
     template<uintptr_t Address>
     class timer_interrupt_flag_register {
     public:
@@ -21,6 +21,6 @@ namespace zoal { namespace arch { namespace avr {
             TIFRx::ref()= 0;
         }
     };
-}}}
+}
 
 #endif

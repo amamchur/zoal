@@ -25,7 +25,7 @@
 #include <zoal/gpio/pin.hpp>
 #include <zoal/ct/signature.hpp>
 
-namespace zoal { namespace mcu {
+namespace zoal::mcu {
     class stm32f303vctx {
     public:
         using self_type = stm32f303vctx;
@@ -221,9 +221,9 @@ port_f
     template<class ... Module>
     using enable = ::zoal::arch::enable<Module...>;
     };
-}}
+}
 
-namespace zoal { namespace metadata {
+namespace zoal::metadata {
     using zoal::ct::integral_constant;
     using stm32f303vctx_sign = zoal::ct::signature<'s','t','m','3','2','f','3','0','3','v','c','t','x'>;
 
@@ -877,6 +877,6 @@ template<> // PE15 -> ADC4_IN2
 struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48001000, 0x0F, signal::in2> : zoal::ct::integral_constant<int, 0> {};
 template<> // PF2 -> ADC4_EXTI2
 struct stm32_signal_map<stm32f303vctx_sign, 0x50000500, 0x48001400, 0x02, signal::exti2> : zoal::ct::integral_constant<int, 0> {};
-}}
+}
 
 #endif

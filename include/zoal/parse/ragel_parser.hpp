@@ -5,17 +5,17 @@
 
 #include <stddef.h>
 
-namespace zoal { namespace parse {
+namespace zoal::parse {
     template<class ... Args>
     class ragel_machine {
     public:
         typedef void (*ragel_machine_callback)(Args... args);
 
-        inline void callback(ragel_machine_callback cb) {
+        void callback(ragel_machine_callback cb) {
             this->handler_ = cb;
         }
 
-        inline ragel_machine_callback callback() const {
+        ragel_machine_callback callback() const {
             return this->handler_;
         }
 
@@ -31,19 +31,19 @@ namespace zoal { namespace parse {
     public:
         typedef void (*scanner_machine_callback)(T parser, Args... args);
 
-        inline const char *token_start() const {
+        [[nodiscard]] const char *token_start() const {
             return ts;
         }
 
-        inline const char *token_end() const {
+        [[nodiscard]] const char *token_end() const {
             return te;
         }
 
-        inline void callback(scanner_machine_callback cb) {
+        void callback(scanner_machine_callback cb) {
             this->handler_ = cb;
         }
 
-        inline scanner_machine_callback callback() const {
+        scanner_machine_callback callback() const {
             return this->handler_;
         }
 
@@ -114,7 +114,7 @@ namespace zoal { namespace parse {
             } while (size > 0);
         }
 
-        inline size_t length() const {
+        size_t length() const {
             return length_;
         }
 
@@ -123,6 +123,6 @@ namespace zoal { namespace parse {
         size_t buffer_size_{0};
         size_t length_{0};
     };
-}}
+}
 
 #endif

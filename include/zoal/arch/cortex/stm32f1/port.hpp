@@ -1,3 +1,4 @@
+#pragma once
 
 #ifndef ZOAL_ARCH_STM32F1_PORT_HPP
 #define ZOAL_ARCH_STM32F1_PORT_HPP
@@ -7,7 +8,7 @@
 #include "../../../gpio/pin_outout_speed.hpp"
 #include "../../../mem/reg.hpp"
 
-namespace zoal { namespace arch { namespace stm32f1 {
+namespace zoal::arch::stm32f1 {
     using zoal::ct::type_list;
     using zoal::gpio::pin_mode;
     using zoal::gpio::pin_output_speed;
@@ -114,7 +115,7 @@ namespace zoal { namespace arch { namespace stm32f1 {
 
         static constexpr uintptr_t address = Address;
         static constexpr uint32_t pin_mask = PinMask;
-        static constexpr zoal::gpio::features feature = static_cast<zoal::gpio::features>(zoal::gpio::features::output_speed |
+        static constexpr auto feature = static_cast<zoal::gpio::features>(zoal::gpio::features::output_speed |
                                                                                           zoal::gpio::features::output_open_drain);
         using GPIOx_CRL = zoal::mem::reg<Address + 0x00, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
         using GPIOx_CRH = zoal::mem::reg<Address + 0x04, zoal::mem::reg_io::read_write, register_type, 0xFFFFFFFF>;
@@ -154,6 +155,6 @@ namespace zoal { namespace arch { namespace stm32f1 {
             GPIOx_BSRR::ref() = ~data & Mask;
         }
     };
-}}}
+}
 
 #endif

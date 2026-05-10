@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_IO_MATRIX_KEYPAD_HPP
 #define ZOAL_IO_MATRIX_KEYPAD_HPP
 
@@ -12,7 +14,7 @@
 #include "../utils/nop.hpp"
 #include "button_state_machine.hpp"
 
-namespace zoal { namespace io {
+namespace zoal::io {
     template<class... Rows>
     class keypad_row_selector {
     private:
@@ -147,6 +149,6 @@ namespace zoal { namespace io {
         time_type prev_time[Selector::rows][Reader::columns];
         machine_type machines[Selector::rows][Reader::columns];
     };
-}}
+}
 
 #endif

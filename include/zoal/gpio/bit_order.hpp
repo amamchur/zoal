@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_GPIO_BIT_ORDER_HPP
 #define ZOAL_GPIO_BIT_ORDER_HPP
 
 #include <stdint.h>
 
-namespace zoal { namespace gpio {
+namespace zoal::gpio {
     enum class bit_order { lsbf, msbf };
 
     template<class T, bit_order Order = bit_order::lsbf>
@@ -22,6 +24,6 @@ namespace zoal { namespace gpio {
             return (value << 1) | static_cast<T>(b);
         }
     };
-}}
+}
 
 #endif

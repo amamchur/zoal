@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma once
+
 #ifndef ZOAL_IC_ST7920_HPP
 #define ZOAL_IC_ST7920_HPP
 
@@ -8,7 +10,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     template<class SPI, class CS, class Delay>
     class st7920_interface_spi {
     public:
@@ -139,6 +141,6 @@ namespace zoal { namespace ic {
             screen_fill(fill_iterator<0>());
         }
     };
-}}
+}
 
 #endif

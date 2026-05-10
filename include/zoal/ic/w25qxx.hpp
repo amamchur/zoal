@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_IC_W25QXX_HPP
 #define ZOAL_IC_W25QXX_HPP
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     template<class Spi, class ChipSelectPin, class Delay>
     class w25qxx {
     private:
@@ -160,6 +162,6 @@ namespace zoal { namespace ic {
             return addr >> 16;
         }
     };
-}}
+}
 
 #endif

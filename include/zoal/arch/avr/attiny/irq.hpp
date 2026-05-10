@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-namespace zoal { namespace arch { namespace avr { namespace attiny {
+namespace zoal::arch::avr::attiny {
 class irq : public zoal::utils::interrupts {
     public:
         template<class T>
@@ -51,6 +51,6 @@ class irq : public zoal::utils::interrupts {
             }
         };
     };
-}}}}
+}
 
 #endif

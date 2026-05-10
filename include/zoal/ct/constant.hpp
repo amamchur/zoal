@@ -1,7 +1,9 @@
+#pragma once
+
 #ifndef ZOAL_CT_CONSTANT_HPP
 #define ZOAL_CT_CONSTANT_HPP
 
-namespace zoal { namespace ct {
+namespace zoal::ct {
     template<class T, T Value>
     struct integral_constant {
         using value_type = T;
@@ -19,6 +21,6 @@ namespace zoal { namespace ct {
 
     struct true_type : integral_constant<bool, true> {
     };
-}}
+}
 
 #endif

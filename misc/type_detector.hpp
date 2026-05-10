@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_TYPE_DETECTOR_HPP
 #define ZOAL_TYPE_DETECTOR_HPP
 
@@ -5,7 +7,7 @@
 #include <stdint.h>
 #include <zoal/parse/ragel_parser.hpp>
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
     enum class value_type { string, date_time, date, time, integer };
 
     class type_detector_machine : public zoal::parse::ragel_scanner<type_detector_machine *, value_type> {
@@ -48,6 +50,6 @@ namespace zoal { namespace misc {
         const char *pos_{nullptr};
         value_type type_{value_type::string};
     };
-}}
+}
 
 #endif

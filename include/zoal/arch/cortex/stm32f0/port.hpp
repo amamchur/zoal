@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_ARCH_STM32X_PORT_F0_F3_F4_HPP
 #define ZOAL_ARCH_STM32X_PORT_F0_F3_F4_HPP
 
@@ -6,7 +8,7 @@
 #include "../../../mem/reg.hpp"
 #include "../../../utils/defs.hpp"
 
-namespace zoal { namespace arch { namespace stm32f0 {
+namespace zoal::arch::stm32f0 {
     using zoal::ct::type_list;
     using zoal::gpio::pin_mode;
 
@@ -197,6 +199,6 @@ namespace zoal { namespace arch { namespace stm32f0 {
             }
         }
     };
-}}}
+}
 
 #endif

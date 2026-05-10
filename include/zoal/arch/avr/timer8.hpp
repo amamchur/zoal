@@ -1,12 +1,11 @@
 #ifndef ZOAL_GPIO_ATMEL_AVR_TIMER8BIT_HPP
 #define ZOAL_GPIO_ATMEL_AVR_TIMER8BIT_HPP
 
-#include "mcu_type.hpp"
-#include "timer.hpp"
+#include "./timer.hpp"
 
 #include <stdint.h>
 
-namespace zoal { namespace arch { namespace avr {
+namespace zoal::arch::avr {
     template<uintptr_t Address, uint8_t N, bool Async = false, class ...Mixin>
     class timer8 : public timer<Address, N, Mixin...> {
     public:
@@ -18,6 +17,6 @@ namespace zoal { namespace arch { namespace avr {
             return 0xFF;
         }
     };
-}}}
+}
 
 #endif

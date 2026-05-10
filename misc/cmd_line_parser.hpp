@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef CMD_LINE_PARSER_HPP
 #define CMD_LINE_PARSER_HPP
 
@@ -5,7 +7,7 @@
 #include <stdint.h>
 #include <zoal/parse/ragel_parser.hpp>
 
-namespace zoal { namespace misc {
+namespace zoal::misc {
     enum class command_line_event { token, line_end };
 
     class command_line_machine : public zoal::parse::ragel_scanner<command_line_machine *, command_line_event> {
@@ -21,6 +23,6 @@ namespace zoal { namespace misc {
     public:
         command_line_parser(void *buffer, size_t buffer_size);
     };
-}}
+}
 
 #endif

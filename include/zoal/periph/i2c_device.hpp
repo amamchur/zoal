@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_I2C_DEVICE_HPP
 #define ZOAL_I2C_DEVICE_HPP
 
 #include "./i2c_request.hpp"
 
-namespace zoal { namespace periph {
+namespace zoal::periph {
     enum class device_buffer_type { static_mem, shared_mem };
 
     template<size_t MinCmdSize, size_t MinDataSize>
@@ -82,6 +84,6 @@ namespace zoal { namespace periph {
             dispatcher.finish_sequence(status == zoal::periph::i2c_request_status::finished ? 0 : -1);
         };
     };
-}}
+}
 
 #endif

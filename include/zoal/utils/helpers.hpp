@@ -1,9 +1,11 @@
+#pragma once
+
 #ifndef ZOAL_UTILS_HELPERS_HPP
 #define ZOAL_UTILS_HELPERS_HPP
 
 #include <stddef.h>
 
-namespace zoal { namespace utils {
+namespace zoal::utils {
     template<size_t Radix>
     class radix {
     public:
@@ -62,6 +64,6 @@ namespace zoal { namespace utils {
             *begin = obj(*begin);
         }
     }
-}}
+}
 
 #endif

@@ -1,10 +1,12 @@
+#pragma once
+
 #ifndef ZOAL_IC_LM75_HPP
 #define ZOAL_IC_LM75_HPP
 
 #include "../periph/i2c_device.hpp"
 #include "../periph/i2c_request.hpp"
 
-namespace zoal { namespace ic {
+namespace zoal::ic {
     class lm75 : public zoal::periph::i2c_device {
     public:
         enum class register_address : uint8_t { temperature = 0x00, configuration = 0x01, t_hyst = 0x02, t_os = 0x03 };
@@ -43,6 +45,6 @@ namespace zoal { namespace ic {
         uint8_t reg_addr{static_cast<uint8_t>(register_address::temperature)};
         uint8_t data_[6]{0};
     };
-}}
+}
 
 #endif

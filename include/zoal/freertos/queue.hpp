@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ZOAL_FREERTOS_QUEUE_HPP
 #define ZOAL_FREERTOS_QUEUE_HPP
 
@@ -7,7 +9,7 @@
 #include <queue.h>
 #include <zoal/freertos/types.hpp>
 
-namespace zoal { namespace freertos {
+namespace zoal::freertos {
     template<class ItemType>
     class freertos_queue {
     public:
@@ -59,6 +61,6 @@ namespace zoal { namespace freertos {
     private:
         StaticQueue_t pxQueueBuffer{};
     };
-}}
+}
 
 #endif
